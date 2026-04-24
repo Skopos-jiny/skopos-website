@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SKOPOS | 스코포스 - 당신의 공간을 조준합니다</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #c9a96e;
+            --gold-light: #e8d5b0;
+            --black: #0c0c0c;
+            --off-black: #111111;
+            --dark: #1a1a1a;
+            --mid: #2e2e2e;
+            --gray: #888;
+            --light-gray: #f5f4f2;
+            --white: #fafaf8;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--black);
+            color: var(--white);
+            overflow-x: hidden;
+        }
+
+        /* ── NAV ── */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 60px;
+            height: 72px;
+            background: rgba(12,12,12,0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(201,169,110,0.15);
+        }
+        .nav-logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 0.3em;
+            color: var(--white);
+            text-decoration: none;
+        }
+        .nav-links {
+            display: flex;
+            gap: 48px;
+            list-style: none;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: var(--gray);
+            font-size: 0.78rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            transition: color 0.3s;
+        }
+        .nav-links a:hover { color: var(--gold); }
+        .nav-cta {
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--gold) !important;
+            border-bottom: 1px solid var(--gold);
+            padding-bottom: 2px;
+        }
+
+        /* ── HERO ── */
+        .hero {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-start;
+            padding: 0 60px 80px;
+            overflow: hidden;
+        }
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background: url('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=2000') center/cover no-repeat;
+        }
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(12,12,12,0.92) 0%, rgba(12,12,12,0.55) 60%, rgba(12,12,12,0.2) 100%);
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 700px;
+        }
+        .hero-eyebrow {
+            font-size: 0.72rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 28px;
+            opacity: 0;
+            animation: fadeUp 0.9s ease forwards 0.2s;
+        }
+        .hero-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(3.2rem, 6vw, 5.5rem);
+            font-weight: 300;
+            line-height: 1.1;
+            letter-spacing: -0.01em;
+            margin-bottom: 28px;
+            opacity: 0;
+            animation: fadeUp 0.9s ease forwards 0.45s;
+        }
+        .hero-title em {
+            font-style: italic;
+            color: var(--gold);
+        }
+        .hero-desc {
+            font-size: 0.9rem;
+            font-weight: 300;
+            color: rgba(250,250,248,0.6);
+            line-height: 1.8;
+            max-width: 420px;
+            margin-bottom: 48px;
+            opacity: 0;
+            animation: fadeUp 0.9s ease forwards 0.65s;
+        }
+        .hero-actions {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            opacity: 0;
+            animation: fadeUp 0.9s ease forwards 0.85s;
+        }
+        .btn-primary {
+            display: inline-block;
+            padding: 14px 36px;
+            background: var(--gold);
+            color: var(--black);
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .btn-primary:hover { background: var(--gold-light); }
+        .btn-ghost {
+            display: inline-block;
+            padding: 14px 36px;
+            border: 1px solid rgba(250,250,248,0.3);
+            color: var(--white);
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .btn-ghost:hover { border-color: var(--white); }
+        .hero-scroll {
+            position: absolute;
+            bottom: 40px;
+            right: 60px;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards 1.2s;
+        }
+        .hero-scroll span {
+            font-size: 0.65rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--gray);
+            writing-mode: vertical-rl;
+        }
+        .scroll-line {
+            width: 1px;
+            height: 60px;
+            background: linear-gradient(to bottom, var(--gold), transparent);
+            animation: scrollLine 2s ease-in-out infinite;
+        }
+
+        /* ── MARQUEE ── */
+        .marquee-wrap {
+            background: var(--gold);
+            padding: 14px 0;
+            overflow: hidden;
+        }
+        .marquee-track {
+            display: flex;
+            gap: 0;
+            animation: marquee 20s linear infinite;
+            white-space: nowrap;
+        }
+        .marquee-item {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--black);
+            padding: 0 40px;
+        }
+        .marquee-dot {
+            color: var(--black);
+            opacity: 0.4;
+        }
+
+        /* ── SECTIONS COMMON ── */
+        section { padding: 120px 60px; }
+        .section-tag {
+            font-size: 0.7rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 20px;
+        }
+        .section-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.2rem, 4vw, 3.5rem);
+            font-weight: 300;
+            line-height: 1.2;
+            color: var(--white);
+        }
+        .section-title em { font-style: italic; color: var(--gold); }
+
+        /* ── PHILOSOPHY ── */
+        .philosophy {
+            background: var(--off-black);
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .philosophy-inner {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 100px;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .philosophy-text .section-title { margin-bottom: 36px; }
+        .philosophy-text p {
+            font-size: 0.95rem;
+            line-height: 1.9;
+            color: rgba(250,250,248,0.55);
+            margin-bottom: 20px;
+        }
+        .philosophy-text strong { color: var(--white); font-weight: 400; }
+        .philosophy-image {
+            position: relative;
+            aspect-ratio: 4/5;
+            overflow: hidden;
+        }
+        .philosophy-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(20%);
+            transition: transform 6s ease;
+        }
+        .philosophy-image:hover img { transform: scale(1.03); }
+        .philosophy-image::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 1px solid rgba(201,169,110,0.3);
+            pointer-events: none;
+        }
+        .philosophy-nums {
+            display: flex;
+            gap: 40px;
+            margin-top: 48px;
+            padding-top: 40px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+        .num-item {}
+        .num-val {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.8rem;
+            font-weight: 300;
+            color: var(--gold);
+            line-height: 1;
+        }
+        .num-label {
+            font-size: 0.72rem;
+            letter-spacing: 0.1em;
+            color: var(--gray);
+            margin-top: 6px;
+        }
+
+        /* ── PORTFOLIO ── */
+        .portfolio { background: var(--black); }
+        .portfolio-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 60px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            grid-template-rows: auto;
+            gap: 16px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .pf-item {
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            background: var(--dark);
+        }
+        .pf-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.7s ease;
+            display: block;
+        }
+        .pf-item:hover img { transform: scale(1.06); }
+        .pf-item-1 { grid-column: span 7; aspect-ratio: 16/10; }
+        .pf-item-2 { grid-column: span 5; aspect-ratio: 4/5; }
+        .pf-item-3 { grid-column: span 4; aspect-ratio: 4/3; }
+        .pf-item-4 { grid-column: span 5; aspect-ratio: 4/3; }
+        .pf-item-5 { grid-column: span 3; aspect-ratio: 4/3; }
+        .pf-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(12,12,12,0.85) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.4s;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 28px;
+        }
+        .pf-item:hover .pf-overlay { opacity: 1; }
+        .pf-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            font-weight: 400;
+            color: var(--white);
+            margin-bottom: 4px;
+        }
+        .pf-meta {
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            color: var(--gold);
+        }
+        .view-all-link {
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--gold);
+            text-decoration: none;
+            border-bottom: 1px solid var(--gold);
+            padding-bottom: 2px;
+            transition: opacity 0.3s;
+        }
+        .view-all-link:hover { opacity: 0.7; }
+
+        /* ── PRICING ── */
+        .pricing { background: var(--off-black); border-top: 1px solid rgba(255,255,255,0.06); }
+        .pricing-header {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto 72px;
+        }
+        .pricing-header .section-title { margin-bottom: 16px; }
+        .pricing-header p {
+            font-size: 0.88rem;
+            color: var(--gray);
+            line-height: 1.7;
+        }
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            background: rgba(255,255,255,0.06);
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .price-card {
+            background: var(--off-black);
+            padding: 52px 44px;
+            display: flex;
+            flex-direction: column;
+            transition: background 0.3s;
+        }
+        .price-card:hover { background: #161616; }
+        .price-card.featured {
+            background: var(--dark);
+            position: relative;
+        }
+        .price-tag-label {
+            position: absolute;
+            top: 0; right: 0;
+            background: var(--gold);
+            color: var(--black);
+            font-size: 0.65rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            padding: 6px 16px;
+        }
+        .price-tier {
+            font-size: 0.7rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 20px;
+        }
+        .price-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            font-weight: 400;
+            color: var(--white);
+            margin-bottom: 8px;
+        }
+        .price-val {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3rem;
+            font-weight: 300;
+            color: var(--white);
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+        .price-val span {
+            font-size: 1rem;
+            color: var(--gray);
+            font-family: 'DM Sans', sans-serif;
+        }
+        .price-divider {
+            width: 32px;
+            height: 1px;
+            background: rgba(201,169,110,0.4);
+            margin: 28px 0;
+        }
+        .price-features {
+            list-style: none;
+            flex: 1;
+            margin-bottom: 40px;
+        }
+        .price-features li {
+            font-size: 0.85rem;
+            color: rgba(250,250,248,0.6);
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .price-features li::before {
+            content: '—';
+            color: var(--gold);
+            opacity: 0.6;
+            flex-shrink: 0;
+        }
+        .price-features li strong { color: var(--white); font-weight: 400; }
+        .price-btn {
+            display: block;
+            text-align: center;
+            padding: 14px;
+            font-size: 0.72rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .price-btn-outline {
+            border: 1px solid rgba(250,250,248,0.2);
+            color: var(--white);
+        }
+        .price-btn-outline:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+        .price-btn-gold {
+            background: var(--gold);
+            color: var(--black);
+        }
+        .price-btn-gold:hover { background: var(--gold-light); }
+
+        /* ── TESTIMONIALS ── */
+        .testimonials { background: var(--black); }
+        .testimonials-header {
+            max-width: 1200px;
+            margin: 0 auto 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+        .reviews-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            background: rgba(255,255,255,0.06);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .review-card {
+            background: var(--black);
+            padding: 48px 40px;
+            transition: background 0.3s;
+        }
+        .review-card:hover { background: #101010; }
+        .review-quote {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.25rem;
+            font-weight: 300;
+            font-style: italic;
+            line-height: 1.75;
+            color: rgba(250,250,248,0.75);
+            margin-bottom: 32px;
+        }
+        .review-quote::before {
+            content: '"';
+            font-size: 3rem;
+            color: var(--gold);
+            opacity: 0.4;
+            line-height: 0;
+            vertical-align: -0.5rem;
+            margin-right: 4px;
+        }
+        .review-author {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .review-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--mid);
+            overflow: hidden;
+            flex-shrink: 0;
+            border: 1px solid rgba(201,169,110,0.3);
+        }
+        .review-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .review-name {
+            font-size: 0.82rem;
+            color: var(--white);
+            margin-bottom: 2px;
+        }
+        .review-location {
+            font-size: 0.7rem;
+            color: var(--gray);
+            letter-spacing: 0.05em;
+        }
+        .review-stars {
+            margin-left: auto;
+            color: var(--gold);
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+        }
+
+        /* ── CONTACT CTA ── */
+        .contact-cta {
+            background: var(--off-black);
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding: 140px 60px;
+            text-align: center;
+        }
+        .contact-cta .section-title {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            margin-bottom: 24px;
+        }
+        .contact-cta p {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-bottom: 52px;
+            line-height: 1.7;
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            background: var(--black);
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding: 60px;
+        }
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 40px;
+        }
+        .footer-brand .logo-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            letter-spacing: 0.3em;
+            color: var(--white);
+            margin-bottom: 12px;
+        }
+        .footer-brand p {
+            font-size: 0.78rem;
+            color: var(--gray);
+            line-height: 1.8;
+        }
+        .footer-col h5 {
+            font-size: 0.65rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--gray);
+            margin-bottom: 16px;
+        }
+        .footer-col p, .footer-col a {
+            font-size: 0.82rem;
+            color: rgba(250,250,248,0.5);
+            line-height: 1.9;
+            text-decoration: none;
+            display: block;
+        }
+        .footer-col a:hover { color: var(--gold); }
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 40px auto 0;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .footer-bottom p {
+            font-size: 0.7rem;
+            color: rgba(250,250,248,0.25);
+            letter-spacing: 0.05em;
+        }
+
+        /* ── ANIMATIONS ── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(28px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+        @keyframes marquee {
+            from { transform: translateX(0); }
+            to   { transform: translateX(-50%); }
+        }
+        @keyframes scrollLine {
+            0%, 100% { opacity: 1; transform: scaleY(1); }
+            50% { opacity: 0.3; transform: scaleY(0.6); }
+        }
+
+        /* ── REVEAL ── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(32px);
+            transition: opacity 0.85s ease, transform 0.85s ease;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ── MOBILE ── */
+        @media (max-width: 900px) {
+            nav { padding: 0 24px; }
+            .nav-links { gap: 24px; }
+            section { padding: 80px 24px; }
+            .hero { padding: 0 24px 60px; }
+            .hero-scroll { right: 24px; }
+            .philosophy-inner { grid-template-columns: 1fr; gap: 48px; }
+            .philosophy-image { aspect-ratio: 16/9; order: -1; }
+            .portfolio-header { flex-direction: column; align-items: flex-start; gap: 20px; }
+            .portfolio-grid { grid-template-columns: 1fr 1fr; }
+            .pf-item-1, .pf-item-2, .pf-item-3, .pf-item-4, .pf-item-5 { grid-column: span 2; aspect-ratio: 16/9; }
+            .pricing-grid { grid-template-columns: 1fr; }
+            .reviews-grid { grid-template-columns: 1fr; }
+            .footer-inner { flex-direction: column; gap: 32px; }
+            .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+            .testimonials-header { flex-direction: column; align-items: flex-start; gap: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAV -->
+    <nav>
+        <a href="#" class="nav-logo">SKOPOS</a>
+        <ul class="nav-links">
+            <li><a href="#philosophy">철학</a></li>
+            <li><a href="#portfolio">포트폴리오</a></li>
+            <li><a href="#pricing">가격정책</a></li>
+            <li><a href="#testimonials">후기</a></li>
+            <li><a href="mailto:contact@skopos.kr" class="nav-cta">상담신청</a></li>
+        </ul>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <p class="hero-eyebrow">Space &amp; Life Curator — Seoul</p>
+            <h1 class="hero-title">
+                당신의 삶을<br>공간으로<br><em>정조준합니다.</em>
+            </h1>
+            <p class="hero-desc">
+                취향저격 프로젝트. 삶과 공간의 본질을 탐색하여<br>
+                가장 나다운 모습으로 머물 수 있는 공간을 디자인합니다.
+            </p>
+            <div class="hero-actions">
+                <a href="#pricing" class="btn-primary">서비스 보기</a>
+                <a href="#portfolio" class="btn-ghost">포트폴리오</a>
+            </div>
+        </div>
+        <div class="hero-scroll">
+            <div class="scroll-line"></div>
+            <span>Scroll</span>
+        </div>
+    </section>
+
+    <!-- MARQUEE -->
+    <div class="marquee-wrap">
+        <div class="marquee-track">
+            <span class="marquee-item">Interior Design</span><span class="marquee-dot">·</span>
+            <span class="marquee-item">공간 컨설팅</span><span class="marquee-dot">·</span>
+            <span class="marquee-item">3D Design</span><span class="marquee-dot">·</span>
+            <span class="marquee-item">라이프스타일 코칭</span><span class="marquee-dot">·</span>
+            <span class="marquee-item">시공 감리</span><span class="marquee-dot">·</span>
+            <span class="marquee-item">취향저격 프로젝트</span><span class="marquee-dot">·</span>
+            <span class="marquee-item">Interior Design</span><span class="marquee-dot">·</span>
+            <span class="marquee-item">공간 컨설팅</span><span class="marquee-dot">·</span>
+            <span class="marquee-item">3D Design</span><span class="marquee-dot">·</span>
+            <span class="marquee-item">라이프스타일 코칭</span><span class="marquee-dot">·</span>
+            <span class="marquee-item">시공 감리</span><span class="marquee-dot">·</span>
+            <span class="marquee-item">취향저격 프로젝트</span><span class="marquee-dot">·</span>
+        </div>
+    </div>
+
+    <!-- PHILOSOPHY -->
+    <section id="philosophy" class="philosophy">
+        <div class="philosophy-inner">
+            <div class="philosophy-text">
+                <p class="section-tag">Our Philosophy</p>
+                <h2 class="section-title">당신의 삶은<br>어디를 향하고<br><em>있나요?</em></h2>
+                <p>
+                    스코포스는 단순한 시공을 넘어, 당신의 루틴과<br>
+                    취향을 깊이 분석합니다. 공간은 스타일이 아니라<br>
+                    <strong>삶의 방식</strong>에서 시작되어야 합니다.
+                </p>
+                <p>
+                    나만의 취향을 발견하는 <strong>[취향저격 프로젝트]</strong>를 통해<br>
+                    가장 나다운 방식으로 존재할 수 있는 공간을<br>
+                    함께 만들어 나갑니다.
+                </p>
+                <div class="philosophy-nums">
+                    <div class="num-item">
+                        <div class="num-val">120<span style="font-size:1.2rem">+</span></div>
+                        <div class="num-label">완료 프로젝트</div>
+                    </div>
+                    <div class="num-item">
+                        <div class="num-val">98<span style="font-size:1.2rem">%</span></div>
+                        <div class="num-label">고객 만족도</div>
+                    </div>
+                    <div class="num-item">
+                        <div class="num-val">8<span style="font-size:1.2rem">년</span></div>
+                        <div class="num-label">업력</div>
+                    </div>
+                </div>
+            </div>
+            <div class="philosophy-image reveal">
+                <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&q=80&w=900" alt="Philosophy Interior">
+            </div>
+        </div>
+    </section>
+
+    <!-- PORTFOLIO -->
+    <section id="portfolio" class="portfolio">
+        <div class="portfolio-header reveal">
+            <div>
+                <p class="section-tag">Portfolio</p>
+                <h2 class="section-title">선별된 <em>프로젝트</em></h2>
+            </div>
+            <a href="mailto:contact@skopos.kr" class="view-all-link">프로젝트 문의 →</a>
+        </div>
+        <div class="portfolio-grid reveal">
+            <div class="pf-item pf-item-1">
+                <img src="https://images.unsplash.com/photo-1600210492493-0946911123ea?auto=format&fit=crop&q=80&w=1200" alt="Project 1">
+                <div class="pf-overlay">
+                    <div class="pf-title">성북동 단독주택 리모델링</div>
+                    <div class="pf-meta">Residential · Joy 서비스</div>
+                </div>
+            </div>
+            <div class="pf-item pf-item-2">
+                <img src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&q=80&w=800" alt="Project 2">
+                <div class="pf-overlay">
+                    <div class="pf-title">마포 아파트 인테리어</div>
+                    <div class="pf-meta">Residential · Smile 턴키</div>
+                </div>
+            </div>
+            <div class="pf-item pf-item-3">
+                <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&q=80&w=800" alt="Project 3">
+                <div class="pf-overlay">
+                    <div class="pf-title">강남 카페 공간 설계</div>
+                    <div class="pf-meta">Commercial · Smile 턴키</div>
+                </div>
+            </div>
+            <div class="pf-item pf-item-4">
+                <img src="https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&q=80&w=1000" alt="Project 4">
+                <div class="pf-overlay">
+                    <div class="pf-title">용산 오피스텔 인테리어</div>
+                    <div class="pf-meta">Residential · Happy 서비스</div>
+                </div>
+            </div>
+            <div class="pf-item pf-item-5">
+                <img src="https://images.unsplash.com/photo-1598928506311-c55ded91a20c?auto=format&fit=crop&q=80&w=800" alt="Project 5">
+                <div class="pf-overlay">
+                    <div class="pf-title">서울숲 스튜디오</div>
+                    <div class="pf-meta">Studio · Joy 서비스</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRICING -->
+    <section id="pricing" class="pricing">
+        <div class="pricing-header reveal">
+            <p class="section-tag">Price Policy</p>
+            <h2 class="section-title">투명한 <em>가격 정책</em></h2>
+            <p>필요한 서비스만큼, 명확하게.</p>
+        </div>
+        <div class="pricing-grid reveal">
+            <!-- Happy -->
+            <div class="price-card">
+                <div class="price-tier">Tier 01</div>
+                <div class="price-name">Happy</div>
+                <div class="price-val">50 <span>만원</span></div>
+                <div class="price-divider"></div>
+                <ul class="price-features">
+                    <li>행정 관련 컨설팅 <strong>(입주민 동의 포함)</strong></li>
+                    <li>행위허가 대행 비용 포함</li>
+                    <li>3D 디자인 제공</li>
+                </ul>
+                <a href="mailto:contact@skopos.kr" class="price-btn price-btn-outline">문의하기</a>
+            </div>
+            <!-- Joy -->
+            <div class="price-card featured">
+                <div class="price-tag-label">Best Choice</div>
+                <div class="price-tier">Tier 02</div>
+                <div class="price-name" style="color: var(--gold);">Joy</div>
+                <div class="price-val" style="color: var(--gold);">200 <span>만원</span></div>
+                <div class="price-divider"></div>
+                <ul class="price-features">
+                    <li><strong>Happy 서비스 전항목 포함</strong></li>
+                    <li>시공 전 과정 동행 서비스</li>
+                    <li>현장 감리 포함</li>
+                    <li>사후 A/S 관리 포함</li>
+                </ul>
+                <a href="mailto:contact@skopos.kr" class="price-btn price-btn-gold">선택하기</a>
+            </div>
+            <!-- Smile -->
+            <div class="price-card">
+                <div class="price-tier">Tier 03</div>
+                <div class="price-name">Smile / 턴키</div>
+                <div class="price-val" style="font-size:1.8rem;">별도 문의</div>
+                <div class="price-divider"></div>
+                <ul class="price-features">
+                    <li>전체 시공 및 스타일링 포함</li>
+                    <li><strong>전 시공 하자보증 3년</strong></li>
+                    <li>1:1 라이프스타일 코칭</li>
+                </ul>
+                <a href="mailto:contact@skopos.kr" class="price-btn price-btn-outline">문의하기</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section id="testimonials" class="testimonials">
+        <div class="testimonials-header reveal">
+            <div>
+                <p class="section-tag">Client Reviews</p>
+                <h2 class="section-title">고객들의 <em>이야기</em></h2>
+            </div>
+            <p style="font-size:0.82rem; color: var(--gray); max-width: 260px; line-height:1.7;">공간이 달라지면 삶이 달라집니다. 스코포스를 경험한 분들의 진솔한 후기입니다.</p>
+        </div>
+        <div class="reviews-grid reveal">
+            <div class="review-card">
+                <div class="review-quote">
+                    처음엔 반신반의했는데, 3D 시안을 보는 순간 바로 확신이 생겼어요. 완성된 공간은 기대 이상이었습니다.
+                </div>
+                <div class="review-author">
+                    <div class="review-avatar">
+                        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=80" alt="">
+                    </div>
+                    <div>
+                        <div class="review-name">김민준</div>
+                        <div class="review-location">마포구 아파트 · Joy 서비스</div>
+                    </div>
+                    <div class="review-stars">★★★★★</div>
+                </div>
+            </div>
+            <div class="review-card">
+                <div class="review-quote">
+                    취향저격이라는 말이 정말 딱이에요. 제가 원하는 걸 말하지 않아도 먼저 파악해서 제안해줬어요.
+                </div>
+                <div class="review-author">
+                    <div class="review-avatar">
+                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=80" alt="">
+                    </div>
+                    <div>
+                        <div class="review-name">이서현</div>
+                        <div class="review-location">성북동 주택 · Smile 턴키</div>
+                    </div>
+                    <div class="review-stars">★★★★★</div>
+                </div>
+            </div>
+            <div class="review-card">
+                <div class="review-quote">
+                    감리부터 A/S까지, 시공 과정 내내 불안함이 전혀 없었습니다. 진심으로 믿고 맡길 수 있는 곳입니다.
+                </div>
+                <div class="review-author">
+                    <div class="review-avatar">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=80" alt="">
+                    </div>
+                    <div>
+                        <div class="review-name">박지원</div>
+                        <div class="review-location">용산 오피스텔 · Joy 서비스</div>
+                    </div>
+                    <div class="review-stars">★★★★★</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="contact-cta reveal">
+        <p class="section-tag">Get Started</p>
+        <h2 class="section-title">
+            지금, 당신의 공간을<br><em>이야기해 주세요.</em>
+        </h2>
+        <p>처음 상담은 언제나 열려 있습니다.</p>
+        <a href="mailto:contact@skopos.kr" class="btn-primary" style="font-size:0.8rem; letter-spacing:0.18em;">상담 신청하기</a>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <div class="logo-text">SKOPOS</div>
+                <p>삶의 가치를 공간에 담아내는 컨설팅<br>스코포스(SKOPOS)</p>
+            </div>
+            <div class="footer-col">
+                <h5>Contact</h5>
+                <a href="mailto:contact@skopos.kr">contact@skopos.kr</a>
+            </div>
+            <div class="footer-col">
+                <h5>Services</h5>
+                <p>Happy 서비스</p>
+                <p>Joy 서비스</p>
+                <p>Smile / 턴키</p>
+            </div>
+            <div class="footer-col">
+                <h5>Business Info</h5>
+                <p>사업자등록번호: 310-13-82312</p>
+                <p>대표: 최지훈</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2024 SKOPOS. All rights reserved.</p>
+            <p>Space & Life Curator</p>
+        </div>
+    </footer>
+
+    <script>
+        // Scroll reveal
+        const reveals = document.querySelectorAll('.reveal');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, i) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => entry.target.classList.add('visible'), i * 80);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        reveals.forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
