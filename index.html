@@ -1348,18 +1348,115 @@
                 </div>
             </div>
 
-            <a href="mailto:contact@skopos.kr?subject=5월 한정 이벤트 신청" class="popup-cta">지금 바로 신청하기</a>
-            <button class="popup-close-text" id="popupCloseText">오늘 하루 보지 않기</button>
+            <!-- Step 1: CTA -->
+            <div id="popupStep1">
+                <button class="popup-cta" id="popupOpenForm">지금 바로 신청하기</button>
+                <button class="popup-close-text" id="popupCloseText">오늘 하루 보지 않기</button>
+            </div>
+
+            <!-- Step 2: Form (hidden by default) -->
+            <div id="popupStep2" style="display:none; text-align:left;">
+                <p style="font-size:0.7rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--gold); margin-bottom:20px; text-align:center;">신청 정보 입력</p>
+                <div class="pf-field">
+                    <label class="pf-label">이름 *</label>
+                    <input class="pf-input" id="pfName" type="text" placeholder="홍길동" required>
+                </div>
+                <div class="pf-field">
+                    <label class="pf-label">연락처 *</label>
+                    <input class="pf-input" id="pfPhone" type="tel" placeholder="010-0000-0000" required>
+                </div>
+                <div class="pf-field">
+                    <label class="pf-label">시공 주소 *</label>
+                    <input class="pf-input" id="pfAddress" type="text" placeholder="서울시 마포구 ..." required>
+                </div>
+                <div class="pf-field">
+                    <label class="pf-label">희망 시공 시기 *</label>
+                    <select class="pf-input pf-select" id="pfTiming">
+                        <option value="" disabled selected>선택해주세요</option>
+                        <option>1개월 이내</option>
+                        <option>1~3개월</option>
+                        <option>3~6개월</option>
+                        <option>6개월 이후</option>
+                        <option>미정</option>
+                    </select>
+                </div>
+                <p class="pf-error" id="pfError" style="display:none;">모든 항목을 입력해주세요.</p>
+                <button class="popup-cta" id="pfSubmit" style="margin-top:8px;">신청 완료하기</button>
+                <button class="popup-close-text" id="pfBack" style="margin-top:10px;">← 뒤로가기</button>
+            </div>
+
+            <!-- Step 3: Success -->
+            <div id="popupStep3" style="display:none; text-align:center; padding: 20px 0;">
+                <div style="font-size:2.8rem; margin-bottom:16px;">✉️</div>
+                <p style="font-family:'Cormorant Garamond',serif; font-size:1.5rem; color:var(--white); margin-bottom:10px;">신청이 완료되었습니다!</p>
+                <p style="font-size:0.82rem; color:var(--gray); line-height:1.8; margin-bottom:24px;">
+                    빠른 시간 내에 연락드리겠습니다.<br>
+                    <span style="color:var(--gold)">contact@skopos.kr</span>
+                </p>
+                <button class="popup-cta" id="pfDone">확인</button>
+            </div>
         </div>
     </div>
 
+    <!-- EmailJS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+    <style>
+        /* ── Form fields ── */
+        .pf-field { margin-bottom: 14px; }
+        .pf-label {
+            display: block;
+            font-size: 0.68rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--gray);
+            margin-bottom: 6px;
+        }
+        .pf-input {
+            width: 100%;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--white);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.88rem;
+            padding: 11px 14px;
+            outline: none;
+            transition: border-color 0.25s;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+        .pf-input:focus { border-color: var(--gold); }
+        .pf-input::placeholder { color: rgba(255,255,255,0.2); }
+        .pf-select { cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23c9a96e' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; }
+        .pf-select option { background: #1a1a1a; color: var(--white); }
+        .pf-error { font-size: 0.75rem; color: #e07070; margin-bottom: 8px; }
+        #pfSubmit:disabled { opacity: 0.5; cursor: not-allowed; }
+    </style>
+
     <script>
         (function() {
-            const backdrop = document.getElementById('popupBackdrop');
-            const modal    = document.getElementById('popupModal');
-            const closeX   = document.getElementById('popupX');
-            const closeBtn = document.getElementById('popupCloseText');
-            let shown      = false;
+            // ════════════════════════════════════════════
+            // ✅ EmailJS 설정 — 아래 3개 값을 본인 계정으로 교체하세요
+            // https://www.emailjs.com 에서 발급
+            const EMAILJS_PUBLIC_KEY  = 'v6zxjqa6KQs7Ux7De';
+            const EMAILJS_SERVICE_ID  = 'service_skopos';
+            const EMAILJS_TEMPLATE_ID = 'template_x7bv68n';
+            // ════════════════════════════════════════════
+
+            emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+
+            const backdrop  = document.getElementById('popupBackdrop');
+            const modal     = document.getElementById('popupModal');
+            const closeX    = document.getElementById('popupX');
+            const closeBtn  = document.getElementById('popupCloseText');
+            const openForm  = document.getElementById('popupOpenForm');
+            const pfBack    = document.getElementById('pfBack');
+            const pfSubmit  = document.getElementById('pfSubmit');
+            const pfDone    = document.getElementById('pfDone');
+            const step1     = document.getElementById('popupStep1');
+            const step2     = document.getElementById('popupStep2');
+            const step3     = document.getElementById('popupStep3');
+            let shown       = false;
 
             // ── Sparkles
             const sparkleContainer = document.getElementById('sparkleContainer');
@@ -1368,14 +1465,14 @@
                 s.className = 'sparkle';
                 s.style.left  = Math.random() * 100 + '%';
                 s.style.top   = Math.random() * 100 + '%';
-                s.style.animationDelay = (Math.random() * 3) + 's';
+                s.style.animationDelay    = (Math.random() * 3) + 's';
                 s.style.animationDuration = (2 + Math.random() * 2) + 's';
                 sparkleContainer.appendChild(s);
             }
 
             // ── Ring fill animation (30%)
             const ring = document.getElementById('ringFill');
-            const circumference = 2 * Math.PI * 45; // ≈ 283
+            const circumference = 2 * Math.PI * 45;
             ring.style.strokeDasharray  = circumference;
             ring.style.strokeDashoffset = circumference;
             function animateRing() {
@@ -1387,14 +1484,13 @@
 
             // ── Countdown to May 31
             function updateTimer() {
-                const now    = new Date();
-                const end    = new Date(now.getFullYear(), 4, 31, 23, 59, 59); // May 31
-                const diff   = end - now;
+                const now = new Date();
+                const end = new Date(now.getFullYear(), 4, 31, 23, 59, 59);
+                const diff = end - now;
                 if (diff <= 0) {
-                    document.getElementById('timerDays').textContent  = '00';
-                    document.getElementById('timerHours').textContent = '00';
-                    document.getElementById('timerMins').textContent  = '00';
-                    document.getElementById('timerSecs').textContent  = '00';
+                    ['Days','Hours','Mins','Secs'].forEach(k => {
+                        document.getElementById('timer'+k).textContent = '00';
+                    });
                     return;
                 }
                 const d = Math.floor(diff / 86400000);
@@ -1409,7 +1505,53 @@
             updateTimer();
             setInterval(updateTimer, 1000);
 
-            // ── Show popup
+            // ── Step navigation
+            function goStep(n) {
+                step1.style.display = n === 1 ? 'block' : 'none';
+                step2.style.display = n === 2 ? 'block' : 'none';
+                step3.style.display = n === 3 ? 'block' : 'none';
+            }
+
+            openForm.addEventListener('click', () => goStep(2));
+            pfBack.addEventListener('click',   () => goStep(1));
+            pfDone.addEventListener('click',   () => closePopup(false));
+
+            // ── EmailJS send
+            pfSubmit.addEventListener('click', async () => {
+                const name    = document.getElementById('pfName').value.trim();
+                const phone   = document.getElementById('pfPhone').value.trim();
+                const address = document.getElementById('pfAddress').value.trim();
+                const timing  = document.getElementById('pfTiming').value;
+                const errEl   = document.getElementById('pfError');
+
+                if (!name || !phone || !address || !timing) {
+                    errEl.style.display = 'block';
+                    return;
+                }
+                errEl.style.display = 'none';
+                pfSubmit.disabled = true;
+                pfSubmit.textContent = '전송 중...';
+
+                try {
+                    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+                        to_email  : 'contact@skopos.kr',
+                        from_name : name,
+                        phone     : phone,
+                        address   : address,
+                        timing    : timing,
+                        subject   : '[SKOPOS] 5월 한정 이벤트 신청 — ' + name,
+                    });
+                    goStep(3);
+                } catch(err) {
+                    pfSubmit.disabled = false;
+                    pfSubmit.textContent = '신청 완료하기';
+                    errEl.textContent = '전송 중 오류가 발생했습니다. 다시 시도해주세요.';
+                    errEl.style.display = 'block';
+                    console.error('EmailJS error:', err);
+                }
+            });
+
+            // ── Show / Close popup
             function showPopup() {
                 if (shown) return;
                 shown = true;
@@ -1418,20 +1560,19 @@
                 animateRing();
                 document.body.style.overflow = 'hidden';
             }
-
-            // ── Close popup
             function closePopup(hideToday) {
                 backdrop.classList.remove('show');
                 modal.classList.remove('show');
                 document.body.style.overflow = '';
+                goStep(1);
                 if (hideToday) {
                     try { sessionStorage.setItem('skopos_popup_hidden', '1'); } catch(e) {}
                 }
             }
 
-            closeX.addEventListener('click',   () => closePopup(false));
-            closeBtn.addEventListener('click',  () => closePopup(true));
-            backdrop.addEventListener('click',  () => closePopup(false));
+            closeX.addEventListener('click',  () => closePopup(false));
+            closeBtn.addEventListener('click', () => closePopup(true));
+            backdrop.addEventListener('click', () => closePopup(false));
 
             // ── Skip if hidden today
             try {
