@@ -1054,7 +1054,9 @@
             top: 50%; left: 50%;
             transform: translate(-50%, -52%) scale(0.94);
             z-index: 901;
-            width: min(520px, 92vw);
+            width: min(420px, 92vw);
+            max-height: 90vh;
+            overflow-y: auto;
             background: var(--off-black);
             border: 1px solid rgba(201,169,110,0.35);
             opacity: 0;
@@ -1078,28 +1080,30 @@
             display: inline-block;
             background: var(--gold);
             color: var(--black);
-            font-size: 0.6rem;
+            font-size: 0.58rem;
             font-weight: 600;
             letter-spacing: 0.2em;
             text-transform: uppercase;
-            padding: 5px 14px;
-            margin-bottom: 24px;
+            padding: 4px 12px;
+            margin-bottom: 14px;
         }
 
         .popup-body {
-            padding: 40px 48px 44px;
+            padding: 24px 32px 28px;
             text-align: center;
         }
 
         /* Countdown ring */
         .popup-ring {
             position: relative;
-            width: 100px;
-            height: 100px;
-            margin: 0 auto 28px;
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 16px;
         }
         .popup-ring svg {
             transform: rotate(-90deg);
+            width: 72px;
+            height: 72px;
         }
         .popup-ring-track {
             fill: none;
@@ -1125,13 +1129,13 @@
         }
         .popup-pct {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 2rem;
+            font-size: 1.4rem;
             font-weight: 300;
             color: var(--gold);
             line-height: 1;
         }
         .popup-pct-label {
-            font-size: 0.6rem;
+            font-size: 0.52rem;
             letter-spacing: 0.15em;
             color: var(--gray);
             text-transform: uppercase;
@@ -1139,44 +1143,44 @@
 
         .popup-title {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 1.9rem;
+            font-size: 1.5rem;
             font-weight: 300;
             color: var(--white);
-            line-height: 1.3;
-            margin-bottom: 12px;
+            line-height: 1.25;
+            margin-bottom: 8px;
         }
         .popup-title em { font-style: italic; color: var(--gold); }
 
         .popup-desc {
-            font-size: 0.82rem;
+            font-size: 0.78rem;
             color: rgba(250,250,248,0.5);
-            line-height: 1.75;
-            margin-bottom: 28px;
+            line-height: 1.65;
+            margin-bottom: 16px;
         }
 
         /* Slots */
         .popup-slots {
             display: flex;
             justify-content: center;
-            gap: 10px;
-            margin-bottom: 32px;
+            gap: 8px;
+            margin-bottom: 6px;
         }
         .popup-slot {
-            width: 36px; height: 36px;
+            width: 28px; height: 28px;
             border: 1px solid rgba(201,169,110,0.5);
             display: flex; align-items: center; justify-content: center;
             font-family: 'Cormorant Garamond', serif;
-            font-size: 1.1rem;
+            font-size: 0.9rem;
             color: var(--gold);
         }
         .popup-slot.filled {
             background: rgba(201,169,110,0.12);
         }
         .popup-slot-label {
-            font-size: 0.65rem;
+            font-size: 0.62rem;
             letter-spacing: 0.1em;
             color: var(--gray);
-            margin-bottom: 28px;
+            margin-bottom: 16px;
             text-align: center;
         }
 
@@ -1184,49 +1188,49 @@
         .popup-deadline {
             display: flex;
             justify-content: center;
-            gap: 16px;
-            margin-bottom: 32px;
+            gap: 10px;
+            margin-bottom: 20px;
         }
         .popup-time-block {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
+            gap: 3px;
         }
         .popup-time-num {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 2rem;
+            font-size: 1.4rem;
             font-weight: 300;
             color: var(--white);
             line-height: 1;
-            min-width: 52px;
+            min-width: 40px;
             text-align: center;
             background: rgba(255,255,255,0.04);
-            padding: 8px 12px;
+            padding: 6px 8px;
             border: 1px solid rgba(255,255,255,0.07);
         }
         .popup-time-label {
-            font-size: 0.58rem;
-            letter-spacing: 0.15em;
+            font-size: 0.52rem;
+            letter-spacing: 0.12em;
             color: var(--gray);
             text-transform: uppercase;
         }
         .popup-time-sep {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 1.8rem;
+            font-size: 1.3rem;
             color: var(--gold);
             opacity: 0.5;
             align-self: flex-start;
-            padding-top: 8px;
+            padding-top: 6px;
         }
 
         .popup-cta {
             display: block;
             width: 100%;
-            padding: 15px;
+            padding: 12px;
             background: var(--gold);
             color: var(--black);
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             font-weight: 500;
             letter-spacing: 0.18em;
             text-transform: uppercase;
@@ -1302,7 +1306,7 @@
 
             <!-- Discount ring -->
             <div class="popup-ring">
-                <svg width="100" height="100" viewBox="0 0 100 100">
+                <svg width="72" height="72" viewBox="0 0 100 100">
                     <circle class="popup-ring-track" cx="50" cy="50" r="45"/>
                     <circle class="popup-ring-fill" id="ringFill" cx="50" cy="50" r="45"/>
                 </svg>
@@ -1579,15 +1583,8 @@
                 if (sessionStorage.getItem('skopos_popup_hidden') === '1') return;
             } catch(e) {}
 
-            // ── Scroll trigger: 30% of page
-            function onScroll() {
-                const scrolled = window.scrollY / (document.body.scrollHeight - window.innerHeight);
-                if (scrolled >= 0.30) {
-                    showPopup();
-                    window.removeEventListener('scroll', onScroll);
-                }
-            }
-            window.addEventListener('scroll', onScroll, { passive: true });
+            // ── 페이지 로드 즉시 노출 (0.6초 딜레이로 자연스럽게)
+            setTimeout(showPopup, 600);
         })();
     </script>
 </body>
