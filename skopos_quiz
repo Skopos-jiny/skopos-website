@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>취향저격 진단 | SKOPOS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #c9a96e;
+            --gold-light: #e8d5b0;
+            --black: #0c0c0c;
+            --off-black: #111111;
+            --dark: #1a1a1a;
+            --gray: #888;
+            --white: #fafaf8;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--black);
+            color: var(--white);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ── NAV ── */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 48px; height: 64px;
+            background: rgba(12,12,12,0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(201,169,110,0.12);
+        }
+        .nav-logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem; font-weight: 600;
+            letter-spacing: 0.3em; color: var(--white);
+            text-decoration: none;
+        }
+        .nav-back {
+            font-size: 0.72rem; letter-spacing: 0.12em;
+            text-transform: uppercase; color: var(--gray);
+            text-decoration: none; transition: color 0.3s;
+        }
+        .nav-back:hover { color: var(--gold); }
+
+        /* ── WRAPPER ── */
+        .quiz-wrap {
+            min-height: 100vh;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 100px 24px 60px;
+        }
+
+        /* ── PROGRESS ── */
+        .progress-wrap {
+            width: 100%; max-width: 600px;
+            margin-bottom: 48px;
+        }
+        .progress-meta {
+            display: flex; justify-content: space-between;
+            align-items: center; margin-bottom: 10px;
+        }
+        .progress-label {
+            font-size: 0.68rem; letter-spacing: 0.2em;
+            text-transform: uppercase; color: var(--gray);
+        }
+        .progress-timer {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem; color: var(--gold);
+        }
+        .progress-bar-bg {
+            width: 100%; height: 2px;
+            background: rgba(255,255,255,0.07);
+        }
+        .progress-bar-fill {
+            height: 2px; background: var(--gold);
+            transition: width 0.5s ease;
+        }
+
+        /* ── QUESTION CARD ── */
+        .q-card {
+            width: 100%; max-width: 600px;
+            opacity: 0; transform: translateY(20px);
+            animation: fadeUp 0.5s ease forwards;
+        }
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .q-eyebrow {
+            font-size: 0.65rem; letter-spacing: 0.25em;
+            text-transform: uppercase; color: var(--gold);
+            margin-bottom: 16px;
+        }
+        .q-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(1.6rem, 4vw, 2.4rem);
+            font-weight: 300; line-height: 1.3;
+            color: var(--white); margin-bottom: 10px;
+        }
+        .q-title em { font-style: italic; color: var(--gold); }
+        .q-sub {
+            font-size: 0.8rem; color: var(--gray);
+            margin-bottom: 36px; line-height: 1.6;
+        }
+
+        /* ── OPTIONS ── */
+        .options-grid {
+            display: grid;
+            gap: 12px;
+        }
+        .options-grid.col2 { grid-template-columns: 1fr 1fr; }
+        .options-grid.col1 { grid-template-columns: 1fr; }
+
+        .opt {
+            position: relative;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            padding: 18px 20px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex; align-items: flex-start; gap: 14px;
+            text-align: left;
+            overflow: hidden;
+        }
+        .opt:hover {
+            border-color: rgba(201,169,110,0.4);
+            background: rgba(201,169,110,0.05);
+        }
+        .opt.selected {
+            border-color: var(--gold);
+            background: rgba(201,169,110,0.1);
+        }
+        .opt.selected .opt-check { opacity: 1; }
+        .opt-swatch {
+            width: 36px; height: 36px;
+            flex-shrink: 0; border-radius: 0;
+        }
+        .opt-body { flex: 1; }
+        .opt-label {
+            font-size: 0.88rem; font-weight: 400;
+            color: var(--white); margin-bottom: 3px;
+            line-height: 1.3;
+        }
+        .opt-desc {
+            font-size: 0.72rem; color: var(--gray);
+            line-height: 1.5;
+        }
+        .opt-check {
+            position: absolute; top: 12px; right: 14px;
+            width: 16px; height: 16px;
+            border: 1px solid var(--gold);
+            background: var(--gold);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.6rem; color: var(--black);
+            opacity: 0; transition: opacity 0.2s;
+            flex-shrink: 0;
+        }
+
+        /* ── EMOJI GRID (분위기) ── */
+        .mood-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        .mood-opt {
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.03);
+            padding: 20px 12px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.25s ease;
+        }
+        .mood-opt:hover {
+            border-color: rgba(201,169,110,0.4);
+            background: rgba(201,169,110,0.05);
+        }
+        .mood-opt.selected {
+            border-color: var(--gold);
+            background: rgba(201,169,110,0.1);
+        }
+        .mood-emoji { font-size: 1.8rem; margin-bottom: 8px; }
+        .mood-label { font-size: 0.78rem; color: var(--white); margin-bottom: 3px; }
+        .mood-sub { font-size: 0.65rem; color: var(--gray); }
+
+        /* ── NAV BUTTONS ── */
+        .q-nav {
+            display: flex; gap: 12px;
+            margin-top: 36px; align-items: center;
+        }
+        .btn-next {
+            flex: 1; padding: 14px;
+            background: var(--gold); color: var(--black);
+            font-size: 0.75rem; font-weight: 500;
+            letter-spacing: 0.15em; text-transform: uppercase;
+            border: none; cursor: pointer;
+            transition: background 0.3s; opacity: 0.4;
+            pointer-events: none;
+        }
+        .btn-next.active { opacity: 1; pointer-events: all; }
+        .btn-next.active:hover { background: var(--gold-light); }
+        .btn-prev {
+            padding: 14px 20px;
+            background: none;
+            border: 1px solid rgba(255,255,255,0.12);
+            color: var(--gray); font-size: 0.72rem;
+            cursor: pointer; transition: all 0.3s;
+        }
+        .btn-prev:hover { border-color: var(--white); color: var(--white); }
+
+        /* ── INTRO ── */
+        #screen-intro {
+            width: 100%; max-width: 560px;
+            text-align: center;
+        }
+        .intro-badge {
+            display: inline-block;
+            border: 1px solid rgba(201,169,110,0.4);
+            padding: 5px 16px; font-size: 0.65rem;
+            letter-spacing: 0.25em; text-transform: uppercase;
+            color: var(--gold); margin-bottom: 32px;
+        }
+        .intro-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            font-weight: 300; line-height: 1.2;
+            margin-bottom: 20px;
+        }
+        .intro-title em { font-style: italic; color: var(--gold); }
+        .intro-desc {
+            font-size: 0.88rem; color: var(--gray);
+            line-height: 1.8; margin-bottom: 12px;
+        }
+        .intro-meta {
+            display: flex; justify-content: center; gap: 32px;
+            margin: 32px 0 40px;
+        }
+        .intro-stat { text-align: center; }
+        .intro-stat-val {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem; color: var(--gold); line-height: 1;
+        }
+        .intro-stat-label {
+            font-size: 0.65rem; letter-spacing: 0.1em;
+            color: var(--gray); margin-top: 4px;
+        }
+        .btn-start {
+            display: inline-block; padding: 15px 52px;
+            background: var(--gold); color: var(--black);
+            font-size: 0.78rem; font-weight: 500;
+            letter-spacing: 0.18em; text-transform: uppercase;
+            border: none; cursor: pointer; transition: background 0.3s;
+        }
+        .btn-start:hover { background: var(--gold-light); }
+
+        /* ── RESULT ── */
+        #screen-result {
+            width: 100%; max-width: 640px;
+            opacity: 0; animation: fadeUp 0.7s ease forwards 0.2s;
+        }
+        .result-tag {
+            font-size: 0.65rem; letter-spacing: 0.25em;
+            text-transform: uppercase; color: var(--gold);
+            margin-bottom: 12px;
+        }
+        .result-type {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 300; line-height: 1.15;
+            margin-bottom: 6px;
+        }
+        .result-type em { font-style: italic; color: var(--gold); }
+        .result-sub {
+            font-size: 0.85rem; color: var(--gray);
+            margin-bottom: 32px; line-height: 1.7;
+        }
+        .result-keywords {
+            display: flex; flex-wrap: wrap; gap: 8px;
+            margin-bottom: 36px;
+        }
+        .kw-tag {
+            border: 1px solid rgba(201,169,110,0.4);
+            padding: 5px 14px; font-size: 0.7rem;
+            letter-spacing: 0.1em; color: var(--gold);
+        }
+        .result-divider {
+            width: 40px; height: 1px;
+            background: rgba(201,169,110,0.3);
+            margin: 32px 0;
+        }
+        .result-service-label {
+            font-size: 0.65rem; letter-spacing: 0.2em;
+            text-transform: uppercase; color: var(--gray);
+            margin-bottom: 16px;
+        }
+        .service-rec {
+            border: 1px solid rgba(201,169,110,0.3);
+            padding: 24px 28px; margin-bottom: 12px;
+            display: flex; align-items: flex-start;
+            gap: 20px; background: rgba(201,169,110,0.04);
+        }
+        .service-rec.best { border-color: var(--gold); background: rgba(201,169,110,0.08); }
+        .service-rec-badge {
+            font-size: 0.58rem; letter-spacing: 0.15em;
+            text-transform: uppercase; color: var(--black);
+            background: var(--gold); padding: 3px 8px;
+            white-space: nowrap; margin-top: 2px;
+            flex-shrink: 0;
+        }
+        .service-rec-body {}
+        .service-rec-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem; color: var(--white);
+            margin-bottom: 4px;
+        }
+        .service-rec-desc {
+            font-size: 0.78rem; color: var(--gray);
+            line-height: 1.6;
+        }
+        .result-actions {
+            display: flex; gap: 12px; margin-top: 36px;
+        }
+        .btn-consult {
+            flex: 1; padding: 14px;
+            background: var(--gold); color: var(--black);
+            font-size: 0.75rem; font-weight: 500;
+            letter-spacing: 0.15em; text-transform: uppercase;
+            text-decoration: none; text-align: center;
+            transition: background 0.3s; border: none; cursor: pointer;
+            display: block;
+        }
+        .btn-consult:hover { background: var(--gold-light); }
+        .btn-retry {
+            padding: 14px 20px;
+            background: none;
+            border: 1px solid rgba(255,255,255,0.12);
+            color: var(--gray); font-size: 0.72rem;
+            cursor: pointer; transition: all 0.3s;
+            white-space: nowrap;
+        }
+        .btn-retry:hover { border-color: var(--white); color: var(--white); }
+
+        /* hidden */
+        .screen { display: none; }
+        .screen.active { display: flex; flex-direction: column; align-items: center; }
+
+        @media (max-width: 600px) {
+            nav { padding: 0 20px; }
+            .options-grid.col2 { grid-template-columns: 1fr; }
+            .mood-grid { grid-template-columns: repeat(2, 1fr); }
+            .result-actions { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="skopos_updated.html" class="nav-logo">SKOPOS</a>
+    <a href="skopos_updated.html" class="nav-back">← 홈으로</a>
+</nav>
+
+<div class="quiz-wrap">
+
+    <!-- INTRO -->
+    <div id="screen-intro" class="screen active">
+        <div class="intro-badge">✦ 취향저격 프로젝트</div>
+        <h1 class="intro-title">나의 공간 취향은<br><em>무엇일까요?</em></h1>
+        <p class="intro-desc">
+            색감, 소재, 분위기 — 3가지 질문으로<br>
+            당신의 공간 취향 유형을 진단해드립니다.
+        </p>
+        <div class="intro-meta">
+            <div class="intro-stat">
+                <div class="intro-stat-val">7</div>
+                <div class="intro-stat-label">Questions</div>
+            </div>
+            <div class="intro-stat">
+                <div class="intro-stat-val">90<span style="font-size:1rem">초</span></div>
+                <div class="intro-stat-label">소요 시간</div>
+            </div>
+            <div class="intro-stat">
+                <div class="intro-stat-val">6</div>
+                <div class="intro-stat-label">취향 유형</div>
+            </div>
+        </div>
+        <button class="btn-start" onclick="startQuiz()">진단 시작하기</button>
+    </div>
+
+    <!-- QUIZ -->
+    <div id="screen-quiz" class="screen">
+        <div class="progress-wrap">
+            <div class="progress-meta">
+                <span class="progress-label" id="progressLabel">질문 1 / 7</span>
+                <span class="progress-timer" id="timerDisplay">01:30</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+            </div>
+        </div>
+        <div class="q-card" id="qCard"></div>
+    </div>
+
+    <!-- RESULT -->
+    <div id="screen-result" class="screen"></div>
+
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// QUESTIONS DATA
+// ══════════════════════════════════════════
+const questions = [
+    {
+        id: 'color1',
+        category: '색감',
+        eyebrow: '01 — 색감',
+        title: '끌리는 <em>색의 온도</em>는?',
+        sub: '직관적으로 마음이 가는 쪽을 선택하세요.',
+        type: 'option',
+        cols: 2,
+        options: [
+            { swatch: '#f5f0ea', label: '따뜻한 화이트 & 베이지', desc: '크림, 오트밀, 샌드', tags: ['warm','soft'] },
+            { swatch: '#2c2c2c', label: '딥 다크 & 차콜', desc: '블랙, 그래파이트, 스모크', tags: ['dark','bold'] },
+            { swatch: '#d4c5b0', label: '내추럴 & 어스톤', desc: '테라코타, 머드, 그린', tags: ['natural','earthy'] },
+            { swatch: '#b8c4cc', label: '쿨 그레이 & 블루', desc: '슬레이트, 스틸, 아이스', tags: ['cool','minimal'] },
+        ]
+    },
+    {
+        id: 'color2',
+        category: '색감',
+        eyebrow: '02 — 색감',
+        title: '포인트 컬러로 <em>선택할 색</em>은?',
+        sub: '공간의 한 곳에 쓴다면 어떤 색이 좋을까요?',
+        type: 'option',
+        cols: 2,
+        options: [
+            { swatch: '#c9a96e', label: '골드 & 브라운', desc: '황동, 앰버, 캐러멜', tags: ['luxe','warm'] },
+            { swatch: '#4a6741', label: '포레스트 그린', desc: '올리브, 세이지, 모스', tags: ['natural','calm'] },
+            { swatch: '#7a6080', label: '모브 & 버건디', desc: '라벤더, 와인, 플럼', tags: ['artistic','bold'] },
+            { swatch: '#c0b090', label: '노 포인트 (무채색)', desc: '화이트, 그레이, 블랙만', tags: ['minimal','clean'] },
+        ]
+    },
+    {
+        id: 'material1',
+        category: '소재',
+        eyebrow: '03 — 소재',
+        title: '손으로 만지고 싶은 <em>소재</em>는?',
+        sub: '촉감과 질감, 본능적으로 당기는 소재를 고르세요.',
+        type: 'option',
+        cols: 2,
+        options: [
+            { swatch: '#8B6914', label: '원목 & 라탄', desc: '내추럴 우드, 대나무, 코르크', tags: ['natural','warm'] },
+            { swatch: '#a8a8a8', label: '콘크리트 & 철재', desc: '시멘트, 스틸, 블랙 프레임', tags: ['industrial','cool'] },
+            { swatch: '#e8dfd0', label: '린넨 & 면', desc: '패브릭, 코튼, 니트', tags: ['soft','cozy'] },
+            { swatch: '#d4d0cc', label: '마블 & 세라믹', desc: '대리석, 타일, 테라조', tags: ['luxe','clean'] },
+        ]
+    },
+    {
+        id: 'material2',
+        category: '소재',
+        eyebrow: '04 — 소재',
+        title: '공간의 <em>바닥 마감</em>으로 고른다면?',
+        sub: '발밑의 감촉과 분위기를 상상해보세요.',
+        type: 'option',
+        cols: 2,
+        options: [
+            { swatch: '#c8a882', label: '원목 마루', desc: '헤링본, 와이드플랭크, 오크', tags: ['warm','natural'] },
+            { swatch: '#b0b0b0', label: '폴리싱 콘크리트', desc: '에폭시, 마이크로시멘트', tags: ['modern','cool'] },
+            { swatch: '#e0d8ce', label: '대형 타일', desc: '포슬린, 테라조, 마블', tags: ['clean','luxe'] },
+            { swatch: '#7a6a5a', label: '카펫 & 러그', desc: '울, 비스코스, 패턴 러그', tags: ['cozy','artistic'] },
+        ]
+    },
+    {
+        id: 'mood1',
+        category: '분위기',
+        eyebrow: '05 — 분위기',
+        title: '집에서 <em>느끼고 싶은</em> 감정은?',
+        sub: '퇴근 후 문을 열고 들어올 때, 어떤 감정을 원하나요?',
+        type: 'mood',
+        options: [
+            { emoji: '🕯️', label: '고요한 휴식', desc: '호텔 같은 정갈함', tags: ['minimal','luxe'] },
+            { emoji: '🌿', label: '자연 속 쉼', desc: '숲에 온 듯한 편안함', tags: ['natural','calm'] },
+            { emoji: '🎨', label: '창의적 영감', desc: '예술가의 스튜디오', tags: ['artistic','bold'] },
+            { emoji: '☕', label: '따뜻한 아늑함', desc: '카페 같은 포근함', tags: ['cozy','warm'] },
+            { emoji: '✨', label: '세련된 자부심', desc: '갤러리 같은 격조', tags: ['luxe','cool'] },
+            { emoji: '🏄', label: '자유로운 활력', desc: '에너지 넘치는 공간', tags: ['bold','modern'] },
+        ]
+    },
+    {
+        id: 'mood2',
+        category: '분위기',
+        eyebrow: '06 — 분위기',
+        title: '주말 오전, 나의 <em>이상적인 루틴</em>은?',
+        sub: '이 공간에서 어떤 아침을 맞이하고 싶나요?',
+        type: 'option',
+        cols: 1,
+        options: [
+            { swatch: null, label: '커튼 사이로 햇살 들어오는 조용한 독서', desc: '자연광, 책장, 아늑한 소파', tags: ['calm','cozy','natural'] },
+            { swatch: null, label: '창가에 서서 마시는 핸드드립 커피', desc: '미니멀한 카운터, 뷰, 여백', tags: ['minimal','calm','cool'] },
+            { swatch: null, label: '넓은 테이블에서 작업하는 나만의 시간', desc: '작업 공간, 수납, 집중', tags: ['modern','bold','clean'] },
+            { swatch: null, label: '아이들과 바닥에 앉아 노는 아침', desc: '실용성, 안전, 따뜻함', tags: ['warm','cozy','natural'] },
+        ]
+    },
+    {
+        id: 'style',
+        category: '스타일',
+        eyebrow: '07 — 스타일',
+        title: '본능적으로 끌리는 <em>공간 키워드</em>는?',
+        sub: '마음이 가는 단어를 하나 골라주세요.',
+        type: 'option',
+        cols: 2,
+        options: [
+            { swatch: null, label: '🤍  Less is More', desc: '군더더기 없는 절제의 미학', tags: ['minimal','clean','cool'] },
+            { swatch: null, label: '🌱  Back to Nature', desc: '자연 그대로의 온기와 질감', tags: ['natural','warm','earthy'] },
+            { swatch: null, label: '🏛️  Timeless Luxury', desc: '시대를 초월하는 우아함', tags: ['luxe','calm','bold'] },
+            { swatch: null, label: '🎭  Curated Chaos', desc: '개성과 예술이 공존하는 감각', tags: ['artistic','bold','warm'] },
+        ]
+    },
+];
+
+// ══════════════════════════════════════════
+// RESULT TYPES
+// ══════════════════════════════════════════
+const resultTypes = [
+    {
+        id: 'minimal',
+        name: '모던 미니멀리스트',
+        nameEm: '모던 <em>미니멀리스트</em>',
+        desc: '당신의 공간은 조용하고 단호합니다. 불필요한 것은 없애고, 남은 것은 완벽해야 합니다. 여백이 곧 이야기가 되는 공간을 원합니다.',
+        keywords: ['화이트 & 그레이', '폴리싱 콘크리트', '직선과 여백', '금속 포인트', '자연광'],
+        service: 'Joy',
+        serviceAlt: 'Smile',
+        tags: ['minimal','clean','cool','modern'],
+    },
+    {
+        id: 'natural',
+        name: '내추럴 웜 큐레이터',
+        nameEm: '내추럴 <em>웜 큐레이터</em>',
+        desc: '자연의 온기가 스며든 공간을 꿈꿉니다. 원목의 결, 린넨의 촉감, 식물의 생기 — 손이 닿는 모든 곳에서 자연을 느끼고 싶습니다.',
+        keywords: ['어스톤 & 베이지', '원목 마루', '린넨 소재', '간접 조명', '그린 포인트'],
+        service: 'Happy',
+        serviceAlt: 'Joy',
+        tags: ['natural','warm','earthy','calm','cozy'],
+    },
+    {
+        id: 'luxe',
+        name: '럭셔리 클래식 에디터',
+        nameEm: '럭셔리 <em>클래식 에디터</em>',
+        desc: '공간이 품격을 말해야 한다고 믿습니다. 마감재 하나, 조명 하나에도 선택의 이유가 있어야 하는 당신. 공간은 삶의 수준을 반영합니다.',
+        keywords: ['마블 & 세라믹', '골드 황동', '헤링본 마루', '몰딩 & 크라운', '벨벳'],
+        service: 'Smile',
+        serviceAlt: 'Joy',
+        tags: ['luxe','bold','calm','clean'],
+    },
+    {
+        id: 'artistic',
+        name: '아티스틱 인디비주얼',
+        nameEm: '아티스틱 <em>인디비주얼</em>',
+        desc: '공간은 나의 세계관을 보여주는 캔버스입니다. 유행보다 취향, 정답보다 이야기. 당신의 공간은 누구도 흉내낼 수 없습니다.',
+        keywords: ['믹스 앤 매치', '빈티지 오브제', '패턴 러그', '모브 & 와인', '갤러리 월'],
+        service: 'Joy',
+        serviceAlt: 'Smile',
+        tags: ['artistic','bold','warm','cozy'],
+    },
+    {
+        id: 'modern',
+        name: '컨템포러리 모더니스트',
+        nameEm: '컨템포러리 <em>모더니스트</em>',
+        desc: '기능과 미학이 균형을 이루는 공간을 원합니다. 트렌드에 민감하지만 유행에 흔들리지 않는 당신만의 현대적 감각이 있습니다.',
+        keywords: ['콘크리트 & 스틸', '폴딩 & 슬라이딩', '간결한 수납', '블랙 프레임', '스마트홈'],
+        service: 'Happy',
+        serviceAlt: 'Joy',
+        tags: ['modern','cool','bold','clean'],
+    },
+    {
+        id: 'cozy',
+        name: '코지 웰니스 하우스',
+        nameEm: '코지 <em>웰니스 하우스</em>',
+        desc: '집은 세상에서 가장 편안한 곳이어야 합니다. 소파의 푹신함, 따뜻한 조명, 사랑하는 사람의 공간 — 행복은 집에서 시작됩니다.',
+        keywords: ['카펫 & 러그', '간접 조명', '따뜻한 목재', '쿠션 & 패브릭', '홈 카페 코너'],
+        service: 'Happy',
+        serviceAlt: 'Joy',
+        tags: ['cozy','warm','natural','calm'],
+    },
+];
+
+const serviceInfo = {
+    Happy: { sub: '셀프 / 반셀프', price: '150만원', desc: '행정 컨설팅 + 3D 설계로 직접 참여하며 완성하는 공간' },
+    Joy:   { sub: '반셀프 / 컨설팅', price: '350만원', desc: '전 과정 동행 감리 + A/S 포함, 가장 인기 있는 선택' },
+    Smile: { sub: '턴키', price: '별도 문의', desc: '처음부터 끝까지 맡기는 올인원, 3년 하자보증 포함' },
+};
+
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+let current = 0;
+let answers = {};   // { qId: [tag, tag, ...] }
+let timerInterval = null;
+let secondsLeft = 90;
+
+// ══════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════
+function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
+
+function startQuiz() {
+    current = 0;
+    answers = {};
+    secondsLeft = 90;
+    showScreen('screen-quiz');
+    renderQuestion();
+    startTimer();
+}
+
+function startTimer() {
+    clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+        secondsLeft--;
+        const m = Math.floor(secondsLeft / 60);
+        const s = secondsLeft % 60;
+        document.getElementById('timerDisplay').textContent =
+            `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+        if (secondsLeft <= 0) {
+            clearInterval(timerInterval);
+            showResult();
+        }
+    }, 1000);
+}
+
+// ══════════════════════════════════════════
+// RENDER QUESTION
+// ══════════════════════════════════════════
+function renderQuestion() {
+    const q = questions[current];
+    const pct = (current / questions.length) * 100;
+    document.getElementById('progressLabel').textContent = `질문 ${current + 1} / ${questions.length}`;
+    document.getElementById('progressFill').style.width = pct + '%';
+
+    const card = document.getElementById('qCard');
+    card.style.animation = 'none';
+    card.offsetHeight; // reflow
+    card.style.animation = '';
+
+    let optionsHTML = '';
+
+    if (q.type === 'mood') {
+        optionsHTML = `<div class="mood-grid">` +
+            q.options.map((o, i) => `
+                <div class="mood-opt" data-index="${i}" onclick="selectOpt(${i})">
+                    <div class="mood-emoji">${o.emoji}</div>
+                    <div class="mood-label">${o.label}</div>
+                    <div class="mood-sub">${o.desc}</div>
+                </div>
+            `).join('') +
+        `</div>`;
+    } else {
+        optionsHTML = `<div class="options-grid ${q.cols === 2 ? 'col2' : 'col1'}">` +
+            q.options.map((o, i) => `
+                <div class="opt" data-index="${i}" onclick="selectOpt(${i})">
+                    ${o.swatch ? `<div class="opt-swatch" style="background:${o.swatch}"></div>` : ''}
+                    <div class="opt-body">
+                        <div class="opt-label">${o.label}</div>
+                        <div class="opt-desc">${o.desc}</div>
+                    </div>
+                    <div class="opt-check">✓</div>
+                </div>
+            `).join('') +
+        `</div>`;
+    }
+
+    card.innerHTML = `
+        <p class="q-eyebrow">${q.eyebrow}</p>
+        <h2 class="q-title">${q.title}</h2>
+        <p class="q-sub">${q.sub}</p>
+        ${optionsHTML}
+        <div class="q-nav">
+            ${current > 0 ? `<button class="btn-prev" onclick="prevQ()">← 이전</button>` : ''}
+            <button class="btn-next" id="btnNext" onclick="nextQ()">
+                ${current === questions.length - 1 ? '결과 보기' : '다음 →'}
+            </button>
+        </div>
+    `;
+
+    // restore selection if exists
+    if (answers[q.id] !== undefined) {
+        const savedIdx = answers[q.id].idx;
+        const els = card.querySelectorAll('.opt, .mood-opt');
+        if (els[savedIdx]) els[savedIdx].classList.add('selected');
+        document.getElementById('btnNext').classList.add('active');
+    }
+}
+
+function selectOpt(idx) {
+    const q = questions[current];
+    const els = document.querySelectorAll('.opt, .mood-opt');
+    els.forEach(e => e.classList.remove('selected'));
+    els[idx].classList.add('selected');
+    answers[q.id] = { idx, tags: q.options[idx].tags };
+    document.getElementById('btnNext').classList.add('active');
+}
+
+function nextQ() {
+    if (!answers[questions[current].id]) return;
+    if (current < questions.length - 1) {
+        current++;
+        renderQuestion();
+    } else {
+        clearInterval(timerInterval);
+        showResult();
+    }
+}
+
+function prevQ() {
+    if (current > 0) { current--; renderQuestion(); }
+}
+
+// ══════════════════════════════════════════
+// COMPUTE RESULT
+// ══════════════════════════════════════════
+function computeResult() {
+    const tagCounts = {};
+    Object.values(answers).forEach(a => {
+        (a.tags || []).forEach(t => {
+            tagCounts[t] = (tagCounts[t] || 0) + 1;
+        });
+    });
+
+    let best = resultTypes[0], bestScore = -1;
+    resultTypes.forEach(rt => {
+        const score = rt.tags.reduce((sum, t) => sum + (tagCounts[t] || 0), 0);
+        if (score > bestScore) { bestScore = score; best = rt; }
+    });
+    return best;
+}
+
+// ══════════════════════════════════════════
+// SHOW RESULT
+// ══════════════════════════════════════════
+function showResult() {
+    const rt = computeResult();
+    const svc = serviceInfo[rt.service];
+    const svcAlt = serviceInfo[rt.serviceAlt];
+
+    const el = document.getElementById('screen-result');
+    el.innerHTML = `
+        <p class="result-tag">✦ 취향 진단 결과</p>
+        <h2 class="result-type">${rt.nameEm}</h2>
+        <p class="result-sub">${rt.desc}</p>
+        <div class="result-keywords">
+            ${rt.keywords.map(k => `<span class="kw-tag">${k}</span>`).join('')}
+        </div>
+        <div class="result-divider"></div>
+        <p class="result-service-label">추천 서비스</p>
+        <div class="service-rec best">
+            <span class="service-rec-badge">Best</span>
+            <div class="service-rec-body">
+                <div class="service-rec-name">${rt.service} 서비스 <span style="font-size:0.85rem;color:var(--gray)">— ${svc.sub} / ${svc.price}</span></div>
+                <div class="service-rec-desc">${svc.desc}</div>
+            </div>
+        </div>
+        <div class="service-rec">
+            <span class="service-rec-badge" style="background:transparent;border:1px solid rgba(201,169,110,0.4);color:var(--gold);">Alt</span>
+            <div class="service-rec-body">
+                <div class="service-rec-name">${rt.serviceAlt} 서비스 <span style="font-size:0.85rem;color:var(--gray)">— ${svcAlt.sub} / ${svcAlt.price}</span></div>
+                <div class="service-rec-desc">${svcAlt.desc}</div>
+            </div>
+        </div>
+        <div class="result-actions">
+            <a href="mailto:contact@skopos.kr?subject=취향진단 결과: ${rt.name}" class="btn-consult">상담 신청하기</a>
+            <button class="btn-retry" onclick="retryQuiz()">다시 하기</button>
+        </div>
+    `;
+
+    showScreen('screen-result');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function retryQuiz() {
+    showScreen('screen-intro');
+}
+</script>
+</body>
+</html>
