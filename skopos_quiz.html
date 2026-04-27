@@ -256,222 +256,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;justify-content
 
 <div class="toast" id="toast"></div>
 
-<script>
-// ═══════════════════════════════════════════════════════
-// 30 QUESTIONS — 6 sections × 5 questions
-// ═══════════════════════════════════════════════════════
-const SECS=[
-  {key:'safety', label:'안전 욕구', sub:'환경과 신체의 안전 신호 탐색'},
-  {key:'belong', label:'소속 욕구', sub:'연결과 공동체 욕구 측정'},
-  {key:'esteem', label:'인정 욕구', sub:'자존감과 사회적 위상 욕구'},
-  {key:'sensory',label:'감각 처리', sub:'뇌의 자극 민감도와 감각 성향'},
-  {key:'self',   label:'자아실현', sub:'성장과 창의, 자기표현 욕구'},
-  {key:'space',  label:'공간 직관', sub:'공간 본능과 미적 감수성'},
-];
 
-const QS=[
-// ── 안전 욕구 (5)
-{s:0,n:'편도체는 환경의 안전 신호를 끊임없이 스캔합니다',
- t:'집에 돌아왔을 때 가장 먼저 원하는 <em>감각</em>은?',
- o:[{i:'🕯️',l:'고요함과 어둠',d:'소음이 사라지고 공간이 나를 감싸는',g:{calm:3,safety:2}},
-    {i:'☀️',l:'밝음과 개방감',d:'탁 트인 시야와 빛이 주는 안도감',g:{open:3,energy:1}},
-    {i:'🪵',l:'따뜻한 질감',d:'나무, 패브릭 — 손에 닿는 온기',g:{natural:3,cozy:2}},
-    {i:'🧊',l:'정돈된 공백',d:'아무것도 없는 깨끗한 표면의 평온',g:{minimal:3,control:2}}]},
-{s:0,n:'전전두피질은 혼돈을 줄일수록 인지 부하를 낮춥니다',
- t:'물건이 조금 어지러울 때 나의 <em>반응</em>은?',
- o:[{i:'😌',l:'전혀 신경 쓰이지 않는다',d:'어지러움이 오히려 생동감 있어 보인다',g:{flow:3,artistic:1}},
-    {i:'🤔',l:'눈에 띄지만 괜찮다',d:'어느 정도의 혼재는 자연스럽다',g:{flow:2,cozy:1}},
-    {i:'😤',l:'은근히 불편하다',d:'어느 순간 정리하게 된다',g:{control:2,minimal:1}},
-    {i:'😰',l:'즉시 정리해야 한다',d:'정돈이 안 되면 집중이 안 된다',g:{control:3,minimal:2}}]},
-{s:0,n:'세로토닌은 예측 가능한 환경에서 더 많이 분비됩니다',
- t:'공간에서 가장 중요한 <em>안전 요소</em>는?',
- o:[{i:'🔒',l:'프라이버시 — 나만의 영역',d:'외부와 완전히 차단된 나만의 공간',g:{safety:3,solo:2}},
-    {i:'🌡️',l:'온도 — 항상 따뜻해야 한다',d:'차가운 공간은 긴장을 유발한다',g:{cozy:3,safety:2}},
-    {i:'💡',l:'조명 — 밝기를 조절할 수 있어야',d:'환경을 통제하는 안정감',g:{control:3,minimal:1}},
-    {i:'🤫',l:'소음 — 완벽한 방음',d:'외부 소리가 차단된 고요함',g:{calm:3,sensitive:2}}]},
-{s:0,n:'코르티솔은 불확실한 환경에서 급격히 증가합니다',
- t:'여행 중 숙소를 고를 때 가장 먼저 보는 것은?',
- o:[{i:'🛏️',l:'침구의 질감과 청결도',d:'몸이 닿는 곳의 안전함',g:{safety:2,cozy:2,natural:1}},
-    {i:'🏙️',l:'뷰와 채광',d:'공간의 개방감과 밝기',g:{open:3,energy:1}},
-    {i:'📐',l:'공간 구조와 레이아웃',d:'동선과 가구 배치의 합리성',g:{control:2,minimal:2}},
-    {i:'🤫',l:'주변 소음 수준',d:'얼마나 조용한가',g:{calm:3,sensitive:2}}]},
-{s:0,n:'기저핵은 반복적 루틴에서 안정감을 학습합니다',
- t:'하루를 시작할 때 공간에서 가장 필요한 것은?',
- o:[{i:'☕',l:'정해진 자리의 루틴 아이템',d:'같은 자리의 같은 머그컵',g:{control:2,cozy:2,safety:1}},
-    {i:'🌅',l:'아침 햇살이 드는 방향',d:'자연광으로 시작하는 하루',g:{natural:3,open:2}},
-    {i:'🧘',l:'아무것도 없는 고요한 공간',d:'비워진 곳에서 명상하듯 시작',g:{calm:3,minimal:2}},
-    {i:'🎵',l:'좋아하는 음악이 흐르는 공간',d:'감각적 자극으로 에너지 충전',g:{energy:3,artistic:1}}]},
-
-// ── 소속 욕구 (5)
-{s:1,n:'미러 뉴런은 공간 안 타인의 흔적에도 반응합니다',
- t:'이상적인 집은 몇 명을 위한 공간인가요?',
- o:[{i:'🪞',l:'오직 나만을 위한 공간',d:'고독이 곧 자유인 사람',g:{solo:3,control:2}},
-    {i:'👫',l:'둘만의 친밀한 공간',d:'선택된 한 사람과의 깊은 연결',g:{intimacy:3,cozy:1}},
-    {i:'👨‍👩‍👧',l:'가족이 함께하는 공간',d:'일상의 소음과 온기가 공존',g:{family:3,warmth:2}},
-    {i:'🎉',l:'언제든 열린 공간',d:'사람들이 자주 드나드는 활기',g:{social:3,energy:2}}]},
-{s:1,n:'옥시토신은 공유 공간의 설계 방식에 따라 달라집니다',
- t:'주방과 거실의 <em>이상적인 관계</em>는?',
- o:[{i:'🏠',l:'완전 분리된 독립 공간',d:'각자의 역할이 명확히 구분',g:{control:2,solo:1,minimal:1}},
-    {i:'🔗',l:'시각적으로 연결된 오픈 구조',d:'요리하면서도 대화가 이어지는 삶',g:{social:2,family:2,open:1}},
-    {i:'🌊',l:'경계 없이 흐르는 공간',d:'구분보다 흐름이 중요하다',g:{flow:3,natural:1,social:1}},
-    {i:'📺',l:'각자가 모일 수 있는 거점 공간',d:'함께 있지만 각자의 영역도 있는',g:{family:2,cozy:2}}]},
-{s:1,n:'사회적 지지 네트워크는 공간 설계로 강화됩니다',
- t:'손님이 왔을 때 가장 먼저 안내하고 싶은 공간은?',
- o:[{i:'🛋️',l:'여유로운 소파가 있는 거실',d:'편안하게 대화를 나누는 공간',g:{social:3,cozy:2,warmth:1}},
-    {i:'🍽️',l:'음식이 차려진 다이닝 테이블',d:'함께 먹고 마시는 공간',g:{family:3,warmth:2,social:1}},
-    {i:'🪴',l:'공들인 인테리어 포인트',d:'취향과 감각을 보여주는 공간',g:{esteem:2,identity:2,artistic:1}},
-    {i:'🌇',l:'뷰가 좋은 창가 자리',d:'풍경을 함께 바라보는 경험',g:{open:2,luxe:1,intimacy:2}}]},
-{s:1,n:'근접학(Proxemics) — 공간 거리감은 관계 밀도를 반영합니다',
- t:'집에서 가장 오랜 시간을 보내는 공간은?',
- o:[{i:'🛏️',l:'침실 — 가장 사적인 영역',d:'나만의 완전한 공간',g:{solo:3,calm:2,safety:1}},
-    {i:'📚',l:'서재 또는 작업 공간',d:'집중하고 창조하는 공간',g:{control:2,artistic:2,identity:1}},
-    {i:'🛋️',l:'거실 — 모두가 모이는 중심',d:'가족과 함께하는 일상',g:{family:3,social:2,warmth:1}},
-    {i:'🚿',l:'욕실 — 혼자만의 회복 공간',d:'가장 솔직하게 혼자인 공간',g:{solo:2,calm:3,safety:1}}]},
-{s:1,n:'공간의 다孔性은 관계의 유연성을 결정합니다',
- t:'가장 이상적인 <em>집의 현관</em> 분위기는?',
- o:[{i:'🌿',l:'자연 오브제로 따뜻하게',d:'들어서는 순간 안도감을 주는',g:{natural:3,warmth:2,cozy:1}},
-    {i:'🪞',l:'미니멀하고 깔끔하게',d:'정돈된 첫인상의 명료함',g:{minimal:3,control:2}},
-    {i:'🖼️',l:'아트 피스나 조명으로 인상적으로',d:'취향을 드러내는 첫 번째 공간',g:{artistic:2,esteem:2,identity:1}},
-    {i:'🏡',l:'가족 사진이나 추억 오브제로',d:'집에 온 것 같은 따뜻함',g:{family:3,warmth:2,cozy:1}}]},
-
-// ── 인정 욕구 (5)
-{s:2,n:'복측선조체는 타인의 긍정적 반응에서 도파민을 분비합니다',
- t:'손님이 집에 왔을 때 가장 <em>듣고 싶은</em> 말은?',
- o:[{i:'✨',l:'"어떻게 이렇게 정갈해요?"',d:'절제된 완성도에 대한 감탄',g:{minimal:2,control:2,esteem:2}},
-    {i:'🌿',l:'"진짜 나다운 공간이에요"',d:'개성과 취향의 일관성 인정',g:{identity:3,esteem:2}},
-    {i:'🏛️',l:'"고급스럽고 격이 달라요"',d:'품격과 수준에 대한 인정',g:{luxe:3,esteem:2}},
-    {i:'🎨',l:'"어디서 이런 감각이 나와요?"',d:'독창성과 예술적 감각에 대한 찬사',g:{artistic:3,identity:2}}]},
-{s:2,n:'자기 개념 일치 이론 — 공간은 자아상의 물리적 확장입니다',
- t:'공간이 전달해야 할 <em>단 하나의 메시지</em>는?',
- o:[{i:'🎯',l:'"나는 명확한 사람이다"',d:'군더더기 없는 결단력',g:{minimal:2,control:3}},
-    {i:'🌱',l:'"나는 감각 있는 사람이다"',d:'섬세한 취향과 안목',g:{identity:2,artistic:2,natural:1}},
-    {i:'💎',l:'"나는 품격 있는 사람이다"',d:'삶의 질에 투자하는 가치관',g:{luxe:3,esteem:1}},
-    {i:'🔥',l:'"나는 나만의 세계가 있다"',d:'누구도 흉내낼 수 없는 독창성',g:{artistic:3,identity:2}}]},
-{s:2,n:'자기표현 동기는 환경 투자 의향과 정비례합니다',
- t:'인테리어에서 가장 공들이고 싶은 공간은?',
- o:[{i:'🛋️',l:'거실 — 가장 많이 보이는 곳',d:'첫인상이자 삶의 중심 공간',g:{social:2,esteem:2,open:1}},
-    {i:'🛏️',l:'침실 — 가장 사적인 나만의 곳',d:'보이지 않아도 나를 위한 투자',g:{solo:2,identity:2,calm:1}},
-    {i:'🚿',l:'욕실 — 나만의 리추얼 공간',d:'호텔 같은 욕실에 대한 로망',g:{luxe:3,esteem:2,calm:1}},
-    {i:'🍳',l:'주방 — 삶의 퀄리티가 결정되는 곳',d:'요리하는 행위 자체의 즐거움',g:{family:2,artistic:1,natural:1}}]},
-{s:2,n:'자기효능감은 공간을 통한 자기 통제감으로 높아집니다',
- t:'공간을 꾸밀 때 가장 중요한 <em>판단 기준</em>은?',
- o:[{i:'❤️',l:'내 마음에 드는가',d:'취향과 감각이 최우선',g:{identity:3,artistic:1}},
-    {i:'👥',l:'다른 사람들이 좋아하는가',d:'공유와 인정이 동기가 된다',g:{esteem:2,social:2}},
-    {i:'⏳',l:'시간이 지나도 질리지 않는가',d:'트렌드보다 클래식',g:{luxe:2,control:2,minimal:1}},
-    {i:'💰',l:'비용 대비 가치가 높은가',d:'실용적이고 합리적인 선택',g:{control:2,family:1}}]},
-{s:2,n:'소비 가치 이론 — 공간 투자는 자기 존중의 표현입니다',
- t:'공간에 가장 기꺼이 투자하고 싶은 항목은?',
- o:[{i:'💡',l:'조명 — 분위기를 바꾸는 빛',d:'조명 하나로 공간이 달라진다',g:{luxe:2,artistic:2,calm:1}},
-    {i:'🪑',l:'가구 — 오래 쓸 좋은 가구',d:'품질 좋은 가구 하나로 완성',g:{luxe:3,control:1,esteem:1}},
-    {i:'🌿',l:'식물과 자연 오브제',d:'생명이 있는 공간의 생동감',g:{natural:3,cozy:2}},
-    {i:'🖼️',l:'아트 또는 오브제',d:'공간의 개성을 만드는 작품',g:{artistic:3,identity:2,esteem:1}}]},
-
-// ── 감각 처리 (5)
-{s:3,n:'HSP(고감각처리) 성향은 공간 자극 민감도를 결정합니다',
- t:'외부 공간에서 얼마나 <em>오래</em> 편안함을 느끼나요?',
- o:[{i:'⚡',l:'30분 이내에 피로해진다',d:'자극이 빠르게 쌓인다',g:{sensitive:3,calm:2,solo:1}},
-    {i:'⏰',l:'1~2시간이 적당하다',d:'적당한 자극 후 회복이 필요',g:{sensitive:2,calm:1}},
-    {i:'🕐',l:'2~3시간도 괜찮다',d:'환경에 잘 적응하는 편',g:{social:1,energy:1}},
-    {i:'🌟',l:'종일 있어도 괜찮다',d:'외부 자극이 에너지가 된다',g:{social:3,energy:3}}]},
-{s:3,n:'편측화 이론 — 좌뇌 우세형은 구조, 우뇌 우세형은 감성을 선호합니다',
- t:'공간에 들어설 때 가장 먼저 <em>감지하는</em> 것은?',
- o:[{i:'📐',l:'전체 구조와 비율',d:'형태, 선, 구획이 먼저 보인다',g:{minimal:2,control:2}},
-    {i:'🎨',l:'색감과 소재의 조화',d:'컬러 팔레트와 질감이 먼저',g:{artistic:2,identity:1,natural:1}},
-    {i:'💡',l:'빛의 방향과 밀도',d:'채광과 그림자가 만드는 분위기',g:{sensitive:2,calm:2,luxe:1}},
-    {i:'🌡️',l:'공간의 온도와 냄새',d:'후각과 피부 감각이 먼저 반응',g:{natural:2,cozy:2,sensitive:1}}]},
-{s:3,n:'배경 소음 선호는 각성 수준과 인지 스타일에 따라 다릅니다',
- t:'집에서 혼자 있을 때 선호하는 <em>배경</em>은?',
- o:[{i:'🔇',l:'완전한 침묵',d:'소리 없는 공간이 가장 편안',g:{sensitive:3,calm:3,minimal:1}},
-    {i:'🎵',l:'재즈 또는 앰비언트',d:'섬세한 사운드로 채우는 공간',g:{artistic:2,calm:2,identity:1}},
-    {i:'📺',l:'영상 또는 팟캐스트',d:'배경 소음이 오히려 집중을 돕는다',g:{social:1,flow:2,cozy:1}},
-    {i:'🌧️',l:'자연 소리 — 빗소리·파도',d:'자연의 리듬이 뇌를 안정시킨다',g:{natural:3,calm:2,sensitive:1}}]},
-{s:3,n:'감각 통합 이론 — 공간은 다감각 경험의 총체입니다',
- t:'공간에서 가장 중요한 <em>감각 요소</em>는?',
- o:[{i:'👁️',l:'시각 — 아름다운 형태와 색',d:'눈이 즐거운 공간',g:{artistic:2,luxe:1,esteem:1}},
-    {i:'👂',l:'청각 — 소리의 울림과 방음',d:'소리 환경이 먼저',g:{sensitive:3,calm:2}},
-    {i:'✋',l:'촉각 — 소재의 질감',d:'손에 닿는 모든 것의 품질',g:{natural:2,luxe:2,cozy:1}},
-    {i:'👃',l:'후각 — 공간의 냄새와 향',d:'좋은 향기가 있는 공간',g:{cozy:2,natural:2,calm:1}}]},
-{s:3,n:'색채 심리학 — 색온도는 자율신경계에 직접 작용합니다',
- t:'가장 편안하게 느껴지는 <em>색의 온도</em>는?',
- o:[{i:'🤍',l:'차갑고 중성적인 톤',d:'화이트, 그레이, 쿨 블루',g:{minimal:3,control:2,calm:1}},
-    {i:'🤎',l:'따뜻하고 어두운 어스톤',d:'베이지, 브라운, 테라코타',g:{natural:3,cozy:2,warmth:1}},
-    {i:'🖤',l:'깊고 강렬한 다크톤',d:'차콜, 블랙, 딥 그린',g:{luxe:2,artistic:2,calm:1}},
-    {i:'🌈',l:'포인트 컬러가 있는 조합',d:'하나의 강렬한 색이 공간을 정의',g:{artistic:3,identity:2,energy:1}}]},
-
-// ── 자아실현 (5)
-{s:4,n:'디폴트 모드 네트워크는 창의적 사고와 자기 성찰을 관장합니다',
- t:'10년 후 당신의 공간에서 <em>일어나고 있는 일</em>은?',
- o:[{i:'📖',l:'혼자 책을 읽고 사유하는 아침',d:'고독 속 자기 성찰의 공간',g:{calm:3,solo:2,minimal:2,identity:1}},
-    {i:'🍽️',l:'사랑하는 사람들과의 저녁',d:'음식과 대화가 가득한 테이블',g:{family:3,warmth:3,cozy:2,social:1}},
-    {i:'🖌️',l:'무언가를 만들고 창조하는 공간',d:'작업, 요리, 글쓰기의 기쁨',g:{artistic:3,identity:2,energy:2}},
-    {i:'🌅',l:'루틴과 리추얼로 시작하는 하루',d:'규칙적이고 의미 있는 삶',g:{natural:2,calm:3,luxe:1,flow:2}}]},
-{s:4,n:'자기결정이론 — 자율성·유능감·관계성이 내재 동기를 구성합니다',
- t:'공간을 바꿀 때 가장 중요한 <em>동기</em>는?',
- o:[{i:'💫',l:'기분과 감정이 바뀌고 싶어서',d:'공간이 마음을 바꿔줬으면 한다',g:{identity:2,calm:2,artistic:1}},
-    {i:'🚀',l:'더 생산적이고 싶어서',d:'환경이 성과를 만든다',g:{control:3,energy:2,minimal:1}},
-    {i:'🌱',l:'더 나다운 공간을 원해서',d:'공간이 나를 표현해주길 바란다',g:{identity:3,artistic:1}},
-    {i:'❤️',l:'가족 또는 함께 사는 사람을 위해',d:'공유하는 삶의 질을 높이고 싶다',g:{family:3,warmth:2,social:1}}]},
-{s:4,n:'환경 풍요화(Environmental Enrichment)는 뇌 가소성을 높입니다',
- t:'공간에서 <em>성장</em>한다는 것은 무엇인가요?',
- o:[{i:'📚',l:'새로운 것을 배우고 탐구하는 것',d:'서재, 작업 공간의 확장',g:{artistic:2,identity:2,energy:1}},
-    {i:'🧘',l:'내면과 깊이 연결되는 것',d:'명상, 사유, 자기 성찰',g:{calm:3,solo:2,minimal:1}},
-    {i:'🌿',l:'자연과 생명을 가꾸는 것',d:'식물, 빛, 계절의 변화',g:{natural:3,cozy:1,flow:2}},
-    {i:'🤝',l:'소중한 관계를 깊게 하는 것',d:'함께하는 시간의 질을 높이는 것',g:{family:2,warmth:3,social:2}}]},
-{s:4,n:'흐름(Flow) 이론 — 최적 경험은 도전과 능력이 일치할 때 발생합니다',
- t:'이 공간에서 가장 원하는 <em>경험</em>은?',
- o:[{i:'🎭',l:'몰입 — 시간이 가는 줄 모르는 상태',d:'작업이나 취미에 완전히 빠지는',g:{artistic:3,identity:2,energy:1}},
-    {i:'☮️',l:'회복 — 완전히 쉬는 상태',d:'아무 생각 없이 비워지는',g:{calm:3,safety:2,sensitive:1}},
-    {i:'🌟',l:'영감 — 새로운 아이디어가 떠오르는',d:'창의적 에너지가 흐르는 공간',g:{artistic:2,open:2,energy:2}},
-    {i:'🏡',l:'일상 — 평온한 루틴이 반복되는',d:'예측 가능하고 안정적인 삶',g:{safety:2,family:2,cozy:2}}]},
-{s:4,n:'매슬로우의 존재 욕구 — 자아초월은 일상의 공간에서 시작됩니다',
- t:'공간이 당신의 <em>삶을 바꿀 수 있다</em>고 생각하나요?',
- o:[{i:'💯',l:'완전히 그렇다',d:'공간이 사람을 만든다',g:{identity:3,esteem:2,luxe:1}},
-    {i:'🤔',l:'어느 정도는 그렇다',d:'환경이 영향을 주지만 사람이 더 중요',g:{identity:1,control:1}},
-    {i:'🌱',l:'서서히 그렇게 될 것 같다',d:'공간과 삶이 함께 성장한다',g:{natural:2,flow:2,calm:1}},
-    {i:'✨',l:'이미 경험했다',d:'공간이 달라지자 삶이 달라졌다',g:{identity:2,luxe:2,esteem:2}}]},
-
-// ── 공간 직관 (5)
-{s:5,n:'환경 심리학 — 공간 선호는 진화적 본능과 문화적 학습의 합성입니다',
- t:'아무 조건 없이 살고 싶은 <em>공간 유형</em>은?',
- o:[{i:'🏙️',l:'도심의 모던 아파트',d:'편리함과 세련됨의 중심',g:{minimal:2,luxe:2,control:1}},
-    {i:'🌲',l:'자연 속 독립 주택',d:'자연과 함께하는 삶',g:{natural:3,solo:2,calm:2}},
-    {i:'🏛️',l:'역사적 건물의 리노베이션',d:'시간의 레이어가 담긴 공간',g:{artistic:3,luxe:2,identity:2}},
-    {i:'🌊',l:'뷰가 압도적인 공간',d:'자연의 장대함을 매일 마주하는',g:{open:3,energy:2,luxe:1}}]},
-{s:5,n:'게슈탈트 이론 — 공간은 부분의 합이 아닌 전체로 경험됩니다',
- t:'가장 끌리는 <em>공간 키워드</em>는?',
- o:[{i:'🤍',l:'Less is More',d:'군더더기 없는 절제의 미학',g:{minimal:3,clean:2,control:1}},
-    {i:'🌱',l:'Back to Nature',d:'자연 그대로의 온기와 질감',g:{natural:3,warm:2,earthy:1}},
-    {i:'🏛️',l:'Timeless Luxury',d:'시대를 초월하는 우아함',g:{luxe:3,calm:2,esteem:1}},
-    {i:'🎭',l:'Curated Chaos',d:'개성과 예술이 공존하는 감각',g:{artistic:3,identity:2,energy:1}}]},
-{s:5,n:'신경미학 — 아름다움을 처리하는 뇌 영역은 보상 회로와 연결됩니다',
- t:'공간에서 <em>아름답다</em>고 느끼는 순간은?',
- o:[{i:'🌅',l:'빛이 소재에 닿는 순간',d:'그림자와 빛의 대비',g:{sensitive:2,luxe:2,calm:1}},
-    {i:'🔁',l:'모든 것이 딱 맞아 떨어지는 순간',d:'완벽한 비례와 질서',g:{minimal:3,control:2}},
-    {i:'🌿',l:'자연 소재가 숨 쉬는 듯한 순간',d:'살아있는 질감의 생동감',g:{natural:3,cozy:2,sensitive:1}},
-    {i:'✨',l:'예상치 못한 디테일을 발견하는 순간',d:'숨겨진 아름다움의 발견',g:{artistic:3,identity:2}}]},
-{s:5,n:'공간 기억 이론 — 장소는 감정 기억과 함께 저장됩니다',
- t:'가장 기억에 남는 <em>공간의 감각</em>은?',
- o:[{i:'☀️',l:'빛이 가득했던 공간',d:'창문으로 쏟아지던 햇살',g:{open:3,energy:2,natural:1}},
-    {i:'🪵',l:'나무 향이 났던 공간',d:'원목 가구나 마루의 온기',g:{natural:3,cozy:2,warmth:1}},
-    {i:'🌊',l:'고요하게 조용했던 공간',d:'바깥 소리가 전혀 들리지 않던',g:{calm:3,sensitive:2,solo:1}},
-    {i:'🕯️',l:'어둑하게 따뜻했던 공간',d:'간접 조명으로 가득했던',g:{cozy:3,luxe:2,calm:2}}]},
-{s:5,n:'환경 정체성 이론 — 공간은 자아 개념의 물리적 상징입니다',
- t:'당신의 공간이 <em>절대 있어선 안 되는</em> 것은?',
- o:[{i:'📦',l:'정리되지 않은 물건들',d:'혼돈은 나를 지치게 한다',g:{control:3,minimal:2}},
-    {i:'🌑',l:'어둡고 빛이 없는 공간',d:'채광은 생명이다',g:{open:3,energy:2,natural:1}},
-    {i:'🌡️',l:'차갑고 딱딱한 소재',d:'따뜻함이 없는 공간은 숨막힌다',g:{cozy:3,natural:2,warmth:1}},
-    {i:'🎪',l:'개성 없는 획일적인 공간',d:'나를 표현하지 못하는 공간',g:{artistic:3,identity:3}}]},
-];
-
-// ═══════════════════════════════════════════════════════
-// 24 RESULT TYPES (6 대유형 × 4 세부유형) + SVG 캐릭터
-// ═══════════════════════════════════════════════════════
-
-// SVG 캐릭터 생성 함수
-function makeSVG(id){
-  const svgs={
-    // ── 안식처 계열 (sanctuary)
-    's_deep':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+<!-- SVG Characters (separated from script to avoid HTML parser issues) -->
+<div id="svg-store" style="display:none">
+  <div id="svg-s_deep"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
       <defs><radialGradient id="bg1" cx="50%" cy="50%"><stop offset="0%" stop-color="#1a1a2e"/><stop offset="100%" stop-color="#0c0c1a"/></radialGradient></defs>
       <circle cx="60" cy="60" r="58" fill="url(#bg1)"/>
       <!-- 달 -->
@@ -499,9 +287,8 @@ function makeSVG(id){
       <path d="M38 95 Q60 88 82 95 L85 128 Q60 132 35 128Z" fill="#3a3a5e" opacity="0.9"/>
       <path d="M38 95 Q60 88 82 95" stroke="#c9a96e" stroke-width="1" fill="none" opacity="0.5"/>
       <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">고요한 밤</text>
-    </svg>`,
-
-    's_calm':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+    </svg></div>
+  <div id="svg-s_calm"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
       <circle cx="60" cy="60" r="58" fill="#0f1520"/>
       <!-- 창문 프레임 -->
       <rect x="20" y="20" width="80" height="60" rx="4" fill="#1a2535" stroke="#c9a96e" stroke-width="0.8" opacity="0.6"/>
@@ -522,9 +309,8 @@ function makeSVG(id){
       <path d="M55 110 Q53 106 55 103" stroke="#c9a96e" stroke-width="0.8" fill="none" opacity="0.4"/>
       <path d="M60 109 Q58 105 60 102" stroke="#c9a96e" stroke-width="0.8" fill="none" opacity="0.3"/>
       <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">새벽의 고요</text>
-    </svg>`,
-
-    's_zen':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+    </svg></div>
+  <div id="svg-s_zen"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
       <circle cx="60" cy="60" r="58" fill="#12100e"/>
       <!-- 명상 방석 -->
       <ellipse cx="60" cy="115" rx="30" ry="8" fill="#3a2a1a"/>
@@ -547,9 +333,8 @@ function makeSVG(id){
       <ellipse cx="46" cy="100" rx="6" ry="4" fill="#d4a574" opacity="0.8"/>
       <ellipse cx="74" cy="100" rx="6" ry="4" fill="#d4a574" opacity="0.8"/>
       <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">내면의 정적</text>
-    </svg>`,
-
-    's_mono':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+    </svg></div>
+  <div id="svg-s_mono"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
       <circle cx="60" cy="60" r="58" fill="#0e0e0e"/>
       <!-- 미니멀 라인들 -->
       <line x1="20" y1="35" x2="100" y2="35" stroke="#c9a96e" stroke-width="0.4" opacity="0.3"/>
@@ -572,10 +357,8 @@ function makeSVG(id){
       <rect x="50" y="88" width="20" height="10" rx="0" fill="#1a1a1a"/>
       <rect x="53" y="85" width="14" height="6" rx="1" fill="#2a2a2a"/>
       <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">절제의 미학</text>
-    </svg>`,
-
-    // ── 내추럴 계열 (nature)
-    'n_forest':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+    </svg></div>
+  <div id="svg-n_forest"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
       <circle cx="60" cy="60" r="58" fill="#0d1a0d"/>
       <!-- 나무들 배경 -->
       <rect x="15" y="50" width="8" height="40" fill="#1a2e1a" opacity="0.7"/>
@@ -605,9 +388,8 @@ function makeSVG(id){
       <path d="M40 100 Q35 92 40 88 Q45 84 42 92" fill="#2d5a2d"/>
       <path d="M40 100 Q45 90 50 92 Q52 86 44 90" fill="#3a7a3a" opacity="0.8"/>
       <text x="60" y="138" text-anchor="middle" font-size="8" fill="#6ab06a" opacity="0.8" font-family="serif">숲의 친구</text>
-    </svg>`,
-
-    'n_earth':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+    </svg></div>
+  <div id="svg-n_earth"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
       <circle cx="60" cy="60" r="58" fill="#1a1208"/>
       <!-- 흙 텍스처 배경 -->
       <ellipse cx="60" cy="120" rx="50" ry="12" fill="#2a1e0e" opacity="0.8"/>
@@ -636,9 +418,8 @@ function makeSVG(id){
       <path d="M80 106 Q76 98 80 93 Q84 90 82 98" fill="#3a6a3a"/>
       <path d="M80 106 Q84 96 88 98" fill="#4a8a4a" opacity="0.8"/>
       <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">대지의 감성</text>
-    </svg>`,
-
-    'n_breeze':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+    </svg></div>
+  <div id="svg-n_breeze"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
       <circle cx="60" cy="60" r="58" fill="#0e1a14"/>
       <!-- 바람 곡선 -->
       <path d="M10 40 Q40 30 70 40 Q90 45 110 35" stroke="#4a9a6a" stroke-width="0.8" fill="none" opacity="0.4"/>
@@ -664,9 +445,8 @@ function makeSVG(id){
       <!-- 스카프 (자연색) -->
       <path d="M44 92 Q60 88 76 92 Q80 98 60 96 Q40 98 44 92" fill="#4a7a5a"/>
       <text x="60" y="138" text-anchor="middle" font-size="8" fill="#6ab06a" opacity="0.8" font-family="serif">바람의 결</text>
-    </svg>`,
-
-    'n_garden':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+    </svg></div>
+  <div id="svg-n_garden"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
       <circle cx="60" cy="60" r="58" fill="#0d180d"/>
       <!-- 정원 바닥 -->
       <ellipse cx="60" cy="122" rx="48" ry="10" fill="#1a2e1a"/>
@@ -699,10 +479,8 @@ function makeSVG(id){
       <line x1="93" y1="104" x2="96" y2="107" stroke="#6aaecc" stroke-width="0.8" opacity="0.6"/>
       <line x1="94" y1="106" x2="97" y2="110" stroke="#6aaecc" stroke-width="0.8" opacity="0.5"/>
       <text x="60" y="138" text-anchor="middle" font-size="8" fill="#6ab06a" opacity="0.8" font-family="serif">정원사의 손길</text>
-    </svg>`,
-
-    // ── 럭셔리 계열 (luxe)
-    'l_royal':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+    </svg></div>
+  <div id="svg-l_royal"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
       <defs><linearGradient id="lg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#1a1208"/><stop offset="100%" stop-color="#0c0c0c"/></linearGradient></defs>
       <circle cx="60" cy="60" r="58" fill="url(#lg1)"/>
       <!-- 왕관 -->
@@ -730,9 +508,8 @@ function makeSVG(id){
       <circle cx="63" cy="85.5" r="1.5" fill="#e8e0d0"/>
       <circle cx="68" cy="87" r="1.5" fill="#e8e0d0"/>
       <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.8" font-family="serif">로열 에디터</text>
-    </svg>`,
-
-    'l_gallery':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+    </svg></div>
+  <div id="svg-l_gallery"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
       <circle cx="60" cy="60" r="58" fill="#0e0e0e"/>
       <!-- 갤러리 벽 프레임들 -->
       <rect x="10" y="25" width="22" height="18" rx="1" fill="none" stroke="#c9a96e" stroke-width="0.6" opacity="0.4"/>
@@ -761,9 +538,8 @@ function makeSVG(id){
       <circle cx="44" cy="108" r="2" fill="#6a6aaa"/>
       <circle cx="37" cy="112" r="2" fill="#aa6a6a"/>
       <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.8" font-family="serif">갤러리스트</text>
-    </svg>`,
-
-    'l_classic':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+    </svg></div>
+  <div id="svg-l_classic"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
       <circle cx="60" cy="60" r="58" fill="#0c0c0a"/>
       <!-- 대리석 패턴 -->
       <path d="M0 80 Q30 70 60 80 Q90 90 120 80" stroke="#c9a96e" stroke-width="0.3" fill="none" opacity="0.15"/>
@@ -789,9 +565,8 @@ function makeSVG(id){
       <path d="M68 92 L64 110" stroke="#c9a96e" stroke-width="0.5" opacity="0.6"/>
       <rect x="57" y="92" width="6" height="2" rx="1" fill="#c9a96e" opacity="0.7"/>
       <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.8" font-family="serif">클래식 에디터</text>
-    </svg>`,
-
-    'l_luxe':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+    </svg></div>
+  <div id="svg-l_luxe"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
       <defs><radialGradient id="lg2"><stop offset="0%" stop-color="#1a1408"/><stop offset="100%" stop-color="#0a0a08"/></radialGradient></defs>
       <circle cx="60" cy="60" r="58" fill="url(#lg2)"/>
       <!-- 황금 장식 -->
@@ -825,10 +600,8 @@ function makeSVG(id){
       <path d="M40 90 Q60 84 80 90 L85 130 Q60 134 35 130Z" fill="#1a1408"/>
       <path d="M40 90 Q60 84 80 90" stroke="#c9a96e" stroke-width="0.6" fill="none" opacity="0.5"/>
       <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.8" font-family="serif">럭스 큐레이터</text>
-    </svg>`,
-
-    // ── 아티스틱 계열 (artistic)
-    'a_wild':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+    </svg></div>
+  <div id="svg-a_wild"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
       <circle cx="60" cy="60" r="58" fill="#0e080e"/>
       <!-- 물감 튀김 -->
       <circle cx="20" cy="30" r="4" fill="#8a3a8a" opacity="0.6"/>
@@ -861,9 +634,8 @@ function makeSVG(id){
       <circle cx="35" cy="108" r="1.5" fill="#3a8a3a" opacity="0.6"/>
       <circle cx="41" cy="107" r="1.5" fill="#c9a96e" opacity="0.7"/>
       <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.8" font-family="serif">야생의 예술가</text>
-    </svg>`,
-
-    'a_indie':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+    </svg></div>
+  <div id="svg-a_indie"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
       <circle cx="60" cy="60" r="58" fill="#080810"/>
       <!-- 기하학 패턴 -->
       <polygon points="20,20 35,20 27.5,33" fill="none" stroke="#c9a96e" stroke-width="0.5" opacity="0.3"/>
@@ -889,9 +661,8 @@ function makeSVG(id){
       <line x1="50" y1="90" x2="50" y2="126" stroke="#c9a96e" stroke-width="0.4" opacity="0.4"/>
       <line x1="70" y1="90" x2="70" y2="126" stroke="#c9a96e" stroke-width="0.4" opacity="0.4"/>
       <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.8" font-family="serif">인디 아티스트</text>
-    </svg>`,
-
-    'a_vintage':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+    </svg></div>
+  <div id="svg-a_vintage"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
       <circle cx="60" cy="60" r="58" fill="#0e0a06"/>
       <!-- 빈티지 프레임 -->
       <rect x="8" y="8" width="104" height="104" rx="4" fill="none" stroke="#c9a96e" stroke-width="0.4" opacity="0.2"/>
@@ -919,9 +690,8 @@ function makeSVG(id){
       <circle cx="60" cy="106" r="3" fill="#c9a96e" opacity="0.5"/>
       <circle cx="60" cy="114" r="3" fill="#c9a96e" opacity="0.4"/>
       <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.8" font-family="serif">빈티지 소울</text>
-    </svg>`,
-
-    'a_eccentric':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+    </svg></div>
+  <div id="svg-a_eccentric"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
       <circle cx="60" cy="60" r="58" fill="#0a080e"/>
       <!-- 별자리 같은 패턴 -->
       <circle cx="22" cy="22" r="1.5" fill="#c9a96e" opacity="0.5"/>
@@ -939,8 +709,7 @@ function makeSVG(id){
       <circle cx="60" cy="76" r="15" fill="#c89a7a"/>
       <!-- 눈 (한쪽 다름) -->
       <circle cx="55" cy="74" r="3" fill="#1a0a1a"/>
-      <star cx="65" cy="74"/>
-      <polygon points="65,70 66.2,73 69.5,73 66.9,75 67.9,78.3 65,76.5 62.1,78.3 63.1,75 60.5,73 63.8,73" fill="#1a0a1a" transform="scale(0.55) translate(63,80)"/>
+      <polygon points="65,70 66.2,73.2 69.7,73.2 67,75.2 68,78.5 65,76.5 62,78.5 63,75.2 60.3,73.2 63.8,73.2" fill="#1a0a1a"/>
       <circle cx="55.8" cy="73" r="0.8" fill="white"/>
       <ellipse cx="50" cy="78" rx="3" ry="2" fill="#c8625e" opacity="0.5"/>
       <ellipse cx="70" cy="78" rx="3" ry="2" fill="#c8625e" opacity="0.5"/>
@@ -951,10 +720,8 @@ function makeSVG(id){
       <circle cx="65" cy="95" r="2" fill="#8a4a9a" opacity="0.6"/>
       <circle cx="60" cy="103" r="2" fill="#4a8a4a" opacity="0.5"/>
       <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.8" font-family="serif">에클레틱 소울</text>
-    </svg>`,
-
-    // ── 미니멀 계열 (minimal)
-    'm_pure':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+    </svg></div>
+  <div id="svg-m_pure"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
       <circle cx="60" cy="60" r="58" fill="#0a0a0a"/>
       <!-- 수평선 하나 -->
       <line x1="15" y1="95" x2="105" y2="95" stroke="#c9a96e" stroke-width="0.4" opacity="0.2"/>
@@ -974,9 +741,8 @@ function makeSVG(id){
       <path d="M44 90 Q60 84 76 90 L78 128 Q60 132 42 128Z" fill="#e8e0d0"/>
       <line x1="60" y1="90" x2="60" y2="128" stroke="#d0c8b8" stroke-width="0.5"/>
       <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">순수 미니멀</text>
-    </svg>`,
-
-    'm_grid':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+    </svg></div>
+  <div id="svg-m_grid"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
       <circle cx="60" cy="60" r="58" fill="#080808"/>
       <!-- 그리드 -->
       <line x1="40" y1="10" x2="40" y2="110" stroke="#c9a96e" stroke-width="0.3" opacity="0.12"/>
@@ -996,9 +762,8 @@ function makeSVG(id){
       <rect x="44" y="56" width="32" height="10" rx="0" fill="#0a0a0a"/>
       <rect x="46" y="52" width="28" height="8" rx="1" fill="#141414"/>
       <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">그리드 마스터</text>
-    </svg>`,
-
-    'm_mono':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+    </svg></div>
+  <div id="svg-m_mono"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
       <circle cx="60" cy="60" r="58" fill="#0a0a08"/>
       <!-- 황금 비율 곡선 -->
       <path d="M15 60 Q40 20 85 60 Q110 80 85 100" stroke="#c9a96e" stroke-width="0.4" fill="none" opacity="0.15"/>
@@ -1021,9 +786,8 @@ function makeSVG(id){
       <!-- 코트 -->
       <path d="M40 93 Q60 87 80 93 L82 128 Q60 132 38 128Z" fill="#101008"/>
       <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">모노크롬</text>
-    </svg>`,
-
-    'm_line':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+    </svg></div>
+  <div id="svg-m_line"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
       <circle cx="60" cy="60" r="58" fill="#060606"/>
       <!-- 수직선들 -->
       <line x1="30" y1="10" x2="30" y2="115" stroke="#c9a96e" stroke-width="0.3" opacity="0.1"/>
@@ -1043,10 +807,8 @@ function makeSVG(id){
       <path d="M45 68 Q45 78 46 86" stroke="#0a0a0a" stroke-width="2" fill="none" stroke-linecap="round"/>
       <path d="M75 68 Q75 78 74 86" stroke="#0a0a0a" stroke-width="2" fill="none" stroke-linecap="round"/>
       <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">라인 아키텍트</text>
-    </svg>`,
-
-    // ── 코지 계열 (cozy)
-    'c_hearth':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+    </svg></div>
+  <div id="svg-c_hearth"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
       <circle cx="60" cy="60" r="58" fill="#0e0a06"/>
       <!-- 벽난로 -->
       <rect x="15" y="85" width="30" height="28" rx="2" fill="#2a1a0a"/>
@@ -1076,9 +838,8 @@ function makeSVG(id){
       <path d="M50 94 Q70 88 90 94 L92 128 Q70 132 48 128Z" fill="#4a3020"/>
       <path d="M54 94 Q70 90 86 94" stroke="#c9a96e" stroke-width="0.5" fill="none" opacity="0.4"/>
       <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">따뜻한 불가</text>
-    </svg>`,
-
-    'c_family':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+    </svg></div>
+  <div id="svg-c_family"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
       <circle cx="60" cy="60" r="58" fill="#0c0a06"/>
       <!-- 집 모양 -->
       <polygon points="60,18 90,38 90,65 30,65 30,38" fill="#2a1e10" opacity="0.5"/>
@@ -1104,9 +865,8 @@ function makeSVG(id){
       <line x1="64" y1="110" x2="64" y2="110" stroke="#c8956a" stroke-width="2"/>
       <ellipse cx="63" cy="110" rx="4" ry="3" fill="#c8956a" opacity="0.7"/>
       <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">함께하는 온기</text>
-    </svg>`,
-
-    'c_blanket':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+    </svg></div>
+  <div id="svg-c_blanket"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
       <circle cx="60" cy="60" r="58" fill="#0c0808"/>
       <!-- 소파 -->
       <rect x="15" y="95" width="90" height="28" rx="4" fill="#2a1810"/>
@@ -1134,9 +894,8 @@ function makeSVG(id){
       <rect x="78" y="86" width="14" height="12" rx="2" fill="#3a2010"/>
       <path d="M81 86 Q85 82 89 86" stroke="#c9a96e" stroke-width="1" fill="none" opacity="0.5"/>
       <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">담요의 온도</text>
-    </svg>`,
-
-    'c_routine':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+    </svg></div>
+  <div id="svg-c_routine"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
       <circle cx="60" cy="60" r="58" fill="#0c0c0a"/>
       <!-- 달력/시계 -->
       <circle cx="85" cy="28" r="12" fill="none" stroke="#c9a96e" stroke-width="0.6" opacity="0.4"/>
@@ -1167,9 +926,223 @@ function makeSVG(id){
       <path d="M77 100 Q83 95 89 100" stroke="#c9a96e" stroke-width="1" fill="none" opacity="0.6"/>
       <path d="M82 98 Q80 93 82 90" stroke="#5a5a5a" stroke-width="0.8" fill="none" opacity="0.4"/>
       <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">일상의 리추얼</text>
-    </svg>`,
-  };
-  return svgs[id] || svgs['s_calm'];
+    </svg></div>
+</div>
+<script>
+// ═══════════════════════════════════════════════════════
+// 30 QUESTIONS — 6 sections × 5 questions
+// ═══════════════════════════════════════════════════════
+const SECS=[
+  {key:'safety', label:'안전 욕구', sub:'환경과 신체의 안전 신호 탐색'},
+  {key:'belong', label:'소속 욕구', sub:'연결과 공동체 욕구 측정'},
+  {key:'esteem', label:'인정 욕구', sub:'자존감과 사회적 위상 욕구'},
+  {key:'sensory',label:'감각 처리', sub:'뇌의 자극 민감도와 감각 성향'},
+  {key:'self',   label:'자아실현', sub:'성장과 창의, 자기표현 욕구'},
+  {key:'space',  label:'공간 직관', sub:'공간 본능과 미적 감수성'},
+];
+
+const QS=[
+// ── 안전 욕구 (5)
+{s:0,n:'편도체는 환경의 안전 신호를 끊임없이 스캔합니다',
+ t:'집에 돌아왔을 때 가장 먼저 원하는 [[em]]감각[[/em]]은?',
+ o:[{i:'🕯️',l:'고요함과 어둠',d:'소음이 사라지고 공간이 나를 감싸는',g:{calm:3,safety:2}},
+    {i:'☀️',l:'밝음과 개방감',d:'탁 트인 시야와 빛이 주는 안도감',g:{open:3,energy:1}},
+    {i:'🪵',l:'따뜻한 질감',d:'나무, 패브릭 — 손에 닿는 온기',g:{natural:3,cozy:2}},
+    {i:'🧊',l:'정돈된 공백',d:'아무것도 없는 깨끗한 표면의 평온',g:{minimal:3,control:2}}]},
+{s:0,n:'전전두피질은 혼돈을 줄일수록 인지 부하를 낮춥니다',
+ t:'물건이 조금 어지러울 때 나의 [[em]]반응[[/em]]은?',
+ o:[{i:'😌',l:'전혀 신경 쓰이지 않는다',d:'어지러움이 오히려 생동감 있어 보인다',g:{flow:3,artistic:1}},
+    {i:'🤔',l:'눈에 띄지만 괜찮다',d:'어느 정도의 혼재는 자연스럽다',g:{flow:2,cozy:1}},
+    {i:'😤',l:'은근히 불편하다',d:'어느 순간 정리하게 된다',g:{control:2,minimal:1}},
+    {i:'😰',l:'즉시 정리해야 한다',d:'정돈이 안 되면 집중이 안 된다',g:{control:3,minimal:2}}]},
+{s:0,n:'세로토닌은 예측 가능한 환경에서 더 많이 분비됩니다',
+ t:'공간에서 가장 중요한 [[em]]안전 요소[[/em]]는?',
+ o:[{i:'🔒',l:'프라이버시 — 나만의 영역',d:'외부와 완전히 차단된 나만의 공간',g:{safety:3,solo:2}},
+    {i:'🌡️',l:'온도 — 항상 따뜻해야 한다',d:'차가운 공간은 긴장을 유발한다',g:{cozy:3,safety:2}},
+    {i:'💡',l:'조명 — 밝기를 조절할 수 있어야',d:'환경을 통제하는 안정감',g:{control:3,minimal:1}},
+    {i:'🤫',l:'소음 — 완벽한 방음',d:'외부 소리가 차단된 고요함',g:{calm:3,sensitive:2}}]},
+{s:0,n:'코르티솔은 불확실한 환경에서 급격히 증가합니다',
+ t:'여행 중 숙소를 고를 때 가장 먼저 보는 것은?',
+ o:[{i:'🛏️',l:'침구의 질감과 청결도',d:'몸이 닿는 곳의 안전함',g:{safety:2,cozy:2,natural:1}},
+    {i:'🏙️',l:'뷰와 채광',d:'공간의 개방감과 밝기',g:{open:3,energy:1}},
+    {i:'📐',l:'공간 구조와 레이아웃',d:'동선과 가구 배치의 합리성',g:{control:2,minimal:2}},
+    {i:'🤫',l:'주변 소음 수준',d:'얼마나 조용한가',g:{calm:3,sensitive:2}}]},
+{s:0,n:'기저핵은 반복적 루틴에서 안정감을 학습합니다',
+ t:'하루를 시작할 때 공간에서 가장 필요한 것은?',
+ o:[{i:'☕',l:'정해진 자리의 루틴 아이템',d:'같은 자리의 같은 머그컵',g:{control:2,cozy:2,safety:1}},
+    {i:'🌅',l:'아침 햇살이 드는 방향',d:'자연광으로 시작하는 하루',g:{natural:3,open:2}},
+    {i:'🧘',l:'아무것도 없는 고요한 공간',d:'비워진 곳에서 명상하듯 시작',g:{calm:3,minimal:2}},
+    {i:'🎵',l:'좋아하는 음악이 흐르는 공간',d:'감각적 자극으로 에너지 충전',g:{energy:3,artistic:1}}]},
+
+// ── 소속 욕구 (5)
+{s:1,n:'미러 뉴런은 공간 안 타인의 흔적에도 반응합니다',
+ t:'이상적인 집은 몇 명을 위한 공간인가요?',
+ o:[{i:'🪞',l:'오직 나만을 위한 공간',d:'고독이 곧 자유인 사람',g:{solo:3,control:2}},
+    {i:'👫',l:'둘만의 친밀한 공간',d:'선택된 한 사람과의 깊은 연결',g:{intimacy:3,cozy:1}},
+    {i:'👨‍👩‍👧',l:'가족이 함께하는 공간',d:'일상의 소음과 온기가 공존',g:{family:3,warmth:2}},
+    {i:'🎉',l:'언제든 열린 공간',d:'사람들이 자주 드나드는 활기',g:{social:3,energy:2}}]},
+{s:1,n:'옥시토신은 공유 공간의 설계 방식에 따라 달라집니다',
+ t:'주방과 거실의 [[em]]이상적인 관계[[/em]]는?',
+ o:[{i:'🏠',l:'완전 분리된 독립 공간',d:'각자의 역할이 명확히 구분',g:{control:2,solo:1,minimal:1}},
+    {i:'🔗',l:'시각적으로 연결된 오픈 구조',d:'요리하면서도 대화가 이어지는 삶',g:{social:2,family:2,open:1}},
+    {i:'🌊',l:'경계 없이 흐르는 공간',d:'구분보다 흐름이 중요하다',g:{flow:3,natural:1,social:1}},
+    {i:'📺',l:'각자가 모일 수 있는 거점 공간',d:'함께 있지만 각자의 영역도 있는',g:{family:2,cozy:2}}]},
+{s:1,n:'사회적 지지 네트워크는 공간 설계로 강화됩니다',
+ t:'손님이 왔을 때 가장 먼저 안내하고 싶은 공간은?',
+ o:[{i:'🛋️',l:'여유로운 소파가 있는 거실',d:'편안하게 대화를 나누는 공간',g:{social:3,cozy:2,warmth:1}},
+    {i:'🍽️',l:'음식이 차려진 다이닝 테이블',d:'함께 먹고 마시는 공간',g:{family:3,warmth:2,social:1}},
+    {i:'🪴',l:'공들인 인테리어 포인트',d:'취향과 감각을 보여주는 공간',g:{esteem:2,identity:2,artistic:1}},
+    {i:'🌇',l:'뷰가 좋은 창가 자리',d:'풍경을 함께 바라보는 경험',g:{open:2,luxe:1,intimacy:2}}]},
+{s:1,n:'근접학(Proxemics) — 공간 거리감은 관계 밀도를 반영합니다',
+ t:'집에서 가장 오랜 시간을 보내는 공간은?',
+ o:[{i:'🛏️',l:'침실 — 가장 사적인 영역',d:'나만의 완전한 공간',g:{solo:3,calm:2,safety:1}},
+    {i:'📚',l:'서재 또는 작업 공간',d:'집중하고 창조하는 공간',g:{control:2,artistic:2,identity:1}},
+    {i:'🛋️',l:'거실 — 모두가 모이는 중심',d:'가족과 함께하는 일상',g:{family:3,social:2,warmth:1}},
+    {i:'🚿',l:'욕실 — 혼자만의 회복 공간',d:'가장 솔직하게 혼자인 공간',g:{solo:2,calm:3,safety:1}}]},
+{s:1,n:'공간의 다孔性은 관계의 유연성을 결정합니다',
+ t:'가장 이상적인 [[em]]집의 현관[[/em]] 분위기는?',
+ o:[{i:'🌿',l:'자연 오브제로 따뜻하게',d:'들어서는 순간 안도감을 주는',g:{natural:3,warmth:2,cozy:1}},
+    {i:'🪞',l:'미니멀하고 깔끔하게',d:'정돈된 첫인상의 명료함',g:{minimal:3,control:2}},
+    {i:'🖼️',l:'아트 피스나 조명으로 인상적으로',d:'취향을 드러내는 첫 번째 공간',g:{artistic:2,esteem:2,identity:1}},
+    {i:'🏡',l:'가족 사진이나 추억 오브제로',d:'집에 온 것 같은 따뜻함',g:{family:3,warmth:2,cozy:1}}]},
+
+// ── 인정 욕구 (5)
+{s:2,n:'복측선조체는 타인의 긍정적 반응에서 도파민을 분비합니다',
+ t:'손님이 집에 왔을 때 가장 [[em]]듣고 싶은[[/em]] 말은?',
+ o:[{i:'✨',l:'"어떻게 이렇게 정갈해요?"',d:'절제된 완성도에 대한 감탄',g:{minimal:2,control:2,esteem:2}},
+    {i:'🌿',l:'"진짜 나다운 공간이에요"',d:'개성과 취향의 일관성 인정',g:{identity:3,esteem:2}},
+    {i:'🏛️',l:'"고급스럽고 격이 달라요"',d:'품격과 수준에 대한 인정',g:{luxe:3,esteem:2}},
+    {i:'🎨',l:'"어디서 이런 감각이 나와요?"',d:'독창성과 예술적 감각에 대한 찬사',g:{artistic:3,identity:2}}]},
+{s:2,n:'자기 개념 일치 이론 — 공간은 자아상의 물리적 확장입니다',
+ t:'공간이 전달해야 할 [[em]]단 하나의 메시지[[/em]]는?',
+ o:[{i:'🎯',l:'"나는 명확한 사람이다"',d:'군더더기 없는 결단력',g:{minimal:2,control:3}},
+    {i:'🌱',l:'"나는 감각 있는 사람이다"',d:'섬세한 취향과 안목',g:{identity:2,artistic:2,natural:1}},
+    {i:'💎',l:'"나는 품격 있는 사람이다"',d:'삶의 질에 투자하는 가치관',g:{luxe:3,esteem:1}},
+    {i:'🔥',l:'"나는 나만의 세계가 있다"',d:'누구도 흉내낼 수 없는 독창성',g:{artistic:3,identity:2}}]},
+{s:2,n:'자기표현 동기는 환경 투자 의향과 정비례합니다',
+ t:'인테리어에서 가장 공들이고 싶은 공간은?',
+ o:[{i:'🛋️',l:'거실 — 가장 많이 보이는 곳',d:'첫인상이자 삶의 중심 공간',g:{social:2,esteem:2,open:1}},
+    {i:'🛏️',l:'침실 — 가장 사적인 나만의 곳',d:'보이지 않아도 나를 위한 투자',g:{solo:2,identity:2,calm:1}},
+    {i:'🚿',l:'욕실 — 나만의 리추얼 공간',d:'호텔 같은 욕실에 대한 로망',g:{luxe:3,esteem:2,calm:1}},
+    {i:'🍳',l:'주방 — 삶의 퀄리티가 결정되는 곳',d:'요리하는 행위 자체의 즐거움',g:{family:2,artistic:1,natural:1}}]},
+{s:2,n:'자기효능감은 공간을 통한 자기 통제감으로 높아집니다',
+ t:'공간을 꾸밀 때 가장 중요한 [[em]]판단 기준[[/em]]은?',
+ o:[{i:'❤️',l:'내 마음에 드는가',d:'취향과 감각이 최우선',g:{identity:3,artistic:1}},
+    {i:'👥',l:'다른 사람들이 좋아하는가',d:'공유와 인정이 동기가 된다',g:{esteem:2,social:2}},
+    {i:'⏳',l:'시간이 지나도 질리지 않는가',d:'트렌드보다 클래식',g:{luxe:2,control:2,minimal:1}},
+    {i:'💰',l:'비용 대비 가치가 높은가',d:'실용적이고 합리적인 선택',g:{control:2,family:1}}]},
+{s:2,n:'소비 가치 이론 — 공간 투자는 자기 존중의 표현입니다',
+ t:'공간에 가장 기꺼이 투자하고 싶은 항목은?',
+ o:[{i:'💡',l:'조명 — 분위기를 바꾸는 빛',d:'조명 하나로 공간이 달라진다',g:{luxe:2,artistic:2,calm:1}},
+    {i:'🪑',l:'가구 — 오래 쓸 좋은 가구',d:'품질 좋은 가구 하나로 완성',g:{luxe:3,control:1,esteem:1}},
+    {i:'🌿',l:'식물과 자연 오브제',d:'생명이 있는 공간의 생동감',g:{natural:3,cozy:2}},
+    {i:'🖼️',l:'아트 또는 오브제',d:'공간의 개성을 만드는 작품',g:{artistic:3,identity:2,esteem:1}}]},
+
+// ── 감각 처리 (5)
+{s:3,n:'HSP(고감각처리) 성향은 공간 자극 민감도를 결정합니다',
+ t:'외부 공간에서 얼마나 [[em]]오래[[/em]] 편안함을 느끼나요?',
+ o:[{i:'⚡',l:'30분 이내에 피로해진다',d:'자극이 빠르게 쌓인다',g:{sensitive:3,calm:2,solo:1}},
+    {i:'⏰',l:'1~2시간이 적당하다',d:'적당한 자극 후 회복이 필요',g:{sensitive:2,calm:1}},
+    {i:'🕐',l:'2~3시간도 괜찮다',d:'환경에 잘 적응하는 편',g:{social:1,energy:1}},
+    {i:'🌟',l:'종일 있어도 괜찮다',d:'외부 자극이 에너지가 된다',g:{social:3,energy:3}}]},
+{s:3,n:'편측화 이론 — 좌뇌 우세형은 구조, 우뇌 우세형은 감성을 선호합니다',
+ t:'공간에 들어설 때 가장 먼저 [[em]]감지하는[[/em]] 것은?',
+ o:[{i:'📐',l:'전체 구조와 비율',d:'형태, 선, 구획이 먼저 보인다',g:{minimal:2,control:2}},
+    {i:'🎨',l:'색감과 소재의 조화',d:'컬러 팔레트와 질감이 먼저',g:{artistic:2,identity:1,natural:1}},
+    {i:'💡',l:'빛의 방향과 밀도',d:'채광과 그림자가 만드는 분위기',g:{sensitive:2,calm:2,luxe:1}},
+    {i:'🌡️',l:'공간의 온도와 냄새',d:'후각과 피부 감각이 먼저 반응',g:{natural:2,cozy:2,sensitive:1}}]},
+{s:3,n:'배경 소음 선호는 각성 수준과 인지 스타일에 따라 다릅니다',
+ t:'집에서 혼자 있을 때 선호하는 [[em]]배경[[/em]]은?',
+ o:[{i:'🔇',l:'완전한 침묵',d:'소리 없는 공간이 가장 편안',g:{sensitive:3,calm:3,minimal:1}},
+    {i:'🎵',l:'재즈 또는 앰비언트',d:'섬세한 사운드로 채우는 공간',g:{artistic:2,calm:2,identity:1}},
+    {i:'📺',l:'영상 또는 팟캐스트',d:'배경 소음이 오히려 집중을 돕는다',g:{social:1,flow:2,cozy:1}},
+    {i:'🌧️',l:'자연 소리 — 빗소리·파도',d:'자연의 리듬이 뇌를 안정시킨다',g:{natural:3,calm:2,sensitive:1}}]},
+{s:3,n:'감각 통합 이론 — 공간은 다감각 경험의 총체입니다',
+ t:'공간에서 가장 중요한 [[em]]감각 요소[[/em]]는?',
+ o:[{i:'👁️',l:'시각 — 아름다운 형태와 색',d:'눈이 즐거운 공간',g:{artistic:2,luxe:1,esteem:1}},
+    {i:'👂',l:'청각 — 소리의 울림과 방음',d:'소리 환경이 먼저',g:{sensitive:3,calm:2}},
+    {i:'✋',l:'촉각 — 소재의 질감',d:'손에 닿는 모든 것의 품질',g:{natural:2,luxe:2,cozy:1}},
+    {i:'👃',l:'후각 — 공간의 냄새와 향',d:'좋은 향기가 있는 공간',g:{cozy:2,natural:2,calm:1}}]},
+{s:3,n:'색채 심리학 — 색온도는 자율신경계에 직접 작용합니다',
+ t:'가장 편안하게 느껴지는 [[em]]색의 온도[[/em]]는?',
+ o:[{i:'🤍',l:'차갑고 중성적인 톤',d:'화이트, 그레이, 쿨 블루',g:{minimal:3,control:2,calm:1}},
+    {i:'🤎',l:'따뜻하고 어두운 어스톤',d:'베이지, 브라운, 테라코타',g:{natural:3,cozy:2,warmth:1}},
+    {i:'🖤',l:'깊고 강렬한 다크톤',d:'차콜, 블랙, 딥 그린',g:{luxe:2,artistic:2,calm:1}},
+    {i:'🌈',l:'포인트 컬러가 있는 조합',d:'하나의 강렬한 색이 공간을 정의',g:{artistic:3,identity:2,energy:1}}]},
+
+// ── 자아실현 (5)
+{s:4,n:'디폴트 모드 네트워크는 창의적 사고와 자기 성찰을 관장합니다',
+ t:'10년 후 당신의 공간에서 [[em]]일어나고 있는 일[[/em]]은?',
+ o:[{i:'📖',l:'혼자 책을 읽고 사유하는 아침',d:'고독 속 자기 성찰의 공간',g:{calm:3,solo:2,minimal:2,identity:1}},
+    {i:'🍽️',l:'사랑하는 사람들과의 저녁',d:'음식과 대화가 가득한 테이블',g:{family:3,warmth:3,cozy:2,social:1}},
+    {i:'🖌️',l:'무언가를 만들고 창조하는 공간',d:'작업, 요리, 글쓰기의 기쁨',g:{artistic:3,identity:2,energy:2}},
+    {i:'🌅',l:'루틴과 리추얼로 시작하는 하루',d:'규칙적이고 의미 있는 삶',g:{natural:2,calm:3,luxe:1,flow:2}}]},
+{s:4,n:'자기결정이론 — 자율성·유능감·관계성이 내재 동기를 구성합니다',
+ t:'공간을 바꿀 때 가장 중요한 [[em]]동기[[/em]]는?',
+ o:[{i:'💫',l:'기분과 감정이 바뀌고 싶어서',d:'공간이 마음을 바꿔줬으면 한다',g:{identity:2,calm:2,artistic:1}},
+    {i:'🚀',l:'더 생산적이고 싶어서',d:'환경이 성과를 만든다',g:{control:3,energy:2,minimal:1}},
+    {i:'🌱',l:'더 나다운 공간을 원해서',d:'공간이 나를 표현해주길 바란다',g:{identity:3,artistic:1}},
+    {i:'❤️',l:'가족 또는 함께 사는 사람을 위해',d:'공유하는 삶의 질을 높이고 싶다',g:{family:3,warmth:2,social:1}}]},
+{s:4,n:'환경 풍요화(Environmental Enrichment)는 뇌 가소성을 높입니다',
+ t:'공간에서 [[em]]성장[[/em]]한다는 것은 무엇인가요?',
+ o:[{i:'📚',l:'새로운 것을 배우고 탐구하는 것',d:'서재, 작업 공간의 확장',g:{artistic:2,identity:2,energy:1}},
+    {i:'🧘',l:'내면과 깊이 연결되는 것',d:'명상, 사유, 자기 성찰',g:{calm:3,solo:2,minimal:1}},
+    {i:'🌿',l:'자연과 생명을 가꾸는 것',d:'식물, 빛, 계절의 변화',g:{natural:3,cozy:1,flow:2}},
+    {i:'🤝',l:'소중한 관계를 깊게 하는 것',d:'함께하는 시간의 질을 높이는 것',g:{family:2,warmth:3,social:2}}]},
+{s:4,n:'흐름(Flow) 이론 — 최적 경험은 도전과 능력이 일치할 때 발생합니다',
+ t:'이 공간에서 가장 원하는 [[em]]경험[[/em]]은?',
+ o:[{i:'🎭',l:'몰입 — 시간이 가는 줄 모르는 상태',d:'작업이나 취미에 완전히 빠지는',g:{artistic:3,identity:2,energy:1}},
+    {i:'☮️',l:'회복 — 완전히 쉬는 상태',d:'아무 생각 없이 비워지는',g:{calm:3,safety:2,sensitive:1}},
+    {i:'🌟',l:'영감 — 새로운 아이디어가 떠오르는',d:'창의적 에너지가 흐르는 공간',g:{artistic:2,open:2,energy:2}},
+    {i:'🏡',l:'일상 — 평온한 루틴이 반복되는',d:'예측 가능하고 안정적인 삶',g:{safety:2,family:2,cozy:2}}]},
+{s:4,n:'매슬로우의 존재 욕구 — 자아초월은 일상의 공간에서 시작됩니다',
+ t:'공간이 당신의 [[em]]삶을 바꿀 수 있다[[/em]]고 생각하나요?',
+ o:[{i:'💯',l:'완전히 그렇다',d:'공간이 사람을 만든다',g:{identity:3,esteem:2,luxe:1}},
+    {i:'🤔',l:'어느 정도는 그렇다',d:'환경이 영향을 주지만 사람이 더 중요',g:{identity:1,control:1}},
+    {i:'🌱',l:'서서히 그렇게 될 것 같다',d:'공간과 삶이 함께 성장한다',g:{natural:2,flow:2,calm:1}},
+    {i:'✨',l:'이미 경험했다',d:'공간이 달라지자 삶이 달라졌다',g:{identity:2,luxe:2,esteem:2}}]},
+
+// ── 공간 직관 (5)
+{s:5,n:'환경 심리학 — 공간 선호는 진화적 본능과 문화적 학습의 합성입니다',
+ t:'아무 조건 없이 살고 싶은 [[em]]공간 유형[[/em]]은?',
+ o:[{i:'🏙️',l:'도심의 모던 아파트',d:'편리함과 세련됨의 중심',g:{minimal:2,luxe:2,control:1}},
+    {i:'🌲',l:'자연 속 독립 주택',d:'자연과 함께하는 삶',g:{natural:3,solo:2,calm:2}},
+    {i:'🏛️',l:'역사적 건물의 리노베이션',d:'시간의 레이어가 담긴 공간',g:{artistic:3,luxe:2,identity:2}},
+    {i:'🌊',l:'뷰가 압도적인 공간',d:'자연의 장대함을 매일 마주하는',g:{open:3,energy:2,luxe:1}}]},
+{s:5,n:'게슈탈트 이론 — 공간은 부분의 합이 아닌 전체로 경험됩니다',
+ t:'가장 끌리는 [[em]]공간 키워드[[/em]]는?',
+ o:[{i:'🤍',l:'Less is More',d:'군더더기 없는 절제의 미학',g:{minimal:3,clean:2,control:1}},
+    {i:'🌱',l:'Back to Nature',d:'자연 그대로의 온기와 질감',g:{natural:3,warm:2,earthy:1}},
+    {i:'🏛️',l:'Timeless Luxury',d:'시대를 초월하는 우아함',g:{luxe:3,calm:2,esteem:1}},
+    {i:'🎭',l:'Curated Chaos',d:'개성과 예술이 공존하는 감각',g:{artistic:3,identity:2,energy:1}}]},
+{s:5,n:'신경미학 — 아름다움을 처리하는 뇌 영역은 보상 회로와 연결됩니다',
+ t:'공간에서 [[em]]아름답다[[/em]]고 느끼는 순간은?',
+ o:[{i:'🌅',l:'빛이 소재에 닿는 순간',d:'그림자와 빛의 대비',g:{sensitive:2,luxe:2,calm:1}},
+    {i:'🔁',l:'모든 것이 딱 맞아 떨어지는 순간',d:'완벽한 비례와 질서',g:{minimal:3,control:2}},
+    {i:'🌿',l:'자연 소재가 숨 쉬는 듯한 순간',d:'살아있는 질감의 생동감',g:{natural:3,cozy:2,sensitive:1}},
+    {i:'✨',l:'예상치 못한 디테일을 발견하는 순간',d:'숨겨진 아름다움의 발견',g:{artistic:3,identity:2}}]},
+{s:5,n:'공간 기억 이론 — 장소는 감정 기억과 함께 저장됩니다',
+ t:'가장 기억에 남는 [[em]]공간의 감각[[/em]]은?',
+ o:[{i:'☀️',l:'빛이 가득했던 공간',d:'창문으로 쏟아지던 햇살',g:{open:3,energy:2,natural:1}},
+    {i:'🪵',l:'나무 향이 났던 공간',d:'원목 가구나 마루의 온기',g:{natural:3,cozy:2,warmth:1}},
+    {i:'🌊',l:'고요하게 조용했던 공간',d:'바깥 소리가 전혀 들리지 않던',g:{calm:3,sensitive:2,solo:1}},
+    {i:'🕯️',l:'어둑하게 따뜻했던 공간',d:'간접 조명으로 가득했던',g:{cozy:3,luxe:2,calm:2}}]},
+{s:5,n:'환경 정체성 이론 — 공간은 자아 개념의 물리적 상징입니다',
+ t:'당신의 공간이 [[em]]절대 있어선 안 되는[[/em]] 것은?',
+ o:[{i:'📦',l:'정리되지 않은 물건들',d:'혼돈은 나를 지치게 한다',g:{control:3,minimal:2}},
+    {i:'🌑',l:'어둡고 빛이 없는 공간',d:'채광은 생명이다',g:{open:3,energy:2,natural:1}},
+    {i:'🌡️',l:'차갑고 딱딱한 소재',d:'따뜻함이 없는 공간은 숨막힌다',g:{cozy:3,natural:2,warmth:1}},
+    {i:'🎪',l:'개성 없는 획일적인 공간',d:'나를 표현하지 못하는 공간',g:{artistic:3,identity:3}}]},
+];
+
+// ═══════════════════════════════════════════════════════
+// 24 RESULT TYPES (6 대유형 × 4 세부유형) + SVG 캐릭터
+// ═══════════════════════════════════════════════════════
+
+// SVG 캐릭터 생성 함수 (DOM에서 읽기)
+function makeSVG(id){
+  const el = document.getElementById('svg-'+id);
+  return el ? el.innerHTML : '';
 }
 
 // ═══════════════════════════════════════════════════════
@@ -1177,128 +1150,80 @@ function makeSVG(id){
 // ═══════════════════════════════════════════════════════
 const SUB_MAP={
   sanctuary:[
-    {sub:'s_deep',  name:'딥 나이트 <em>안식처</em>',  plain:'딥 나이트 안식처',  cond:(c)=>c.calm>=6&&c.solo>=4},
-    {sub:'s_calm',  name:'새벽빛 <em>고요함</em>',      plain:'새벽빛 고요함',      cond:(c)=>c.sensitive>=5&&c.calm>=4},
-    {sub:'s_zen',   name:'명상적 <em>정적</em>',         plain:'명상적 정적',         cond:(c)=>c.calm>=5&&c.safety>=4},
-    {sub:'s_mono',  name:'모노크롬 <em>절제</em>',       plain:'모노크롬 절제',       cond:()=>true},
+    {sub:'s_deep',  name:'딥 나이트 [[em]]안식처[[/em]]',  plain:'딥 나이트 안식처',  cond:(c)=>c.calm>=6&&c.solo>=4},
+    {sub:'s_calm',  name:'새벽빛 [[em]]고요함[[/em]]',      plain:'새벽빛 고요함',      cond:(c)=>c.sensitive>=5&&c.calm>=4},
+    {sub:'s_zen',   name:'명상적 [[em]]정적[[/em]]',         plain:'명상적 정적',         cond:(c)=>c.calm>=5&&c.safety>=4},
+    {sub:'s_mono',  name:'모노크롬 [[em]]절제[[/em]]',       plain:'모노크롬 절제',       cond:()=>true},
   ],
   nature:[
-    {sub:'n_forest',name:'포레스트 <em>드리머</em>',    plain:'포레스트 드리머',    cond:(c)=>c.natural>=7&&c.solo>=3},
-    {sub:'n_earth', name:'어스 <em>키퍼</em>',           plain:'어스 키퍼',           cond:(c)=>c.natural>=5&&c.warmth>=4},
-    {sub:'n_breeze',name:'바람결 <em>감성가</em>',       plain:'바람결 감성가',       cond:(c)=>c.natural>=5&&c.flow>=3},
-    {sub:'n_garden',name:'가든 <em>큐레이터</em>',       plain:'가든 큐레이터',       cond:()=>true},
+    {sub:'n_forest',name:'포레스트 [[em]]드리머[[/em]]',    plain:'포레스트 드리머',    cond:(c)=>c.natural>=7&&c.solo>=3},
+    {sub:'n_earth', name:'어스 [[em]]키퍼[[/em]]',           plain:'어스 키퍼',           cond:(c)=>c.natural>=5&&c.warmth>=4},
+    {sub:'n_breeze',name:'바람결 [[em]]감성가[[/em]]',       plain:'바람결 감성가',       cond:(c)=>c.natural>=5&&c.flow>=3},
+    {sub:'n_garden',name:'가든 [[em]]큐레이터[[/em]]',       plain:'가든 큐레이터',       cond:()=>true},
   ],
   luxe:[
-    {sub:'l_royal', name:'로열 <em>에디터</em>',         plain:'로열 에디터',         cond:(c)=>c.luxe>=7&&c.esteem>=5},
-    {sub:'l_gallery',name:'갤러리 <em>디렉터</em>',      plain:'갤러리 디렉터',      cond:(c)=>c.luxe>=5&&c.artistic>=3},
-    {sub:'l_classic',name:'클래식 <em>마에스트로</em>',  plain:'클래식 마에스트로',  cond:(c)=>c.luxe>=5&&c.control>=4},
-    {sub:'l_luxe',  name:'럭스 <em>큐레이터</em>',       plain:'럭스 큐레이터',       cond:()=>true},
+    {sub:'l_royal', name:'로열 [[em]]에디터[[/em]]',         plain:'로열 에디터',         cond:(c)=>c.luxe>=7&&c.esteem>=5},
+    {sub:'l_gallery',name:'갤러리 [[em]]디렉터[[/em]]',      plain:'갤러리 디렉터',      cond:(c)=>c.luxe>=5&&c.artistic>=3},
+    {sub:'l_classic',name:'클래식 [[em]]마에스트로[[/em]]',  plain:'클래식 마에스트로',  cond:(c)=>c.luxe>=5&&c.control>=4},
+    {sub:'l_luxe',  name:'럭스 [[em]]큐레이터[[/em]]',       plain:'럭스 큐레이터',       cond:()=>true},
   ],
   artistic:[
-    {sub:'a_wild',  name:'와일드 <em>크리에이터</em>',  plain:'와일드 크리에이터',  cond:(c)=>c.artistic>=8&&c.energy>=4},
-    {sub:'a_indie', name:'인디 <em>아티스트</em>',       plain:'인디 아티스트',       cond:(c)=>c.artistic>=6&&c.identity>=5},
-    {sub:'a_vintage',name:'빈티지 <em>소울</em>',        plain:'빈티지 소울',         cond:(c)=>c.artistic>=5&&c.flow>=3},
-    {sub:'a_eccentric',name:'에클레틱 <em>소울</em>',    plain:'에클레틱 소울',       cond:()=>true},
+    {sub:'a_wild',  name:'와일드 [[em]]크리에이터[[/em]]',  plain:'와일드 크리에이터',  cond:(c)=>c.artistic>=8&&c.energy>=4},
+    {sub:'a_indie', name:'인디 [[em]]아티스트[[/em]]',       plain:'인디 아티스트',       cond:(c)=>c.artistic>=6&&c.identity>=5},
+    {sub:'a_vintage',name:'빈티지 [[em]]소울[[/em]]',        plain:'빈티지 소울',         cond:(c)=>c.artistic>=5&&c.flow>=3},
+    {sub:'a_eccentric',name:'에클레틱 [[em]]소울[[/em]]',    plain:'에클레틱 소울',       cond:()=>true},
   ],
   minimal:[
-    {sub:'m_pure',  name:'퓨어 <em>미니멀리스트</em>', plain:'퓨어 미니멀리스트', cond:(c)=>c.minimal>=8&&c.control>=5},
-    {sub:'m_grid',  name:'그리드 <em>마스터</em>',       plain:'그리드 마스터',       cond:(c)=>c.minimal>=6&&c.control>=6},
-    {sub:'m_mono',  name:'모노 <em>아키텍트</em>',       plain:'모노 아키텍트',       cond:(c)=>c.minimal>=6&&c.calm>=3},
-    {sub:'m_line',  name:'라인 <em>드로어</em>',         plain:'라인 드로어',          cond:()=>true},
+    {sub:'m_pure',  name:'퓨어 [[em]]미니멀리스트[[/em]]', plain:'퓨어 미니멀리스트', cond:(c)=>c.minimal>=8&&c.control>=5},
+    {sub:'m_grid',  name:'그리드 [[em]]마스터[[/em]]',       plain:'그리드 마스터',       cond:(c)=>c.minimal>=6&&c.control>=6},
+    {sub:'m_mono',  name:'모노 [[em]]아키텍트[[/em]]',       plain:'모노 아키텍트',       cond:(c)=>c.minimal>=6&&c.calm>=3},
+    {sub:'m_line',  name:'라인 [[em]]드로어[[/em]]',         plain:'라인 드로어',          cond:()=>true},
   ],
   cozy:[
-    {sub:'c_hearth',name:'따뜻한 <em>불가 지킴이</em>',plain:'따뜻한 불가 지킴이',cond:(c)=>c.cozy>=6&&c.safety>=4},
-    {sub:'c_family',name:'패밀리 <em>허그</em>',         plain:'패밀리 허그',         cond:(c)=>c.family>=7&&c.warmth>=5},
-    {sub:'c_blanket',name:'담요 <em>소울</em>',           plain:'담요 소울',           cond:(c)=>c.cozy>=6&&c.solo>=2},
-    {sub:'c_routine',name:'일상 <em>리추얼리스트</em>', plain:'일상 리추얼리스트', cond:()=>true},
+    {sub:'c_hearth',name:'따뜻한 [[em]]불가 지킴이[[/em]]',plain:'따뜻한 불가 지킴이',cond:(c)=>c.cozy>=6&&c.safety>=4},
+    {sub:'c_family',name:'패밀리 [[em]]허그[[/em]]',         plain:'패밀리 허그',         cond:(c)=>c.family>=7&&c.warmth>=5},
+    {sub:'c_blanket',name:'담요 [[em]]소울[[/em]]',           plain:'담요 소울',           cond:(c)=>c.cozy>=6&&c.solo>=2},
+    {sub:'c_routine',name:'일상 [[em]]리추얼리스트[[/em]]', plain:'일상 리추얼리스트', cond:()=>true},
   ],
 };
 
 const TYPES=[
-  {id:'sanctuary',name:'고요한 <em>안식처</em> 형',plain:'고요한 안식처 형',
+  {id:'sanctuary',name:'고요한 [[em]]안식처[[/em]] 형',plain:'고요한 안식처 형',
    desc:'당신의 뇌는 외부 자극을 민감하게 처리합니다. 공간은 세상의 소음을 차단하는 피난처여야 하며, 과잉 자극 없이 회복할 수 있는 환경을 필요로 합니다. 절제된 색감, 부드러운 소재, 자연광이 당신의 편도체를 안정시키는 신호입니다.',
    keys:['딥 베이지 & 오트밀','린넨 & 면 소재','간접 조명','자연 소재','방음과 정적'],
    bars:{안전욕구:92,소속욕구:28,감각민감도:90,자아실현:60},desire:'안전과 회복',
-   insight:'고감각처리(HSP) 성향이 높은 당신은 공간에서 <strong>감각 부하를 줄이는 것</strong>이 핵심입니다. 비움이 곧 회복이며, 최소한의 자극으로 최대한의 안정감을 주는 공간이 필요합니다.',
+   insight:'고감각처리(HSP) 성향이 높은 당신은 공간에서 [[strong]]감각 부하를 줄이는 것[[/strong]]이 핵심입니다. 비움이 곧 회복이며, 최소한의 자극으로 최대한의 안정감을 주는 공간이 필요합니다.',
    service:'Joy',serviceAlt:'Smile',weight:{calm:1,sensitive:1,safety:1,minimal:1}},
-  {id:'nature',name:'내추럴 <em>웜</em> 큐레이터',plain:'내추럴 웜 큐레이터',
+  {id:'nature',name:'내추럴 [[em]]웜[[/em]] 큐레이터',plain:'내추럴 웜 큐레이터',
    desc:'당신은 자연과의 연결을 통해 소속감을 경험합니다. 원목의 결, 식물의 생기, 따뜻한 색온도 — 이것은 단순한 취향이 아니라 당신의 신경계가 본능적으로 찾는 회복 환경입니다.',
    keys:['어스톤 & 그린','원목 마루 & 라탄','바이오필릭 디자인','간접 자연광','핸드크래프트 오브제'],
    bars:{안전욕구:65,소속욕구:72,감각민감도:60,자아실현:75},desire:'연결과 소속',
-   insight:'바이오필리아(Biophilia) — 인간은 본능적으로 자연과 연결을 추구합니다. 당신의 공간에 <strong>자연 소재와 유기적 형태</strong>를 도입하는 것은 취향이 아닌 신경계 회복 전략입니다.',
+   insight:'바이오필리아(Biophilia) — 인간은 본능적으로 자연과 연결을 추구합니다. 당신의 공간에 [[strong]]자연 소재와 유기적 형태[[/strong]]를 도입하는 것은 취향이 아닌 신경계 회복 전략입니다.',
    service:'Happy',serviceAlt:'Joy',weight:{natural:1,cozy:1,warmth:1,family:1}},
-  {id:'luxe',name:'럭셔리 <em>클래식</em> 에디터',plain:'럭셔리 클래식 에디터',
+  {id:'luxe',name:'럭셔리 [[em]]클래식[[/em]] 에디터',plain:'럭셔리 클래식 에디터',
    desc:'당신에게 공간은 자아의 확장입니다. 마감재 하나에서도 삶의 태도를 읽는 당신. 시대를 초월하는 소재와 비례, 절제된 럭셔리가 당신의 자기 개념과 일치하는 공간입니다.',
    keys:['마블 & 황동','헤링본 마루','몰딩 디테일','벨벳 & 실크','갤러리 조명'],
    bars:{안전욕구:55,소속욕구:44,감각민감도:68,자아실현:85},desire:'인정과 품격',
-   insight:'자기 개념 일치 이론에 따르면, 공간이 자아상과 일치할수록 <strong>삶의 만족도가 높아집니다</strong>. 당신에게 투자하는 공간은 허영이 아니라 자기 존중의 표현입니다.',
+   insight:'자기 개념 일치 이론에 따르면, 공간이 자아상과 일치할수록 [[strong]]삶의 만족도가 높아집니다[[/strong]]. 당신에게 투자하는 공간은 허영이 아니라 자기 존중의 표현입니다.',
    service:'Smile',serviceAlt:'Joy',weight:{luxe:1,esteem:1,control:1}},
-  {id:'artistic',name:'아티스틱 <em>인디비주얼</em>',plain:'아티스틱 인디비주얼',
+  {id:'artistic',name:'아티스틱 [[em]]인디비주얼[[/em]]',plain:'아티스틱 인디비주얼',
    desc:'당신의 우뇌는 공간을 캔버스로 봅니다. 정해진 룰보다 개인의 서사가 담긴 공간에서 창의성이 폭발합니다. 유행이 아닌 취향, 정답이 아닌 이야기 — 당신의 공간은 당신만의 언어로 쓰여야 합니다.',
    keys:['믹스 앤 매치 팔레트','빈티지 오브제','갤러리 월','패턴 & 텍스처 레이어','핸드메이드 아트'],
    bars:{안전욕구:38,소속욕구:54,감각민감도:82,자아실현:96},desire:'자아표현과 창의',
-   insight:'창의적 환경 이론 — 당신의 공간은 <strong>자극과 영감의 원천</strong>이어야 합니다. 완벽한 정돈보다 의미 있는 혼재가 당신의 디폴트 모드 네트워크를 활성화시킵니다.',
+   insight:'창의적 환경 이론 — 당신의 공간은 [[strong]]자극과 영감의 원천[[/strong]]이어야 합니다. 완벽한 정돈보다 의미 있는 혼재가 당신의 디폴트 모드 네트워크를 활성화시킵니다.',
    service:'Joy',serviceAlt:'Smile',weight:{artistic:1,identity:1}},
-  {id:'minimal',name:'모던 <em>미니멀리스트</em>',plain:'모던 미니멀리스트',
+  {id:'minimal',name:'모던 [[em]]미니멀리스트[[/em]]',plain:'모던 미니멀리스트',
    desc:'당신의 전전두피질은 질서로부터 통제감을 얻습니다. 불필요한 것을 제거할수록 인지 부하가 줄고 의사결정 에너지가 회복됩니다. 공간의 여백은 당신에게 심리적 자유입니다.',
    keys:['화이트 & 콘크리트','직선과 비례','히든 수납','금속 포인트','자연광과 그림자'],
    bars:{안전욕구:72,소속욕구:32,감각민감도:76,자아실현:70},desire:'통제와 명료함',
-   insight:'인지 부하 이론 — 시각적 노이즈는 뇌의 처리 자원을 소모합니다. 당신에게 미니멀한 공간은 취향이 아니라 <strong>인지 최적화 전략</strong>입니다.',
+   insight:'인지 부하 이론 — 시각적 노이즈는 뇌의 처리 자원을 소모합니다. 당신에게 미니멀한 공간은 취향이 아니라 [[strong]]인지 최적화 전략[[/strong]]입니다.',
    service:'Joy',serviceAlt:'Happy',weight:{minimal:1,control:1,solo:1}},
-  {id:'cozy',name:'코지 <em>웰니스</em> 하우스',plain:'코지 웰니스 하우스',
+  {id:'cozy',name:'코지 [[em]]웰니스[[/em]] 하우스',plain:'코지 웰니스 하우스',
    desc:'옥시토신과 세로토닌이 가득한 공간 — 당신은 따뜻함과 연결이 공존하는 환경에서 가장 잘 회복합니다. 가족과 사랑하는 사람들의 온기, 부드러운 소재가 당신의 신경계가 원하는 안전 신호입니다.',
    keys:['카펫 & 러그','따뜻한 간접 조명','소파 중심 레이아웃','패브릭 레이어링','홈 다이닝 공간'],
    bars:{안전욕구:74,소속욕구:92,감각민감도:48,자아실현:64},desire:'온기와 연결',
-   insight:'회복 환경 이론 — 사회적 온기를 주는 공간은 <strong>코르티솔을 낮추고 옥시토신을 높입니다</strong>. 당신의 소파 배치 하나가 가족 관계의 질을 바꿀 수 있습니다.',
+   insight:'회복 환경 이론 — 사회적 온기를 주는 공간은 [[strong]]코르티솔을 낮추고 옥시토신을 높입니다[[/strong]]. 당신의 소파 배치 하나가 가족 관계의 질을 바꿀 수 있습니다.',
    service:'Happy',serviceAlt:'Joy',weight:{cozy:1,family:1,warmth:1,social:1,safety:1}},
-];
-   desc:'당신의 뇌는 외부 자극을 민감하게 처리합니다. 공간은 세상의 소음을 차단하는 피난처여야 하며, 과잉 자극 없이 회복할 수 있는 환경을 필요로 합니다. 절제된 색감, 부드러운 소재, 자연광이 당신의 편도체를 안정시키는 신호입니다.',
-   keys:['딥 베이지 & 오트밀','린넨 & 면 소재','간접 조명','자연 소재','방음과 정적'],
-   bars:{안전욕구:92,소속욕구:28,감각민감도:90,자아실현:60},
-   desire:'안전과 회복',
-   insight:'고감각처리(HSP) 성향이 높은 당신은 공간에서 <strong>감각 부하를 줄이는 것</strong>이 핵심입니다. 비움이 곧 회복이며, 최소한의 자극으로 최대한의 안정감을 주는 공간이 필요합니다.',
-   service:'Joy',serviceAlt:'Smile',
-   weight:{calm:1,sensitive:1,safety:1,minimal:1}},
-  {id:'nature',name:'내추럴 <em>웜</em> 큐레이터',plain:'내추럴 웜 큐레이터',
-   desc:'당신은 자연과의 연결을 통해 소속감을 경험합니다. 원목의 결, 식물의 생기, 따뜻한 색온도 — 이것은 단순한 취향이 아니라 당신의 신경계가 본능적으로 찾는 회복 환경입니다.',
-   keys:['어스톤 & 그린','원목 마루 & 라탄','바이오필릭 디자인','간접 자연광','핸드크래프트 오브제'],
-   bars:{안전욕구:65,소속욕구:72,감각민감도:60,자아실현:75},
-   desire:'연결과 소속',
-   insight:'바이오필리아(Biophilia) — 인간은 본능적으로 자연과 연결을 추구합니다. 당신의 공간에 <strong>자연 소재와 유기적 형태</strong>를 도입하는 것은 취향이 아닌 신경계 회복 전략입니다.',
-   service:'Happy',serviceAlt:'Joy',
-   weight:{natural:1,cozy:1,warmth:1,family:1}},
-  {id:'luxe',name:'럭셔리 <em>클래식</em> 에디터',plain:'럭셔리 클래식 에디터',
-   desc:'당신에게 공간은 자아의 확장입니다. 마감재 하나에서도 삶의 태도를 읽는 당신. 시대를 초월하는 소재와 비례, 절제된 럭셔리가 당신의 자기 개념과 일치하는 공간입니다.',
-   keys:['마블 & 황동','헤링본 마루','몰딩 디테일','벨벳 & 실크','갤러리 조명'],
-   bars:{안전욕구:55,소속욕구:44,감각민감도:68,자아실현:85},
-   desire:'인정과 품격',
-   insight:'자기 개념 일치 이론에 따르면, 공간이 자아상과 일치할수록 <strong>삶의 만족도가 높아집니다</strong>. 당신에게 투자하는 공간은 허영이 아니라 자기 존중의 표현입니다.',
-   service:'Smile',serviceAlt:'Joy',
-   weight:{luxe:1,esteem:1,control:1}},
-  {id:'artistic',name:'아티스틱 <em>인디비주얼</em>',plain:'아티스틱 인디비주얼',
-   desc:'당신의 우뇌는 공간을 캔버스로 봅니다. 정해진 룰보다 개인의 서사가 담긴 공간에서 창의성이 폭발합니다. 유행이 아닌 취향, 정답이 아닌 이야기 — 당신의 공간은 당신만의 언어로 쓰여야 합니다.',
-   keys:['믹스 앤 매치 팔레트','빈티지 오브제','갤러리 월','패턴 & 텍스처 레이어','핸드메이드 아트'],
-   bars:{안전욕구:38,소속욕구:54,감각민감도:82,자아실현:96},
-   desire:'자아표현과 창의',
-   insight:'창의적 환경 이론 — 당신의 공간은 <strong>자극과 영감의 원천</strong>이어야 합니다. 완벽한 정돈보다 의미 있는 혼재가 당신의 디폴트 모드 네트워크를 활성화시킵니다.',
-   service:'Joy',serviceAlt:'Smile',
-   weight:{artistic:1,identity:1}},
-  {id:'minimal',name:'모던 <em>미니멀리스트</em>',plain:'모던 미니멀리스트',
-   desc:'당신의 전전두피질은 질서로부터 통제감을 얻습니다. 불필요한 것을 제거할수록 인지 부하가 줄고 의사결정 에너지가 회복됩니다. 공간의 여백은 당신에게 심리적 자유입니다.',
-   keys:['화이트 & 콘크리트','직선과 비례','히든 수납','금속 포인트','자연광과 그림자'],
-   bars:{안전욕구:72,소속욕구:32,감각민감도:76,자아실현:70},
-   desire:'통제와 명료함',
-   insight:'인지 부하 이론 — 시각적 노이즈는 뇌의 처리 자원을 소모합니다. 당신에게 미니멀한 공간은 취향이 아니라 <strong>인지 최적화 전략</strong>입니다.',
-   service:'Joy',serviceAlt:'Happy',
-   weight:{minimal:1,control:1,solo:1}},
-  {id:'cozy',name:'코지 <em>웰니스</em> 하우스',plain:'코지 웰니스 하우스',
-   desc:'옥시토신과 세로토닌이 가득한 공간 — 당신은 따뜻함과 연결이 공존하는 환경에서 가장 잘 회복합니다. 가족과 사랑하는 사람들의 온기, 부드러운 소재가 당신의 신경계가 원하는 안전 신호입니다.',
-   keys:['카펫 & 러그','따뜻한 간접 조명','소파 중심 레이아웃','패브릭 레이어링','홈 다이닝 공간'],
-   bars:{안전욕구:74,소속욕구:92,감각민감도:48,자아실현:64},
-   desire:'온기와 연결',
-   insight:'회복 환경 이론 — 사회적 온기를 주는 공간은 <strong>코르티솔을 낮추고 옥시토신을 높입니다</strong>. 당신의 소파 배치 하나가 가족 관계의 질을 바꿀 수 있습니다.',
-   service:'Happy',serviceAlt:'Joy',
-   weight:{cozy:1,family:1,warmth:1,social:1,safety:1}},
 ];
 
 const SVC={
@@ -1316,6 +1241,9 @@ let cur=0,ans={},qTimer=null,resultType=null,resultSub=null;
 // ═══════════════════════════════════════════════════════
 // UTIL
 // ═══════════════════════════════════════════════════════
+
+// HTML tag decoder for safe JS string storage
+function dec(s){ return (s||'').replace(/\[\[em\]\]/g,'<em>').replace(/\[\[\/em\]\]/g,'<\/em>').replace(/\[\[strong\]\]/g,'<strong>').replace(/\[\[\/strong\]\]/g,'<\/strong>'); }
 function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
 function toast(msg,dur=2800){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),dur)}
 
@@ -1388,7 +1316,7 @@ function renderQ(){
   card.style.animation='none';card.offsetHeight;card.style.animation='';
   card.innerHTML=`
     <div class="q-neuro">🧠 ${q.n}</div>
-    <h2 class="qtitle">${q.t}</h2>
+    <h2 class="qtitle">${dec(q.t)}</h2>
     <div class="opts c2">
       ${q.o.map((o,i)=>`
         <div class="opt" data-i="${i}" onclick="selectOpt(${i})">
@@ -1507,8 +1435,8 @@ function renderResult(t, sub, unlocked){
   const subName = sub ? sub.name : t.name;
   const subPlain = sub ? sub.plain : t.plain;
   const charSVG = sub ? makeSVG(sub.sub) : '';
-  const mailSubject=`[SKOPOS 공간욕구진단] ${subPlain} — 상담 문의`;
-  const mailBody=`안녕하세요, 공간 욕구 진단 결과를 공유합니다.\n\n유형: ${subPlain}\n핵심 욕구: ${t.desire}\n추천 키워드: ${t.keys.join(', ')}\n\n진단 결과 링크: ${shareUrl}\n\n추가 문의 내용:`;
+  const mailSubject=`[SKOPOS 공간욕구진단] ${dec(subPlain)} — 상담 문의`;
+  const mailBody=`안녕하세요, 공간 욕구 진단 결과를 공유합니다.\n\n유형: ${dec(subPlain)}\n핵심 욕구: ${t.desire}\n추천 키워드: ${t.keys.join(', ')}\n\n진단 결과 링크: ${shareUrl}\n\n추가 문의 내용:`;
 
   const isUnlocked = unlocked || false;
 
@@ -1516,9 +1444,9 @@ function renderResult(t, sub, unlocked){
     <!-- 공개 영역: 유형명 + 키워드 + 캐릭터 + 프로파일 바 -->
     <div class="rh">
       <p class="rtag">✦ 공간 욕구 진단 결과</p>
-      <h2 class="rtype">${subName}</h2>
-      <p style="font-size:.68rem;letter-spacing:.15em;color:var(--gy);margin-bottom:10px;text-transform:uppercase">${t.plain}</p>
-      <p class="rdesc">${t.desc}</p>
+      <h2 class="rtype">${dec(subName)}</h2>
+      <p style="font-size:.68rem;letter-spacing:.15em;color:var(--gy);margin-bottom:10px;text-transform:uppercase">${dec(t.plain)}</p>
+      <p class="rdesc">${dec(t.desc)}</p>
       <div class="rkws">${t.keys.map(k=>`<span class="kw">${k}</span>`).join('')}</div>
     </div>
 
@@ -1526,7 +1454,7 @@ function renderResult(t, sub, unlocked){
     <div style="display:flex;flex-direction:column;align-items:center;margin:28px 0 32px">
       <p style="font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gy);margin-bottom:14px">나의 공간 캐릭터</p>
       <div style="width:120px;height:140px;filter:drop-shadow(0 0 18px rgba(201,169,110,.18));animation:charIn .8s var(--ez) both">${charSVG}</div>
-      <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.9rem;color:var(--gold);margin-top:12px;letter-spacing:.08em">${subPlain}</p>
+      <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.9rem;color:var(--gold);margin-top:12px;letter-spacing:.08em">${dec(subPlain)}</p>
     </div>
 
     <div class="radar">
@@ -1548,12 +1476,12 @@ function renderResult(t, sub, unlocked){
       <div class="blur-inner ${isUnlocked ? 'revealed' : ''}" id="blurInner">
         <div class="iblk">
           <p class="ittl">🎯 핵심 욕구 — ${t.desire}</p>
-          <p class="ibdy">${t.insight}</p>
+          <p class="ibdy">${dec(t.insight)}</p>
         </div>
         <div class="iblk">
           <p class="ittl">💡 공간 처방</p>
-          <p class="ibdy">추천 키워드: <strong>${t.keys.join(' · ')}</strong><br><br>
-          당신에게 필요한 공간 변화의 핵심은 <strong>${t.desire}</strong>을 충족시키는 방향입니다.
+          <p class="ibdy">추천 키워드: [[strong]]${t.keys.join(' · ')}[[/strong]]<br><br>
+          당신에게 필요한 공간 변화의 핵심은 [[strong]]${t.desire}[[/strong]]을 충족시키는 방향입니다.
           스코포스의 취향저격 프로젝트는 이 욕구 구조를 바탕으로 당신만의 공간 언어를 설계합니다.</p>
         </div>
         <p style="font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gy);margin-bottom:13px;margin-top:26px">추천 서비스</p>
@@ -1571,7 +1499,7 @@ function renderResult(t, sub, unlocked){
       <!-- 잠금 오버레이 (공개 시 숨김) -->
       <div class="blur-overlay ${isUnlocked ? 'hidden' : ''}" id="blurOverlay">
         <div class="blur-lock-icon">🔍</div>
-        <p class="blur-msg">상세 분석 결과를<br><em>지금 바로 확인하세요</em></p>
+        <p class="blur-msg">상세 분석 결과를<br>[[em]]지금 바로 확인하세요[[/em]]</p>
         <p class="blur-sub">공유하거나 상담 신청 시<br>핵심 욕구 인사이트 · 공간 처방 · 추천 서비스가 공개됩니다.</p>
         <div class="blur-actions">
           <a href="mailto:contact@skopos.kr?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}"
@@ -1596,7 +1524,7 @@ function renderResult(t, sub, unlocked){
         <div class="shcard" onclick="copyLink()">
           <span class="shhint">탭하여 링크 복사</span>
           <div class="shlogo">SKOPOS</div>
-          <div class="shtype">${t.plain}</div>
+          <div class="shtype">${dec(t.plain)}</div>
           <div class="shsub">공간 욕구 진단 결과 · ${t.keys[0]} · ${t.keys[1]}</div>
         </div>
         <div class="shbtns">
