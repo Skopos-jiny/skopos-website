@@ -157,6 +157,25 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;justify-content
 .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--gold);color:var(--bk);font-size:.72rem;font-weight:500;letter-spacing:.1em;padding:10px 22px;opacity:0;transition:all .4s;z-index:999;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
+/* ── BLUR GATE ── */
+.blur-gate{position:relative;margin-top:4px}
+.blur-inner{filter:blur(7px);pointer-events:none;user-select:none;transition:filter .6s var(--ez)}
+.blur-inner.revealed{filter:blur(0);pointer-events:all;user-select:auto}
+.blur-overlay{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:linear-gradient(to bottom,rgba(12,12,12,.15) 0%,rgba(12,12,12,.7) 40%,rgba(12,12,12,.92) 100%)}
+.blur-overlay.hidden{display:none}
+.blur-lock-icon{font-size:1.8rem;margin-bottom:4px}
+.blur-msg{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:300;color:var(--wh);text-align:center;line-height:1.4}
+.blur-msg em{font-style:italic;color:var(--gold)}
+.blur-sub{font-size:.72rem;color:var(--gy);text-align:center;line-height:1.6;max-width:280px}
+.blur-actions{display:flex;flex-direction:column;gap:8px;width:100%;max-width:300px;margin-top:4px}
+.blur-btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 20px;font-size:.72rem;font-weight:500;letter-spacing:.13em;text-transform:uppercase;cursor:pointer;transition:all .3s;border:none;font-family:'DM Sans',sans-serif;text-decoration:none;text-align:center}
+.blur-btn.primary{background:var(--gold);color:var(--bk)}
+.blur-btn.primary:hover{background:var(--gl)}
+.blur-btn.secondary{background:none;border:1px solid rgba(255,255,255,.15);color:var(--wh)}
+.blur-btn.secondary:hover{border-color:var(--gold);color:var(--gold)}
+.blur-btn.kk{background:#FEE500;color:#191919}
+.blur-btn.kk:hover{background:#f5da00}
+
 @keyframes fu{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fi{to{opacity:1}}
 
@@ -450,7 +469,7 @@ const TYPES=[
   {id:'sanctuary',name:'고요한 <em>안식처</em> 형',plain:'고요한 안식처 형',
    desc:'당신의 뇌는 외부 자극을 민감하게 처리합니다. 공간은 세상의 소음을 차단하는 피난처여야 하며, 과잉 자극 없이 회복할 수 있는 환경을 필요로 합니다. 절제된 색감, 부드러운 소재, 자연광이 당신의 편도체를 안정시키는 신호입니다.',
    keys:['딥 베이지 & 오트밀','린넨 & 면 소재','간접 조명','자연 소재','방음과 정적'],
-   bars:{안전욕구:92,소속욕구:28,인정욕구:38,감각민감도:90,자아실현:60},
+   bars:{안전욕구:92,소속욕구:28,감각민감도:90,자아실현:60},
    desire:'안전과 회복',
    insight:'고감각처리(HSP) 성향이 높은 당신은 공간에서 <strong>감각 부하를 줄이는 것</strong>이 핵심입니다. 비움이 곧 회복이며, 최소한의 자극으로 최대한의 안정감을 주는 공간이 필요합니다.',
    service:'Joy',serviceAlt:'Smile',
@@ -458,7 +477,7 @@ const TYPES=[
   {id:'nature',name:'내추럴 <em>웜</em> 큐레이터',plain:'내추럴 웜 큐레이터',
    desc:'당신은 자연과의 연결을 통해 소속감을 경험합니다. 원목의 결, 식물의 생기, 따뜻한 색온도 — 이것은 단순한 취향이 아니라 당신의 신경계가 본능적으로 찾는 회복 환경입니다.',
    keys:['어스톤 & 그린','원목 마루 & 라탄','바이오필릭 디자인','간접 자연광','핸드크래프트 오브제'],
-   bars:{안전욕구:65,소속욕구:72,인정욕구:48,감각민감도:60,자아실현:75},
+   bars:{안전욕구:65,소속욕구:72,감각민감도:60,자아실현:75},
    desire:'연결과 소속',
    insight:'바이오필리아(Biophilia) — 인간은 본능적으로 자연과 연결을 추구합니다. 당신의 공간에 <strong>자연 소재와 유기적 형태</strong>를 도입하는 것은 취향이 아닌 신경계 회복 전략입니다.',
    service:'Happy',serviceAlt:'Joy',
@@ -466,7 +485,7 @@ const TYPES=[
   {id:'luxe',name:'럭셔리 <em>클래식</em> 에디터',plain:'럭셔리 클래식 에디터',
    desc:'당신에게 공간은 자아의 확장입니다. 마감재 하나에서도 삶의 태도를 읽는 당신. 시대를 초월하는 소재와 비례, 절제된 럭셔리가 당신의 자기 개념과 일치하는 공간입니다.',
    keys:['마블 & 황동','헤링본 마루','몰딩 디테일','벨벳 & 실크','갤러리 조명'],
-   bars:{안전욕구:55,소속욕구:44,인정욕구:92,감각민감도:68,자아실현:85},
+   bars:{안전욕구:55,소속욕구:44,감각민감도:68,자아실현:85},
    desire:'인정과 품격',
    insight:'자기 개념 일치 이론에 따르면, 공간이 자아상과 일치할수록 <strong>삶의 만족도가 높아집니다</strong>. 당신에게 투자하는 공간은 허영이 아니라 자기 존중의 표현입니다.',
    service:'Smile',serviceAlt:'Joy',
@@ -474,7 +493,7 @@ const TYPES=[
   {id:'artistic',name:'아티스틱 <em>인디비주얼</em>',plain:'아티스틱 인디비주얼',
    desc:'당신의 우뇌는 공간을 캔버스로 봅니다. 정해진 룰보다 개인의 서사가 담긴 공간에서 창의성이 폭발합니다. 유행이 아닌 취향, 정답이 아닌 이야기 — 당신의 공간은 당신만의 언어로 쓰여야 합니다.',
    keys:['믹스 앤 매치 팔레트','빈티지 오브제','갤러리 월','패턴 & 텍스처 레이어','핸드메이드 아트'],
-   bars:{안전욕구:38,소속욕구:54,인정욕구:74,감각민감도:82,자아실현:96},
+   bars:{안전욕구:38,소속욕구:54,감각민감도:82,자아실현:96},
    desire:'자아표현과 창의',
    insight:'창의적 환경 이론 — 당신의 공간은 <strong>자극과 영감의 원천</strong>이어야 합니다. 완벽한 정돈보다 의미 있는 혼재가 당신의 디폴트 모드 네트워크를 활성화시킵니다.',
    service:'Joy',serviceAlt:'Smile',
@@ -482,7 +501,7 @@ const TYPES=[
   {id:'minimal',name:'모던 <em>미니멀리스트</em>',plain:'모던 미니멀리스트',
    desc:'당신의 전전두피질은 질서로부터 통제감을 얻습니다. 불필요한 것을 제거할수록 인지 부하가 줄고 의사결정 에너지가 회복됩니다. 공간의 여백은 당신에게 심리적 자유입니다.',
    keys:['화이트 & 콘크리트','직선과 비례','히든 수납','금속 포인트','자연광과 그림자'],
-   bars:{안전욕구:72,소속욕구:32,인정욕구:64,감각민감도:76,자아실현:70},
+   bars:{안전욕구:72,소속욕구:32,감각민감도:76,자아실현:70},
    desire:'통제와 명료함',
    insight:'인지 부하 이론 — 시각적 노이즈는 뇌의 처리 자원을 소모합니다. 당신에게 미니멀한 공간은 취향이 아니라 <strong>인지 최적화 전략</strong>입니다.',
    service:'Joy',serviceAlt:'Happy',
@@ -490,7 +509,7 @@ const TYPES=[
   {id:'cozy',name:'코지 <em>웰니스</em> 하우스',plain:'코지 웰니스 하우스',
    desc:'옥시토신과 세로토닌이 가득한 공간 — 당신은 따뜻함과 연결이 공존하는 환경에서 가장 잘 회복합니다. 가족과 사랑하는 사람들의 온기, 부드러운 소재가 당신의 신경계가 원하는 안전 신호입니다.',
    keys:['카펫 & 러그','따뜻한 간접 조명','소파 중심 레이아웃','패브릭 레이어링','홈 다이닝 공간'],
-   bars:{안전욕구:74,소속욕구:92,인정욕구:44,감각민감도:48,자아실현:64},
+   bars:{안전욕구:74,소속욕구:92,감각민감도:48,자아실현:64},
    desire:'온기와 연결',
    insight:'회복 환경 이론 — 사회적 온기를 주는 공간은 <strong>코르티솔을 낮추고 옥시토신을 높입니다</strong>. 당신의 소파 배치 하나가 가족 관계의 질을 바꿀 수 있습니다.',
    service:'Happy',serviceAlt:'Joy',
@@ -515,9 +534,35 @@ let cur=0,ans={},qTimer=null,resultType=null;
 function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
 function toast(msg,dur=2800){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),dur)}
 
-// URL encode/decode result
-function encodeResult(type){return btoa(encodeURIComponent(type.id))}
-function decodeResult(str){try{return decodeURIComponent(atob(str))}catch{return null}}
+// Result storage — sessionStorage 우선, URL fallback
+function saveResult(type){
+  try{sessionStorage.setItem('skopos_result',type.id);}catch(e){}
+  try{
+    const url=new URL(window.location.href);
+    url.searchParams.set('r',btoa(encodeURIComponent(type.id)));
+    window.history.replaceState({},'',url.toString());
+  }catch(e){/* about:srcdoc 제한 환경에서는 무시 */}
+}
+function getShareUrl(){
+  if(!resultType)return window.location.href;
+  try{
+    const url=new URL(window.location.href);
+    url.searchParams.set('r',btoa(encodeURIComponent(resultType.id)));
+    return url.toString();
+  }catch(e){return window.location.href;}
+}
+function loadSavedResult(){
+  try{
+    const params=new URLSearchParams(window.location.search);
+    const r=params.get('r');
+    if(r){const id=decodeURIComponent(atob(r));return TYPES.find(t=>t.id===id)||null;}
+  }catch(e){}
+  try{
+    const id=sessionStorage.getItem('skopos_result');
+    if(id)return TYPES.find(t=>t.id===id)||null;
+  }catch(e){}
+  return null;
+}
 
 // ═══════════════════════════════════════════════════════
 // QUIZ FLOW
@@ -650,12 +695,9 @@ function runResult(){
   });
   setTimeout(()=>{
     resultType=compute();
-    // Encode result into URL
-    const encoded=encodeResult(resultType);
-    const url=new URL(window.location.href);
-    url.searchParams.set('r',encoded);
-    window.history.replaceState({},'',url.toString());
-    renderResult(resultType);
+    saveResult(resultType);
+    try{sessionStorage.removeItem('skopos_unlocked');}catch(e){}
+    renderResult(resultType, false);
     show('sr');
     window.scrollTo({top:0,behavior:'smooth'});
     setTimeout(()=>document.querySelectorAll('.rbar').forEach(b=>b.style.width=b.dataset.val+'%'),400);
@@ -665,13 +707,16 @@ function runResult(){
 // ═══════════════════════════════════════════════════════
 // RENDER RESULT
 // ═══════════════════════════════════════════════════════
-function renderResult(t){
-  const svc=SVC[t.service],svcAlt=SVC[t.serviceAlt];
-  const shareUrl=window.location.href;
+function renderResult(t, unlocked){
+  const svc=SVC[t.service], svcAlt=SVC[t.serviceAlt];
+  const shareUrl=getShareUrl();
   const mailSubject=`[SKOPOS 공간욕구진단] ${t.plain} — 상담 문의`;
   const mailBody=`안녕하세요, 공간 욕구 진단 결과를 공유합니다.\n\n유형: ${t.plain}\n핵심 욕구: ${t.desire}\n추천 키워드: ${t.keys.join(', ')}\n\n진단 결과 링크: ${shareUrl}\n\n추가 문의 내용:`;
 
+  const isUnlocked = unlocked || false;
+
   document.getElementById('rw').innerHTML=`
+    <!-- 공개 영역: 유형명 + 키워드 + 프로파일 바 -->
     <div class="rh">
       <p class="rtag">✦ 공간 욕구 진단 결과</p>
       <h2 class="rtype">${t.name}</h2>
@@ -680,7 +725,7 @@ function renderResult(t){
     </div>
 
     <div class="radar">
-      <p class="radar-ttl">욕구 구조 프로파일</p>
+      <p class="radar-ttl">나만의 취향 프로파일</p>
       <div class="rbars">
         ${Object.entries(t.bars).map(([l,v])=>`
           <div class="rrow">
@@ -691,51 +736,106 @@ function renderResult(t){
       </div>
     </div>
 
-    <div class="iblk">
-      <p class="ittl">🎯 핵심 욕구 — ${t.desire}</p>
-      <p class="ibdy">${t.insight}</p>
-    </div>
-    <div class="iblk">
-      <p class="ittl">💡 공간 처방</p>
-      <p class="ibdy">추천 키워드: <strong>${t.keys.join(' · ')}</strong><br><br>
-      당신에게 필요한 공간 변화의 핵심은 <strong>${t.desire}</strong>을 충족시키는 방향입니다.
-      스코포스의 취향저격 프로젝트는 이 욕구 구조를 바탕으로 당신만의 공간 언어를 설계합니다.</p>
-    </div>
+    <!-- 잠금 영역: 인사이트 + 공간처방 + 서비스 추천 -->
+    <div class="blur-gate" id="blurGate">
 
-    <p style="font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gy);margin-bottom:13px;margin-top:26px">추천 서비스</p>
-    <div class="srec best">
-      <span class="sbdg">Best</span>
-      <div><div class="snm">${t.service} 서비스 <span style="font-size:.8rem;color:var(--gy)">— ${svc.sub} / ${svc.price}</span></div><div class="sds">${svc.desc}</div></div>
-    </div>
-    <div class="srec">
-      <span class="sbdg alt">Alt</span>
-      <div><div class="snm">${t.serviceAlt} 서비스 <span style="font-size:.8rem;color:var(--gy)">— ${svcAlt.sub} / ${svcAlt.price}</span></div><div class="sds">${svcAlt.desc}</div></div>
-    </div>
-
-    <div style="border:1px solid rgba(201,169,110,.2);padding:18px 22px;margin-top:20px;background:rgba(201,169,110,.03)">
-      <p class="ittl" style="margin-bottom:8px">🔗 이 결과를 저장하려면</p>
-      <p class="ibdy">아래 버튼으로 <strong>결과 링크를 복사</strong>하거나 <strong>상담 신청</strong> 시 이메일에 결과가 자동으로 포함됩니다.</p>
-    </div>
-
-    <div class="shblk">
-      <p class="shttl">✦ 결과 공유하기</p>
-      <div class="shcard" onclick="copyLink()">
-        <span class="shhint">탭하여 링크 복사</span>
-        <div class="shlogo">SKOPOS</div>
-        <div class="shtype">${t.plain}</div>
-        <div class="shsub">공간 욕구 진단 결과 · ${t.keys[0]} · ${t.keys[1]}</div>
+      <!-- 블러 처리된 콘텐츠 -->
+      <div class="blur-inner ${isUnlocked ? 'revealed' : ''}" id="blurInner">
+        <div class="iblk">
+          <p class="ittl">🎯 핵심 욕구 — ${t.desire}</p>
+          <p class="ibdy">${t.insight}</p>
+        </div>
+        <div class="iblk">
+          <p class="ittl">💡 공간 처방</p>
+          <p class="ibdy">추천 키워드: <strong>${t.keys.join(' · ')}</strong><br><br>
+          당신에게 필요한 공간 변화의 핵심은 <strong>${t.desire}</strong>을 충족시키는 방향입니다.
+          스코포스의 취향저격 프로젝트는 이 욕구 구조를 바탕으로 당신만의 공간 언어를 설계합니다.</p>
+        </div>
+        <p style="font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gy);margin-bottom:13px;margin-top:26px">추천 서비스</p>
+        <div class="srec best">
+          <span class="sbdg">Best</span>
+          <div><div class="snm">${t.service} 서비스 <span style="font-size:.8rem;color:var(--gy)">— ${svc.sub} / ${svc.price}</span></div><div class="sds">${svc.desc}</div></div>
+        </div>
+        <div class="srec">
+          <span class="sbdg alt">Alt</span>
+          <div><div class="snm">${t.serviceAlt} 서비스 <span style="font-size:.8rem;color:var(--gy)">— ${svcAlt.sub} / ${svcAlt.price}</span></div><div class="sds">${svcAlt.desc}</div></div>
+        </div>
+        <div style="height:120px"></div>
       </div>
-      <div class="shbtns">
-        <button class="shb kk" onclick="shareKakao()">💬 카카오톡 공유</button>
-        <button class="shb" onclick="copyLink()">🔗 결과 링크 복사</button>
-        <button class="shb" onclick="copyShareText()">📋 텍스트 복사</button>
+
+      <!-- 잠금 오버레이 (공개 시 숨김) -->
+      <div class="blur-overlay ${isUnlocked ? 'hidden' : ''}" id="blurOverlay">
+        <div class="blur-lock-icon">🔍</div>
+        <p class="blur-msg">상세 분석 결과를<br><em>지금 바로 확인하세요</em></p>
+        <p class="blur-sub">공유하거나 상담 신청 시<br>핵심 욕구 인사이트 · 공간 처방 · 추천 서비스가 공개됩니다.</p>
+        <div class="blur-actions">
+          <a href="mailto:contact@skopos.kr?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}"
+             class="blur-btn primary" onclick="unlockResult()">
+            📩 결과 포함 상담 신청하기
+          </a>
+          <button class="blur-btn kk" onclick="shareKakaoAndUnlock()">
+            💬 카카오톡 공유 후 보기
+          </button>
+          <button class="blur-btn secondary" onclick="copyLinkAndUnlock()">
+            🔗 링크 복사 후 보기
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 공개 후 하단 액션 -->
+    <div id="unlockedActions" style="display:${isUnlocked ? 'block' : 'none'}">
+      <div class="shblk">
+        <p class="shttl">✦ 결과 공유하기</p>
+        <div class="shcard" onclick="copyLink()">
+          <span class="shhint">탭하여 링크 복사</span>
+          <div class="shlogo">SKOPOS</div>
+          <div class="shtype">${t.plain}</div>
+          <div class="shsub">공간 욕구 진단 결과 · ${t.keys[0]} · ${t.keys[1]}</div>
+        </div>
+        <div class="shbtns">
+          <button class="shb kk" onclick="shareKakao()">💬 카카오톡 공유</button>
+          <button class="shb" onclick="copyLink()">🔗 결과 링크 복사</button>
+          <button class="shb" onclick="copyShareText()">📋 텍스트 복사</button>
+        </div>
+      </div>
+      <div class="ract">
+        <a href="mailto:contact@skopos.kr?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}" class="bconsult">결과 포함 상담 신청하기</a>
+        <button class="bretry" onclick="retryQuiz()">다시 하기</button>
       </div>
     </div>
 
-    <div class="ract">
-      <a href="mailto:contact@skopos.kr?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}" class="bconsult">결과 포함 상담 신청하기</a>
-      <button class="bretry" onclick="retryQuiz()">다시 하기</button>
-    </div>`;
+    <!-- 잠금 상태 하단 -->
+    <div id="lockedActions" style="display:${isUnlocked ? 'none' : 'flex'};gap:9px;margin-top:280px">
+      <button class="bretry" style="flex:1;text-align:center" onclick="retryQuiz()">다시 하기</button>
+    </div>
+  `;
+}
+
+// 잠금 해제
+function unlockResult(){
+  const inner=document.getElementById('blurInner');
+  const overlay=document.getElementById('blurOverlay');
+  const unlockedActions=document.getElementById('unlockedActions');
+  const lockedActions=document.getElementById('lockedActions');
+  if(!inner)return;
+  inner.classList.add('revealed');
+  overlay.classList.add('hidden');
+  unlockedActions.style.display='block';
+  lockedActions.style.display='none';
+  try{sessionStorage.setItem('skopos_unlocked','1');}catch(e){}
+  // 스크롤 유도
+  setTimeout(()=>inner.scrollIntoView({behavior:'smooth',block:'start'}),300);
+}
+
+function shareKakaoAndUnlock(){
+  shareKakao();
+  setTimeout(unlockResult, 300);
+}
+function copyLinkAndUnlock(){
+  copyLink();
+  setTimeout(unlockResult, 300);
 }
 
 // ═══════════════════════════════════════════════════════
@@ -743,7 +843,8 @@ function renderResult(t){
 // ═══════════════════════════════════════════════════════
 function getShareText(){
   if(!resultType)return'';
-  return `[SKOPOS 공간 욕구 진단]\n\n나의 공간 유형: ${resultType.plain}\n핵심 욕구: ${resultType.desire}\n추천 키워드: ${resultType.keys.slice(0,3).join(' · ')}\n\n결과 보기 👉 ${window.location.href}`;
+  const url=getShareUrl();
+  return `[SKOPOS 공간 욕구 진단]\n\n나의 공간 유형: ${resultType.plain}\n핵심 욕구: ${resultType.desire}\n추천 키워드: ${resultType.keys.slice(0,3).join(' · ')}\n\n결과 보기 👉 ${url}`;
 }
 function copyShareText(){
   const txt=getShareText();
@@ -753,16 +854,21 @@ function copyShareText(){
   });
 }
 function copyLink(){
-  navigator.clipboard.writeText(window.location.href).then(()=>toast('✓ 결과 링크가 복사되었습니다')).catch(()=>toast('링크를 직접 복사해주세요'));
+  const url=getShareUrl();
+  navigator.clipboard.writeText(url).then(()=>toast('✓ 결과 링크가 복사되었습니다')).catch(()=>toast('링크를 직접 복사해주세요'));
 }
 function shareKakao(){
   copyShareText();
   setTimeout(()=>toast('📋 복사 완료! 카카오톡에 붙여넣기 해주세요'),100);
 }
 function retryQuiz(){
-  const url=new URL(window.location.href);
-  url.searchParams.delete('r');
-  window.history.replaceState({},'',url.toString());
+  try{sessionStorage.removeItem('skopos_result');}catch(e){}
+  try{sessionStorage.removeItem('skopos_unlocked');}catch(e){}
+  try{
+    const url=new URL(window.location.href);
+    url.searchParams.delete('r');
+    window.history.replaceState({},'',url.toString());
+  }catch(e){}
   show('si');
 }
 
@@ -770,17 +876,14 @@ function retryQuiz(){
 // ON LOAD — check URL for shared result
 // ═══════════════════════════════════════════════════════
 window.addEventListener('load',()=>{
-  const params=new URLSearchParams(window.location.search);
-  const r=params.get('r');
-  if(r){
-    const typeId=decodeResult(r);
-    const found=TYPES.find(t=>t.id===typeId);
-    if(found){
-      resultType=found;
-      renderResult(found);
-      show('sr');
-      setTimeout(()=>document.querySelectorAll('.rbar').forEach(b=>b.style.width=b.dataset.val+'%'),400);
-    }
+  const found=loadSavedResult();
+  if(found){
+    resultType=found;
+    let unlocked=false;
+    try{unlocked=sessionStorage.getItem('skopos_unlocked')==='1';}catch(e){}
+    renderResult(found, unlocked);
+    show('sr');
+    setTimeout(()=>document.querySelectorAll('.rbar').forEach(b=>b.style.width=b.dataset.val+'%'),400);
   }
 });
 </script>
