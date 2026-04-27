@@ -694,13 +694,159 @@
             transform: translateY(0);
         }
 
-        /* ── MOBILE ── */
+        /* ── MOBILE NAV ── */
+        .nav-hamburger {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            gap: 5px;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 6px;
+            z-index: 301;
+        }
+        .nav-hamburger span {
+            display: block;
+            width: 100%;
+            height: 1px;
+            background: var(--white);
+            transition: all 0.35s cubic-bezier(0.22,1,0.36,1);
+            transform-origin: center;
+        }
+        .nav-hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); background: var(--gold); }
+        .nav-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+        .nav-hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); background: var(--gold); }
+
+        /* 모바일 드로어 */
+        .mobile-drawer {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            pointer-events: none;
+        }
+        .mobile-drawer-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0);
+            transition: background 0.4s ease;
+        }
+        .mobile-drawer-panel {
+            position: absolute;
+            top: 0; right: 0;
+            width: min(320px, 85vw);
+            height: 100%;
+            background: var(--off-black);
+            border-left: 1px solid rgba(201,169,110,0.12);
+            transform: translateX(100%);
+            transition: transform 0.45s cubic-bezier(0.22,1,0.36,1);
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            overflow-y: auto;
+        }
+        .mobile-drawer.open {
+            pointer-events: all;
+        }
+        .mobile-drawer.open .mobile-drawer-backdrop {
+            background: rgba(0,0,0,0.65);
+        }
+        .mobile-drawer.open .mobile-drawer-panel {
+            transform: translateX(0);
+        }
+        .drawer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 28px;
+            height: 72px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            flex-shrink: 0;
+        }
+        .drawer-logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: 0.3em;
+            color: var(--white);
+            text-decoration: none;
+        }
+        .drawer-nav {
+            flex: 1;
+            padding: 36px 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+        .drawer-nav a {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            text-decoration: none;
+            color: rgba(250,250,248,0.65);
+            font-size: 0.88rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            transition: color 0.25s;
+        }
+        .drawer-nav a:last-of-type { border-bottom: none; }
+        .drawer-nav a:hover { color: var(--white); }
+        .drawer-nav a .drawer-arrow { color: var(--gold); font-size: 0.7rem; opacity: 0; transition: opacity 0.25s, transform 0.25s; }
+        .drawer-nav a:hover .drawer-arrow { opacity: 1; transform: translateX(3px); }
+        .drawer-nav .drawer-quiz {
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 18px;
+            border: 1px solid rgba(201,169,110,0.35) !important;
+            color: var(--gold) !important;
+            font-size: 0.78rem !important;
+            border-radius: 0;
+        }
+        .drawer-nav .drawer-quiz:hover { background: rgba(201,169,110,0.08); }
+        .drawer-cta {
+            padding: 28px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            flex-shrink: 0;
+        }
+        .drawer-cta a {
+            display: block;
+            text-align: center;
+            padding: 14px;
+            background: var(--gold);
+            color: var(--black);
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        .drawer-cta a:hover { background: var(--gold-light); }
+        .drawer-footer {
+            padding: 20px 28px;
+            flex-shrink: 0;
+        }
+        .drawer-footer p {
+            font-size: 0.65rem;
+            color: rgba(250,250,248,0.2);
+            letter-spacing: 0.1em;
+        }
+
         @media (max-width: 900px) {
-            nav { padding: 0 24px; }
-            .nav-links { gap: 24px; }
+            nav { padding: 0 20px; }
+            .nav-links { display: none; }
+            .nav-hamburger { display: flex; }
+            .mobile-drawer { display: block; }
             section { padding: 80px 24px; }
             .hero { padding: 0 24px 60px; }
-            .hero-scroll { right: 24px; }
+            .hero-scroll { display: none; }
             .philosophy-inner { grid-template-columns: 1fr; gap: 48px; }
             .philosophy-image { aspect-ratio: 16/9; order: -1; }
             .portfolio-header { flex-direction: column; align-items: flex-start; gap: 20px; }
@@ -711,6 +857,8 @@
             .footer-inner { flex-direction: column; gap: 32px; }
             .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
             .testimonials-header { flex-direction: column; align-items: flex-start; gap: 20px; }
+            footer { padding: 40px 24px; }
+            .contact-cta { padding: 80px 24px; }
         }
 
         /* ── QUIZ CTA BLOCK ── */
@@ -795,7 +943,51 @@
             <li><a href="skopos_quiz.html" style="color:var(--gold);border:1px solid rgba(201,169,110,0.4);padding:5px 12px;letter-spacing:0.1em;transition:background 0.3s;" onmouseover="this.style.background='rgba(201,169,110,0.1)'" onmouseout="this.style.background='none'">✦ 취향 진단</a></li>
             <li><a href="mailto:contact@skopos.kr" class="nav-cta">상담신청</a></li>
         </ul>
+        <!-- 햄버거 버튼 (모바일) -->
+        <button class="nav-hamburger" id="hamburger" aria-label="메뉴 열기" onclick="toggleDrawer()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
     </nav>
+
+    <!-- 모바일 드로어 -->
+    <div class="mobile-drawer" id="mobileDrawer">
+        <div class="mobile-drawer-backdrop" onclick="closeDrawer()"></div>
+        <div class="mobile-drawer-panel">
+            <div class="drawer-header">
+                <a href="#" class="drawer-logo" onclick="closeDrawer()">SKOPOS</a>
+            </div>
+            <nav class="drawer-nav">
+                <a href="#philosophy" onclick="closeDrawer()">
+                    <span>철학</span>
+                    <span class="drawer-arrow">→</span>
+                </a>
+                <a href="#portfolio" onclick="closeDrawer()">
+                    <span>포트폴리오</span>
+                    <span class="drawer-arrow">→</span>
+                </a>
+                <a href="#pricing" onclick="closeDrawer()">
+                    <span>가격정책</span>
+                    <span class="drawer-arrow">→</span>
+                </a>
+                <a href="#testimonials" onclick="closeDrawer()">
+                    <span>후기</span>
+                    <span class="drawer-arrow">→</span>
+                </a>
+                <a href="skopos_quiz.html" class="drawer-quiz">
+                    <span>✦ 취향 진단하기</span>
+                    <span class="drawer-arrow">→</span>
+                </a>
+            </nav>
+            <div class="drawer-cta">
+                <a href="mailto:contact@skopos.kr">상담 신청하기</a>
+            </div>
+            <div class="drawer-footer">
+                <p>© 2024 SKOPOS. Space &amp; Life Curator</p>
+            </div>
+        </div>
+    </div>
 
     <!-- HERO -->
     <section class="hero">
@@ -1138,6 +1330,26 @@
             });
         }, { threshold: 0.1 });
         reveals.forEach(el => observer.observe(el));
+
+        // ── 모바일 드로어 ──
+        function toggleDrawer() {
+            const drawer = document.getElementById('mobileDrawer');
+            const btn    = document.getElementById('hamburger');
+            const isOpen = drawer.classList.contains('open');
+            isOpen ? closeDrawer() : openDrawer();
+        }
+        function openDrawer() {
+            document.getElementById('mobileDrawer').classList.add('open');
+            document.getElementById('hamburger').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeDrawer() {
+            document.getElementById('mobileDrawer').classList.remove('open');
+            document.getElementById('hamburger').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+        // ESC 키로 닫기
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
     </script>
 
     <!-- ── MAY EVENT POPUP ── -->
