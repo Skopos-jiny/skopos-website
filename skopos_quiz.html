@@ -1243,7 +1243,15 @@ let cur=0,ans={},qTimer=null,resultType=null,resultSub=null;
 // ═══════════════════════════════════════════════════════
 
 // HTML tag decoder for safe JS string storage
-function dec(s){ return (s||'').replace(/\[\[em\]\]/g,'<em>').replace(/\[\[\/em\]\]/g,'<\/em>').replace(/\[\[strong\]\]/g,'<strong>').replace(/\[\[\/strong\]\]/g,'<\/strong>'); }
+// HTML tag decoder — split/join 방식으로 이스케이프 문제 완전 방지
+function dec(s){
+  if(!s) return '';
+  return s
+    .split('[[strong]]').join('<strong>')
+    .split('[[/strong]]').join('</strong>')
+    .split('[[em]]').join('<em>')
+    .split('[[/em]]').join('</em>');
+}
 function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
 function toast(msg,dur=2800){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),dur)}
 
@@ -1544,9 +1552,10 @@ function renderResult(t, sub, unlocked){
       <button class="bretry" style="flex:1;text-align:center" onclick="retryQuiz()">다시 하기</button>
     </div>
   `;
+  // [[strong]]/[[em]] 잔여 플레이스홀더 최종 정리 (안전망)
+  const rw = document.getElementById('rw');
+  rw.innerHTML = dec(rw.innerHTML);
 }
-
-// 잠금 해제
 function unlockResult(){
   const inner=document.getElementById('blurInner');
   const overlay=document.getElementById('blurOverlay');
