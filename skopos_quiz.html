@@ -1,789 +1,560 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>취향저격 진단 | SKOPOS</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --gold: #c9a96e;
-            --gold-light: #e8d5b0;
-            --black: #0c0c0c;
-            --off-black: #111111;
-            --dark: #1a1a1a;
-            --gray: #888;
-            --white: #fafaf8;
-        }
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        html { scroll-behavior: smooth; }
-        body {
-            font-family: 'DM Sans', sans-serif;
-            background: var(--black);
-            color: var(--white);
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>공간 욕구 진단 | SKOPOS</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#c9a96e;--gold-light:#e8d5b0;--black:#0c0c0c;--off:#111;--dark:#1a1a1a;--gray:#777;--gray2:#444;--white:#fafaf8;--ease:cubic-bezier(.22,1,.36,1)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--black);color:var(--white);min-height:100vh;overflow-x:hidden}
 
-        /* ── NAV ── */
-        nav {
-            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 0 48px; height: 64px;
-            background: rgba(12,12,12,0.9);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(201,169,110,0.12);
-        }
-        .nav-logo {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.3rem; font-weight: 600;
-            letter-spacing: 0.3em; color: var(--white);
-            text-decoration: none;
-        }
-        .nav-back {
-            font-size: 0.72rem; letter-spacing: 0.12em;
-            text-transform: uppercase; color: var(--gray);
-            text-decoration: none; transition: color 0.3s;
-        }
-        .nav-back:hover { color: var(--gold); }
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;justify-content:space-between;align-items:center;padding:0 48px;height:60px;background:rgba(12,12,12,.92);backdrop-filter:blur(20px);border-bottom:1px solid rgba(201,169,110,.1)}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:600;letter-spacing:.3em;color:var(--white);text-decoration:none}
+.nav-back{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gray);text-decoration:none;transition:color .3s}
+.nav-back:hover{color:var(--gold)}
 
-        /* ── WRAPPER ── */
-        .quiz-wrap {
-            min-height: 100vh;
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            padding: 100px 24px 60px;
-        }
+.screen{display:none;min-height:100vh;padding:80px 24px 60px;align-items:center;justify-content:center;flex-direction:column}
+.screen.active{display:flex}
 
-        /* ── PROGRESS ── */
-        .progress-wrap {
-            width: 100%; max-width: 600px;
-            margin-bottom: 48px;
-        }
-        .progress-meta {
-            display: flex; justify-content: space-between;
-            align-items: center; margin-bottom: 10px;
-        }
-        .progress-label {
-            font-size: 0.68rem; letter-spacing: 0.2em;
-            text-transform: uppercase; color: var(--gray);
-        }
-        .progress-timer {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.1rem; color: var(--gold);
-        }
-        .progress-bar-bg {
-            width: 100%; height: 2px;
-            background: rgba(255,255,255,0.07);
-        }
-        .progress-bar-fill {
-            height: 2px; background: var(--gold);
-            transition: width 0.5s ease;
-        }
+/* INTRO */
+#s-intro{text-align:center;position:relative;overflow:hidden}
+.intro-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 60%,rgba(201,169,110,.06) 0%,transparent 70%);pointer-events:none}
+.orb{position:absolute;border-radius:50%;border:1px solid rgba(201,169,110,.07);top:50%;left:50%;transform:translate(-50%,-50%);animation:orbP 6s ease-in-out infinite}
+@keyframes orbP{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.5}50%{transform:translate(-50%,-50%) scale(1.04);opacity:1}}
+.intro-eyebrow{font-size:.62rem;letter-spacing:.35em;text-transform:uppercase;color:var(--gold);margin-bottom:20px;opacity:0;animation:fU .8s var(--ease) forwards .1s}
+.intro-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2.2rem,5vw,4rem);font-weight:300;line-height:1.15;margin-bottom:20px;opacity:0;animation:fU .8s var(--ease) forwards .25s}
+.intro-title em{font-style:italic;color:var(--gold)}
+.intro-sub{font-size:.88rem;color:var(--gray);line-height:1.85;max-width:480px;margin:0 auto 32px;opacity:0;animation:fU .8s var(--ease) forwards .4s}
+.intro-badges{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:36px;opacity:0;animation:fU .8s var(--ease) forwards .55s}
+.badge{border:1px solid rgba(201,169,110,.3);padding:5px 14px;font-size:.65rem;letter-spacing:.15em;color:var(--gold);text-transform:uppercase}
+.intro-stats{display:flex;justify-content:center;gap:48px;margin-bottom:44px;opacity:0;animation:fU .8s var(--ease) forwards .7s}
+.sv{font-family:'Cormorant Garamond',serif;font-size:2.2rem;color:var(--gold);line-height:1}
+.sl{font-size:.62rem;letter-spacing:.1em;color:var(--gray);margin-top:5px}
+.btn-start{display:inline-block;padding:15px 56px;background:var(--gold);color:var(--black);font-size:.76rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;border:none;cursor:pointer;transition:background .3s;opacity:0;animation:fU .8s var(--ease) forwards .85s}
+.btn-start:hover{background:var(--gold-light)}
+.disclaimer{font-size:.65rem;color:var(--gray2);margin-top:16px;opacity:0;animation:fU .8s var(--ease) forwards 1s}
 
-        /* ── QUESTION CARD ── */
-        .q-card {
-            width: 100%; max-width: 600px;
-            opacity: 0; transform: translateY(20px);
-            animation: fadeUp 0.5s ease forwards;
-        }
-        @keyframes fadeUp {
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .q-eyebrow {
-            font-size: 0.65rem; letter-spacing: 0.25em;
-            text-transform: uppercase; color: var(--gold);
-            margin-bottom: 16px;
-        }
-        .q-title {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(1.6rem, 4vw, 2.4rem);
-            font-weight: 300; line-height: 1.3;
-            color: var(--white); margin-bottom: 10px;
-        }
-        .q-title em { font-style: italic; color: var(--gold); }
-        .q-sub {
-            font-size: 0.8rem; color: var(--gray);
-            margin-bottom: 36px; line-height: 1.6;
-        }
+/* PROGRESS */
+.prog-shell{width:100%;max-width:660px;margin-bottom:40px}
+.prog-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:10px}
+.prog-sec{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+.prog-cnt{font-family:'Cormorant Garamond',serif;font-size:1rem;color:var(--gray)}
+.prog-track{width:100%;height:1px;background:rgba(255,255,255,.08);position:relative}
+.prog-fill{height:1px;background:linear-gradient(90deg,var(--gold),var(--gold-light));transition:width .6s var(--ease);position:relative}
+.prog-fill::after{content:'';position:absolute;right:-3px;top:-2px;width:5px;height:5px;border-radius:50%;background:var(--gold)}
+.timer-row{display:flex;align-items:center;gap:8px;margin-top:10px}
+.timer-bg{flex:1;height:2px;background:rgba(255,255,255,.05)}
+.timer-fill{height:2px;background:var(--gold);transition:width 1s linear;width:100%}
+.timer-txt{font-family:'Cormorant Garamond',serif;font-size:.95rem;color:var(--gray);min-width:38px;text-align:right}
+.timer-warn{color:#e07070!important}
 
-        /* ── OPTIONS ── */
-        .options-grid {
-            display: grid;
-            gap: 12px;
-        }
-        .options-grid.col2 { grid-template-columns: 1fr 1fr; }
-        .options-grid.col1 { grid-template-columns: 1fr; }
+/* QUESTION */
+.q-wrap{width:100%;max-width:660px;animation:fU .45s var(--ease) both}
+.q-sec-lbl{font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.q-sec-lbl::after{content:'';flex:1;height:1px;background:rgba(201,169,110,.2)}
+.q-title{font-family:'Cormorant Garamond',serif;font-size:clamp(1.5rem,3.5vw,2.1rem);font-weight:300;line-height:1.35;margin-bottom:8px}
+.q-title em{font-style:italic;color:var(--gold)}
+.q-sub{font-size:.78rem;color:var(--gray);line-height:1.7;margin-bottom:16px}
+.q-neuro{display:inline-block;background:rgba(201,169,110,.06);border:1px solid rgba(201,169,110,.18);padding:5px 13px;font-size:.6rem;letter-spacing:.1em;color:rgba(201,169,110,.65);margin-bottom:22px;line-height:1.5}
 
-        .opt {
-            position: relative;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.08);
-            padding: 18px 20px;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            display: flex; align-items: flex-start; gap: 14px;
-            text-align: left;
-            overflow: hidden;
-        }
-        .opt:hover {
-            border-color: rgba(201,169,110,0.4);
-            background: rgba(201,169,110,0.05);
-        }
-        .opt.selected {
-            border-color: var(--gold);
-            background: rgba(201,169,110,0.1);
-        }
-        .opt.selected .opt-check { opacity: 1; }
-        .opt-swatch {
-            width: 36px; height: 36px;
-            flex-shrink: 0; border-radius: 0;
-        }
-        .opt-body { flex: 1; }
-        .opt-label {
-            font-size: 0.88rem; font-weight: 400;
-            color: var(--white); margin-bottom: 3px;
-            line-height: 1.3;
-        }
-        .opt-desc {
-            font-size: 0.72rem; color: var(--gray);
-            line-height: 1.5;
-        }
-        .opt-check {
-            position: absolute; top: 12px; right: 14px;
-            width: 16px; height: 16px;
-            border: 1px solid var(--gold);
-            background: var(--gold);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 0.6rem; color: var(--black);
-            opacity: 0; transition: opacity 0.2s;
-            flex-shrink: 0;
-        }
+.opts{display:grid;gap:10px}
+.opts.c2{grid-template-columns:1fr 1fr}
+.opts.c1{grid-template-columns:1fr}
+.opt{border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.02);padding:16px 18px;cursor:pointer;transition:all .22s;display:flex;gap:14px;align-items:flex-start;text-align:left;position:relative;overflow:hidden}
+.opt:hover{border-color:rgba(201,169,110,.35);background:rgba(201,169,110,.04)}
+.opt.sel{border-color:var(--gold);background:rgba(201,169,110,.08)}
+.opt-icon{font-size:1.4rem;flex-shrink:0;line-height:1;margin-top:2px}
+.opt-body{flex:1}
+.opt-label{font-size:.86rem;color:var(--white);margin-bottom:3px;line-height:1.3}
+.opt-sub{font-size:.7rem;color:var(--gray);line-height:1.5}
+.opt-check{position:absolute;top:10px;right:10px;width:14px;height:14px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:.55rem;color:var(--black);opacity:0;transition:opacity .2s}
+.opt.sel .opt-check{opacity:1}
 
-        /* ── EMOJI GRID (분위기) ── */
-        .mood-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-        }
-        .mood-opt {
-            border: 1px solid rgba(255,255,255,0.08);
-            background: rgba(255,255,255,0.03);
-            padding: 20px 12px;
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.25s ease;
-        }
-        .mood-opt:hover {
-            border-color: rgba(201,169,110,0.4);
-            background: rgba(201,169,110,0.05);
-        }
-        .mood-opt.selected {
-            border-color: var(--gold);
-            background: rgba(201,169,110,0.1);
-        }
-        .mood-emoji { font-size: 1.8rem; margin-bottom: 8px; }
-        .mood-label { font-size: 0.78rem; color: var(--white); margin-bottom: 3px; }
-        .mood-sub { font-size: 0.65rem; color: var(--gray); }
+.scale-wrap{margin-bottom:8px}
+.scale-lbls{display:flex;justify-content:space-between;font-size:.65rem;color:var(--gray);margin-bottom:14px}
+.scale-opts{display:flex;gap:8px;justify-content:center}
+.s-btn{width:44px;height:44px;border:1px solid rgba(255,255,255,.1);background:none;color:var(--gray);cursor:pointer;transition:all .2s;font-family:'Cormorant Garamond',serif;font-size:1rem}
+.s-btn:hover{border-color:rgba(201,169,110,.5);color:var(--gold)}
+.s-btn.sel{border-color:var(--gold);background:rgba(201,169,110,.12);color:var(--gold)}
 
-        /* ── NAV BUTTONS ── */
-        .q-nav {
-            display: flex; gap: 12px;
-            margin-top: 36px; align-items: center;
-        }
-        .btn-next {
-            flex: 1; padding: 14px;
-            background: var(--gold); color: var(--black);
-            font-size: 0.75rem; font-weight: 500;
-            letter-spacing: 0.15em; text-transform: uppercase;
-            border: none; cursor: pointer;
-            transition: background 0.3s; opacity: 0.4;
-            pointer-events: none;
-        }
-        .btn-next.active { opacity: 1; pointer-events: all; }
-        .btn-next.active:hover { background: var(--gold-light); }
-        .btn-prev {
-            padding: 14px 20px;
-            background: none;
-            border: 1px solid rgba(255,255,255,0.12);
-            color: var(--gray); font-size: 0.72rem;
-            cursor: pointer; transition: all 0.3s;
-        }
-        .btn-prev:hover { border-color: var(--white); color: var(--white); }
+.img-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.img-opt{position:relative;cursor:pointer;overflow:hidden;aspect-ratio:4/3;border:1px solid rgba(255,255,255,.07)}
+.img-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2.8rem;background:var(--dark);transition:transform .5s}
+.img-opt:hover .img-ph{transform:scale(1.04)}
+.img-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.75) 0%,transparent 50%);opacity:0;transition:opacity .3s;display:flex;flex-direction:column;justify-content:flex-end;padding:14px}
+.img-opt:hover .img-ov,.img-opt.sel .img-ov{opacity:1}
+.img-opt.sel{border-color:var(--gold)}
+.img-lbl{font-size:.8rem;color:var(--white);margin-bottom:2px}
+.img-slbl{font-size:.65rem;color:rgba(250,250,248,.6)}
+.img-chk{position:absolute;top:10px;right:10px;width:20px;height:20px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:.65rem;color:var(--black);opacity:0;transition:opacity .2s}
+.img-opt.sel .img-chk{opacity:1}
 
-        /* ── INTRO ── */
-        #screen-intro {
-            width: 100%; max-width: 560px;
-            text-align: center;
-        }
-        .intro-badge {
-            display: inline-block;
-            border: 1px solid rgba(201,169,110,0.4);
-            padding: 5px 16px; font-size: 0.65rem;
-            letter-spacing: 0.25em; text-transform: uppercase;
-            color: var(--gold); margin-bottom: 32px;
-        }
-        .intro-title {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(2rem, 5vw, 3.2rem);
-            font-weight: 300; line-height: 1.2;
-            margin-bottom: 20px;
-        }
-        .intro-title em { font-style: italic; color: var(--gold); }
-        .intro-desc {
-            font-size: 0.88rem; color: var(--gray);
-            line-height: 1.8; margin-bottom: 12px;
-        }
-        .intro-meta {
-            display: flex; justify-content: center; gap: 32px;
-            margin: 32px 0 40px;
-        }
-        .intro-stat { text-align: center; }
-        .intro-stat-val {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.8rem; color: var(--gold); line-height: 1;
-        }
-        .intro-stat-label {
-            font-size: 0.65rem; letter-spacing: 0.1em;
-            color: var(--gray); margin-top: 4px;
-        }
-        .btn-start {
-            display: inline-block; padding: 15px 52px;
-            background: var(--gold); color: var(--black);
-            font-size: 0.78rem; font-weight: 500;
-            letter-spacing: 0.18em; text-transform: uppercase;
-            border: none; cursor: pointer; transition: background 0.3s;
-        }
-        .btn-start:hover { background: var(--gold-light); }
+.q-nav{display:flex;gap:10px;margin-top:28px;align-items:center}
+.btn-next{flex:1;padding:13px;background:var(--gold);color:var(--black);font-size:.73rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;border:none;cursor:pointer;transition:all .3s;opacity:.35;pointer-events:none}
+.btn-next.on{opacity:1;pointer-events:all}
+.btn-next.on:hover{background:var(--gold-light)}
+.btn-prev{padding:13px 18px;background:none;border:1px solid rgba(255,255,255,.1);color:var(--gray);font-size:.7rem;cursor:pointer;transition:all .3s}
+.btn-prev:hover{border-color:var(--white);color:var(--white)}
 
-        /* ── RESULT ── */
-        #screen-result {
-            width: 100%; max-width: 640px;
-            opacity: 0; animation: fadeUp 0.7s ease forwards 0.2s;
-        }
-        .result-tag {
-            font-size: 0.65rem; letter-spacing: 0.25em;
-            text-transform: uppercase; color: var(--gold);
-            margin-bottom: 12px;
-        }
-        .result-type {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            font-weight: 300; line-height: 1.15;
-            margin-bottom: 6px;
-        }
-        .result-type em { font-style: italic; color: var(--gold); }
-        .result-sub {
-            font-size: 0.85rem; color: var(--gray);
-            margin-bottom: 32px; line-height: 1.7;
-        }
-        .result-keywords {
-            display: flex; flex-wrap: wrap; gap: 8px;
-            margin-bottom: 36px;
-        }
-        .kw-tag {
-            border: 1px solid rgba(201,169,110,0.4);
-            padding: 5px 14px; font-size: 0.7rem;
-            letter-spacing: 0.1em; color: var(--gold);
-        }
-        .result-divider {
-            width: 40px; height: 1px;
-            background: rgba(201,169,110,0.3);
-            margin: 32px 0;
-        }
-        .result-service-label {
-            font-size: 0.65rem; letter-spacing: 0.2em;
-            text-transform: uppercase; color: var(--gray);
-            margin-bottom: 16px;
-        }
-        .service-rec {
-            border: 1px solid rgba(201,169,110,0.3);
-            padding: 24px 28px; margin-bottom: 12px;
-            display: flex; align-items: flex-start;
-            gap: 20px; background: rgba(201,169,110,0.04);
-        }
-        .service-rec.best { border-color: var(--gold); background: rgba(201,169,110,0.08); }
-        .service-rec-badge {
-            font-size: 0.58rem; letter-spacing: 0.15em;
-            text-transform: uppercase; color: var(--black);
-            background: var(--gold); padding: 3px 8px;
-            white-space: nowrap; margin-top: 2px;
-            flex-shrink: 0;
-        }
-        .service-rec-body {}
-        .service-rec-name {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.3rem; color: var(--white);
-            margin-bottom: 4px;
-        }
-        .service-rec-desc {
-            font-size: 0.78rem; color: var(--gray);
-            line-height: 1.6;
-        }
-        .result-actions {
-            display: flex; gap: 12px; margin-top: 36px;
-        }
-        .btn-consult {
-            flex: 1; padding: 14px;
-            background: var(--gold); color: var(--black);
-            font-size: 0.75rem; font-weight: 500;
-            letter-spacing: 0.15em; text-transform: uppercase;
-            text-decoration: none; text-align: center;
-            transition: background 0.3s; border: none; cursor: pointer;
-            display: block;
-        }
-        .btn-consult:hover { background: var(--gold-light); }
-        .btn-retry {
-            padding: 14px 20px;
-            background: none;
-            border: 1px solid rgba(255,255,255,0.12);
-            color: var(--gray); font-size: 0.72rem;
-            cursor: pointer; transition: all 0.3s;
-            white-space: nowrap;
-        }
-        .btn-retry:hover { border-color: var(--white); color: var(--white); }
+/* LOADING */
+#s-loading{text-align:center}
+.ld-ring{width:80px;height:80px;margin:0 auto 32px}
+.ld-ring svg{animation:spin 2s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ld-title{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:300;margin-bottom:10px}
+.ld-sub{font-size:.78rem;color:var(--gray);line-height:1.7}
+.ld-steps{margin-top:28px;display:flex;flex-direction:column;gap:8px;text-align:left;max-width:280px;margin-left:auto;margin-right:auto}
+.ld-step{font-size:.72rem;color:var(--gray2);display:flex;align-items:center;gap:8px;opacity:0;animation:fI .4s ease forwards}
+.ld-step.done{color:var(--gold)}
+.ld-dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0}
+@keyframes fI{to{opacity:1}}
 
-        /* hidden */
-        .screen { display: none; }
-        .screen.active { display: flex; flex-direction: column; align-items: center; }
+/* RESULT */
+#s-result{align-items:flex-start;padding-top:90px}
+.res-wrap{width:100%;max-width:700px;margin:0 auto}
+.res-header{text-align:center;margin-bottom:44px;padding-bottom:44px;border-bottom:1px solid rgba(255,255,255,.06)}
+.res-tag{font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.res-type{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,5vw,3.2rem);font-weight:300;line-height:1.15;margin-bottom:14px}
+.res-type em{font-style:italic;color:var(--gold)}
+.res-desc{font-size:.88rem;color:rgba(250,250,248,.6);line-height:1.9;max-width:520px;margin:0 auto 24px}
+.res-kws{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.kw{border:1px solid rgba(201,169,110,.3);padding:4px 13px;font-size:.68rem;letter-spacing:.1em;color:var(--gold)}
 
-        @media (max-width: 600px) {
-            nav { padding: 0 20px; }
-            .options-grid.col2 { grid-template-columns: 1fr; }
-            .mood-grid { grid-template-columns: repeat(2, 1fr); }
-            .result-actions { flex-direction: column; }
-        }
-    </style>
+.radar{margin:36px 0;display:flex;flex-direction:column;align-items:center}
+.radar-ttl{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gray);margin-bottom:18px}
+.radar-bars{width:100%;max-width:480px;display:flex;flex-direction:column;gap:12px}
+.r-row{display:flex;align-items:center;gap:12px}
+.r-lbl{font-size:.7rem;color:var(--gray);width:90px;text-align:right;flex-shrink:0}
+.r-track{flex:1;height:4px;background:rgba(255,255,255,.06)}
+.r-bar{height:4px;background:linear-gradient(90deg,var(--gold),var(--gold-light));width:0;transition:width 1.2s var(--ease)}
+.r-val{font-size:.68rem;color:var(--gold);width:32px;flex-shrink:0}
+
+.insight-block{border:1px solid rgba(255,255,255,.06);padding:26px 30px;margin-bottom:14px;background:rgba(255,255,255,.015)}
+.insight-ttl{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+.insight-body{font-size:.83rem;color:rgba(250,250,248,.6);line-height:1.85}
+.insight-body strong{color:var(--white);font-weight:400}
+
+.svc-rec{border:1px solid rgba(201,169,110,.22);padding:20px 24px;margin-bottom:10px;display:flex;gap:16px;align-items:flex-start;background:rgba(201,169,110,.03);transition:background .3s}
+.svc-rec:hover{background:rgba(201,169,110,.06)}
+.svc-rec.best{border-color:var(--gold);background:rgba(201,169,110,.07)}
+.svc-bdg{font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--black);background:var(--gold);padding:3px 8px;white-space:nowrap;margin-top:3px;flex-shrink:0}
+.svc-bdg.alt{background:transparent;border:1px solid rgba(201,169,110,.4);color:var(--gold)}
+.svc-name{font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--white);margin-bottom:4px}
+.svc-desc{font-size:.75rem;color:var(--gray);line-height:1.6}
+
+/* SHARE */
+.share-blk{margin-top:36px;padding-top:28px;border-top:1px solid rgba(255,255,255,.06)}
+.share-ttl{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gray);margin-bottom:14px;text-align:center}
+.share-card{border:1px solid rgba(201,169,110,.2);padding:20px 24px;background:var(--dark);text-align:center;margin-bottom:14px;cursor:pointer;transition:border-color .3s;position:relative}
+.share-card:hover{border-color:var(--gold)}
+.sc-hint{position:absolute;top:10px;right:12px;font-size:.58rem;color:var(--gray2);letter-spacing:.1em}
+.sc-logo{font-family:'Cormorant Garamond',serif;font-size:.9rem;letter-spacing:.3em;color:var(--gray);margin-bottom:6px}
+.sc-type{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-style:italic;color:var(--gold);margin-bottom:5px}
+.sc-sub{font-size:.68rem;color:var(--gray);letter-spacing:.06em}
+.share-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:16px}
+.s-btn2{display:flex;align-items:center;gap:7px;padding:11px 20px;border:1px solid rgba(255,255,255,.1);color:var(--white);font-size:.72rem;letter-spacing:.1em;cursor:pointer;background:none;transition:all .3s;white-space:nowrap;font-family:'DM Sans',sans-serif}
+.s-btn2:hover{border-color:var(--gold);color:var(--gold)}
+.s-btn2.kakao{background:#FEE500;color:#191919;border-color:#FEE500}
+.s-btn2.kakao:hover{background:#f5da00;border-color:#f5da00}
+
+.res-actions{display:flex;gap:10px;margin-top:24px}
+.btn-consult{flex:1;padding:14px;background:var(--gold);color:var(--black);font-size:.74rem;font-weight:500;letter-spacing:.15em;text-transform:uppercase;text-decoration:none;text-align:center;transition:background .3s;border:none;cursor:pointer;display:block}
+.btn-consult:hover{background:var(--gold-light)}
+.btn-retry{padding:14px 20px;background:none;border:1px solid rgba(255,255,255,.1);color:var(--gray);font-size:.7rem;cursor:pointer;transition:all .3s}
+.btn-retry:hover{border-color:var(--white);color:var(--white)}
+
+.toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--gold);color:var(--black);font-size:.74rem;font-weight:500;letter-spacing:.1em;padding:10px 24px;opacity:0;transition:all .4s;z-index:999;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@keyframes fU{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+
+@media(max-width:600px){
+  nav{padding:0 20px}
+  .opts.c2{grid-template-columns:1fr}
+  .img-grid{grid-template-columns:1fr 1fr}
+  .res-actions,.share-btns{flex-direction:column;align-items:stretch}
+  .intro-stats{gap:28px}
+}
+</style>
 </head>
 <body>
-
 <nav>
-    <a href="skopos_updated.html" class="nav-logo">SKOPOS</a>
-    <a href="skopos_updated.html" class="nav-back">← 홈으로</a>
+  <a href="index.html" class="nav-logo">SKOPOS</a>
+  <a href="index.html" class="nav-back">← 홈으로</a>
 </nav>
 
-<div class="quiz-wrap">
-
-    <!-- INTRO -->
-    <div id="screen-intro" class="screen active">
-        <div class="intro-badge">✦ 취향저격 프로젝트</div>
-        <h1 class="intro-title">나의 공간 취향은<br><em>무엇일까요?</em></h1>
-        <p class="intro-desc">
-            색감, 소재, 분위기 — 3가지 질문으로<br>
-            당신의 공간 취향 유형을 진단해드립니다.
-        </p>
-        <div class="intro-meta">
-            <div class="intro-stat">
-                <div class="intro-stat-val">7</div>
-                <div class="intro-stat-label">Questions</div>
-            </div>
-            <div class="intro-stat">
-                <div class="intro-stat-val">90<span style="font-size:1rem">초</span></div>
-                <div class="intro-stat-label">소요 시간</div>
-            </div>
-            <div class="intro-stat">
-                <div class="intro-stat-val">6</div>
-                <div class="intro-stat-label">취향 유형</div>
-            </div>
-        </div>
-        <button class="btn-start" onclick="startQuiz()">진단 시작하기</button>
-    </div>
-
-    <!-- QUIZ -->
-    <div id="screen-quiz" class="screen">
-        <div class="progress-wrap">
-            <div class="progress-meta">
-                <span class="progress-label" id="progressLabel">질문 1 / 7</span>
-                <span class="progress-timer" id="timerDisplay">01:30</span>
-            </div>
-            <div class="progress-bar-bg">
-                <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
-            </div>
-        </div>
-        <div class="q-card" id="qCard"></div>
-    </div>
-
-    <!-- RESULT -->
-    <div id="screen-result" class="screen"></div>
-
+<!-- INTRO -->
+<div id="s-intro" class="screen active">
+  <div class="intro-bg"></div>
+  <div class="orb" style="width:600px;height:600px"></div>
+  <div class="orb" style="width:380px;height:380px;animation-delay:-3s"></div>
+  <p class="intro-eyebrow">✦ SKOPOS — 공간 욕구 진단</p>
+  <h1 class="intro-title">당신의 공간이<br><em>원하는 것</em>은 무엇인가요?</h1>
+  <p class="intro-sub">능정 심리학과 뇌과학 기반의 공간 욕구 진단입니다.<br>인간의 핵심 욕구 구조와 감각 처리 방식을 분석하여<br>당신만의 고유한 공간 언어를 찾아드립니다.</p>
+  <div class="intro-badges">
+    <span class="badge">🧠 뇌과학 기반</span>
+    <span class="badge">💡 욕구 심리학</span>
+    <span class="badge">🎯 6가지 공간 유형</span>
+  </div>
+  <div class="intro-stats">
+    <div style="text-align:center"><div class="sv">12</div><div class="sl">Questions</div></div>
+    <div style="text-align:center"><div class="sv">3<span style="font-size:1.2rem">분</span></div><div class="sl">소요 시간</div></div>
+    <div style="text-align:center"><div class="sv">6</div><div class="sl">공간 유형</div></div>
+  </div>
+  <button class="btn-start" onclick="startQuiz()">진단 시작하기</button>
+  <p class="disclaimer">본 진단은 Taniagement 능정 심리학 이론을 공간 설계에 적용한 전문 도구입니다.</p>
 </div>
 
+<!-- QUIZ -->
+<div id="s-quiz" class="screen">
+  <div class="prog-shell">
+    <div class="prog-top">
+      <span class="prog-sec" id="pSec">안전 욕구</span>
+      <span class="prog-cnt" id="pCnt">01 / 12</span>
+    </div>
+    <div class="prog-track"><div class="prog-fill" id="pFill" style="width:0%"></div></div>
+    <div class="timer-row">
+      <div class="timer-bg"><div class="timer-fill" id="tBar"></div></div>
+      <span class="timer-txt" id="tTxt">3:00</span>
+    </div>
+  </div>
+  <div class="q-wrap" id="qWrap"></div>
+</div>
+
+<!-- LOADING -->
+<div id="s-loading" class="screen">
+  <div class="ld-ring">
+    <svg width="80" height="80" viewBox="0 0 80 80">
+      <circle cx="40" cy="40" r="34" fill="none" stroke="rgba(201,169,110,.1)" stroke-width="2"/>
+      <circle cx="40" cy="40" r="34" fill="none" stroke="#c9a96e" stroke-width="2" stroke-dasharray="60 154" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <h2 class="ld-title">욕구 패턴 분석 중</h2>
+  <p class="ld-sub">12개 응답을 바탕으로<br>당신의 공간 욕구 구조를 분석하고 있습니다.</p>
+  <div class="ld-steps" id="ldSteps"></div>
+</div>
+
+<!-- RESULT -->
+<div id="s-result" class="screen">
+  <div class="res-wrap" id="resWrap"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
 <script>
-// ══════════════════════════════════════════
-// QUESTIONS DATA
-// ══════════════════════════════════════════
-const questions = [
-    {
-        id: 'color1',
-        category: '색감',
-        eyebrow: '01 — 색감',
-        title: '끌리는 <em>색의 온도</em>는?',
-        sub: '직관적으로 마음이 가는 쪽을 선택하세요.',
-        type: 'option',
-        cols: 2,
-        options: [
-            { swatch: '#f5f0ea', label: '따뜻한 화이트 & 베이지', desc: '크림, 오트밀, 샌드', tags: ['warm','soft'] },
-            { swatch: '#2c2c2c', label: '딥 다크 & 차콜', desc: '블랙, 그래파이트, 스모크', tags: ['dark','bold'] },
-            { swatch: '#d4c5b0', label: '내추럴 & 어스톤', desc: '테라코타, 머드, 그린', tags: ['natural','earthy'] },
-            { swatch: '#b8c4cc', label: '쿨 그레이 & 블루', desc: '슬레이트, 스틸, 아이스', tags: ['cool','minimal'] },
-        ]
-    },
-    {
-        id: 'color2',
-        category: '색감',
-        eyebrow: '02 — 색감',
-        title: '포인트 컬러로 <em>선택할 색</em>은?',
-        sub: '공간의 한 곳에 쓴다면 어떤 색이 좋을까요?',
-        type: 'option',
-        cols: 2,
-        options: [
-            { swatch: '#c9a96e', label: '골드 & 브라운', desc: '황동, 앰버, 캐러멜', tags: ['luxe','warm'] },
-            { swatch: '#4a6741', label: '포레스트 그린', desc: '올리브, 세이지, 모스', tags: ['natural','calm'] },
-            { swatch: '#7a6080', label: '모브 & 버건디', desc: '라벤더, 와인, 플럼', tags: ['artistic','bold'] },
-            { swatch: '#c0b090', label: '노 포인트 (무채색)', desc: '화이트, 그레이, 블랙만', tags: ['minimal','clean'] },
-        ]
-    },
-    {
-        id: 'material1',
-        category: '소재',
-        eyebrow: '03 — 소재',
-        title: '손으로 만지고 싶은 <em>소재</em>는?',
-        sub: '촉감과 질감, 본능적으로 당기는 소재를 고르세요.',
-        type: 'option',
-        cols: 2,
-        options: [
-            { swatch: '#8B6914', label: '원목 & 라탄', desc: '내추럴 우드, 대나무, 코르크', tags: ['natural','warm'] },
-            { swatch: '#a8a8a8', label: '콘크리트 & 철재', desc: '시멘트, 스틸, 블랙 프레임', tags: ['industrial','cool'] },
-            { swatch: '#e8dfd0', label: '린넨 & 면', desc: '패브릭, 코튼, 니트', tags: ['soft','cozy'] },
-            { swatch: '#d4d0cc', label: '마블 & 세라믹', desc: '대리석, 타일, 테라조', tags: ['luxe','clean'] },
-        ]
-    },
-    {
-        id: 'material2',
-        category: '소재',
-        eyebrow: '04 — 소재',
-        title: '공간의 <em>바닥 마감</em>으로 고른다면?',
-        sub: '발밑의 감촉과 분위기를 상상해보세요.',
-        type: 'option',
-        cols: 2,
-        options: [
-            { swatch: '#c8a882', label: '원목 마루', desc: '헤링본, 와이드플랭크, 오크', tags: ['warm','natural'] },
-            { swatch: '#b0b0b0', label: '폴리싱 콘크리트', desc: '에폭시, 마이크로시멘트', tags: ['modern','cool'] },
-            { swatch: '#e0d8ce', label: '대형 타일', desc: '포슬린, 테라조, 마블', tags: ['clean','luxe'] },
-            { swatch: '#7a6a5a', label: '카펫 & 러그', desc: '울, 비스코스, 패턴 러그', tags: ['cozy','artistic'] },
-        ]
-    },
-    {
-        id: 'mood1',
-        category: '분위기',
-        eyebrow: '05 — 분위기',
-        title: '집에서 <em>느끼고 싶은</em> 감정은?',
-        sub: '퇴근 후 문을 열고 들어올 때, 어떤 감정을 원하나요?',
-        type: 'mood',
-        options: [
-            { emoji: '🕯️', label: '고요한 휴식', desc: '호텔 같은 정갈함', tags: ['minimal','luxe'] },
-            { emoji: '🌿', label: '자연 속 쉼', desc: '숲에 온 듯한 편안함', tags: ['natural','calm'] },
-            { emoji: '🎨', label: '창의적 영감', desc: '예술가의 스튜디오', tags: ['artistic','bold'] },
-            { emoji: '☕', label: '따뜻한 아늑함', desc: '카페 같은 포근함', tags: ['cozy','warm'] },
-            { emoji: '✨', label: '세련된 자부심', desc: '갤러리 같은 격조', tags: ['luxe','cool'] },
-            { emoji: '🏄', label: '자유로운 활력', desc: '에너지 넘치는 공간', tags: ['bold','modern'] },
-        ]
-    },
-    {
-        id: 'mood2',
-        category: '분위기',
-        eyebrow: '06 — 분위기',
-        title: '주말 오전, 나의 <em>이상적인 루틴</em>은?',
-        sub: '이 공간에서 어떤 아침을 맞이하고 싶나요?',
-        type: 'option',
-        cols: 1,
-        options: [
-            { swatch: null, label: '커튼 사이로 햇살 들어오는 조용한 독서', desc: '자연광, 책장, 아늑한 소파', tags: ['calm','cozy','natural'] },
-            { swatch: null, label: '창가에 서서 마시는 핸드드립 커피', desc: '미니멀한 카운터, 뷰, 여백', tags: ['minimal','calm','cool'] },
-            { swatch: null, label: '넓은 테이블에서 작업하는 나만의 시간', desc: '작업 공간, 수납, 집중', tags: ['modern','bold','clean'] },
-            { swatch: null, label: '아이들과 바닥에 앉아 노는 아침', desc: '실용성, 안전, 따뜻함', tags: ['warm','cozy','natural'] },
-        ]
-    },
-    {
-        id: 'style',
-        category: '스타일',
-        eyebrow: '07 — 스타일',
-        title: '본능적으로 끌리는 <em>공간 키워드</em>는?',
-        sub: '마음이 가는 단어를 하나 골라주세요.',
-        type: 'option',
-        cols: 2,
-        options: [
-            { swatch: null, label: '🤍  Less is More', desc: '군더더기 없는 절제의 미학', tags: ['minimal','clean','cool'] },
-            { swatch: null, label: '🌱  Back to Nature', desc: '자연 그대로의 온기와 질감', tags: ['natural','warm','earthy'] },
-            { swatch: null, label: '🏛️  Timeless Luxury', desc: '시대를 초월하는 우아함', tags: ['luxe','calm','bold'] },
-            { swatch: null, label: '🎭  Curated Chaos', desc: '개성과 예술이 공존하는 감각', tags: ['artistic','bold','warm'] },
-        ]
-    },
+const QS=[
+  {id:'s1',sec:'안전 욕구',neuro:'뇌과학 note — 편도체는 환경의 안전 신호를 끊임없이 스캔합니다',
+   title:'집에 돌아왔을 때, 가장 먼저 원하는 <em>감각</em>은?',sub:'본능적인 첫 감각 반응을 선택하세요.',type:'opts',cols:2,
+   opts:[{icon:'🕯️',label:'고요함과 어둠',sub:'소음이 사라지고 공간이 나를 감싸는 느낌',tags:{calm:3,safety:2}},
+         {icon:'☀️',label:'밝음과 개방감',sub:'탁 트인 시야와 빛이 주는 안도감',tags:{open:3,energy:2}},
+         {icon:'🪵',label:'따뜻한 질감',sub:'나무와 패브릭, 손에 닿는 것들의 온기',tags:{natural:3,cozy:2}},
+         {icon:'🧊',label:'정돈된 공백',sub:'아무것도 없는 깨끗한 표면의 평온',tags:{minimal:3,control:2}}]},
+  {id:'s2',sec:'안전 욕구',neuro:'뇌과학 note — 전전두피질은 혼돈을 줄일수록 인지 부하를 낮춥니다',
+   title:'공간 속 <em>혼란</em>에 대한 나의 반응은?',sub:'물건이 조금 어지러운 상태를 떠올려 보세요.',type:'scale',
+   scaleL:'전혀 신경 쓰지 않는다',scaleR:'즉시 정리해야 한다',
+   tags:[{control:1,flow:2},{control:2,flow:1},{control:2},{control:3,minimal:1},{control:3,minimal:2}]},
+  {id:'b1',sec:'소속 욕구',neuro:'뇌과학 note — 미러 뉴런은 공간 안 타인의 흔적에도 반응합니다',
+   title:'이상적인 집은 <em>몇 명을 위한</em> 공간인가요?',sub:'생활 방식이 아닌, 마음이 원하는 공간의 밀도.',type:'opts',cols:2,
+   opts:[{icon:'🪞',label:'오직 나만을 위한 공간',sub:'고독이 곧 자유인 사람',tags:{solo:3,control:2}},
+         {icon:'👫',label:'둘만의 친밀한 공간',sub:'선택된 한 사람과의 깊은 연결',tags:{intimacy:3,cozy:1}},
+         {icon:'👨‍👩‍👧',label:'가족이 함께하는 공간',sub:'일상의 소음과 온기가 공존하는',tags:{family:3,warmth:2}},
+         {icon:'🎉',label:'언제든 열린 공간',sub:'사람들이 자주 드나드는 활기',tags:{social:3,energy:2}}]},
+  {id:'b2',sec:'소속 욕구',neuro:'뇌과학 note — 옥시토신은 공유 공간의 설계 방식에 따라 분비량이 달라집니다',
+   title:'거실과 주방의 <em>이상적인 관계</em>는?',sub:'공간의 연결 방식이 삶의 방식을 드러냅니다.',type:'opts',cols:1,
+   opts:[{icon:'🏠',label:'완전히 분리된 독립 공간',sub:'각자의 역할이 명확히 구분되어야 한다',tags:{control:2,solo:1,minimal:1}},
+         {icon:'🔗',label:'시각적으로 연결된 오픈 구조',sub:'요리하면서도 대화가 이어지는 삶',tags:{social:2,family:2,open:1}},
+         {icon:'🌊',label:'경계 없이 자연스럽게 흐르는',sub:'공간의 구분보다 흐름이 중요하다',tags:{flow:3,natural:1,social:1}}]},
+  {id:'e1',sec:'인정 욕구',neuro:'뇌과학 note — 복측선조체는 타인의 긍정적 반응에서 도파민을 분비합니다',
+   title:'손님이 왔을 때, 가장 <em>듣고 싶은</em> 말은?',sub:'솔직하게, 마음속 깊이 원하는 반응을 고르세요.',type:'opts',cols:2,
+   opts:[{icon:'✨',label:'"어떻게 이렇게 정갈해요?"',sub:'절제된 완성도에 대한 감탄',tags:{minimal:2,control:2,esteem:2}},
+         {icon:'🌿',label:'"진짜 나다운 공간이에요"',sub:'개성과 취향의 일관성에 대한 인정',tags:{identity:3,esteem:2}},
+         {icon:'🏛️',label:'"고급스럽고 격이 달라요"',sub:'품격과 수준에 대한 인정',tags:{luxe:3,esteem:2}},
+         {icon:'🎨',label:'"어디서 이런 감각이 나와요?"',sub:'독창성과 예술적 감각에 대한 찬사',tags:{artistic:3,identity:2}}]},
+  {id:'e2',sec:'인정 욕구',neuro:'뇌과학 note — 자기 개념 일치 이론 — 공간은 자아상의 물리적 확장입니다',
+   title:'공간이 외부에 전달해야 할 <em>단 하나의 메시지</em>는?',sub:'이 공간이 말해야 할 가장 중요한 것.',type:'opts',cols:2,
+   opts:[{icon:'🎯',label:'"나는 명확한 사람이다"',sub:'군더더기 없는 결단력',tags:{minimal:2,control:3}},
+         {icon:'🌱',label:'"나는 감각 있는 사람이다"',sub:'섬세한 취향과 안목',tags:{identity:2,artistic:2,natural:1}},
+         {icon:'💎',label:'"나는 품격 있는 사람이다"',sub:'삶의 질에 투자하는 가치관',tags:{luxe:3,esteem:1}},
+         {icon:'🔥',label:'"나는 나만의 세계가 있다"',sub:'누구도 흉내낼 수 없는 독창성',tags:{artistic:3,identity:2}}]},
+  {id:'n1',sec:'감각 처리',neuro:'뇌과학 note — HSP(고감각처리) 성향은 공간 자극 민감도를 결정합니다',
+   title:'외부 공간에서 나는 보통 <em>얼마나 오래</em> 편안함을 느끼나요?',sub:'카페, 레스토랑 등을 떠올려 보세요.',type:'scale',
+   scaleL:'금방 피로해진다',scaleR:'오래있어도 괜찮다',
+   tags:[{sensitive:3,calm:2},{sensitive:2,calm:1},{sensitive:1},{sensitive:1,social:1},{social:2,energy:2}]},
+  {id:'n2',sec:'감각 처리',neuro:'뇌과학 note — 편측화 이론 — 좌뇌 우세형은 구조를, 우뇌 우세형은 감성을 선호합니다',
+   title:'공간에 들어설 때 가장 먼저 <em>감지하는</em> 것은?',sub:'의식하지 않아도 자연스럽게 눈이 가는 곳.',type:'opts',cols:2,
+   opts:[{icon:'📐',label:'전체 구조와 비율',sub:'공간의 형태, 선, 구획이 먼저 보인다',tags:{minimal:2,control:2}},
+         {icon:'🎨',label:'색감과 소재의 조화',sub:'컬러 팔레트와 질감이 먼저 느껴진다',tags:{artistic:2,identity:1,natural:1}},
+         {icon:'💡',label:'빛의 방향과 밀도',sub:'채광과 그림자가 만드는 분위기',tags:{sensitive:2,calm:2,luxe:1}},
+         {icon:'🌡️',label:'공간의 온도와 냄새',sub:'후각과 피부 감각이 먼저 반응한다',tags:{natural:2,cozy:2,sensitive:1}}]},
+  {id:'n3',sec:'감각 처리',neuro:'뇌과학 note — 감각 추구 성향(SSS)은 환경 자극 선호도의 개인차를 설명합니다',
+   title:'혼자 있을 때 집의 <em>배경</em>은?',sub:'솔직한 습관을 고르세요.',type:'opts',cols:2,
+   opts:[{icon:'🔇',label:'완전한 침묵',sub:'소리 없는 공간이 가장 편안하다',tags:{sensitive:3,calm:3,minimal:1}},
+         {icon:'🎵',label:'재즈 또는 앰비언트',sub:'공간을 채우는 섬세한 사운드',tags:{artistic:2,calm:2,identity:1}},
+         {icon:'📺',label:'다큐 또는 영화',sub:'배경 소음이 오히려 집중을 돕는다',tags:{social:1,flow:2,cozy:1}},
+         {icon:'🌧️',label:'자연 소리 — 빗소리·파도',sub:'자연의 리듬이 뇌를 안정시킨다',tags:{natural:3,calm:2,sensitive:1}}]},
+  {id:'a1',sec:'자아실현',neuro:'뇌과학 note — 디폴트 모드 네트워크는 창의적 사고와 자기 성찰을 관장합니다',
+   title:'10년 후 당신의 공간에서 <em>일어나고 있는 일</em>은?',sub:'가장 이상적인 미래의 장면.',type:'opts',cols:1,
+   opts:[{icon:'📖',label:'혼자 책을 읽고 사유하는 아침',sub:'고독 속에서 자기 자신과 깊이 대화하는 공간',tags:{calm:3,solo:2,minimal:2,identity:1}},
+         {icon:'🍽️',label:'사랑하는 사람들과 함께하는 저녁',sub:'음식과 대화가 가득한 따뜻한 테이블',tags:{family:3,warmth:3,cozy:2,social:1}},
+         {icon:'🖌️',label:'무언가를 만들고 창조하는 공간',sub:'작업, 요리, 글쓰기 — 생산의 기쁨',tags:{artistic:3,identity:2,energy:2}},
+         {icon:'🌅',label:'아침 햇살 속에서 천천히 시작하는 하루',sub:'루틴과 리추얼이 있는 깨어있는 삶',tags:{natural:2,calm:3,luxe:1,flow:2}}]},
+  {id:'a2',sec:'자아실현',neuro:'뇌과학 note — 자기결정이론 — 자율성·유능감·관계성이 내재 동기를 구성합니다',
+   title:'공간을 바꿀 때 <em>최우선 기준</em>은?',sub:'최종 의사결정의 핵심.',type:'scale',
+   scaleL:'내 감각과 취향',scaleR:'기능과 실용성',
+   tags:[{artistic:2,identity:3},{artistic:1,identity:2},{identity:1},{control:1,family:1},{control:2,minimal:1}]},
+  {id:'a3',sec:'자아실현',neuro:'뇌과학 note — 환경 심리학 — 공간 밀도와 통제감은 자기효능감과 직결됩니다',
+   title:'이 공간에서 나는 <em>어떤 버전의 나</em>이고 싶나요?',sub:'공간이 만들어주길 바라는 가장 이상적인 자아.',type:'img',
+   opts:[{emoji:'🎭',label:'가장 나다운 나',sub:'꾸밈 없이 진짜인 자아',tags:{identity:3,natural:1,calm:1}},
+         {emoji:'💼',label:'가장 유능한 나',sub:'집중하고 성취하는 자아',tags:{control:3,minimal:2,energy:1}},
+         {emoji:'🌸',label:'가장 편안한 나',sub:'긴장을 내려놓은 자아',tags:{cozy:3,safety:2,natural:1}},
+         {emoji:'👑',label:'가장 빛나는 나',sub:'삶을 즐기고 표현하는 자아',tags:{luxe:2,esteem:2,social:1,artistic:1}}]},
 ];
 
-// ══════════════════════════════════════════
-// RESULT TYPES
-// ══════════════════════════════════════════
-const resultTypes = [
-    {
-        id: 'minimal',
-        name: '모던 미니멀리스트',
-        nameEm: '모던 <em>미니멀리스트</em>',
-        desc: '당신의 공간은 조용하고 단호합니다. 불필요한 것은 없애고, 남은 것은 완벽해야 합니다. 여백이 곧 이야기가 되는 공간을 원합니다.',
-        keywords: ['화이트 & 그레이', '폴리싱 콘크리트', '직선과 여백', '금속 포인트', '자연광'],
-        service: 'Joy',
-        serviceAlt: 'Smile',
-        tags: ['minimal','clean','cool','modern'],
-    },
-    {
-        id: 'natural',
-        name: '내추럴 웜 큐레이터',
-        nameEm: '내추럴 <em>웜 큐레이터</em>',
-        desc: '자연의 온기가 스며든 공간을 꿈꿉니다. 원목의 결, 린넨의 촉감, 식물의 생기 — 손이 닿는 모든 곳에서 자연을 느끼고 싶습니다.',
-        keywords: ['어스톤 & 베이지', '원목 마루', '린넨 소재', '간접 조명', '그린 포인트'],
-        service: 'Happy',
-        serviceAlt: 'Joy',
-        tags: ['natural','warm','earthy','calm','cozy'],
-    },
-    {
-        id: 'luxe',
-        name: '럭셔리 클래식 에디터',
-        nameEm: '럭셔리 <em>클래식 에디터</em>',
-        desc: '공간이 품격을 말해야 한다고 믿습니다. 마감재 하나, 조명 하나에도 선택의 이유가 있어야 하는 당신. 공간은 삶의 수준을 반영합니다.',
-        keywords: ['마블 & 세라믹', '골드 황동', '헤링본 마루', '몰딩 & 크라운', '벨벳'],
-        service: 'Smile',
-        serviceAlt: 'Joy',
-        tags: ['luxe','bold','calm','clean'],
-    },
-    {
-        id: 'artistic',
-        name: '아티스틱 인디비주얼',
-        nameEm: '아티스틱 <em>인디비주얼</em>',
-        desc: '공간은 나의 세계관을 보여주는 캔버스입니다. 유행보다 취향, 정답보다 이야기. 당신의 공간은 누구도 흉내낼 수 없습니다.',
-        keywords: ['믹스 앤 매치', '빈티지 오브제', '패턴 러그', '모브 & 와인', '갤러리 월'],
-        service: 'Joy',
-        serviceAlt: 'Smile',
-        tags: ['artistic','bold','warm','cozy'],
-    },
-    {
-        id: 'modern',
-        name: '컨템포러리 모더니스트',
-        nameEm: '컨템포러리 <em>모더니스트</em>',
-        desc: '기능과 미학이 균형을 이루는 공간을 원합니다. 트렌드에 민감하지만 유행에 흔들리지 않는 당신만의 현대적 감각이 있습니다.',
-        keywords: ['콘크리트 & 스틸', '폴딩 & 슬라이딩', '간결한 수납', '블랙 프레임', '스마트홈'],
-        service: 'Happy',
-        serviceAlt: 'Joy',
-        tags: ['modern','cool','bold','clean'],
-    },
-    {
-        id: 'cozy',
-        name: '코지 웰니스 하우스',
-        nameEm: '코지 <em>웰니스 하우스</em>',
-        desc: '집은 세상에서 가장 편안한 곳이어야 합니다. 소파의 푹신함, 따뜻한 조명, 사랑하는 사람의 공간 — 행복은 집에서 시작됩니다.',
-        keywords: ['카펫 & 러그', '간접 조명', '따뜻한 목재', '쿠션 & 패브릭', '홈 카페 코너'],
-        service: 'Happy',
-        serviceAlt: 'Joy',
-        tags: ['cozy','warm','natural','calm'],
-    },
+const TYPES=[
+  {id:'sanctuary',name:'고요한 <em>안식처</em> 형',plain:'고요한 안식처 형',
+   desc:'당신의 뇌는 외부 자극을 민감하게 처리합니다. 공간은 세상의 소음을 차단하는 피난처여야 하며, 과잉 자극 없이 회복할 수 있는 환경을 필요로 합니다. 절제된 색감, 부드러운 소재, 자연광이 당신의 편도체를 안정시키는 신호입니다.',
+   keys:['딥 베이지 & 오트밀','린넨 & 면 소재','간접 조명','자연 소재','미니멀 수납'],
+   bars:{안전욕구:90,소속욕구:30,인정욕구:40,감각민감도:85,자아실현:60},
+   desire:'안전과 회복',
+   insight:'고감각처리(HSP) 성향이 높은 당신은 공간에서 <strong>감각 부하를 줄이는 것</strong>이 핵심입니다. 비움이 곧 회복이며, 당신의 공간은 최소한의 자극으로 최대한의 안정감을 주어야 합니다.',
+   service:'Joy',serviceAlt:'Smile',weight:{calm:1,sensitive:1,safety:1,minimal:1}},
+  {id:'nature',name:'내추럴 <em>웜</em> 큐레이터',plain:'내추럴 웜 큐레이터',
+   desc:'당신은 자연과의 연결을 통해 소속감을 경험합니다. 원목의 결, 식물의 생기, 따뜻한 색온도 — 이것은 단순한 취향이 아니라 당신의 신경계가 본능적으로 찾는 회복 환경입니다.',
+   keys:['어스톤 & 그린','원목 마루 & 라탄','바이오필릭 디자인','간접 자연광','핸드크래프트 오브제'],
+   bars:{안전욕구:65,소속욕구:70,인정욕구:50,감각민감도:60,자아실현:75},
+   desire:'연결과 소속',
+   insight:'바이오필리아(Biophilia) — 인간은 본능적으로 자연과 연결을 추구합니다. 당신의 공간에 <strong>자연 소재와 유기적 형태</strong>를 도입하는 것은 신경계 회복 전략입니다.',
+   service:'Happy',serviceAlt:'Joy',weight:{natural:1,cozy:1,warmth:1,family:1}},
+  {id:'luxe',name:'럭셔리 <em>클래식</em> 에디터',plain:'럭셔리 클래식 에디터',
+   desc:'당신에게 공간은 자아의 확장입니다. 품격 있는 환경에서 당신은 마감재 하나에서도 삶의 태도를 읽습니다. 시대를 초월하는 소재와 비례, 절제된 럭셔리가 당신의 자기 개념과 일치하는 공간입니다.',
+   keys:['마블 & 황동','헤링본 마루','몰딩 디테일','벨벳 & 실크','갤러리 조명'],
+   bars:{안전욕구:55,소속욕구:45,인정욕구:90,감각민감도:70,자아실현:85},
+   desire:'인정과 품격',
+   insight:'자기 개념 일치 이론에 따르면, 공간이 자아상과 일치할수록 <strong>삶의 만족도가 높아집니다</strong>. 당신에게 투자하는 공간은 허영이 아니라 자기 존중의 표현입니다.',
+   service:'Smile',serviceAlt:'Joy',weight:{luxe:1,esteem:1,control:1}},
+  {id:'artistic',name:'아티스틱 <em>인디비주얼</em>',plain:'아티스틱 인디비주얼',
+   desc:'당신의 우뇌는 공간을 캔버스로 봅니다. 정해진 룰보다 개인의 서사가 담긴 공간에서 창의성이 폭발합니다. 유행이 아닌 취향, 정답이 아닌 이야기 — 당신의 공간은 당신만의 언어로 쓰여야 합니다.',
+   keys:['믹스 앤 매치 팔레트','빈티지 오브제','갤러리 월','패턴 & 텍스처 레이어','핸드메이드 아트'],
+   bars:{안전욕구:40,소속욕구:55,인정욕구:75,감각민감도:80,자아실현:95},
+   desire:'자아표현과 창의',
+   insight:'창의적 환경 이론 — 당신의 공간은 <strong>자극과 영감의 원천</strong>이어야 합니다. 완벽한 정돈보다 의미 있는 혼재가 당신의 디폴트 모드 네트워크를 활성화시킵니다.',
+   service:'Joy',serviceAlt:'Smile',weight:{artistic:1,identity:1}},
+  {id:'minimal',name:'모던 <em>미니멀리스트</em>',plain:'모던 미니멀리스트',
+   desc:'당신의 전전두피질은 질서로부터 통제감을 얻습니다. 불필요한 것을 제거할수록 인지 부하가 줄고 의사결정 에너지가 회복됩니다. 공간의 여백은 당신에게 심리적 자유입니다.',
+   keys:['화이트 & 콘크리트','직선과 비례','히든 수납','금속 포인트','자연광과 그림자'],
+   bars:{안전욕구:70,소속욕구:35,인정욕구:65,감각민감도:75,자아실현:70},
+   desire:'통제와 명료함',
+   insight:'인지 부하 이론 — 시각적 노이즈는 뇌의 처리 자원을 소모합니다. 당신에게 미니멀한 공간은 취향이 아니라 <strong>인지 최적화 전략</strong>입니다.',
+   service:'Joy',serviceAlt:'Happy',weight:{minimal:1,control:1,solo:1}},
+  {id:'cozy',name:'코지 <em>웰니스</em> 하우스',plain:'코지 웰니스 하우스',
+   desc:'옥시토신과 세로토닌이 가득한 공간 — 당신은 따뜻함과 연결이 공존하는 환경에서 가장 잘 회복합니다. 가족과 사랑하는 사람들의 온기, 손에 닿는 부드러운 소재가 당신의 신경계가 원하는 안전 신호입니다.',
+   keys:['카펫 & 러그','따뜻한 간접 조명','소파 중심 레이아웃','패브릭 레이어링','홈 다이닝 공간'],
+   bars:{안전욕구:75,소속욕구:90,인정욕구:45,감각민감도:50,자아실현:65},
+   desire:'온기와 연결',
+   insight:'회복 환경 이론 — 사회적 온기를 주는 공간은 <strong>코르티솔을 낮추고 옥시토신을 높입니다</strong>. 당신의 거실 소파 배치 하나가 가족 관계의 질을 바꿀 수 있습니다.',
+   service:'Happy',serviceAlt:'Joy',weight:{cozy:1,family:1,warmth:1,social:1,safety:1}},
 ];
 
-const serviceInfo = {
-    Happy: { sub: '셀프 / 반셀프', price: '150만원', desc: '행정 컨설팅 + 3D 설계로 직접 참여하며 완성하는 공간' },
-    Joy:   { sub: '반셀프 / 컨설팅', price: '350만원', desc: '전 과정 동행 감리 + A/S 포함, 가장 인기 있는 선택' },
-    Smile: { sub: '턴키', price: '별도 문의', desc: '처음부터 끝까지 맡기는 올인원, 3년 하자보증 포함' },
+const SVC={
+  Happy:{sub:'셀프 / 반셀프',price:'150만원',desc:'행정 컨설팅 + 3D 설계로 주도적으로 완성하는 공간'},
+  Joy:{sub:'반셀프 / 컨설팅',price:'350만원',desc:'전 과정 동행 감리 + A/S 포함, 가장 인기 있는 선택'},
+  Smile:{sub:'턴키',price:'별도 문의',desc:'처음부터 끝까지 올인원, 3년 하자보증 포함'},
 };
 
-// ══════════════════════════════════════════
-// STATE
-// ══════════════════════════════════════════
-let current = 0;
-let answers = {};   // { qId: [tag, tag, ...] }
-let timerInterval = null;
-let secondsLeft = 90;
+let cur=0,ans={},secsLeft=180,timerIv=null,resultType=null;
 
-// ══════════════════════════════════════════
-// UTILS
-// ══════════════════════════════════════════
-function showScreen(id) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800)}
+
+function startQuiz(){cur=0;ans={};secsLeft=180;show('s-quiz');renderQ();startTimer()}
+
+function startTimer(){
+  clearInterval(timerIv);
+  timerIv=setInterval(()=>{
+    secsLeft--;
+    const m=Math.floor(secsLeft/60),s=secsLeft%60;
+    const txt=document.getElementById('tTxt');
+    txt.textContent=`${m}:${String(s).padStart(2,'0')}`;
+    document.getElementById('tBar').style.width=(secsLeft/180*100)+'%';
+    if(secsLeft<=30){txt.classList.add('timer-warn');document.getElementById('tBar').style.background='#e07070'}
+    if(secsLeft<=0){clearInterval(timerIv);runResult()}
+  },1000);
 }
 
-function startQuiz() {
-    current = 0;
-    answers = {};
-    secondsLeft = 90;
-    showScreen('screen-quiz');
-    renderQuestion();
-    startTimer();
-}
+function renderQ(){
+  const q=QS[cur];
+  document.getElementById('pSec').textContent=q.sec;
+  document.getElementById('pCnt').textContent=String(cur+1).padStart(2,'0')+' / '+QS.length;
+  document.getElementById('pFill').style.width=(cur/QS.length*100)+'%';
+  const wrap=document.getElementById('qWrap');
+  wrap.style.animation='none';wrap.offsetHeight;wrap.style.animation='';
 
-function startTimer() {
-    clearInterval(timerInterval);
-    timerInterval = setInterval(() => {
-        secondsLeft--;
-        const m = Math.floor(secondsLeft / 60);
-        const s = secondsLeft % 60;
-        document.getElementById('timerDisplay').textContent =
-            `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-        if (secondsLeft <= 0) {
-            clearInterval(timerInterval);
-            showResult();
-        }
-    }, 1000);
-}
+  let html='';
+  if(q.type==='opts'){
+    html=`<div class="opts c${q.cols}">${q.opts.map((o,i)=>`
+      <div class="opt" data-i="${i}" onclick="pickOpt(${i})">
+        <div class="opt-icon">${o.icon}</div>
+        <div class="opt-body"><div class="opt-label">${o.label}</div><div class="opt-sub">${o.sub}</div></div>
+        <div class="opt-check">✓</div>
+      </div>`).join('')}</div>`;
+  }else if(q.type==='scale'){
+    html=`<div class="scale-wrap">
+      <div class="scale-lbls"><span>${q.scaleL}</span><span>${q.scaleR}</span></div>
+      <div class="scale-opts">${[1,2,3,4,5].map(v=>`<button class="s-btn" data-v="${v}" onclick="pickScale(${v})">${v}</button>`).join('')}</div>
+    </div>`;
+  }else if(q.type==='img'){
+    html=`<div class="img-grid">${q.opts.map((o,i)=>`
+      <div class="img-opt" data-i="${i}" onclick="pickOpt(${i})">
+        <div class="img-ph">${o.emoji}</div>
+        <div class="img-ov"><div class="img-lbl">${o.label}</div><div class="img-slbl">${o.sub}</div></div>
+        <div class="img-chk">✓</div>
+      </div>`).join('')}</div>`;
+  }
 
-// ══════════════════════════════════════════
-// RENDER QUESTION
-// ══════════════════════════════════════════
-function renderQuestion() {
-    const q = questions[current];
-    const pct = (current / questions.length) * 100;
-    document.getElementById('progressLabel').textContent = `질문 ${current + 1} / ${questions.length}`;
-    document.getElementById('progressFill').style.width = pct + '%';
+  wrap.innerHTML=`
+    <p class="q-sec-lbl">${q.sec}</p>
+    <h2 class="q-title">${q.title}</h2>
+    <p class="q-sub">${q.sub}</p>
+    <div class="q-neuro">🧠 ${q.neuro}</div>
+    ${html}
+    <div class="q-nav">
+      ${cur>0?`<button class="btn-prev" onclick="prevQ()">←</button>`:''}
+      <button class="btn-next" id="btnNext" onclick="nextQ()">${cur===QS.length-1?'결과 분석하기':'다음 문항 →'}</button>
+    </div>`;
 
-    const card = document.getElementById('qCard');
-    card.style.animation = 'none';
-    card.offsetHeight; // reflow
-    card.style.animation = '';
-
-    let optionsHTML = '';
-
-    if (q.type === 'mood') {
-        optionsHTML = `<div class="mood-grid">` +
-            q.options.map((o, i) => `
-                <div class="mood-opt" data-index="${i}" onclick="selectOpt(${i})">
-                    <div class="mood-emoji">${o.emoji}</div>
-                    <div class="mood-label">${o.label}</div>
-                    <div class="mood-sub">${o.desc}</div>
-                </div>
-            `).join('') +
-        `</div>`;
-    } else {
-        optionsHTML = `<div class="options-grid ${q.cols === 2 ? 'col2' : 'col1'}">` +
-            q.options.map((o, i) => `
-                <div class="opt" data-index="${i}" onclick="selectOpt(${i})">
-                    ${o.swatch ? `<div class="opt-swatch" style="background:${o.swatch}"></div>` : ''}
-                    <div class="opt-body">
-                        <div class="opt-label">${o.label}</div>
-                        <div class="opt-desc">${o.desc}</div>
-                    </div>
-                    <div class="opt-check">✓</div>
-                </div>
-            `).join('') +
-        `</div>`;
+  if(ans[q.id]!==undefined){
+    if(q.type==='scale'){
+      wrap.querySelector(`.s-btn[data-v="${ans[q.id].val}"]`)?.classList.add('sel');
+    }else{
+      wrap.querySelectorAll('.opt,.img-opt')[ans[q.id].idx]?.classList.add('sel');
     }
-
-    card.innerHTML = `
-        <p class="q-eyebrow">${q.eyebrow}</p>
-        <h2 class="q-title">${q.title}</h2>
-        <p class="q-sub">${q.sub}</p>
-        ${optionsHTML}
-        <div class="q-nav">
-            ${current > 0 ? `<button class="btn-prev" onclick="prevQ()">← 이전</button>` : ''}
-            <button class="btn-next" id="btnNext" onclick="nextQ()">
-                ${current === questions.length - 1 ? '결과 보기' : '다음 →'}
-            </button>
-        </div>
-    `;
-
-    // restore selection if exists
-    if (answers[q.id] !== undefined) {
-        const savedIdx = answers[q.id].idx;
-        const els = card.querySelectorAll('.opt, .mood-opt');
-        if (els[savedIdx]) els[savedIdx].classList.add('selected');
-        document.getElementById('btnNext').classList.add('active');
-    }
+    document.getElementById('btnNext').classList.add('on');
+  }
 }
 
-function selectOpt(idx) {
-    const q = questions[current];
-    const els = document.querySelectorAll('.opt, .mood-opt');
-    els.forEach(e => e.classList.remove('selected'));
-    els[idx].classList.add('selected');
-    answers[q.id] = { idx, tags: q.options[idx].tags };
-    document.getElementById('btnNext').classList.add('active');
+function pickOpt(i){
+  const q=QS[cur];
+  document.querySelectorAll('.opt,.img-opt').forEach(e=>e.classList.remove('sel'));
+  document.querySelectorAll('.opt,.img-opt')[i].classList.add('sel');
+  ans[q.id]={idx:i,tags:q.opts[i].tags};
+  document.getElementById('btnNext').classList.add('on');
+}
+function pickScale(v){
+  const q=QS[cur];
+  document.querySelectorAll('.s-btn').forEach(b=>b.classList.remove('sel'));
+  document.querySelector(`.s-btn[data-v="${v}"]`).classList.add('sel');
+  ans[q.id]={val:v,tags:q.tags[v-1]};
+  document.getElementById('btnNext').classList.add('on');
+}
+function nextQ(){if(!ans[QS[cur].id])return;if(cur<QS.length-1){cur++;renderQ();}else{clearInterval(timerIv);runResult();}}
+function prevQ(){if(cur>0){cur--;renderQ();}}
+
+function compute(){
+  const c={};
+  Object.values(ans).forEach(a=>Object.entries(a.tags||{}).forEach(([k,v])=>{c[k]=(c[k]||0)+v}));
+  let best=TYPES[0],score=-1;
+  TYPES.forEach(t=>{const s=Object.entries(t.weight).reduce((sum,[k])=>sum+(c[k]||0),0);if(s>score){score=s;best=t;}});
+  return best;
 }
 
-function nextQ() {
-    if (!answers[questions[current].id]) return;
-    if (current < questions.length - 1) {
-        current++;
-        renderQuestion();
-    } else {
-        clearInterval(timerInterval);
-        showResult();
-    }
+function runResult(){
+  show('s-loading');
+  const steps=['응답 패턴 벡터화 중...','욕구 구조 매핑 중...','뇌 성향 프로파일링 중...','공간 유형 알고리즘 적용 중...','보고서 생성 중...'];
+  const c=document.getElementById('ldSteps');c.innerHTML='';
+  steps.forEach((s,i)=>{
+    const el=document.createElement('div');el.className='ld-step';
+    el.style.animationDelay=(i*.5)+'s';
+    el.innerHTML=`<div class="ld-dot"></div>${s}`;c.appendChild(el);
+    setTimeout(()=>el.classList.add('done'),(i*.5+.3)*1000);
+  });
+  setTimeout(()=>{
+    resultType=compute();renderResult(resultType);
+    show('s-result');window.scrollTo({top:0,behavior:'smooth'});
+    setTimeout(()=>document.querySelectorAll('.r-bar').forEach(b=>b.style.width=b.dataset.val+'%'),400);
+  },(steps.length*.5+.8)*1000);
 }
 
-function prevQ() {
-    if (current > 0) { current--; renderQuestion(); }
+function renderResult(t){
+  const svc=SVC[t.service],svcAlt=SVC[t.serviceAlt];
+  document.getElementById('resWrap').innerHTML=`
+    <div class="res-header">
+      <p class="res-tag">✦ 공간 욕구 진단 결과</p>
+      <h2 class="res-type">${t.name}</h2>
+      <p class="res-desc">${t.desc}</p>
+      <div class="res-kws">${t.keys.map(k=>`<span class="kw">${k}</span>`).join('')}</div>
+    </div>
+    <div class="radar">
+      <p class="radar-ttl">욕구 구조 프로파일</p>
+      <div class="radar-bars">
+        ${Object.entries(t.bars).map(([l,v])=>`
+          <div class="r-row">
+            <span class="r-lbl">${l}</span>
+            <div class="r-track"><div class="r-bar" data-val="${v}"></div></div>
+            <span class="r-val">${v}</span>
+          </div>`).join('')}
+      </div>
+    </div>
+    <div class="insight-block">
+      <p class="insight-ttl">🎯 핵심 욕구 — ${t.desire}</p>
+      <p class="insight-body">${t.insight}</p>
+    </div>
+    <div class="insight-block">
+      <p class="insight-ttl">💡 공간 처방</p>
+      <p class="insight-body">추천 키워드: <strong>${t.keys.join(' · ')}</strong><br><br>
+      당신에게 필요한 공간 변화의 핵심은 <strong>${t.desire}</strong>을 충족시키는 방향입니다.
+      스코포스의 취향저격 프로젝트는 이 욕구 구조를 바탕으로 당신만의 공간 언어를 설계합니다.</p>
+    </div>
+    <p style="font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gray);margin-bottom:14px;margin-top:28px">추천 서비스</p>
+    <div class="svc-rec best">
+      <span class="svc-bdg">Best</span>
+      <div><div class="svc-name">${t.service} 서비스 <span style="font-size:.82rem;color:var(--gray)">— ${svc.sub} / ${svc.price}</span></div><div class="svc-desc">${svc.desc}</div></div>
+    </div>
+    <div class="svc-rec">
+      <span class="svc-bdg alt">Alt</span>
+      <div><div class="svc-name">${t.serviceAlt} 서비스 <span style="font-size:.82rem;color:var(--gray)">— ${svcAlt.sub} / ${svcAlt.price}</span></div><div class="svc-desc">${svcAlt.desc}</div></div>
+    </div>
+    <div class="share-blk">
+      <p class="share-ttl">✦ 결과 공유하기</p>
+      <div class="share-card" onclick="copyShareText()">
+        <span class="sc-hint">탭하여 복사</span>
+        <div class="sc-logo">SKOPOS</div>
+        <div class="sc-type">${t.plain}</div>
+        <div class="sc-sub">공간 욕구 진단 결과 · ${t.keys[0]} · ${t.keys[1]}</div>
+      </div>
+      <div class="share-btns">
+        <button class="s-btn2 kakao" onclick="shareKakao()">💬 카카오톡 공유</button>
+        <button class="s-btn2" onclick="copyLink()">🔗 링크 복사</button>
+        <button class="s-btn2" onclick="copyShareText()">📋 결과 텍스트 복사</button>
+      </div>
+    </div>
+    <div class="res-actions">
+      <a href="mailto:contact@skopos.kr?subject=공간욕구진단: ${t.plain}" class="btn-consult">상담 신청하기</a>
+      <button class="btn-retry" onclick="retryQuiz()">다시 하기</button>
+    </div>`;
 }
 
-// ══════════════════════════════════════════
-// COMPUTE RESULT
-// ══════════════════════════════════════════
-function computeResult() {
-    const tagCounts = {};
-    Object.values(answers).forEach(a => {
-        (a.tags || []).forEach(t => {
-            tagCounts[t] = (tagCounts[t] || 0) + 1;
-        });
-    });
-
-    let best = resultTypes[0], bestScore = -1;
-    resultTypes.forEach(rt => {
-        const score = rt.tags.reduce((sum, t) => sum + (tagCounts[t] || 0), 0);
-        if (score > bestScore) { bestScore = score; best = rt; }
-    });
-    return best;
+function getShareText(){
+  if(!resultType)return'';
+  return `[SKOPOS 공간 욕구 진단]\n\n나의 공간 유형: ${resultType.plain}\n핵심 욕구: ${resultType.desire}\n추천 키워드: ${resultType.keys.slice(0,3).join(' · ')}\n\n"${resultType.desc.substring(0,55)}..."\n\n나의 공간 취향 진단 👉 https://skopos.kr/quiz`;
 }
-
-// ══════════════════════════════════════════
-// SHOW RESULT
-// ══════════════════════════════════════════
-function showResult() {
-    const rt = computeResult();
-    const svc = serviceInfo[rt.service];
-    const svcAlt = serviceInfo[rt.serviceAlt];
-
-    const el = document.getElementById('screen-result');
-    el.innerHTML = `
-        <p class="result-tag">✦ 취향 진단 결과</p>
-        <h2 class="result-type">${rt.nameEm}</h2>
-        <p class="result-sub">${rt.desc}</p>
-        <div class="result-keywords">
-            ${rt.keywords.map(k => `<span class="kw-tag">${k}</span>`).join('')}
-        </div>
-        <div class="result-divider"></div>
-        <p class="result-service-label">추천 서비스</p>
-        <div class="service-rec best">
-            <span class="service-rec-badge">Best</span>
-            <div class="service-rec-body">
-                <div class="service-rec-name">${rt.service} 서비스 <span style="font-size:0.85rem;color:var(--gray)">— ${svc.sub} / ${svc.price}</span></div>
-                <div class="service-rec-desc">${svc.desc}</div>
-            </div>
-        </div>
-        <div class="service-rec">
-            <span class="service-rec-badge" style="background:transparent;border:1px solid rgba(201,169,110,0.4);color:var(--gold);">Alt</span>
-            <div class="service-rec-body">
-                <div class="service-rec-name">${rt.serviceAlt} 서비스 <span style="font-size:0.85rem;color:var(--gray)">— ${svcAlt.sub} / ${svcAlt.price}</span></div>
-                <div class="service-rec-desc">${svcAlt.desc}</div>
-            </div>
-        </div>
-        <div class="result-actions">
-            <a href="mailto:contact@skopos.kr?subject=취향진단 결과: ${rt.name}" class="btn-consult">상담 신청하기</a>
-            <button class="btn-retry" onclick="retryQuiz()">다시 하기</button>
-        </div>
-    `;
-
-    showScreen('screen-result');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+function copyShareText(){
+  const txt=getShareText();
+  navigator.clipboard.writeText(txt).then(()=>toast('✓ 결과 텍스트가 복사되었습니다')).catch(()=>{
+    const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
+    toast('✓ 결과 텍스트가 복사되었습니다');
+  });
 }
-
-function retryQuiz() {
-    showScreen('screen-intro');
+function copyLink(){
+  navigator.clipboard.writeText(window.location.href.split('?')[0]).then(()=>toast('✓ 링크가 복사되었습니다')).catch(()=>toast('링크를 직접 복사해주세요'));
 }
+function shareKakao(){
+  copyShareText();
+  setTimeout(()=>toast('📋 복사 완료! 카카오톡에 붙여넣기 해주세요'),100);
+}
+function retryQuiz(){show('s-intro')}
 </script>
 </body>
 </html>
