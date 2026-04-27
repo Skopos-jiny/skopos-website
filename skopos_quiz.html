@@ -1480,8 +1480,8 @@ function renderResult(t, sub, unlocked){
         </div>
         <div class="iblk">
           <p class="ittl">💡 공간 처방</p>
-          <p class="ibdy">추천 키워드: [[strong]]${t.keys.join(' · ')}[[/strong]]<br><br>
-          당신에게 필요한 공간 변화의 핵심은 [[strong]]${t.desire}[[/strong]]을 충족시키는 방향입니다.
+          <p class="ibdy">추천 키워드: <strong>${t.keys.join(' · ')}</strong><br><br>
+          당신에게 필요한 공간 변화의 핵심은 <strong>${t.desire}</strong>을 충족시키는 방향입니다.
           스코포스의 취향저격 프로젝트는 이 욕구 구조를 바탕으로 당신만의 공간 언어를 설계합니다.</p>
         </div>
         <p style="font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gy);margin-bottom:13px;margin-top:26px">추천 서비스</p>
@@ -1499,7 +1499,7 @@ function renderResult(t, sub, unlocked){
       <!-- 잠금 오버레이 (공개 시 숨김) -->
       <div class="blur-overlay ${isUnlocked ? 'hidden' : ''}" id="blurOverlay">
         <div class="blur-lock-icon">🔍</div>
-        <p class="blur-msg">상세 분석 결과를<br>[[em]]지금 바로 확인하세요[[/em]]</p>
+        <p class="blur-msg">상세 분석 결과를<br><em>지금 바로 확인하세요</em></p>
         <p class="blur-sub">공유하거나 상담 신청 시<br>핵심 욕구 인사이트 · 공간 처방 · 추천 서비스가 공개됩니다.</p>
         <div class="blur-actions">
           <a href="mailto:contact@skopos.kr?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}"
@@ -1524,7 +1524,7 @@ function renderResult(t, sub, unlocked){
         <div class="shcard" onclick="copyLink()">
           <span class="shhint">탭하여 링크 복사</span>
           <div class="shlogo">SKOPOS</div>
-          <div class="shtype">${dec(t.plain)}</div>
+          <div class="shtype">${dec(subPlain)}</div>
           <div class="shsub">공간 욕구 진단 결과 · ${t.keys[0]} · ${t.keys[1]}</div>
         </div>
         <div class="shbtns">
