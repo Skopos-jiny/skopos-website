@@ -164,6 +164,24 @@
             transition: all 0.3s;
         }
         .btn-ghost:hover { border-color: var(--white); }
+        .btn-quiz {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 14px 28px;
+            border: 1px solid rgba(201,169,110,0.5);
+            color: var(--gold);
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        .btn-quiz:hover {
+            background: rgba(201,169,110,0.1);
+            border-color: var(--gold);
+        }
         .hero-scroll {
             position: absolute;
             bottom: 40px;
@@ -694,6 +712,74 @@
             .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
             .testimonials-header { flex-direction: column; align-items: flex-start; gap: 20px; }
         }
+
+        /* ── QUIZ CTA BLOCK ── */
+        .quiz-cta-block {
+            display: block;
+            margin-top: 28px;
+            border: 1px solid rgba(201,169,110,0.3);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .quiz-cta-block:hover {
+            border-color: var(--gold);
+            background: rgba(201,169,110,0.06);
+        }
+        .quiz-cta-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+        }
+        .quiz-cta-label {
+            font-size: 0.62rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 5px;
+        }
+        .quiz-cta-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.15rem;
+            font-weight: 400;
+            color: var(--white);
+            margin-bottom: 3px;
+        }
+        .quiz-cta-desc {
+            font-size: 0.7rem;
+            color: var(--gray);
+        }
+        .quiz-cta-arrow {
+            font-size: 1.4rem;
+            color: var(--gold);
+            opacity: 0.7;
+            transition: transform 0.3s;
+        }
+        .quiz-cta-block:hover .quiz-cta-arrow { transform: translateX(5px); }
+            letter-spacing: 0.05em;
+        }
+        .quiz-cta-arrow {
+            font-size: 1.3rem;
+            color: var(--gold);
+            transition: transform 0.3s;
+            flex-shrink: 0;
+        }
+        .quiz-cta-block:hover .quiz-cta-arrow { transform: translateX(5px); }
+        .btn-quiz {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 14px 28px;
+            border: 1px solid rgba(201,169,110,0.5);
+            color: var(--gold);
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        .btn-quiz:hover { background: rgba(201,169,110,0.1); border-color: var(--gold); }
     </style>
 </head>
 <body>
@@ -706,6 +792,7 @@
             <li><a href="#portfolio">포트폴리오</a></li>
             <li><a href="#pricing">가격정책</a></li>
             <li><a href="#testimonials">후기</a></li>
+            <li><a href="skopos_quiz.html" style="color:var(--gold);border:1px solid rgba(201,169,110,0.4);padding:5px 12px;letter-spacing:0.1em;transition:background 0.3s;" onmouseover="this.style.background='rgba(201,169,110,0.1)'" onmouseout="this.style.background='none'">✦ 취향 진단</a></li>
             <li><a href="mailto:contact@skopos.kr" class="nav-cta">상담신청</a></li>
         </ul>
     </nav>
@@ -726,6 +813,7 @@
             <div class="hero-actions">
                 <a href="#pricing" class="btn-primary">서비스 보기</a>
                 <a href="#portfolio" class="btn-ghost">포트폴리오</a>
+                <a href="skopos_quiz.html" class="btn-quiz">✦ 취향 진단하기</a>
             </div>
         </div>
         <div class="hero-scroll">
@@ -768,6 +856,16 @@
                     가장 나다운 방식으로 존재할 수 있는 공간을<br>
                     함께 만들어 나갑니다.
                 </p>
+                <a href="skopos_quiz.html" class="quiz-cta-block">
+                    <div class="quiz-cta-inner">
+                        <div>
+                            <div class="quiz-cta-label">✦ 취향저격 프로젝트</div>
+                            <div class="quiz-cta-title">나의 공간 취향 진단하기</div>
+                            <div class="quiz-cta-desc">7문항 · 90초 · 6가지 유형 분석</div>
+                        </div>
+                        <div class="quiz-cta-arrow">→</div>
+                    </div>
+                </a>
                 <div class="philosophy-nums">
                     <div class="num-item">
                         <div class="num-val">120<span style="font-size:1.2rem">+</span></div>
@@ -782,6 +880,18 @@
                         <div class="num-label">업력</div>
                     </div>
                 </div>
+
+                <!-- Quiz CTA -->
+                <a href="skopos_quiz.html" class="quiz-cta-block">
+                    <div class="quiz-cta-inner">
+                        <div>
+                            <p class="quiz-cta-label">✦ 취향저격 프로젝트</p>
+                            <p class="quiz-cta-title">내 공간 취향 진단하기</p>
+                            <p class="quiz-cta-desc">7문항 · 90초 · 무료</p>
+                        </div>
+                        <span class="quiz-cta-arrow">→</span>
+                    </div>
+                </a>
             </div>
             <div class="philosophy-image reveal">
                 <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&q=80&w=900" alt="Philosophy Interior">
