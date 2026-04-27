@@ -176,6 +176,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;justify-content
 .blur-btn.kk{background:#FEE500;color:#191919}
 .blur-btn.kk:hover{background:#f5da00}
 
+@keyframes charIn{from{opacity:0;transform:scale(.85) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
 @keyframes fu{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fi{to{opacity:1}}
 
@@ -463,10 +464,794 @@ const QS=[
 ];
 
 // ═══════════════════════════════════════════════════════
-// RESULT TYPES
+// 24 RESULT TYPES (6 대유형 × 4 세부유형) + SVG 캐릭터
 // ═══════════════════════════════════════════════════════
+
+// SVG 캐릭터 생성 함수
+function makeSVG(id){
+  const svgs={
+    // ── 안식처 계열 (sanctuary)
+    's_deep':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+      <defs><radialGradient id="bg1" cx="50%" cy="50%"><stop offset="0%" stop-color="#1a1a2e"/><stop offset="100%" stop-color="#0c0c1a"/></radialGradient></defs>
+      <circle cx="60" cy="60" r="58" fill="url(#bg1)"/>
+      <!-- 달 -->
+      <circle cx="60" cy="38" r="18" fill="#c9a96e" opacity="0.9"/>
+      <circle cx="68" cy="34" r="14" fill="#1a1a2e"/>
+      <!-- 별 -->
+      <circle cx="28" cy="28" r="2" fill="#c9a96e" opacity="0.7"/>
+      <circle cx="88" cy="22" r="1.5" fill="#c9a96e" opacity="0.5"/>
+      <circle cx="20" cy="50" r="1" fill="#c9a96e" opacity="0.6"/>
+      <circle cx="96" cy="45" r="1.5" fill="#c9a96e" opacity="0.4"/>
+      <!-- 몸 -->
+      <ellipse cx="60" cy="100" rx="22" ry="28" fill="#2a2a3e"/>
+      <!-- 얼굴 -->
+      <circle cx="60" cy="72" r="16" fill="#e8c99a"/>
+      <!-- 감은 눈 -->
+      <path d="M53 70 Q56 68 59 70" stroke="#5a3e28" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <path d="M61 70 Q64 68 67 70" stroke="#5a3e28" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <!-- 입 -->
+      <path d="M56 76 Q60 79 64 76" stroke="#c9826e" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <!-- 귀마개 -->
+      <circle cx="44" cy="72" r="5" fill="#c9a96e" opacity="0.8"/>
+      <circle cx="76" cy="72" r="5" fill="#c9a96e" opacity="0.8"/>
+      <rect x="44" y="69" width="32" height="6" rx="3" fill="#8a7550" opacity="0.6"/>
+      <!-- 담요 -->
+      <path d="M38 95 Q60 88 82 95 L85 128 Q60 132 35 128Z" fill="#3a3a5e" opacity="0.9"/>
+      <path d="M38 95 Q60 88 82 95" stroke="#c9a96e" stroke-width="1" fill="none" opacity="0.5"/>
+      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">고요한 밤</text>
+    </svg>`,
+
+    's_calm':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="60" cy="60" r="58" fill="#0f1520"/>
+      <!-- 창문 프레임 -->
+      <rect x="20" y="20" width="80" height="60" rx="4" fill="#1a2535" stroke="#c9a96e" stroke-width="0.8" opacity="0.6"/>
+      <line x1="60" y1="20" x2="60" y2="80" stroke="#c9a96e" stroke-width="0.5" opacity="0.4"/>
+      <line x1="20" y1="50" x2="100" y2="50" stroke="#c9a96e" stroke-width="0.5" opacity="0.4"/>
+      <!-- 빛 -->
+      <ellipse cx="60" cy="35" rx="20" ry="12" fill="#c9a96e" opacity="0.08"/>
+      <!-- 캐릭터 실루엣 -->
+      <ellipse cx="60" cy="105" rx="18" ry="22" fill="#2a3545"/>
+      <circle cx="60" cy="83" r="14" fill="#d4a574"/>
+      <path d="M54 81 Q57 79 60 81" stroke="#5a3e28" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <path d="M60 81 Q63 79 66 81" stroke="#5a3e28" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <path d="M57 87 Q60 90 63 87" stroke="#c9826e" stroke-width="1.2" fill="none"/>
+      <!-- 차 한잔 -->
+      <rect x="48" y="112" width="24" height="14" rx="2" fill="#3a4555"/>
+      <path d="M50 112 Q60 108 70 112" stroke="#c9a96e" stroke-width="1" fill="none" opacity="0.7"/>
+      <!-- 김 -->
+      <path d="M55 110 Q53 106 55 103" stroke="#c9a96e" stroke-width="0.8" fill="none" opacity="0.4"/>
+      <path d="M60 109 Q58 105 60 102" stroke="#c9a96e" stroke-width="0.8" fill="none" opacity="0.3"/>
+      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">새벽의 고요</text>
+    </svg>`,
+
+    's_zen':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="60" cy="60" r="58" fill="#12100e"/>
+      <!-- 명상 방석 -->
+      <ellipse cx="60" cy="115" rx="30" ry="8" fill="#3a2a1a"/>
+      <ellipse cx="60" cy="112" rx="22" ry="5" fill="#c9a96e" opacity="0.3"/>
+      <!-- 캐릭터 가부좌 -->
+      <ellipse cx="60" cy="105" rx="26" ry="12" fill="#2a2018"/>
+      <path d="M34 108 Q60 118 86 108" fill="#2a2018"/>
+      <!-- 몸 -->
+      <ellipse cx="60" cy="92" rx="14" ry="18" fill="#2a2018"/>
+      <!-- 얼굴 -->
+      <circle cx="60" cy="74" r="15" fill="#d4a574"/>
+      <!-- 감은 눈 명상 -->
+      <path d="M53 72 Q56.5 70 60 72" stroke="#5a3e28" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <path d="M60 72 Q63.5 70 67 72" stroke="#5a3e28" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <path d="M57 78 Q60 80 63 78" stroke="#c9826e" stroke-width="1" fill="none"/>
+      <!-- 후광 -->
+      <circle cx="60" cy="74" r="22" fill="none" stroke="#c9a96e" stroke-width="0.5" opacity="0.3"/>
+      <circle cx="60" cy="74" r="28" fill="none" stroke="#c9a96e" stroke-width="0.3" opacity="0.15"/>
+      <!-- 손 -->
+      <ellipse cx="46" cy="100" rx="6" ry="4" fill="#d4a574" opacity="0.8"/>
+      <ellipse cx="74" cy="100" rx="6" ry="4" fill="#d4a574" opacity="0.8"/>
+      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">내면의 정적</text>
+    </svg>`,
+
+    's_mono':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="60" cy="60" r="58" fill="#0e0e0e"/>
+      <!-- 미니멀 라인들 -->
+      <line x1="20" y1="35" x2="100" y2="35" stroke="#c9a96e" stroke-width="0.4" opacity="0.3"/>
+      <line x1="20" y1="40" x2="70" y2="40" stroke="#c9a96e" stroke-width="0.4" opacity="0.2"/>
+      <!-- 캐릭터 (흑백 실루엣) -->
+      <ellipse cx="60" cy="100" rx="20" ry="26" fill="#1a1a1a"/>
+      <circle cx="60" cy="74" r="15" fill="#e0d0b8"/>
+      <!-- 선명한 눈 -->
+      <circle cx="55" cy="72" r="2.5" fill="#1a1a1a"/>
+      <circle cx="65" cy="72" r="2.5" fill="#1a1a1a"/>
+      <circle cx="56" cy="71" r="0.8" fill="white"/>
+      <circle cx="66" cy="71" r="0.8" fill="white"/>
+      <!-- 직선 입 -->
+      <line x1="56" y1="78" x2="64" y2="78" stroke="#5a3e28" stroke-width="1.2" stroke-linecap="round"/>
+      <!-- 안경 -->
+      <rect x="51" y="69" width="8" height="6" rx="2" fill="none" stroke="#c9a96e" stroke-width="1"/>
+      <rect x="61" y="69" width="8" height="6" rx="2" fill="none" stroke="#c9a96e" stroke-width="1"/>
+      <line x1="59" y1="72" x2="61" y2="72" stroke="#c9a96e" stroke-width="1"/>
+      <!-- 터틀넥 -->
+      <rect x="50" y="88" width="20" height="10" rx="0" fill="#1a1a1a"/>
+      <rect x="53" y="85" width="14" height="6" rx="1" fill="#2a2a2a"/>
+      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">절제의 미학</text>
+    </svg>`,
+
+    // ── 내추럴 계열 (nature)
+    'n_forest':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="60" cy="60" r="58" fill="#0d1a0d"/>
+      <!-- 나무들 배경 -->
+      <rect x="15" y="50" width="8" height="40" fill="#1a2e1a" opacity="0.7"/>
+      <polygon points="19,20 8,52 30,52" fill="#1e3a1e" opacity="0.8"/>
+      <rect x="97" y="55" width="8" height="35" fill="#1a2e1a" opacity="0.7"/>
+      <polygon points="101,25 90,57 112,57" fill="#1e3a1e" opacity="0.7"/>
+      <!-- 잔디 -->
+      <ellipse cx="60" cy="118" rx="40" ry="8" fill="#1e3a1e" opacity="0.6"/>
+      <!-- 캐릭터 -->
+      <ellipse cx="60" cy="103" rx="18" ry="22" fill="#2d4a2d"/>
+      <circle cx="60" cy="80" r="16" fill="#c8956a"/>
+      <!-- 초록 모자 -->
+      <ellipse cx="60" cy="66" rx="19" ry="6" fill="#2d5a2d"/>
+      <rect x="45" y="56" width="30" height="12" rx="4" fill="#2d5a2d"/>
+      <!-- 눈 -->
+      <circle cx="55" cy="79" r="2.5" fill="#2a1a0a"/>
+      <circle cx="65" cy="79" r="2.5" fill="#2a1a0a"/>
+      <circle cx="55.8" cy="78.2" r="0.8" fill="white"/>
+      <circle cx="65.8" cy="78.2" r="0.8" fill="white"/>
+      <!-- 볼터치 -->
+      <ellipse cx="51" cy="83" rx="3.5" ry="2" fill="#e8826e" opacity="0.5"/>
+      <ellipse cx="69" cy="83" rx="3.5" ry="2" fill="#e8826e" opacity="0.5"/>
+      <!-- 미소 -->
+      <path d="M55 85 Q60 89 65 85" stroke="#8a4a2a" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+      <!-- 식물 들고 있음 -->
+      <ellipse cx="40" cy="108" rx="8" ry="10" fill="#1e3a1e"/>
+      <path d="M40 100 Q35 92 40 88 Q45 84 42 92" fill="#2d5a2d"/>
+      <path d="M40 100 Q45 90 50 92 Q52 86 44 90" fill="#3a7a3a" opacity="0.8"/>
+      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#6ab06a" opacity="0.8" font-family="serif">숲의 친구</text>
+    </svg>`,
+
+    'n_earth':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="60" cy="60" r="58" fill="#1a1208"/>
+      <!-- 흙 텍스처 배경 -->
+      <ellipse cx="60" cy="120" rx="50" ry="12" fill="#2a1e0e" opacity="0.8"/>
+      <!-- 캐릭터 -->
+      <ellipse cx="60" cy="102" rx="20" ry="24" fill="#4a3020"/>
+      <!-- 머리카락 (흙빛) -->
+      <ellipse cx="60" cy="68" rx="18" ry="8" fill="#3a2010"/>
+      <path d="M42 68 Q60 55 78 68" fill="#3a2010"/>
+      <!-- 얼굴 -->
+      <circle cx="60" cy="78" r="16" fill="#c8956a"/>
+      <!-- 눈 (따뜻함) -->
+      <circle cx="55" cy="76" r="2.5" fill="#2a1a0a"/>
+      <circle cx="65" cy="76" r="2.5" fill="#2a1a0a"/>
+      <circle cx="55.8" cy="75.2" r="0.8" fill="white"/>
+      <circle cx="65.8" cy="75.2" r="0.8" fill="white"/>
+      <!-- 볼터치 -->
+      <ellipse cx="51" cy="80" rx="3" ry="2" fill="#d4826e" opacity="0.6"/>
+      <ellipse cx="69" cy="80" rx="3" ry="2" fill="#d4826e" opacity="0.6"/>
+      <!-- 미소 -->
+      <path d="M55 83 Q60 87 65 83" stroke="#8a4a2a" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+      <!-- 에이프런 -->
+      <rect x="48" y="95" width="24" height="20" rx="2" fill="#6a4a2a"/>
+      <rect x="56" y="93" width="8" height="4" rx="1" fill="#5a3a1a"/>
+      <!-- 화분 -->
+      <rect x="72" y="106" width="16" height="14" rx="2" fill="#8a5a3a"/>
+      <path d="M80 106 Q76 98 80 93 Q84 90 82 98" fill="#3a6a3a"/>
+      <path d="M80 106 Q84 96 88 98" fill="#4a8a4a" opacity="0.8"/>
+      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">대지의 감성</text>
+    </svg>`,
+
+    'n_breeze':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="60" cy="60" r="58" fill="#0e1a14"/>
+      <!-- 바람 곡선 -->
+      <path d="M10 40 Q40 30 70 40 Q90 45 110 35" stroke="#4a9a6a" stroke-width="0.8" fill="none" opacity="0.4"/>
+      <path d="M10 50 Q35 38 65 50 Q85 58 110 45" stroke="#4a9a6a" stroke-width="0.6" fill="none" opacity="0.25"/>
+      <!-- 잎사귀들 -->
+      <ellipse cx="25" cy="45" rx="5" ry="8" fill="#3a7a4a" opacity="0.5" transform="rotate(-30,25,45)"/>
+      <ellipse cx="92" cy="38" rx="4" ry="7" fill="#3a7a4a" opacity="0.4" transform="rotate(20,92,38)"/>
+      <!-- 캐릭터 -->
+      <ellipse cx="60" cy="103" rx="18" ry="22" fill="#1e3a2a"/>
+      <!-- 흘러내린 머리 -->
+      <path d="M44 72 Q42 90 44 100" stroke="#3a2010" stroke-width="8" fill="none" stroke-linecap="round"/>
+      <path d="M76 72 Q78 90 76 100" stroke="#3a2010" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <ellipse cx="60" cy="68" rx="18" ry="7" fill="#3a2010"/>
+      <!-- 얼굴 -->
+      <circle cx="60" cy="78" r="16" fill="#c8a07a"/>
+      <!-- 눈 (초승달형) -->
+      <path d="M52 75 Q55 73 58 75" stroke="#2a1a0a" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+      <path d="M62 75 Q65 73 68 75" stroke="#2a1a0a" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+      <!-- 볼터치 -->
+      <ellipse cx="51" cy="80" rx="3.5" ry="2" fill="#d4826e" opacity="0.5"/>
+      <ellipse cx="69" cy="80" rx="3.5" ry="2" fill="#d4826e" opacity="0.5"/>
+      <path d="M55 84 Q60 88 65 84" stroke="#8a4a2a" stroke-width="1.2" fill="none"/>
+      <!-- 스카프 (자연색) -->
+      <path d="M44 92 Q60 88 76 92 Q80 98 60 96 Q40 98 44 92" fill="#4a7a5a"/>
+      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#6ab06a" opacity="0.8" font-family="serif">바람의 결</text>
+    </svg>`,
+
+    'n_garden':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="60" cy="60" r="58" fill="#0d180d"/>
+      <!-- 정원 바닥 -->
+      <ellipse cx="60" cy="122" rx="48" ry="10" fill="#1a2e1a"/>
+      <!-- 꽃들 -->
+      <circle cx="25" cy="105" r="5" fill="#c9a96e" opacity="0.7"/>
+      <line x1="25" y1="110" x2="25" y2="122" stroke="#2d5a2d" stroke-width="1.5"/>
+      <circle cx="95" cy="108" r="4" fill="#e8c96e" opacity="0.6"/>
+      <line x1="95" y1="112" x2="95" y2="122" stroke="#2d5a2d" stroke-width="1.5"/>
+      <!-- 캐릭터 -->
+      <ellipse cx="60" cy="102" rx="18" ry="22" fill="#3a5a2a"/>
+      <!-- 꽃 머리장식 -->
+      <ellipse cx="60" cy="66" rx="17" ry="6" fill="#3a2010"/>
+      <path d="M43 66 Q60 56 77 66" fill="#3a2010"/>
+      <circle cx="55" cy="62" r="4" fill="#e8826e" opacity="0.8"/>
+      <circle cx="65" cy="60" r="3.5" fill="#c9a96e" opacity="0.9"/>
+      <circle cx="48" cy="66" r="3" fill="#e8c96e" opacity="0.7"/>
+      <!-- 얼굴 -->
+      <circle cx="60" cy="78" r="16" fill="#c8956a"/>
+      <!-- 눈 -->
+      <circle cx="55" cy="76" r="2.5" fill="#2a1a0a"/>
+      <circle cx="65" cy="76" r="2.5" fill="#2a1a0a"/>
+      <circle cx="55.8" cy="75.2" r="0.8" fill="white"/>
+      <circle cx="65.8" cy="75.2" r="0.8" fill="white"/>
+      <ellipse cx="51" cy="80" rx="3" ry="2" fill="#d4826e" opacity="0.6"/>
+      <ellipse cx="69" cy="80" rx="3" ry="2" fill="#d4826e" opacity="0.6"/>
+      <path d="M55 84 Q60 88 65 84" stroke="#8a4a2a" stroke-width="1.3" fill="none"/>
+      <!-- 물뿌리개 -->
+      <rect x="72" y="102" width="18" height="12" rx="2" fill="#5a7a6a"/>
+      <path d="M90 105 Q96 102 94 108" stroke="#5a7a6a" stroke-width="2" fill="none"/>
+      <line x1="93" y1="104" x2="96" y2="107" stroke="#6aaecc" stroke-width="0.8" opacity="0.6"/>
+      <line x1="94" y1="106" x2="97" y2="110" stroke="#6aaecc" stroke-width="0.8" opacity="0.5"/>
+      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#6ab06a" opacity="0.8" font-family="serif">정원사의 손길</text>
+    </svg>`,
+
+    // ── 럭셔리 계열 (luxe)
+    'l_royal':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+      <defs><linearGradient id="lg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#1a1208"/><stop offset="100%" stop-color="#0c0c0c"/></linearGradient></defs>
+      <circle cx="60" cy="60" r="58" fill="url(#lg1)"/>
+      <!-- 왕관 -->
+      <polygon points="42,52 48,38 55,48 60,32 65,48 72,38 78,52" fill="#c9a96e"/>
+      <circle cx="60" cy="34" r="3" fill="#e8d5b0"/>
+      <circle cx="48" cy="40" r="2" fill="#e8d5b0"/>
+      <circle cx="72" cy="40" r="2" fill="#e8d5b0"/>
+      <!-- 얼굴 -->
+      <circle cx="60" cy="74" r="16" fill="#d4a574"/>
+      <!-- 눈 (우아한) -->
+      <path d="M52 71 Q55.5 68 59 71" stroke="#3a2010" stroke-width="1.5" fill="none"/>
+      <path d="M61 71 Q64.5 68 68 71" stroke="#3a2010" stroke-width="1.5" fill="none"/>
+      <line x1="52" y1="71" x2="50" y2="70" stroke="#3a2010" stroke-width="0.8"/>
+      <line x1="68" y1="71" x2="70" y2="70" stroke="#3a2010" stroke-width="0.8"/>
+      <ellipse cx="51" cy="76" rx="3" ry="1.8" fill="#c8825e" opacity="0.4"/>
+      <ellipse cx="69" cy="76" rx="3" ry="1.8" fill="#c8825e" opacity="0.4"/>
+      <path d="M56 80 Q60 83 64 80" stroke="#8a4a2a" stroke-width="1" fill="none"/>
+      <!-- 드레스/정장 -->
+      <path d="M40 90 Q60 84 80 90 L84 128 Q60 132 36 128Z" fill="#1e1e2e"/>
+      <rect x="56" y="88" width="8" height="6" rx="1" fill="#c9a96e" opacity="0.8"/>
+      <!-- 진주 목걸이 -->
+      <path d="M48 87 Q60 84 72 87" stroke="none" fill="none"/>
+      <circle cx="52" cy="87" r="1.5" fill="#e8e0d0"/>
+      <circle cx="57" cy="85.5" r="1.5" fill="#e8e0d0"/>
+      <circle cx="63" cy="85.5" r="1.5" fill="#e8e0d0"/>
+      <circle cx="68" cy="87" r="1.5" fill="#e8e0d0"/>
+      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.8" font-family="serif">로열 에디터</text>
+    </svg>`,
+
+    'l_gallery':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="60" cy="60" r="58" fill="#0e0e0e"/>
+      <!-- 갤러리 벽 프레임들 -->
+      <rect x="10" y="25" width="22" height="18" rx="1" fill="none" stroke="#c9a96e" stroke-width="0.6" opacity="0.4"/>
+      <rect x="88" y="28" width="18" height="14" rx="1" fill="none" stroke="#c9a96e" stroke-width="0.6" opacity="0.3"/>
+      <!-- 캐릭터 -->
+      <ellipse cx="60" cy="102" rx="18" ry="22" fill="#1e1e1e"/>
+      <!-- 베레모 -->
+      <ellipse cx="60" cy="64" rx="20" ry="7" fill="#2a1a0a"/>
+      <ellipse cx="55" cy="60" rx="15" ry="8" fill="#3a2a1a"/>
+      <!-- 얼굴 -->
+      <circle cx="60" cy="76" r="15" fill="#d4a574"/>
+      <!-- 눈 (지적) -->
+      <circle cx="55" cy="74" r="2.5" fill="#1a0a0a"/>
+      <circle cx="65" cy="74" r="2.5" fill="#1a0a0a"/>
+      <circle cx="55.8" cy="73.2" r="0.8" fill="white"/>
+      <circle cx="65.8" cy="73.2" r="0.8" fill="white"/>
+      <!-- 턱수염/특징 -->
+      <path d="M56 81 Q60 84 64 81" stroke="#8a4a2a" stroke-width="1.2" fill="none"/>
+      <!-- 스카프 -->
+      <path d="M46 89 Q60 84 74 89" fill="none"/>
+      <path d="M48 90 Q60 86 72 90 Q70 96 60 94 Q50 96 48 90" fill="#8a3a2a"/>
+      <!-- 팔레트 -->
+      <ellipse cx="38" cy="108" rx="10" ry="8" fill="#2a1e1a"/>
+      <circle cx="35" cy="106" r="2" fill="#c9a96e"/>
+      <circle cx="40" cy="104" r="2" fill="#6a9a6a"/>
+      <circle cx="44" cy="108" r="2" fill="#6a6aaa"/>
+      <circle cx="37" cy="112" r="2" fill="#aa6a6a"/>
+      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.8" font-family="serif">갤러리스트</text>
+    </svg>`,
+
+    'l_classic':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="60" cy="60" r="58" fill="#0c0c0a"/>
+      <!-- 대리석 패턴 -->
+      <path d="M0 80 Q30 70 60 80 Q90 90 120 80" stroke="#c9a96e" stroke-width="0.3" fill="none" opacity="0.15"/>
+      <path d="M0 90 Q40 82 80 90 Q100 94 120 90" stroke="#c9a96e" stroke-width="0.3" fill="none" opacity="0.1"/>
+      <!-- 캐릭터 -->
+      <ellipse cx="60" cy="102" rx="20" ry="24" fill="#1e1a14"/>
+      <!-- 머리카락 -->
+      <ellipse cx="60" cy="66" rx="18" ry="7" fill="#2a1e0a"/>
+      <path d="M42 66 Q60 55 78 66" fill="#2a1e0a"/>
+      <path d="M42 66 Q44 78 44 86" stroke="#2a1e0a" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <path d="M78 66 Q76 78 76 86" stroke="#2a1e0a" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <!-- 얼굴 -->
+      <circle cx="60" cy="78" r="16" fill="#d4a574"/>
+      <!-- 고전적 눈 -->
+      <path d="M52 75 Q55.5 72 59 75" stroke="#2a1a0a" stroke-width="1.5" fill="none"/>
+      <path d="M61 75 Q64.5 72 68 75" stroke="#2a1a0a" stroke-width="1.5" fill="none"/>
+      <ellipse cx="51" cy="79" rx="3" ry="1.8" fill="#c8825e" opacity="0.4"/>
+      <ellipse cx="69" cy="79" rx="3" ry="1.8" fill="#c8825e" opacity="0.4"/>
+      <path d="M56 83 Q60 86 64 83" stroke="#8a4a2a" stroke-width="1.1" fill="none"/>
+      <!-- 클래식 재킷 -->
+      <path d="M40 92 Q60 86 80 92 L82 126 Q60 130 38 126Z" fill="#1a1a2a"/>
+      <path d="M52 92 L56 110" stroke="#c9a96e" stroke-width="0.5" opacity="0.6"/>
+      <path d="M68 92 L64 110" stroke="#c9a96e" stroke-width="0.5" opacity="0.6"/>
+      <rect x="57" y="92" width="6" height="2" rx="1" fill="#c9a96e" opacity="0.7"/>
+      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.8" font-family="serif">클래식 에디터</text>
+    </svg>`,
+
+    'l_luxe':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+      <defs><radialGradient id="lg2"><stop offset="0%" stop-color="#1a1408"/><stop offset="100%" stop-color="#0a0a08"/></radialGradient></defs>
+      <circle cx="60" cy="60" r="58" fill="url(#lg2)"/>
+      <!-- 황금 장식 -->
+      <circle cx="60" cy="20" r="6" fill="none" stroke="#c9a96e" stroke-width="1" opacity="0.5"/>
+      <line x1="60" y1="14" x2="60" y2="26" stroke="#c9a96e" stroke-width="0.5" opacity="0.4"/>
+      <line x1="54" y1="20" x2="66" y2="20" stroke="#c9a96e" stroke-width="0.5" opacity="0.4"/>
+      <!-- 캐릭터 -->
+      <ellipse cx="60" cy="102" rx="20" ry="24" fill="#1a1408"/>
+      <!-- 머리카락 (업스타일) -->
+      <ellipse cx="60" cy="63" rx="16" ry="9" fill="#1a0e04"/>
+      <ellipse cx="60" cy="57" rx="12" ry="6" fill="#2a1a08"/>
+      <circle cx="60" cy="54" r="4" fill="#c9a96e" opacity="0.7"/>
+      <!-- 얼굴 -->
+      <circle cx="60" cy="76" r="16" fill="#d4a574"/>
+      <!-- 눈 (우아함) -->
+      <path d="M52 73 Q55.5 70 59 73" stroke="#2a1a0a" stroke-width="1.8" fill="none"/>
+      <path d="M61 73 Q64.5 70 68 73" stroke="#2a1a0a" stroke-width="1.8" fill="none"/>
+      <line x1="52" y1="73" x2="50" y2="72" stroke="#2a1a0a" stroke-width="1"/>
+      <line x1="68" y1="73" x2="70" y2="72" stroke="#2a1a0a" stroke-width="1"/>
+      <ellipse cx="51" cy="78" rx="3" ry="1.5" fill="#c8725e" opacity="0.5"/>
+      <ellipse cx="69" cy="78" rx="3" ry="1.5" fill="#c8725e" opacity="0.5"/>
+      <path d="M56 82 Q60 85 64 82" stroke="#8a3a2a" stroke-width="1.2" fill="none"/>
+      <!-- 귀걸이 -->
+      <circle cx="44" cy="79" r="2" fill="#c9a96e"/>
+      <line x1="44" y1="81" x2="44" y2="86" stroke="#c9a96e" stroke-width="0.8"/>
+      <circle cx="44" cy="87" r="1.5" fill="#e8d5b0"/>
+      <circle cx="76" cy="79" r="2" fill="#c9a96e"/>
+      <line x1="76" y1="81" x2="76" y2="86" stroke="#c9a96e" stroke-width="0.8"/>
+      <circle cx="76" cy="87" r="1.5" fill="#e8d5b0"/>
+      <!-- 드레스 -->
+      <path d="M40 90 Q60 84 80 90 L85 130 Q60 134 35 130Z" fill="#1a1408"/>
+      <path d="M40 90 Q60 84 80 90" stroke="#c9a96e" stroke-width="0.6" fill="none" opacity="0.5"/>
+      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.8" font-family="serif">럭스 큐레이터</text>
+    </svg>`,
+
+    // ── 아티스틱 계열 (artistic)
+    'a_wild':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="60" cy="60" r="58" fill="#0e080e"/>
+      <!-- 물감 튀김 -->
+      <circle cx="20" cy="30" r="4" fill="#8a3a8a" opacity="0.6"/>
+      <circle cx="95" cy="25" r="3" fill="#3a8a3a" opacity="0.5"/>
+      <circle cx="15" cy="70" r="2.5" fill="#8a8a3a" opacity="0.5"/>
+      <circle cx="100" cy="60" r="3" fill="#3a3a8a" opacity="0.4"/>
+      <circle cx="85" cy="85" r="2" fill="#c9a96e" opacity="0.5"/>
+      <!-- 캐릭터 -->
+      <ellipse cx="60" cy="102" rx="20" ry="22" fill="#2a1a2a"/>
+      <!-- 헝클어진 머리 -->
+      <path d="M40 70 Q38 55 44 50 Q50 45 55 52" stroke="#3a1a3a" stroke-width="8" fill="none" stroke-linecap="round"/>
+      <path d="M80 70 Q82 55 76 50 Q70 45 65 52" stroke="#4a2a1a" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <path d="M50 52 Q60 44 70 52" fill="#3a2a1a"/>
+      <path d="M44 60 Q42 50 48 46" stroke="#3a1a3a" stroke-width="5" fill="none"/>
+      <path d="M76 58 Q80 50 74 46" stroke="#4a2a1a" stroke-width="4" fill="none"/>
+      <!-- 얼굴 -->
+      <circle cx="60" cy="76" r="16" fill="#c89a6a"/>
+      <!-- 눈 (강렬함) -->
+      <circle cx="55" cy="74" r="3" fill="#1a0a0a"/>
+      <circle cx="65" cy="74" r="3" fill="#1a0a0a"/>
+      <circle cx="56" cy="73" r="1" fill="white"/>
+      <circle cx="66" cy="73" r="1" fill="white"/>
+      <!-- 눈 밑 어둠 -->
+      <ellipse cx="55" cy="77" rx="4" ry="2" fill="#2a1a1a" opacity="0.3"/>
+      <ellipse cx="65" cy="77" rx="4" ry="2" fill="#2a1a1a" opacity="0.3"/>
+      <path d="M55 82 Q60 86 65 82" stroke="#8a3a2a" stroke-width="1.3" fill="none"/>
+      <!-- 물감 묻은 손 -->
+      <ellipse cx="38" cy="108" rx="7" ry="9" fill="#c89a6a"/>
+      <circle cx="38" cy="104" r="2" fill="#8a3a8a" opacity="0.7"/>
+      <circle cx="35" cy="108" r="1.5" fill="#3a8a3a" opacity="0.6"/>
+      <circle cx="41" cy="107" r="1.5" fill="#c9a96e" opacity="0.7"/>
+      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.8" font-family="serif">야생의 예술가</text>
+    </svg>`,
+
+    'a_indie':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="60" cy="60" r="58" fill="#080810"/>
+      <!-- 기하학 패턴 -->
+      <polygon points="20,20 35,20 27.5,33" fill="none" stroke="#c9a96e" stroke-width="0.5" opacity="0.3"/>
+      <rect x="85" y="18" width="15" height="15" fill="none" stroke="#c9a96e" stroke-width="0.5" opacity="0.25" transform="rotate(15,92,25)"/>
+      <!-- 캐릭터 -->
+      <ellipse cx="60" cy="102" rx="18" ry="22" fill="#18181e"/>
+      <!-- 구조적 헤어 -->
+      <rect x="42" y="55" width="36" height="14" rx="2" fill="#1a1a2a"/>
+      <rect x="44" y="53" width="32" height="8" rx="1" fill="#2a2a3a"/>
+      <!-- 얼굴 -->
+      <circle cx="60" cy="76" r="15" fill="#c89a6a"/>
+      <!-- 눈 (각진) -->
+      <rect x="51" y="72" width="7" height="4" rx="1" fill="none" stroke="#1a0a0a" stroke-width="1.5"/>
+      <rect x="62" y="72" width="7" height="4" rx="1" fill="none" stroke="#1a0a0a" stroke-width="1.5"/>
+      <rect x="52.5" y="73" width="4" height="2" rx="0.5" fill="#1a0a0a"/>
+      <rect x="63.5" y="73" width="4" height="2" rx="0.5" fill="#1a0a0a"/>
+      <line x1="55" y1="80" x2="65" y2="80" stroke="#8a4a2a" stroke-width="1.2"/>
+      <!-- 피어싱 -->
+      <circle cx="44" cy="77" r="1.5" fill="#c9a96e"/>
+      <circle cx="76" cy="77" r="1.5" fill="#c9a96e"/>
+      <!-- 의상 패턴 -->
+      <path d="M42 90 Q60 84 78 90 L80 126 Q60 130 40 126Z" fill="#18181e"/>
+      <line x1="50" y1="90" x2="50" y2="126" stroke="#c9a96e" stroke-width="0.4" opacity="0.4"/>
+      <line x1="70" y1="90" x2="70" y2="126" stroke="#c9a96e" stroke-width="0.4" opacity="0.4"/>
+      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.8" font-family="serif">인디 아티스트</text>
+    </svg>`,
+
+    'a_vintage':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="60" cy="60" r="58" fill="#0e0a06"/>
+      <!-- 빈티지 프레임 -->
+      <rect x="8" y="8" width="104" height="104" rx="4" fill="none" stroke="#c9a96e" stroke-width="0.4" opacity="0.2"/>
+      <rect x="12" y="12" width="96" height="96" rx="3" fill="none" stroke="#c9a96e" stroke-width="0.3" opacity="0.15"/>
+      <!-- 캐릭터 -->
+      <ellipse cx="60" cy="102" rx="20" ry="22" fill="#2a1e10"/>
+      <!-- 복고풍 머리 -->
+      <ellipse cx="60" cy="65" rx="19" ry="9" fill="#2a1a08"/>
+      <path d="M41 65 Q60 52 79 65" fill="#2a1a08"/>
+      <path d="M41 68 Q43 80 44 88" stroke="#2a1a08" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <path d="M79 68 Q77 80 76 88" stroke="#2a1a08" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <!-- 얼굴 -->
+      <circle cx="60" cy="78" r="16" fill="#d4a574"/>
+      <!-- 복고풍 눈 -->
+      <path d="M51 74 Q55 71 59 74 L59 77 Q55 78 51 77Z" fill="#1a0a0a"/>
+      <path d="M61 74 Q65 71 69 74 L69 77 Q65 78 61 77Z" fill="#1a0a0a"/>
+      <circle cx="53" cy="74" r="0.8" fill="white"/>
+      <circle cx="63" cy="74" r="0.8" fill="white"/>
+      <ellipse cx="51" cy="80" rx="3" ry="1.8" fill="#c8825e" opacity="0.5"/>
+      <ellipse cx="69" cy="80" rx="3" ry="1.8" fill="#c8825e" opacity="0.5"/>
+      <path d="M55 84 Q60 87 65 84" stroke="#8a4a2a" stroke-width="1.3" fill="none"/>
+      <!-- 빈티지 의상 -->
+      <path d="M40 92 Q60 86 80 92 L82 128 Q60 132 38 128Z" fill="#2a1a10"/>
+      <circle cx="60" cy="98" r="3" fill="#c9a96e" opacity="0.6"/>
+      <circle cx="60" cy="106" r="3" fill="#c9a96e" opacity="0.5"/>
+      <circle cx="60" cy="114" r="3" fill="#c9a96e" opacity="0.4"/>
+      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.8" font-family="serif">빈티지 소울</text>
+    </svg>`,
+
+    'a_eccentric':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="60" cy="60" r="58" fill="#0a080e"/>
+      <!-- 별자리 같은 패턴 -->
+      <circle cx="22" cy="22" r="1.5" fill="#c9a96e" opacity="0.5"/>
+      <circle cx="95" cy="18" r="1" fill="#c9a96e" opacity="0.4"/>
+      <circle cx="18" cy="80" r="1" fill="#c9a96e" opacity="0.3"/>
+      <line x1="22" y1="22" x2="95" y2="18" stroke="#c9a96e" stroke-width="0.3" opacity="0.15"/>
+      <!-- 캐릭터 -->
+      <ellipse cx="60" cy="102" rx="20" ry="22" fill="#18101e"/>
+      <!-- 특이한 모자 -->
+      <ellipse cx="60" cy="58" rx="22" ry="8" fill="#3a1a3a"/>
+      <rect x="50" y="42" width="20" height="18" rx="2" fill="#2a1a2a"/>
+      <circle cx="60" cy="42" r="5" fill="#c9a96e" opacity="0.7"/>
+      <path d="M55 42 L60 36 L65 42" fill="none" stroke="#c9a96e" stroke-width="0.8" opacity="0.5"/>
+      <!-- 얼굴 -->
+      <circle cx="60" cy="76" r="15" fill="#c89a7a"/>
+      <!-- 눈 (한쪽 다름) -->
+      <circle cx="55" cy="74" r="3" fill="#1a0a1a"/>
+      <star cx="65" cy="74"/>
+      <polygon points="65,70 66.2,73 69.5,73 66.9,75 67.9,78.3 65,76.5 62.1,78.3 63.1,75 60.5,73 63.8,73" fill="#1a0a1a" transform="scale(0.55) translate(63,80)"/>
+      <circle cx="55.8" cy="73" r="0.8" fill="white"/>
+      <ellipse cx="50" cy="78" rx="3" ry="2" fill="#c8625e" opacity="0.5"/>
+      <ellipse cx="70" cy="78" rx="3" ry="2" fill="#c8625e" opacity="0.5"/>
+      <path d="M55 82 Q60 85 65 82" stroke="#8a3a2a" stroke-width="1.2" fill="none"/>
+      <!-- 화려한 의상 -->
+      <path d="M40 90 Q60 84 80 90 L82 128 Q60 132 38 128Z" fill="#2a103a"/>
+      <circle cx="55" cy="95" r="2" fill="#c9a96e" opacity="0.6"/>
+      <circle cx="65" cy="95" r="2" fill="#8a4a9a" opacity="0.6"/>
+      <circle cx="60" cy="103" r="2" fill="#4a8a4a" opacity="0.5"/>
+      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.8" font-family="serif">에클레틱 소울</text>
+    </svg>`,
+
+    // ── 미니멀 계열 (minimal)
+    'm_pure':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="60" cy="60" r="58" fill="#0a0a0a"/>
+      <!-- 수평선 하나 -->
+      <line x1="15" y1="95" x2="105" y2="95" stroke="#c9a96e" stroke-width="0.4" opacity="0.2"/>
+      <!-- 캐릭터 (매우 미니멀) -->
+      <ellipse cx="60" cy="103" rx="16" ry="22" fill="#141414"/>
+      <!-- 얼굴 -->
+      <circle cx="60" cy="76" r="15" fill="#d8c4a8"/>
+      <!-- 눈 (점 두개) -->
+      <circle cx="55" cy="74" r="2" fill="#0a0a0a"/>
+      <circle cx="65" cy="74" r="2" fill="#0a0a0a"/>
+      <!-- 입 (선 하나) -->
+      <line x1="56" y1="80" x2="64" y2="80" stroke="#5a3a28" stroke-width="1" stroke-linecap="round"/>
+      <!-- 올백 헤어 -->
+      <path d="M45 68 Q60 58 75 68" fill="#0a0a0a"/>
+      <ellipse cx="60" cy="65" rx="17" ry="6" fill="#0a0a0a"/>
+      <!-- 미니멀 의상 (흰 셔츠) -->
+      <path d="M44 90 Q60 84 76 90 L78 128 Q60 132 42 128Z" fill="#e8e0d0"/>
+      <line x1="60" y1="90" x2="60" y2="128" stroke="#d0c8b8" stroke-width="0.5"/>
+      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">순수 미니멀</text>
+    </svg>`,
+
+    'm_grid':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="60" cy="60" r="58" fill="#080808"/>
+      <!-- 그리드 -->
+      <line x1="40" y1="10" x2="40" y2="110" stroke="#c9a96e" stroke-width="0.3" opacity="0.12"/>
+      <line x1="80" y1="10" x2="80" y2="110" stroke="#c9a96e" stroke-width="0.3" opacity="0.12"/>
+      <line x1="10" y1="40" x2="110" y2="40" stroke="#c9a96e" stroke-width="0.3" opacity="0.12"/>
+      <line x1="10" y1="80" x2="110" y2="80" stroke="#c9a96e" stroke-width="0.3" opacity="0.12"/>
+      <!-- 캐릭터 -->
+      <rect x="44" y="85" width="32" height="38" rx="0" fill="#111111"/>
+      <!-- 얼굴 (직각 느낌) -->
+      <rect x="46" y="63" width="28" height="24" rx="4" fill="#d8c4a8"/>
+      <!-- 눈 (정사각) -->
+      <rect x="52" y="69" width="5" height="5" rx="0.5" fill="#0a0a0a"/>
+      <rect x="63" y="69" width="5" height="5" rx="0.5" fill="#0a0a0a"/>
+      <!-- 입 -->
+      <rect x="55" y="79" width="10" height="2" rx="1" fill="#5a3a28"/>
+      <!-- 헤어 (기하학) -->
+      <rect x="44" y="56" width="32" height="10" rx="0" fill="#0a0a0a"/>
+      <rect x="46" y="52" width="28" height="8" rx="1" fill="#141414"/>
+      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">그리드 마스터</text>
+    </svg>`,
+
+    'm_mono':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="60" cy="60" r="58" fill="#0a0a08"/>
+      <!-- 황금 비율 곡선 -->
+      <path d="M15 60 Q40 20 85 60 Q110 80 85 100" stroke="#c9a96e" stroke-width="0.4" fill="none" opacity="0.15"/>
+      <!-- 캐릭터 -->
+      <ellipse cx="60" cy="103" rx="18" ry="23" fill="#101008"/>
+      <!-- 얼굴 -->
+      <circle cx="60" cy="76" r="15" fill="#d8c4a8"/>
+      <!-- 눈 (감각적) -->
+      <path d="M52 74 Q55.5 71 59 74" stroke="#0a0a08" stroke-width="1.8" fill="none"/>
+      <path d="M61 74 Q64.5 71 68 74" stroke="#0a0a08" stroke-width="1.8" fill="none"/>
+      <ellipse cx="51" cy="77" rx="2.5" ry="1.5" fill="#c8825e" opacity="0.35"/>
+      <ellipse cx="69" cy="77" rx="2.5" ry="1.5" fill="#c8825e" opacity="0.35"/>
+      <line x1="57" y1="81" x2="63" y2="81" stroke="#5a3a28" stroke-width="1" stroke-linecap="round"/>
+      <!-- 머리카락 -->
+      <ellipse cx="60" cy="64" rx="17" ry="7" fill="#0a0a08"/>
+      <path d="M43 64 Q60 54 77 64" fill="#0a0a08"/>
+      <!-- 롤넥 -->
+      <rect x="50" y="89" width="20" height="8" rx="0" fill="#101008"/>
+      <rect x="52" y="85" width="16" height="6" rx="1" fill="#1a1a18"/>
+      <!-- 코트 -->
+      <path d="M40 93 Q60 87 80 93 L82 128 Q60 132 38 128Z" fill="#101008"/>
+      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">모노크롬</text>
+    </svg>`,
+
+    'm_line':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="60" cy="60" r="58" fill="#060606"/>
+      <!-- 수직선들 -->
+      <line x1="30" y1="10" x2="30" y2="115" stroke="#c9a96e" stroke-width="0.3" opacity="0.1"/>
+      <line x1="90" y1="10" x2="90" y2="115" stroke="#c9a96e" stroke-width="0.3" opacity="0.1"/>
+      <!-- 캐릭터 (선화 느낌) -->
+      <ellipse cx="60" cy="103" rx="16" ry="22" fill="none" stroke="#2a2a2a" stroke-width="1.5"/>
+      <ellipse cx="60" cy="103" rx="16" ry="22" fill="#0e0e0e"/>
+      <!-- 얼굴 -->
+      <circle cx="60" cy="76" r="15" fill="none" stroke="#d8c4a8" stroke-width="1"/>
+      <circle cx="60" cy="76" r="15" fill="#d8c4a8"/>
+      <!-- 눈 (선화) -->
+      <line x1="53" y1="73" x2="58" y2="73" stroke="#0a0a0a" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="62" y1="73" x2="67" y2="73" stroke="#0a0a0a" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="57" y1="79" x2="63" y2="79" stroke="#5a3a28" stroke-width="1" stroke-linecap="round"/>
+      <!-- 머리 (선화) -->
+      <path d="M45 68 Q60 56 75 68" fill="none" stroke="#0a0a0a" stroke-width="2" stroke-linecap="round"/>
+      <path d="M45 68 Q45 78 46 86" stroke="#0a0a0a" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <path d="M75 68 Q75 78 74 86" stroke="#0a0a0a" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">라인 아키텍트</text>
+    </svg>`,
+
+    // ── 코지 계열 (cozy)
+    'c_hearth':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="60" cy="60" r="58" fill="#0e0a06"/>
+      <!-- 벽난로 -->
+      <rect x="15" y="85" width="30" height="28" rx="2" fill="#2a1a0a"/>
+      <rect x="18" y="88" width="24" height="22" rx="1" fill="#1a0e06"/>
+      <!-- 불꽃 -->
+      <path d="M24 110 Q27 100 25 93 Q30 100 28 93 Q33 102 30 110Z" fill="#c9a96e" opacity="0.8"/>
+      <path d="M32 110 Q35 103 33 97 Q37 103 36 110Z" fill="#e8826e" opacity="0.7"/>
+      <!-- 연기 -->
+      <path d="M30 88 Q28 82 30 78" stroke="#3a3a3a" stroke-width="1" fill="none" opacity="0.4"/>
+      <!-- 캐릭터 -->
+      <ellipse cx="70" cy="102" rx="20" ry="22" fill="#3a2a1a"/>
+      <!-- 따뜻한 머리카락 -->
+      <ellipse cx="70" cy="70" rx="18" ry="8" fill="#4a2a0a"/>
+      <path d="M52 70 Q70 58 88 70" fill="#4a2a0a"/>
+      <path d="M52 73 Q50 84 51 92" stroke="#4a2a0a" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <!-- 얼굴 -->
+      <circle cx="70" cy="80" r="16" fill="#d4a574"/>
+      <!-- 눈 (반달눈) -->
+      <path d="M63 77 Q66.5 75 70 77" stroke="#2a1a0a" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <path d="M70 77 Q73.5 75 77 77" stroke="#2a1a0a" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <!-- 볼터치 -->
+      <ellipse cx="60" cy="82" rx="4" ry="2.5" fill="#e8826e" opacity="0.6"/>
+      <ellipse cx="80" cy="82" rx="4" ry="2.5" fill="#e8826e" opacity="0.6"/>
+      <!-- 미소 -->
+      <path d="M64 87 Q70 92 76 87" stroke="#8a4a2a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <!-- 담요/스웨터 -->
+      <path d="M50 94 Q70 88 90 94 L92 128 Q70 132 48 128Z" fill="#4a3020"/>
+      <path d="M54 94 Q70 90 86 94" stroke="#c9a96e" stroke-width="0.5" fill="none" opacity="0.4"/>
+      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">따뜻한 불가</text>
+    </svg>`,
+
+    'c_family':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="60" cy="60" r="58" fill="#0c0a06"/>
+      <!-- 집 모양 -->
+      <polygon points="60,18 90,38 90,65 30,65 30,38" fill="#2a1e10" opacity="0.5"/>
+      <rect x="30" y="38" width="60" height="27" fill="#2a1e10" opacity="0.4"/>
+      <rect x="54" y="48" width="12" height="17" rx="1" fill="#c9a96e" opacity="0.2"/>
+      <!-- 큰 캐릭터 -->
+      <ellipse cx="50" cy="105" rx="14" ry="18" fill="#3a2a18"/>
+      <circle cx="50" cy="87" r="12" fill="#c8956a"/>
+      <path d="M44 85 Q47 83 50 85" stroke="#2a1a0a" stroke-width="1.5" fill="none"/>
+      <path d="M50 85 Q53 83 56 85" stroke="#2a1a0a" stroke-width="1.5" fill="none"/>
+      <ellipse cx="46" cy="88" rx="3" ry="2" fill="#e8826e" opacity="0.6"/>
+      <ellipse cx="54" cy="88" rx="3" ry="2" fill="#e8826e" opacity="0.6"/>
+      <path d="M46 92 Q50 96 54 92" stroke="#8a4a2a" stroke-width="1.3" fill="none"/>
+      <!-- 작은 캐릭터 (아이) -->
+      <ellipse cx="74" cy="112" rx="10" ry="12" fill="#4a3020"/>
+      <circle cx="74" cy="100" r="9" fill="#d4a574"/>
+      <path d="M69 98 Q72 96 75 98" stroke="#2a1a0a" stroke-width="1.5" fill="none"/>
+      <path d="M75 98 Q78 96 81 98" stroke="#2a1a0a" stroke-width="1.5" fill="none"/>
+      <ellipse cx="70" cy="101" rx="2.5" ry="1.5" fill="#e8826e" opacity="0.6"/>
+      <ellipse cx="78" cy="101" rx="2.5" ry="1.5" fill="#e8826e" opacity="0.6"/>
+      <path d="M70 104 Q74 108 78 104" stroke="#8a4a2a" stroke-width="1.2" fill="none"/>
+      <!-- 손 잡기 -->
+      <line x1="64" y1="110" x2="64" y2="110" stroke="#c8956a" stroke-width="2"/>
+      <ellipse cx="63" cy="110" rx="4" ry="3" fill="#c8956a" opacity="0.7"/>
+      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">함께하는 온기</text>
+    </svg>`,
+
+    'c_blanket':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="60" cy="60" r="58" fill="#0c0808"/>
+      <!-- 소파 -->
+      <rect x="15" y="95" width="90" height="28" rx="4" fill="#2a1810"/>
+      <rect x="15" y="88" width="90" height="12" rx="3" fill="#3a2218"/>
+      <rect x="12" y="85" width="15" height="35" rx="3" fill="#2a1810"/>
+      <rect x="93" y="85" width="15" height="35" rx="3" fill="#2a1810"/>
+      <!-- 담요 -->
+      <path d="M28 88 Q60 78 92 88 Q88 110 60 108 Q32 110 28 88" fill="#4a2a18"/>
+      <path d="M28 88 Q60 78 92 88" stroke="#c9a96e" stroke-width="0.6" fill="none" opacity="0.4"/>
+      <!-- 캐릭터 -->
+      <circle cx="60" cy="78" r="18" fill="none"/>
+      <circle cx="60" cy="80" r="16" fill="#d4a574"/>
+      <!-- 꼬불꼬불 머리 -->
+      <path d="M44 74 Q42 60 48 54 Q54 50 60 56 Q66 50 72 54 Q78 60 76 74" fill="#3a2010"/>
+      <path d="M44 74 Q44 66 46 60" stroke="#4a2a10" stroke-width="4" fill="none"/>
+      <path d="M76 74 Q76 66 74 60" stroke="#4a2a10" stroke-width="4" fill="none"/>
+      <!-- 눈 (반달) -->
+      <path d="M52 78 Q56 76 60 78" stroke="#2a1a0a" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <path d="M60 78 Q64 76 68 78" stroke="#2a1a0a" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <!-- 볼터치 크게 -->
+      <ellipse cx="50" cy="83" rx="5" ry="3" fill="#e8826e" opacity="0.7"/>
+      <ellipse cx="70" cy="83" rx="5" ry="3" fill="#e8826e" opacity="0.7"/>
+      <path d="M55 88 Q60 93 65 88" stroke="#8a4a2a" stroke-width="1.5" fill="none"/>
+      <!-- 핫초코 -->
+      <rect x="78" y="86" width="14" height="12" rx="2" fill="#3a2010"/>
+      <path d="M81 86 Q85 82 89 86" stroke="#c9a96e" stroke-width="1" fill="none" opacity="0.5"/>
+      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">담요의 온도</text>
+    </svg>`,
+
+    'c_routine':`<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="60" cy="60" r="58" fill="#0c0c0a"/>
+      <!-- 달력/시계 -->
+      <circle cx="85" cy="28" r="12" fill="none" stroke="#c9a96e" stroke-width="0.6" opacity="0.4"/>
+      <line x1="85" y1="28" x2="85" y2="20" stroke="#c9a96e" stroke-width="1" opacity="0.5" stroke-linecap="round"/>
+      <line x1="85" y1="28" x2="90" y2="31" stroke="#c9a96e" stroke-width="1" opacity="0.4" stroke-linecap="round"/>
+      <circle cx="85" cy="28" r="1.5" fill="#c9a96e" opacity="0.6"/>
+      <!-- 캐릭터 -->
+      <ellipse cx="55" cy="103" rx="18" ry="22" fill="#2a2218"/>
+      <!-- 깔끔한 헤어 -->
+      <ellipse cx="55" cy="67" rx="17" ry="7" fill="#2a1a08"/>
+      <path d="M38 67 Q55 56 72 67" fill="#2a1a08"/>
+      <path d="M38 70 Q38 80 39 88" stroke="#2a1a08" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <!-- 얼굴 -->
+      <circle cx="55" cy="79" r="16" fill="#d4a574"/>
+      <!-- 눈 -->
+      <circle cx="50" cy="77" r="2.5" fill="#2a1a0a"/>
+      <circle cx="60" cy="77" r="2.5" fill="#2a1a0a"/>
+      <circle cx="50.8" cy="76.2" r="0.8" fill="white"/>
+      <circle cx="60.8" cy="76.2" r="0.8" fill="white"/>
+      <ellipse cx="46" cy="81" rx="3.5" ry="2" fill="#e8826e" opacity="0.5"/>
+      <ellipse cx="64" cy="81" rx="3.5" ry="2" fill="#e8826e" opacity="0.5"/>
+      <path d="M50 85 Q55 89 60 85" stroke="#8a4a2a" stroke-width="1.3" fill="none"/>
+      <!-- 앞치마 -->
+      <path d="M37 92 Q55 86 73 92 L75 128 Q55 132 35 128Z" fill="#3a2a18"/>
+      <rect x="51" y="90" width="8" height="4" rx="1" fill="#5a3a28"/>
+      <!-- 커피 -->
+      <rect x="75" y="100" width="16" height="16" rx="2" fill="#2a1a08"/>
+      <path d="M77 100 Q83 95 89 100" stroke="#c9a96e" stroke-width="1" fill="none" opacity="0.6"/>
+      <path d="M82 98 Q80 93 82 90" stroke="#5a5a5a" stroke-width="0.8" fill="none" opacity="0.4"/>
+      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">일상의 리추얼</text>
+    </svg>`,
+  };
+  return svgs[id] || svgs['s_calm'];
+}
+
+// ═══════════════════════════════════════════════════════
+// 24 SUB-TYPES 매핑 (6대유형 × 4세부유형)
+// ═══════════════════════════════════════════════════════
+const SUB_MAP={
+  sanctuary:[
+    {sub:'s_deep',  name:'딥 나이트 <em>안식처</em>',  plain:'딥 나이트 안식처',  cond:(c)=>c.calm>=6&&c.solo>=4},
+    {sub:'s_calm',  name:'새벽빛 <em>고요함</em>',      plain:'새벽빛 고요함',      cond:(c)=>c.sensitive>=5&&c.calm>=4},
+    {sub:'s_zen',   name:'명상적 <em>정적</em>',         plain:'명상적 정적',         cond:(c)=>c.calm>=5&&c.safety>=4},
+    {sub:'s_mono',  name:'모노크롬 <em>절제</em>',       plain:'모노크롬 절제',       cond:()=>true},
+  ],
+  nature:[
+    {sub:'n_forest',name:'포레스트 <em>드리머</em>',    plain:'포레스트 드리머',    cond:(c)=>c.natural>=7&&c.solo>=3},
+    {sub:'n_earth', name:'어스 <em>키퍼</em>',           plain:'어스 키퍼',           cond:(c)=>c.natural>=5&&c.warmth>=4},
+    {sub:'n_breeze',name:'바람결 <em>감성가</em>',       plain:'바람결 감성가',       cond:(c)=>c.natural>=5&&c.flow>=3},
+    {sub:'n_garden',name:'가든 <em>큐레이터</em>',       plain:'가든 큐레이터',       cond:()=>true},
+  ],
+  luxe:[
+    {sub:'l_royal', name:'로열 <em>에디터</em>',         plain:'로열 에디터',         cond:(c)=>c.luxe>=7&&c.esteem>=5},
+    {sub:'l_gallery',name:'갤러리 <em>디렉터</em>',      plain:'갤러리 디렉터',      cond:(c)=>c.luxe>=5&&c.artistic>=3},
+    {sub:'l_classic',name:'클래식 <em>마에스트로</em>',  plain:'클래식 마에스트로',  cond:(c)=>c.luxe>=5&&c.control>=4},
+    {sub:'l_luxe',  name:'럭스 <em>큐레이터</em>',       plain:'럭스 큐레이터',       cond:()=>true},
+  ],
+  artistic:[
+    {sub:'a_wild',  name:'와일드 <em>크리에이터</em>',  plain:'와일드 크리에이터',  cond:(c)=>c.artistic>=8&&c.energy>=4},
+    {sub:'a_indie', name:'인디 <em>아티스트</em>',       plain:'인디 아티스트',       cond:(c)=>c.artistic>=6&&c.identity>=5},
+    {sub:'a_vintage',name:'빈티지 <em>소울</em>',        plain:'빈티지 소울',         cond:(c)=>c.artistic>=5&&c.flow>=3},
+    {sub:'a_eccentric',name:'에클레틱 <em>소울</em>',    plain:'에클레틱 소울',       cond:()=>true},
+  ],
+  minimal:[
+    {sub:'m_pure',  name:'퓨어 <em>미니멀리스트</em>', plain:'퓨어 미니멀리스트', cond:(c)=>c.minimal>=8&&c.control>=5},
+    {sub:'m_grid',  name:'그리드 <em>마스터</em>',       plain:'그리드 마스터',       cond:(c)=>c.minimal>=6&&c.control>=6},
+    {sub:'m_mono',  name:'모노 <em>아키텍트</em>',       plain:'모노 아키텍트',       cond:(c)=>c.minimal>=6&&c.calm>=3},
+    {sub:'m_line',  name:'라인 <em>드로어</em>',         plain:'라인 드로어',          cond:()=>true},
+  ],
+  cozy:[
+    {sub:'c_hearth',name:'따뜻한 <em>불가 지킴이</em>',plain:'따뜻한 불가 지킴이',cond:(c)=>c.cozy>=6&&c.safety>=4},
+    {sub:'c_family',name:'패밀리 <em>허그</em>',         plain:'패밀리 허그',         cond:(c)=>c.family>=7&&c.warmth>=5},
+    {sub:'c_blanket',name:'담요 <em>소울</em>',           plain:'담요 소울',           cond:(c)=>c.cozy>=6&&c.solo>=2},
+    {sub:'c_routine',name:'일상 <em>리추얼리스트</em>', plain:'일상 리추얼리스트', cond:()=>true},
+  ],
+};
+
 const TYPES=[
   {id:'sanctuary',name:'고요한 <em>안식처</em> 형',plain:'고요한 안식처 형',
+   desc:'당신의 뇌는 외부 자극을 민감하게 처리합니다. 공간은 세상의 소음을 차단하는 피난처여야 하며, 과잉 자극 없이 회복할 수 있는 환경을 필요로 합니다. 절제된 색감, 부드러운 소재, 자연광이 당신의 편도체를 안정시키는 신호입니다.',
+   keys:['딥 베이지 & 오트밀','린넨 & 면 소재','간접 조명','자연 소재','방음과 정적'],
+   bars:{안전욕구:92,소속욕구:28,감각민감도:90,자아실현:60},desire:'안전과 회복',
+   insight:'고감각처리(HSP) 성향이 높은 당신은 공간에서 <strong>감각 부하를 줄이는 것</strong>이 핵심입니다. 비움이 곧 회복이며, 최소한의 자극으로 최대한의 안정감을 주는 공간이 필요합니다.',
+   service:'Joy',serviceAlt:'Smile',weight:{calm:1,sensitive:1,safety:1,minimal:1}},
+  {id:'nature',name:'내추럴 <em>웜</em> 큐레이터',plain:'내추럴 웜 큐레이터',
+   desc:'당신은 자연과의 연결을 통해 소속감을 경험합니다. 원목의 결, 식물의 생기, 따뜻한 색온도 — 이것은 단순한 취향이 아니라 당신의 신경계가 본능적으로 찾는 회복 환경입니다.',
+   keys:['어스톤 & 그린','원목 마루 & 라탄','바이오필릭 디자인','간접 자연광','핸드크래프트 오브제'],
+   bars:{안전욕구:65,소속욕구:72,감각민감도:60,자아실현:75},desire:'연결과 소속',
+   insight:'바이오필리아(Biophilia) — 인간은 본능적으로 자연과 연결을 추구합니다. 당신의 공간에 <strong>자연 소재와 유기적 형태</strong>를 도입하는 것은 취향이 아닌 신경계 회복 전략입니다.',
+   service:'Happy',serviceAlt:'Joy',weight:{natural:1,cozy:1,warmth:1,family:1}},
+  {id:'luxe',name:'럭셔리 <em>클래식</em> 에디터',plain:'럭셔리 클래식 에디터',
+   desc:'당신에게 공간은 자아의 확장입니다. 마감재 하나에서도 삶의 태도를 읽는 당신. 시대를 초월하는 소재와 비례, 절제된 럭셔리가 당신의 자기 개념과 일치하는 공간입니다.',
+   keys:['마블 & 황동','헤링본 마루','몰딩 디테일','벨벳 & 실크','갤러리 조명'],
+   bars:{안전욕구:55,소속욕구:44,감각민감도:68,자아실현:85},desire:'인정과 품격',
+   insight:'자기 개념 일치 이론에 따르면, 공간이 자아상과 일치할수록 <strong>삶의 만족도가 높아집니다</strong>. 당신에게 투자하는 공간은 허영이 아니라 자기 존중의 표현입니다.',
+   service:'Smile',serviceAlt:'Joy',weight:{luxe:1,esteem:1,control:1}},
+  {id:'artistic',name:'아티스틱 <em>인디비주얼</em>',plain:'아티스틱 인디비주얼',
+   desc:'당신의 우뇌는 공간을 캔버스로 봅니다. 정해진 룰보다 개인의 서사가 담긴 공간에서 창의성이 폭발합니다. 유행이 아닌 취향, 정답이 아닌 이야기 — 당신의 공간은 당신만의 언어로 쓰여야 합니다.',
+   keys:['믹스 앤 매치 팔레트','빈티지 오브제','갤러리 월','패턴 & 텍스처 레이어','핸드메이드 아트'],
+   bars:{안전욕구:38,소속욕구:54,감각민감도:82,자아실현:96},desire:'자아표현과 창의',
+   insight:'창의적 환경 이론 — 당신의 공간은 <strong>자극과 영감의 원천</strong>이어야 합니다. 완벽한 정돈보다 의미 있는 혼재가 당신의 디폴트 모드 네트워크를 활성화시킵니다.',
+   service:'Joy',serviceAlt:'Smile',weight:{artistic:1,identity:1}},
+  {id:'minimal',name:'모던 <em>미니멀리스트</em>',plain:'모던 미니멀리스트',
+   desc:'당신의 전전두피질은 질서로부터 통제감을 얻습니다. 불필요한 것을 제거할수록 인지 부하가 줄고 의사결정 에너지가 회복됩니다. 공간의 여백은 당신에게 심리적 자유입니다.',
+   keys:['화이트 & 콘크리트','직선과 비례','히든 수납','금속 포인트','자연광과 그림자'],
+   bars:{안전욕구:72,소속욕구:32,감각민감도:76,자아실현:70},desire:'통제와 명료함',
+   insight:'인지 부하 이론 — 시각적 노이즈는 뇌의 처리 자원을 소모합니다. 당신에게 미니멀한 공간은 취향이 아니라 <strong>인지 최적화 전략</strong>입니다.',
+   service:'Joy',serviceAlt:'Happy',weight:{minimal:1,control:1,solo:1}},
+  {id:'cozy',name:'코지 <em>웰니스</em> 하우스',plain:'코지 웰니스 하우스',
+   desc:'옥시토신과 세로토닌이 가득한 공간 — 당신은 따뜻함과 연결이 공존하는 환경에서 가장 잘 회복합니다. 가족과 사랑하는 사람들의 온기, 부드러운 소재가 당신의 신경계가 원하는 안전 신호입니다.',
+   keys:['카펫 & 러그','따뜻한 간접 조명','소파 중심 레이아웃','패브릭 레이어링','홈 다이닝 공간'],
+   bars:{안전욕구:74,소속욕구:92,감각민감도:48,자아실현:64},desire:'온기와 연결',
+   insight:'회복 환경 이론 — 사회적 온기를 주는 공간은 <strong>코르티솔을 낮추고 옥시토신을 높입니다</strong>. 당신의 소파 배치 하나가 가족 관계의 질을 바꿀 수 있습니다.',
+   service:'Happy',serviceAlt:'Joy',weight:{cozy:1,family:1,warmth:1,social:1,safety:1}},
+];
    desc:'당신의 뇌는 외부 자극을 민감하게 처리합니다. 공간은 세상의 소음을 차단하는 피난처여야 하며, 과잉 자극 없이 회복할 수 있는 환경을 필요로 합니다. 절제된 색감, 부드러운 소재, 자연광이 당신의 편도체를 안정시키는 신호입니다.',
    keys:['딥 베이지 & 오트밀','린넨 & 면 소재','간접 조명','자연 소재','방음과 정적'],
    bars:{안전욕구:92,소속욕구:28,감각민감도:90,자아실현:60},
@@ -526,7 +1311,7 @@ const SVC={
 // STATE
 // ═══════════════════════════════════════════════════════
 const Q_TIME=6.5;
-let cur=0,ans={},qTimer=null,resultType=null;
+let cur=0,ans={},qTimer=null,resultType=null,resultSub=null;
 
 // ═══════════════════════════════════════════════════════
 // UTIL
@@ -535,38 +1320,41 @@ function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.re
 function toast(msg,dur=2800){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),dur)}
 
 // Result storage — sessionStorage 우선, URL fallback
-function saveResult(type){
-  try{sessionStorage.setItem('skopos_result',type.id);}catch(e){}
+function saveResult(type, sub){
+  try{sessionStorage.setItem('skopos_result', type.id+(sub?'|'+sub.sub:''));}catch(e){}
   try{
     const url=new URL(window.location.href);
-    url.searchParams.set('r',btoa(encodeURIComponent(type.id)));
+    url.searchParams.set('r',btoa(encodeURIComponent(type.id+(sub?'|'+sub.sub:''))));
     window.history.replaceState({},'',url.toString());
-  }catch(e){/* about:srcdoc 제한 환경에서는 무시 */}
-}
-function getShareUrl(){
-  if(!resultType)return window.location.href;
-  try{
-    const url=new URL(window.location.href);
-    url.searchParams.set('r',btoa(encodeURIComponent(resultType.id)));
-    return url.toString();
-  }catch(e){return window.location.href;}
+  }catch(e){}
 }
 function loadSavedResult(){
+  let raw=null;
   try{
     const params=new URLSearchParams(window.location.search);
     const r=params.get('r');
-    if(r){const id=decodeURIComponent(atob(r));return TYPES.find(t=>t.id===id)||null;}
+    if(r) raw=decodeURIComponent(atob(r));
   }catch(e){}
-  try{
-    const id=sessionStorage.getItem('skopos_result');
-    if(id)return TYPES.find(t=>t.id===id)||null;
-  }catch(e){}
-  return null;
+  if(!raw){try{raw=sessionStorage.getItem('skopos_result');}catch(e){}}
+  if(!raw) return null;
+  const [typeId, subId]=raw.split('|');
+  const type=TYPES.find(t=>t.id===typeId)||null;
+  if(!type) return null;
+  const subs=SUB_MAP[typeId]||[];
+  const sub=subId ? subs.find(s=>s.sub===subId)||subs[subs.length-1] : subs[subs.length-1];
+  return {type, sub};
 }
 
-// ═══════════════════════════════════════════════════════
-// QUIZ FLOW
-// ═══════════════════════════════════════════════════════
+function getShareUrl(){
+  if(!resultType)return window.location.href;
+  try{
+    const raw=resultType.id+(resultSub?'|'+resultSub.sub:'');
+    const url=new URL(window.location.href);
+    url.searchParams.set('r',btoa(encodeURIComponent(raw)));
+    return url.toString();
+  }catch(e){return window.location.href;}
+}
+
 function startQuiz(){
   cur=0;ans={};
   show('sq');
@@ -672,12 +1460,16 @@ function nextQ(){
 function compute(){
   const c={};
   Object.values(ans).forEach(a=>Object.entries(a.tags||{}).forEach(([k,v])=>{c[k]=(c[k]||0)+v}));
+  // 대유형 결정
   let best=TYPES[0],score=-1;
   TYPES.forEach(t=>{
     const s=Object.entries(t.weight).reduce((sum,[k])=>sum+(c[k]||0),0);
     if(s>score){score=s;best=t;}
   });
-  return best;
+  // 세부유형 결정
+  const subs=SUB_MAP[best.id]||[];
+  const sub=subs.find(s=>s.cond(c))||subs[subs.length-1];
+  return {type:best, sub, counts:c};
 }
 
 // ═══════════════════════════════════════════════════════
@@ -694,10 +1486,12 @@ function runResult(){
     setTimeout(()=>el.classList.add('done'),(i*.45+.3)*1000);
   });
   setTimeout(()=>{
-    resultType=compute();
-    saveResult(resultType);
+    const {type,sub}=compute();
+    resultType=type;
+    resultSub=sub;
+    saveResult(type, sub);
     try{sessionStorage.removeItem('skopos_unlocked');}catch(e){}
-    renderResult(resultType, false);
+    renderResult(type, sub, false);
     show('sr');
     window.scrollTo({top:0,behavior:'smooth'});
     setTimeout(()=>document.querySelectorAll('.rbar').forEach(b=>b.style.width=b.dataset.val+'%'),400);
@@ -707,21 +1501,32 @@ function runResult(){
 // ═══════════════════════════════════════════════════════
 // RENDER RESULT
 // ═══════════════════════════════════════════════════════
-function renderResult(t, unlocked){
+function renderResult(t, sub, unlocked){
   const svc=SVC[t.service], svcAlt=SVC[t.serviceAlt];
   const shareUrl=getShareUrl();
-  const mailSubject=`[SKOPOS 공간욕구진단] ${t.plain} — 상담 문의`;
-  const mailBody=`안녕하세요, 공간 욕구 진단 결과를 공유합니다.\n\n유형: ${t.plain}\n핵심 욕구: ${t.desire}\n추천 키워드: ${t.keys.join(', ')}\n\n진단 결과 링크: ${shareUrl}\n\n추가 문의 내용:`;
+  const subName = sub ? sub.name : t.name;
+  const subPlain = sub ? sub.plain : t.plain;
+  const charSVG = sub ? makeSVG(sub.sub) : '';
+  const mailSubject=`[SKOPOS 공간욕구진단] ${subPlain} — 상담 문의`;
+  const mailBody=`안녕하세요, 공간 욕구 진단 결과를 공유합니다.\n\n유형: ${subPlain}\n핵심 욕구: ${t.desire}\n추천 키워드: ${t.keys.join(', ')}\n\n진단 결과 링크: ${shareUrl}\n\n추가 문의 내용:`;
 
   const isUnlocked = unlocked || false;
 
   document.getElementById('rw').innerHTML=`
-    <!-- 공개 영역: 유형명 + 키워드 + 프로파일 바 -->
+    <!-- 공개 영역: 유형명 + 키워드 + 캐릭터 + 프로파일 바 -->
     <div class="rh">
       <p class="rtag">✦ 공간 욕구 진단 결과</p>
-      <h2 class="rtype">${t.name}</h2>
+      <h2 class="rtype">${subName}</h2>
+      <p style="font-size:.68rem;letter-spacing:.15em;color:var(--gy);margin-bottom:10px;text-transform:uppercase">${t.plain}</p>
       <p class="rdesc">${t.desc}</p>
       <div class="rkws">${t.keys.map(k=>`<span class="kw">${k}</span>`).join('')}</div>
+    </div>
+
+    <!-- 캐릭터 -->
+    <div style="display:flex;flex-direction:column;align-items:center;margin:28px 0 32px">
+      <p style="font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gy);margin-bottom:14px">나의 공간 캐릭터</p>
+      <div style="width:120px;height:140px;filter:drop-shadow(0 0 18px rgba(201,169,110,.18));animation:charIn .8s var(--ez) both">${charSVG}</div>
+      <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.9rem;color:var(--gold);margin-top:12px;letter-spacing:.08em">${subPlain}</p>
     </div>
 
     <div class="radar">
@@ -844,7 +1649,8 @@ function copyLinkAndUnlock(){
 function getShareText(){
   if(!resultType)return'';
   const url=getShareUrl();
-  return `[SKOPOS 공간 욕구 진단]\n\n나의 공간 유형: ${resultType.plain}\n핵심 욕구: ${resultType.desire}\n추천 키워드: ${resultType.keys.slice(0,3).join(' · ')}\n\n결과 보기 👉 ${url}`;
+  const plain=resultSub?resultSub.plain:resultType.plain;
+  return `[SKOPOS 공간 욕구 진단]\n\n나의 공간 유형: ${plain}\n핵심 욕구: ${resultType.desire}\n추천 키워드: ${resultType.keys.slice(0,3).join(' · ')}\n\n결과 보기 👉 ${url}`;
 }
 function copyShareText(){
   const txt=getShareText();
@@ -878,10 +1684,11 @@ function retryQuiz(){
 window.addEventListener('load',()=>{
   const found=loadSavedResult();
   if(found){
-    resultType=found;
+    resultType=found.type;
+    resultSub=found.sub;
     let unlocked=false;
     try{unlocked=sessionStorage.getItem('skopos_unlocked')==='1';}catch(e){}
-    renderResult(found, unlocked);
+    renderResult(found.type, found.sub, unlocked);
     show('sr');
     setTimeout(()=>document.querySelectorAll('.rbar').forEach(b=>b.style.width=b.dataset.val+'%'),400);
   }
