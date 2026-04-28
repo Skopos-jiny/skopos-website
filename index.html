@@ -699,6 +699,7 @@
             display: none;
             flex-direction: column;
             justify-content: center;
+            align-items: flex-end;
             gap: 5px;
             width: 40px;
             height: 40px;
@@ -706,53 +707,66 @@
             background: none;
             border: none;
             padding: 6px;
-            z-index: 301;
+            z-index: 9999;
+            position: relative;
         }
         .nav-hamburger span {
             display: block;
-            width: 100%;
             height: 1px;
             background: var(--white);
             transition: all 0.35s cubic-bezier(0.22,1,0.36,1);
             transform-origin: center;
         }
+        .nav-hamburger span:nth-child(1) { width: 22px; }
+        .nav-hamburger span:nth-child(2) { width: 16px; }
+        .nav-hamburger span:nth-child(3) { width: 20px; }
+        .nav-hamburger.open span { width: 22px; }
         .nav-hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); background: var(--gold); }
         .nav-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
         .nav-hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); background: var(--gold); }
 
-        /* 모바일 드로어 */
+        /* ── 모바일 드로어 — visibility 방식으로 안정적 구현 ── */
         .mobile-drawer {
-            display: none;
             position: fixed;
-            inset: 0;
-            z-index: 200;
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            z-index: 9000;
+            visibility: hidden;
             pointer-events: none;
+        }
+        .mobile-drawer.open {
+            visibility: visible;
+            pointer-events: all;
         }
         .mobile-drawer-backdrop {
             position: absolute;
-            inset: 0;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
             background: rgba(0,0,0,0);
             transition: background 0.4s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .mobile-drawer.open .mobile-drawer-backdrop {
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(4px);
         }
         .mobile-drawer-panel {
             position: absolute;
             top: 0; right: 0;
-            width: min(320px, 85vw);
+            width: 75vw;
+            max-width: 300px;
             height: 100%;
-            background: var(--off-black);
-            border-left: 1px solid rgba(201,169,110,0.12);
+            background: #111111;
+            border-left: 1px solid rgba(201,169,110,0.15);
             transform: translateX(100%);
-            transition: transform 0.45s cubic-bezier(0.22,1,0.36,1);
+            transition: transform 0.42s cubic-bezier(0.22,1,0.36,1);
             display: flex;
             flex-direction: column;
-            padding: 0;
             overflow-y: auto;
-        }
-        .mobile-drawer.open {
-            pointer-events: all;
-        }
-        .mobile-drawer.open .mobile-drawer-backdrop {
-            background: rgba(0,0,0,0.65);
+            -webkit-overflow-scrolling: touch;
         }
         .mobile-drawer.open .mobile-drawer-panel {
             transform: translateX(0);
@@ -761,89 +775,100 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 28px;
-            height: 72px;
+            padding: 0 24px;
+            height: 64px;
             border-bottom: 1px solid rgba(255,255,255,0.06);
             flex-shrink: 0;
         }
         .drawer-logo {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 600;
             letter-spacing: 0.3em;
             color: var(--white);
             text-decoration: none;
         }
+        .drawer-close {
+            width: 32px; height: 32px;
+            background: none; border: none;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--gray);
+            font-size: 1.1rem;
+            transition: color 0.2s;
+        }
+        .drawer-close:hover { color: var(--gold); }
         .drawer-nav {
             flex: 1;
-            padding: 36px 28px;
+            padding: 24px 0;
             display: flex;
             flex-direction: column;
-            gap: 0;
         }
         .drawer-nav a {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 18px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding: 15px 24px;
             text-decoration: none;
-            color: rgba(250,250,248,0.65);
-            font-size: 0.88rem;
-            letter-spacing: 0.12em;
+            color: rgba(250,250,248,0.6);
+            font-size: 0.8rem;
+            letter-spacing: 0.14em;
             text-transform: uppercase;
-            transition: color 0.25s;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            transition: color 0.2s, background 0.2s;
+            -webkit-tap-highlight-color: transparent;
         }
-        .drawer-nav a:last-of-type { border-bottom: none; }
-        .drawer-nav a:hover { color: var(--white); }
-        .drawer-nav a .drawer-arrow { color: var(--gold); font-size: 0.7rem; opacity: 0; transition: opacity 0.25s, transform 0.25s; }
-        .drawer-nav a:hover .drawer-arrow { opacity: 1; transform: translateX(3px); }
+        .drawer-nav a:active { background: rgba(255,255,255,0.03); }
+        .drawer-nav a .drawer-arrow {
+            color: var(--gold);
+            font-size: 0.65rem;
+            opacity: 0.4;
+            transition: transform 0.2s;
+        }
         .drawer-nav .drawer-quiz {
-            margin-top: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 14px 18px;
-            border: 1px solid rgba(201,169,110,0.35) !important;
+            margin: 16px 24px 0;
+            border: 1px solid rgba(201,169,110,0.3) !important;
+            border-bottom: 1px solid rgba(201,169,110,0.3) !important;
             color: var(--gold) !important;
-            font-size: 0.78rem !important;
-            border-radius: 0;
+            padding: 13px 18px !important;
+            font-size: 0.75rem !important;
+            background: rgba(201,169,110,0.04);
         }
-        .drawer-nav .drawer-quiz:hover { background: rgba(201,169,110,0.08); }
+        .drawer-quiz:active { background: rgba(201,169,110,0.1) !important; }
         .drawer-cta {
-            padding: 28px;
+            padding: 20px 24px;
             border-top: 1px solid rgba(255,255,255,0.06);
             flex-shrink: 0;
         }
         .drawer-cta a {
             display: block;
             text-align: center;
-            padding: 14px;
+            padding: 13px;
             background: var(--gold);
             color: var(--black);
-            font-size: 0.72rem;
+            font-size: 0.7rem;
             font-weight: 500;
             letter-spacing: 0.18em;
             text-transform: uppercase;
             text-decoration: none;
             transition: background 0.3s;
         }
-        .drawer-cta a:hover { background: var(--gold-light); }
+        .drawer-cta a:active { background: var(--gold-light); }
         .drawer-footer {
-            padding: 20px 28px;
+            padding: 16px 24px 28px;
             flex-shrink: 0;
         }
         .drawer-footer p {
-            font-size: 0.65rem;
-            color: rgba(250,250,248,0.2);
-            letter-spacing: 0.1em;
+            font-size: 0.6rem;
+            color: rgba(250,250,248,0.18);
+            letter-spacing: 0.08em;
+            line-height: 1.6;
         }
 
         @media (max-width: 900px) {
-            nav { padding: 0 20px; }
-            .nav-links { display: none; }
+            nav { padding: 0 20px; height: 60px; }
+            .nav-links { display: none !important; }
             .nav-hamburger { display: flex; }
-            .mobile-drawer { display: block; }
             section { padding: 80px 24px; }
             .hero { padding: 0 24px 60px; }
             .hero-scroll { display: none; }
@@ -951,40 +976,41 @@
         </button>
     </nav>
 
-    <!-- 모바일 드로어 -->
-    <div class="mobile-drawer" id="mobileDrawer">
-        <div class="mobile-drawer-backdrop" onclick="closeDrawer()"></div>
-        <div class="mobile-drawer-panel">
+    <!-- 모바일 드로어 (항상 DOM에 존재, visibility로 제어) -->
+    <div class="mobile-drawer" id="mobileDrawer" aria-hidden="true">
+        <div class="mobile-drawer-backdrop" id="drawerBackdrop"></div>
+        <div class="mobile-drawer-panel" role="dialog" aria-label="메뉴">
             <div class="drawer-header">
-                <a href="#" class="drawer-logo" onclick="closeDrawer()">SKOPOS</a>
+                <a href="#" class="drawer-logo">SKOPOS</a>
+                <button class="drawer-close" id="drawerClose" aria-label="닫기">✕</button>
             </div>
             <nav class="drawer-nav">
-                <a href="#philosophy" onclick="closeDrawer()">
+                <a href="#philosophy" class="drawer-link">
                     <span>철학</span>
-                    <span class="drawer-arrow">→</span>
+                    <span class="drawer-arrow">›</span>
                 </a>
-                <a href="#portfolio" onclick="closeDrawer()">
+                <a href="#portfolio" class="drawer-link">
                     <span>포트폴리오</span>
-                    <span class="drawer-arrow">→</span>
+                    <span class="drawer-arrow">›</span>
                 </a>
-                <a href="#pricing" onclick="closeDrawer()">
+                <a href="#pricing" class="drawer-link">
                     <span>가격정책</span>
-                    <span class="drawer-arrow">→</span>
+                    <span class="drawer-arrow">›</span>
                 </a>
-                <a href="#testimonials" onclick="closeDrawer()">
+                <a href="#testimonials" class="drawer-link">
                     <span>후기</span>
-                    <span class="drawer-arrow">→</span>
+                    <span class="drawer-arrow">›</span>
                 </a>
-                <a href="skopos_quiz.html" class="drawer-quiz">
+                <a href="skopos_quiz.html" class="drawer-link drawer-quiz">
                     <span>✦ 취향 진단하기</span>
-                    <span class="drawer-arrow">→</span>
+                    <span class="drawer-arrow">›</span>
                 </a>
             </nav>
             <div class="drawer-cta">
                 <a href="mailto:contact@skopos.kr">상담 신청하기</a>
             </div>
             <div class="drawer-footer">
-                <p>© 2024 SKOPOS. Space &amp; Life Curator</p>
+                <p>Space &amp; Life Curator<br>contact@skopos.kr</p>
             </div>
         </div>
     </div>
@@ -1315,40 +1341,65 @@
         <div class="footer-bottom">
             <p>© 2024 SKOPOS. All rights reserved.</p>
             <p>Space & Life Curator</p>
+            <!-- 관리자 전용 접근 (숨김) -->
+            <a href="admin.html"
+               style="font-size:.55rem;color:rgba(250,250,248,0.08);letter-spacing:.08em;text-decoration:none;transition:color .3s;"
+               onmouseover="this.style.color='rgba(201,169,110,0.4)'"
+               onmouseout="this.style.color='rgba(250,250,248,0.08)'"
+               title="관리자">⬡</a>
         </div>
     </footer>
 
     <script>
-        // Scroll reveal
+        // ── Scroll reveal ──
         const reveals = document.querySelectorAll('.reveal');
-        const observer = new IntersectionObserver((entries) => {
+        const revealObserver = new IntersectionObserver((entries) => {
             entries.forEach((entry, i) => {
                 if (entry.isIntersecting) {
                     setTimeout(() => entry.target.classList.add('visible'), i * 80);
-                    observer.unobserve(entry.target);
+                    revealObserver.unobserve(entry.target);
                 }
             });
         }, { threshold: 0.1 });
-        reveals.forEach(el => observer.observe(el));
+        reveals.forEach(el => revealObserver.observe(el));
 
         // ── 모바일 드로어 ──
-        function toggleDrawer() {
-            const drawer = document.getElementById('mobileDrawer');
-            const btn    = document.getElementById('hamburger');
-            const isOpen = drawer.classList.contains('open');
-            isOpen ? closeDrawer() : openDrawer();
-        }
+        const drawer   = document.getElementById('mobileDrawer');
+        const hamburger = document.getElementById('hamburger');
+
         function openDrawer() {
-            document.getElementById('mobileDrawer').classList.add('open');
-            document.getElementById('hamburger').classList.add('open');
+            drawer.classList.add('open');
+            drawer.setAttribute('aria-hidden', 'false');
+            hamburger.classList.add('open');
+            hamburger.setAttribute('aria-label', '메뉴 닫기');
             document.body.style.overflow = 'hidden';
+            document.body.style.position = 'relative';
         }
+
         function closeDrawer() {
-            document.getElementById('mobileDrawer').classList.remove('open');
-            document.getElementById('hamburger').classList.remove('open');
+            drawer.classList.remove('open');
+            drawer.setAttribute('aria-hidden', 'true');
+            hamburger.classList.remove('open');
+            hamburger.setAttribute('aria-label', '메뉴 열기');
             document.body.style.overflow = '';
+            document.body.style.position = '';
         }
-        // ESC 키로 닫기
+
+        function toggleDrawer() {
+            drawer.classList.contains('open') ? closeDrawer() : openDrawer();
+        }
+
+        // 백드롭 클릭
+        document.getElementById('drawerBackdrop').addEventListener('click', closeDrawer);
+        // 닫기 버튼
+        document.getElementById('drawerClose').addEventListener('click', closeDrawer);
+        // 메뉴 링크 클릭 시 자동 닫기
+        document.querySelectorAll('.drawer-link').forEach(link => {
+            link.addEventListener('click', () => {
+                setTimeout(closeDrawer, 150);
+            });
+        });
+        // ESC 키
         document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
     </script>
 
