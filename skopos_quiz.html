@@ -4,6 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>공간 욕구 진단 | SKOPOS</title>
+
+<!-- GA4 — ⚠️ G-XXXXXXXXXX 를 본인 측정 ID로 교체 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXXXXX', {
+    page_title: 'SKOPOS 취향 진단',
+    page_location: window.location.href
+  });
+  function trackEvent(name,params){ if(typeof gtag!=='undefined') gtag('event',name,params); }
+</script>
+
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root{--gold:#c9a96e;--gl:#e8d5b0;--bk:#0c0c0c;--off:#111;--dk:#1a1a1a;--gy:#777;--gy2:#444;--wh:#fafaf8;--ez:cubic-bezier(.22,1,.36,1)}
@@ -1427,6 +1441,12 @@ function runResult(){
     resultSub=sub;
     saveResult(type, sub);
     try{sessionStorage.removeItem('skopos_unlocked');}catch(e){}
+    // GA 이벤트 — 진단 완료
+    trackEvent('quiz_complete', {
+      result_type: type.id,
+      result_sub: sub ? sub.sub : '',
+      result_plain: sub ? sub.plain : type.plain
+    });
     renderResult(type, sub, false);
     show('sr');
     window.scrollTo({top:0,behavior:'smooth'});
