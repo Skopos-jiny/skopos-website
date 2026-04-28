@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SKOPOS Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:#c9a96e; --gl:#e8d5b0; --bk:#0c0c0c; --off:#111;
+  --dk:#1a1a1a; --mid:#242424; --bd:rgba(255,255,255,0.06);
+  --gy:#666; --gy2:#444; --wh:#fafaf8;
+  --ez:cubic-bezier(.22,1,.36,1);
+  --green:#4caf7d; --red:#e07070; --amber:#c9a96e;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bk);color:var(--wh);min-height:100vh;overflow-x:hidden}
+
+/* ── LOGIN ── */
+#loginScreen {
+  position:fixed;inset:0;z-index:999;
+  background:var(--bk);
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:0;
+}
+.login-bg {
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 40%, rgba(201,169,110,.06) 0%, transparent 65%);
+}
+.login-box {
+  position:relative;z-index:1;
+  width:min(380px,90vw);
+  border:1px solid var(--bd);
+  padding:52px 44px 44px;
+  background:var(--off);
+}
+.login-logo {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1rem;letter-spacing:.4em;
+  text-transform:uppercase;color:var(--wh);
+  margin-bottom:6px;text-align:center;
+}
+.login-sub {
+  font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--gy);text-align:center;margin-bottom:40px;
+}
+.login-label {
+  font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--gy);display:block;margin-bottom:8px;
+}
+.login-input {
+  width:100%;background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  color:var(--wh);font-family:'DM Sans',sans-serif;
+  font-size:.9rem;padding:12px 14px;outline:none;
+  transition:border-color .25s;margin-bottom:20px;
+}
+.login-input:focus{border-color:var(--gold);}
+.login-btn {
+  width:100%;padding:13px;background:var(--gold);
+  color:var(--bk);font-size:.72rem;font-weight:500;
+  letter-spacing:.18em;text-transform:uppercase;
+  border:none;cursor:pointer;transition:background .3s;
+}
+.login-btn:hover{background:var(--gl);}
+.login-err {
+  font-size:.72rem;color:var(--red);
+  text-align:center;margin-top:12px;height:16px;
+}
+.login-hint {
+  font-size:.6rem;color:var(--gy2);
+  text-align:center;margin-top:24px;line-height:1.6;
+}
+
+/* ── ADMIN LAYOUT ── */
+#adminApp{display:none;}
+.admin-wrap{display:flex;min-height:100vh;}
+
+/* SIDEBAR */
+.sidebar {
+  width:220px;flex-shrink:0;
+  background:var(--off);
+  border-right:1px solid var(--bd);
+  display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;height:100vh;
+  overflow-y:auto;z-index:100;
+}
+.sidebar-brand {
+  padding:28px 24px 24px;
+  border-bottom:1px solid var(--bd);
+}
+.sidebar-logo {
+  font-family:'Cormorant Garamond',serif;
+  font-size:.95rem;letter-spacing:.35em;
+  text-transform:uppercase;color:var(--wh);
+  display:block;margin-bottom:4px;
+}
+.sidebar-role {
+  font-size:.55rem;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--gy);
+}
+.sidebar-nav {
+  flex:1;padding:20px 0;
+}
+.nav-section {
+  font-size:.52rem;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--gy2);padding:8px 24px 6px;margin-top:8px;
+}
+.nav-item {
+  display:flex;align-items:center;gap:10px;
+  padding:10px 24px;cursor:pointer;
+  font-size:.78rem;color:var(--gy);
+  transition:all .2s;border-left:2px solid transparent;
+  user-select:none;
+}
+.nav-item:hover{color:var(--wh);background:rgba(255,255,255,.03);}
+.nav-item.active{color:var(--gold);border-left-color:var(--gold);background:rgba(201,169,110,.05);}
+.nav-item .ni{font-size:.9rem;width:16px;text-align:center;flex-shrink:0;}
+.nav-badge {
+  margin-left:auto;background:var(--gold);color:var(--bk);
+  font-size:.5rem;font-weight:600;padding:2px 6px;
+  border-radius:0;letter-spacing:.05em;
+}
+.sidebar-footer {
+  padding:20px 24px;border-top:1px solid var(--bd);
+}
+.logout-btn {
+  font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--gy2);background:none;border:none;cursor:pointer;
+  transition:color .2s;display:flex;align-items:center;gap:8px;
+}
+.logout-btn:hover{color:var(--red);}
+
+/* MAIN CONTENT */
+.main {
+  margin-left:220px;flex:1;
+  min-height:100vh;
+}
+.topbar {
+  height:60px;background:var(--off);
+  border-bottom:1px solid var(--bd);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 36px;position:sticky;top:0;z-index:90;
+}
+.topbar-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.15rem;font-weight:300;color:var(--wh);
+}
+.topbar-right {
+  display:flex;align-items:center;gap:16px;
+}
+.topbar-date {
+  font-size:.65rem;letter-spacing:.1em;color:var(--gy);
+}
+.status-dot {
+  width:6px;height:6px;border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 6px rgba(76,175,125,.6);
+}
+
+.content {padding:36px;}
+
+/* ── SECTION ── */
+.section{display:none;}
+.section.active{display:block;}
+
+/* ── STAT CARDS ── */
+.stat-grid {
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:var(--bd);margin-bottom:32px;
+}
+.stat-card {
+  background:var(--off);padding:24px 28px;
+}
+.stat-label {
+  font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--gy);margin-bottom:10px;
+}
+.stat-val {
+  font-family:'Cormorant Garamond',serif;
+  font-size:2.2rem;font-weight:300;color:var(--wh);line-height:1;
+  margin-bottom:4px;
+}
+.stat-change {
+  font-size:.65rem;color:var(--gy);
+}
+.stat-change.up{color:var(--green);}
+.stat-change.dn{color:var(--red);}
+
+/* ── TABLE ── */
+.table-wrap {
+  background:var(--off);border:1px solid var(--bd);
+  margin-bottom:24px;overflow:hidden;
+}
+.table-head {
+  display:flex;justify-content:space-between;align-items:center;
+  padding:18px 24px;border-bottom:1px solid var(--bd);
+}
+.table-title {
+  font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--wh);
+}
+.table-actions{display:flex;gap:10px;align-items:center;}
+.tbl-search {
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  color:var(--wh);font-family:'DM Sans',sans-serif;
+  font-size:.75rem;padding:7px 12px;outline:none;width:180px;
+  transition:border-color .25s;
+}
+.tbl-search:focus{border-color:var(--gold);}
+.tbl-search::placeholder{color:var(--gy);}
+.badge-btn {
+  font-size:.62rem;letter-spacing:.1em;padding:6px 14px;
+  border:1px solid rgba(255,255,255,.1);color:var(--gy);
+  background:none;cursor:pointer;transition:all .2s;
+}
+.badge-btn:hover{border-color:var(--gold);color:var(--gold);}
+.badge-btn.active{background:var(--gold);color:var(--bk);border-color:var(--gold);}
+
+table{width:100%;border-collapse:collapse;}
+thead tr{background:rgba(255,255,255,.03);}
+th {
+  text-align:left;padding:10px 20px;
+  font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--gy);border-bottom:1px solid var(--bd);font-weight:400;
+}
+td {
+  padding:14px 20px;font-size:.8rem;color:rgba(250,250,248,.75);
+  border-bottom:1px solid rgba(255,255,255,.03);
+  vertical-align:middle;
+}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,.015);}
+.status-badge {
+  display:inline-block;padding:3px 10px;
+  font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;
+}
+.status-new{background:rgba(201,169,110,.15);color:var(--gold);}
+.status-done{background:rgba(76,175,125,.12);color:var(--green);}
+.status-pend{background:rgba(255,255,255,.07);color:var(--gy);}
+.action-btn {
+  font-size:.6rem;padding:4px 10px;
+  border:1px solid rgba(255,255,255,.1);color:var(--gy);
+  background:none;cursor:pointer;transition:all .2s;
+}
+.action-btn:hover{border-color:var(--gold);color:var(--gold);}
+.action-btn.danger:hover{border-color:var(--red);color:var(--red);}
+
+/* ── TOGGLE CARDS ── */
+.toggle-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;}
+.toggle-card{
+  background:var(--off);border:1px solid var(--bd);
+  padding:24px 28px;display:flex;align-items:center;justify-content:space-between;
+}
+.toggle-card.active-card{border-color:rgba(201,169,110,.3);}
+.toggle-info{}
+.toggle-name{font-size:.85rem;color:var(--wh);margin-bottom:4px;}
+.toggle-desc{font-size:.68rem;color:var(--gy);line-height:1.5;}
+.toggle-switch{position:relative;width:44px;height:24px;flex-shrink:0;}
+.toggle-switch input{opacity:0;width:0;height:0;}
+.toggle-slider{
+  position:absolute;inset:0;cursor:pointer;
+  background:rgba(255,255,255,.1);transition:.3s;
+}
+.toggle-slider::before{
+  content:'';position:absolute;
+  width:18px;height:18px;left:3px;bottom:3px;
+  background:var(--gy);transition:.3s;
+}
+input:checked + .toggle-slider{background:rgba(201,169,110,.3);}
+input:checked + .toggle-slider::before{transform:translateX(20px);background:var(--gold);}
+
+/* ── CHART ── */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;}
+.chart-card{
+  background:var(--off);border:1px solid var(--bd);padding:24px 28px;
+}
+.chart-title{
+  font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--gy);margin-bottom:20px;
+}
+.bar-chart{display:flex;flex-direction:column;gap:10px;}
+.bar-row{display:flex;align-items:center;gap:12px;}
+.bar-label{font-size:.7rem;color:var(--gy);width:110px;flex-shrink:0;text-align:right;}
+.bar-track{flex:1;height:6px;background:rgba(255,255,255,.06);}
+.bar-fill{height:6px;background:linear-gradient(90deg,var(--gold),var(--gl));transition:width 1s var(--ez);}
+.bar-pct{font-size:.65rem;color:var(--gold);width:36px;flex-shrink:0;}
+
+.donut-wrap{display:flex;align-items:center;gap:28px;}
+.donut-legend{display:flex;flex-direction:column;gap:10px;flex:1;}
+.legend-row{display:flex;align-items:center;gap:8px;}
+.legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.legend-label{font-size:.7rem;color:var(--gy);flex:1;}
+.legend-val{font-size:.7rem;color:var(--wh);}
+
+/* ── MEMO ── */
+.memo-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;}
+.memo-card{
+  background:var(--off);border:1px solid var(--bd);
+  padding:22px 24px;
+}
+.memo-card-head{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:12px;
+}
+.memo-from{font-size:.72rem;color:var(--wh);}
+.memo-time{font-size:.6rem;color:var(--gy);}
+.memo-body{font-size:.78rem;color:rgba(250,250,248,.55);line-height:1.7;margin-bottom:14px;}
+.memo-tag{
+  display:inline-block;padding:2px 8px;
+  font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;
+  border:1px solid rgba(255,255,255,.1);color:var(--gy);
+}
+.memo-tag.gold{border-color:rgba(201,169,110,.4);color:var(--gold);}
+
+/* ── COMPOSE ── */
+.compose-box{
+  background:var(--off);border:1px solid var(--bd);
+  padding:24px 28px;margin-bottom:24px;
+}
+.compose-label{
+  font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--gy);display:block;margin-bottom:8px;
+}
+.compose-input{
+  width:100%;background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  color:var(--wh);font-family:'DM Sans',sans-serif;
+  font-size:.85rem;padding:11px 14px;outline:none;
+  transition:border-color .25s;margin-bottom:14px;
+}
+.compose-input:focus{border-color:var(--gold);}
+.compose-textarea{
+  width:100%;min-height:100px;resize:vertical;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  color:var(--wh);font-family:'DM Sans',sans-serif;
+  font-size:.85rem;padding:11px 14px;outline:none;
+  transition:border-color .25s;margin-bottom:14px;line-height:1.6;
+}
+.compose-textarea:focus{border-color:var(--gold);}
+.send-btn{
+  padding:11px 28px;background:var(--gold);color:var(--bk);
+  font-size:.7rem;font-weight:500;letter-spacing:.15em;text-transform:uppercase;
+  border:none;cursor:pointer;transition:background .3s;
+}
+.send-btn:hover{background:var(--gl);}
+
+/* ── MODAL ── */
+.modal-bg{
+  position:fixed;inset:0;background:rgba(0,0,0,.7);
+  backdrop-filter:blur(4px);z-index:800;
+  display:none;align-items:center;justify-content:center;
+}
+.modal-bg.open{display:flex;}
+.modal{
+  background:var(--dk);border:1px solid var(--bd);
+  width:min(560px,90vw);max-height:80vh;overflow-y:auto;
+}
+.modal-head{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:20px 28px;border-bottom:1px solid var(--bd);
+}
+.modal-title{font-size:.82rem;color:var(--wh);letter-spacing:.1em;}
+.modal-close{
+  background:none;border:none;color:var(--gy);
+  font-size:1rem;cursor:pointer;transition:color .2s;
+}
+.modal-close:hover{color:var(--gold);}
+.modal-body{padding:28px;}
+.modal-field{margin-bottom:18px;}
+.modal-label{
+  font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--gy);display:block;margin-bottom:6px;
+}
+.modal-val{font-size:.85rem;color:var(--wh);line-height:1.7;}
+.modal-val.highlight{color:var(--gold);}
+.modal-sep{height:1px;background:var(--bd);margin:20px 0;}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:28px;right:28px;
+  background:var(--gold);color:var(--bk);
+  font-size:.72rem;font-weight:500;letter-spacing:.1em;
+  padding:10px 20px;opacity:0;transition:all .4s;z-index:999;
+  pointer-events:none;transform:translateY(10px);
+}
+.toast.show{opacity:1;transform:translateY(0);}
+
+/* ── MOBILE ── */
+@media(max-width:800px){
+  .sidebar{width:100%;height:auto;position:relative;}
+  .main{margin-left:0;}
+  .stat-grid{grid-template-columns:1fr 1fr;}
+  .toggle-grid,.chart-grid,.memo-grid{grid-template-columns:1fr;}
+  .admin-wrap{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════ LOGIN ══════════ -->
+<div id="loginScreen">
+  <div class="login-bg"></div>
+  <div class="login-box">
+    <div class="login-logo">SKOPOS</div>
+    <div class="login-sub">Admin Dashboard</div>
+    <label class="login-label">Password</label>
+    <input class="login-input" id="pwInput" type="password"
+      placeholder="관리자 비밀번호 입력"
+      onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">로그인</button>
+    <div class="login-err" id="loginErr"></div>
+    <div class="login-hint">SKOPOS 관리자만 접근 가능합니다</div>
+  </div>
+</div>
+
+<!-- ══════════ ADMIN APP ══════════ -->
+<div id="adminApp">
+<div class="admin-wrap">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <span class="sidebar-logo">SKOPOS</span>
+      <span class="sidebar-role">Administrator</span>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">대시보드</div>
+      <div class="nav-item active" onclick="showSection('overview')">
+        <span class="ni">◈</span> 전체 현황
+      </div>
+
+      <div class="nav-section">운영 관리</div>
+      <div class="nav-item" onclick="showSection('inquiries')">
+        <span class="ni">✉</span> 문의/상담 신청
+        <span class="nav-badge" id="newBadge">3</span>
+      </div>
+      <div class="nav-item" onclick="showSection('messages')">
+        <span class="ni">💬</span> 방문자 메시지
+      </div>
+      <div class="nav-item" onclick="showSection('controls')">
+        <span class="ni">⚙</span> 팝업/이벤트 제어
+      </div>
+
+      <div class="nav-section">분석</div>
+      <div class="nav-item" onclick="showSection('stats')">
+        <span class="ni">◎</span> 취향 진단 통계
+      </div>
+
+      <div class="nav-section">설정</div>
+      <div class="nav-item" onclick="showSection('settings')">
+        <span class="ni">◇</span> 관리자 설정
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="logout-btn" onclick="doLogout()">⎋ 로그아웃</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="topbar">
+      <div class="topbar-title" id="topbarTitle">전체 현황</div>
+      <div class="topbar-right">
+        <div class="status-dot"></div>
+        <div class="topbar-date" id="topbarDate"></div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ── 전체 현황 ── -->
+      <div class="section active" id="s-overview">
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-label">총 상담 신청</div>
+            <div class="stat-val">24</div>
+            <div class="stat-change up">↑ 이번 달 +7</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">신규 (미확인)</div>
+            <div class="stat-val" style="color:var(--gold)">3</div>
+            <div class="stat-change">오늘 2건 접수</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">취향 진단 완료</div>
+            <div class="stat-val">138</div>
+            <div class="stat-change up">↑ 이번 주 +22</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">이벤트 잔여 슬롯</div>
+            <div class="stat-val" style="color:var(--red)">1</div>
+            <div class="stat-change dn">선착순 2명 중 1명 마감</div>
+          </div>
+        </div>
+
+        <!-- 최근 신청 -->
+        <div class="table-wrap">
+          <div class="table-head">
+            <div class="table-title">최근 상담 신청</div>
+            <div class="table-actions">
+              <button class="badge-btn active" onclick="showSection('inquiries')">전체 보기 →</button>
+            </div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>이름</th><th>연락처</th><th>서비스</th><th>신청일</th><th>상태</th><th></th>
+              </tr>
+            </thead>
+            <tbody id="overviewTable"></tbody>
+          </table>
+        </div>
+
+        <!-- 빠른 제어 -->
+        <div class="table-wrap">
+          <div class="table-head"><div class="table-title">빠른 제어</div></div>
+          <div style="padding:20px 24px; display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border:1px solid var(--bd);background:var(--dk);">
+              <div>
+                <div style="font-size:.78rem;color:var(--wh);margin-bottom:3px;">5월 이벤트 팝업</div>
+                <div style="font-size:.65rem;color:var(--gy);">30% 할인 / 선착순 2명</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="quickPopup" checked onchange="syncToggle(this,'mainPopup')">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border:1px solid var(--bd);background:var(--dk);">
+              <div>
+                <div style="font-size:.78rem;color:var(--wh);margin-bottom:3px;">취향 진단 서비스</div>
+                <div style="font-size:.65rem;color:var(--gy);">Quiz 페이지 활성화</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="quickQuiz" checked onchange="syncToggle(this,'mainQuiz')">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 문의/상담 신청 ── -->
+      <div class="section" id="s-inquiries">
+        <div class="table-wrap">
+          <div class="table-head">
+            <div class="table-title">문의 / 상담 신청 내역</div>
+            <div class="table-actions">
+              <input class="tbl-search" id="inqSearch" placeholder="이름·연락처 검색"
+                oninput="filterTable()">
+              <button class="badge-btn active" onclick="filterStatus('all')">전체</button>
+              <button class="badge-btn" onclick="filterStatus('new')">신규</button>
+              <button class="badge-btn" onclick="filterStatus('done')">완료</button>
+            </div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>번호</th><th>이름</th><th>연락처</th>
+                <th>시공 주소</th><th>희망 시기</th>
+                <th>서비스 유형</th><th>신청일시</th>
+                <th>상태</th><th>관리</th>
+              </tr>
+            </thead>
+            <tbody id="inqTable"></tbody>
+          </table>
+          <div style="padding:14px 24px;border-top:1px solid var(--bd);font-size:.65rem;color:var(--gy);">
+            총 <span id="inqCount">0</span>건 · 신규 <span id="inqNew">0</span>건
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 방문자 메시지 ── -->
+      <div class="section" id="s-messages">
+        <div class="compose-box">
+          <div class="table-title" style="margin-bottom:18px;">메모 추가</div>
+          <label class="compose-label">방문자 정보</label>
+          <input class="compose-input" id="memoVisitor" placeholder="방문자명 또는 연락처">
+          <label class="compose-label">메모 내용</label>
+          <textarea class="compose-textarea" id="memoContent" placeholder="통화 내용, 관심 서비스, 특이사항 등을 기록하세요..."></textarea>
+          <label class="compose-label">태그</label>
+          <select class="compose-input" id="memoTag" style="height:auto;cursor:pointer;">
+            <option value="일반">일반</option>
+            <option value="VIP">VIP 잠재고객</option>
+            <option value="이벤트">이벤트 문의</option>
+            <option value="재문의">재문의</option>
+            <option value="계약">계약 진행중</option>
+          </select>
+          <button class="send-btn" onclick="addMemo()">메모 저장</button>
+        </div>
+
+        <div class="table-wrap">
+          <div class="table-head">
+            <div class="table-title">방문자 메모 / 메시지</div>
+            <div class="table-actions">
+              <input class="tbl-search" placeholder="검색" oninput="filterMemos(this.value)">
+            </div>
+          </div>
+          <div id="memoList" style="padding:0 0 8px;"></div>
+        </div>
+      </div>
+
+      <!-- ── 팝업/이벤트 제어 ── -->
+      <div class="section" id="s-controls">
+        <div class="toggle-grid">
+          <div class="toggle-card active-card">
+            <div class="toggle-info">
+              <div class="toggle-name">5월 한정 이벤트 팝업</div>
+              <div class="toggle-desc">30% 할인 / 선착순 2명<br>홈페이지 접속 0.6초 후 노출</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="mainPopup" checked onchange="onToggle(this,'5월 이벤트 팝업')">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="toggle-card">
+            <div class="toggle-info">
+              <div class="toggle-name">이벤트 슬롯 수 표시</div>
+              <div class="toggle-desc">팝업 내 잔여 슬롯 숫자 노출<br>현재: 1 / 2석 잔여</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="mainSlot" checked onchange="onToggle(this,'슬롯 표시')">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="toggle-card active-card">
+            <div class="toggle-info">
+              <div class="toggle-name">취향 진단 (Quiz) 서비스</div>
+              <div class="toggle-desc">skopos_quiz.html 페이지 활성화<br>Nav 메뉴 노출 포함</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="mainQuiz" checked onchange="onToggle(this,'취향 진단')">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="toggle-card">
+            <div class="toggle-info">
+              <div class="toggle-name">마키 배너</div>
+              <div class="toggle-desc">히어로 섹션 하단<br>서비스 키워드 흐르는 띠 배너</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="mainMarquee" checked onchange="onToggle(this,'마키 배너')">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="toggle-card">
+            <div class="toggle-info">
+              <div class="toggle-name">상담 신청 팝업 폼</div>
+              <div class="toggle-desc">이벤트 팝업 내 신청 폼<br>EmailJS 연동 발송</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="mainForm" checked onchange="onToggle(this,'신청 폼')">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="toggle-card">
+            <div class="toggle-info">
+              <div class="toggle-name">카운트다운 타이머</div>
+              <div class="toggle-desc">팝업 내 5월 31일까지<br>실시간 카운트다운</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="mainTimer" checked onchange="onToggle(this,'카운트다운')">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- 이벤트 슬롯 조정 -->
+        <div class="table-wrap">
+          <div class="table-head"><div class="table-title">이벤트 슬롯 수동 관리</div></div>
+          <div style="padding:24px 28px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;">
+            <div>
+              <div class="stat-label">전체 슬롯</div>
+              <div class="stat-val">2</div>
+            </div>
+            <div>
+              <div class="stat-label">사용된 슬롯</div>
+              <div class="stat-val" style="color:var(--gold)" id="usedSlot">1</div>
+            </div>
+            <div>
+              <div class="stat-label">잔여 슬롯</div>
+              <div class="stat-val" style="color:var(--green)" id="remSlot">1</div>
+            </div>
+            <div style="display:flex;gap:8px;margin-left:auto;">
+              <button class="badge-btn" onclick="adjustSlot(-1)">− 슬롯 사용</button>
+              <button class="badge-btn" onclick="adjustSlot(1)">+ 슬롯 반환</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 취향 진단 통계 ── -->
+      <div class="section" id="s-stats">
+        <div class="stat-grid" style="margin-bottom:24px;">
+          <div class="stat-card">
+            <div class="stat-label">총 진단 완료</div>
+            <div class="stat-val">138</div>
+            <div class="stat-change up">↑ 이번 주 +22</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">오늘 진단</div>
+            <div class="stat-val">8</div>
+            <div class="stat-change">평균 완료율 78%</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">상담 전환율</div>
+            <div class="stat-val">12%</div>
+            <div class="stat-change up">↑ 전월 대비 +3%</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">평균 소요 시간</div>
+            <div class="stat-val">2.8<span style="font-size:1rem;color:var(--gy)">분</span></div>
+            <div class="stat-change">목표 3분 이내 ✓</div>
+          </div>
+        </div>
+
+        <div class="chart-grid">
+          <div class="chart-card">
+            <div class="chart-title">유형별 분포 (Top 6)</div>
+            <div class="bar-chart" id="typeChart"></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title">추천 서비스 매칭</div>
+            <div class="donut-wrap">
+              <svg width="100" height="100" viewBox="0 0 100 100" style="flex-shrink:0;">
+                <circle cx="50" cy="50" r="38" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="16"/>
+                <!-- Happy 34% -->
+                <circle cx="50" cy="50" r="38" fill="none" stroke="#c9a96e" stroke-width="16"
+                  stroke-dasharray="80.7 238.8" stroke-dashoffset="0" stroke-linecap="butt"/>
+                <!-- Joy 48% -->
+                <circle cx="50" cy="50" r="38" fill="none" stroke="#8a6a3e" stroke-width="16"
+                  stroke-dasharray="114.1 238.8" stroke-dashoffset="-80.7" stroke-linecap="butt"/>
+                <!-- Smile 18% -->
+                <circle cx="50" cy="50" r="38" fill="none" stroke="#4a3a2a" stroke-width="16"
+                  stroke-dasharray="42.8 238.8" stroke-dashoffset="-194.8" stroke-linecap="butt"/>
+                <text x="50" y="50" text-anchor="middle" dominant-baseline="middle"
+                  font-family="'Cormorant Garamond',serif" font-size="14" fill="#c9a96e">138</text>
+              </svg>
+              <div class="donut-legend">
+                <div class="legend-row">
+                  <div class="legend-dot" style="background:#c9a96e;"></div>
+                  <div class="legend-label">Happy (셀프)</div>
+                  <div class="legend-val">34%</div>
+                </div>
+                <div class="legend-row">
+                  <div class="legend-dot" style="background:#8a6a3e;"></div>
+                  <div class="legend-label">Joy (컨설팅)</div>
+                  <div class="legend-val">48%</div>
+                </div>
+                <div class="legend-row">
+                  <div class="legend-dot" style="background:#4a3a2a;"></div>
+                  <div class="legend-label">Smile (턴키)</div>
+                  <div class="legend-val">18%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 주간 트렌드 -->
+        <div class="table-wrap">
+          <div class="table-head"><div class="table-title">주간 진단 추이</div></div>
+          <div style="padding:24px 28px;">
+            <div style="display:flex;align-items:flex-end;gap:8px;height:100px;">
+              <div id="weekChart" style="display:flex;align-items:flex-end;gap:6px;width:100%;height:100%;"></div>
+            </div>
+            <div style="display:flex;justify-content:space-around;margin-top:8px;">
+              <span style="font-size:.6rem;color:var(--gy);">Mon</span>
+              <span style="font-size:.6rem;color:var(--gy);">Tue</span>
+              <span style="font-size:.6rem;color:var(--gy);">Wed</span>
+              <span style="font-size:.6rem;color:var(--gy);">Thu</span>
+              <span style="font-size:.6rem;color:var(--gy);">Fri</span>
+              <span style="font-size:.6rem;color:var(--gy);">Sat</span>
+              <span style="font-size:.6rem;color:var(--gy);">Sun</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 설정 ── -->
+      <div class="section" id="s-settings">
+        <div class="table-wrap">
+          <div class="table-head"><div class="table-title">관리자 설정</div></div>
+          <div style="padding:28px;">
+            <div class="modal-field">
+              <label class="compose-label">관리자 비밀번호 변경</label>
+              <input class="compose-input" type="password" id="newPw" placeholder="새 비밀번호">
+              <input class="compose-input" type="password" id="newPw2" placeholder="비밀번호 확인">
+              <button class="send-btn" onclick="changePw()">비밀번호 변경</button>
+            </div>
+            <div class="modal-sep"></div>
+            <div class="modal-field">
+              <label class="compose-label">수신 이메일</label>
+              <input class="compose-input" value="contact@skopos.kr" id="adminEmail">
+            </div>
+            <div class="modal-field">
+              <label class="compose-label">이벤트 종료일</label>
+              <input class="compose-input" type="date" id="eventEnd" value="2025-05-31">
+            </div>
+            <button class="send-btn" onclick="saveSettings()">설정 저장</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </main>
+</div><!-- /admin-wrap -->
+</div><!-- /adminApp -->
+
+<!-- MODAL -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="modalTitle">상담 신청 상세</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════
+// CONFIG
+// ══════════════════════════════
+const ADMIN_PW_KEY = 'skopos_admin_pw';
+const DEFAULT_PW   = 'skopos2024';
+
+function getPW(){ return localStorage.getItem(ADMIN_PW_KEY) || DEFAULT_PW; }
+
+// ══════════════════════════════
+// LOGIN
+// ══════════════════════════════
+function doLogin(){
+  const val = document.getElementById('pwInput').value;
+  if(val === getPW()){
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminApp').style.display = 'block';
+    initApp();
+  } else {
+    const err = document.getElementById('loginErr');
+    err.textContent = '비밀번호가 올바르지 않습니다.';
+    document.getElementById('pwInput').value = '';
+    setTimeout(()=>err.textContent='', 2500);
+  }
+}
+function doLogout(){
+  document.getElementById('adminApp').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('pwInput').value = '';
+}
+
+// ══════════════════════════════
+// SAMPLE DATA
+// ══════════════════════════════
+let inquiries = [
+  {id:1, name:'김**', phone:'010-1234-5678', address:'마포구 공덕동 아파트', timing:'1~3개월', service:'Joy 서비스', date:'2025-04-28 09:14', status:'new'},
+  {id:2, name:'이**', phone:'010-9876-5432', address:'성북구 길음동 빌라', timing:'3~6개월', service:'Smile 턴키', date:'2025-04-28 11:32', status:'new'},
+  {id:3, name:'박**', phone:'010-5555-1234', address:'용산구 이태원동 오피스텔', timing:'1개월 이내', service:'Happy 서비스', date:'2025-04-27 16:08', status:'new'},
+  {id:4, name:'최**', phone:'010-2222-8888', address:'강남구 역삼동 아파트', timing:'미정', service:'Joy 서비스', date:'2025-04-26 14:22', status:'done'},
+  {id:5, name:'정**', phone:'010-3333-7777', address:'송파구 잠실동 아파트', timing:'1~3개월', service:'Joy 서비스', date:'2025-04-25 10:45', status:'done'},
+  {id:6, name:'한**', phone:'010-4444-6666', address:'서대문구 연희동 단독주택', timing:'6개월 이후', service:'Smile 턴키', date:'2025-04-24 09:30', status:'pend'},
+];
+
+let memos = [
+  {id:1, visitor:'김** (010-1234-5678)', content:'전화 통화 완료. Joy 서비스 견적 요청. 4월 말 방문 상담 희망.', tag:'VIP', time:'2025-04-28 10:00'},
+  {id:2, visitor:'이** 인스타 DM', content:'인스타그램 통해 문의. 성북동 빌라 풀 리모델링 관심. 예산 약 2000만원 언급.', tag:'이벤트', time:'2025-04-27 18:30'},
+  {id:3, visitor:'익명 방문자', content:'홈페이지 취향 진단 후 상담 신청. 럭셔리 클래식 에디터 유형 결과.', tag:'일반', time:'2025-04-27 14:15'},
+];
+
+let usedSlots = 1;
+
+const typeData = [
+  {label:'코지 웰니스 하우스', pct:22},
+  {label:'내추럴 웜 큐레이터', pct:19},
+  {label:'고요한 안식처 형', pct:18},
+  {label:'모던 미니멀리스트', pct:17},
+  {label:'아티스틱 인디비주얼', pct:14},
+  {label:'럭셔리 클래식 에디터', pct:10},
+];
+
+const weekData = [12,8,15,18,22,31,28];
+
+// ══════════════════════════════
+// INIT
+// ══════════════════════════════
+function initApp(){
+  // 날짜
+  const now = new Date();
+  document.getElementById('topbarDate').textContent =
+    now.getFullYear()+'.'+(now.getMonth()+1).toString().padStart(2,'0')+'.'+now.getDate().toString().padStart(2,'0');
+
+  renderOverview();
+  renderInquiries(inquiries);
+  renderMemos();
+  renderTypeChart();
+  renderWeekChart();
+  updateSlotUI();
+}
+
+// ══════════════════════════════
+// NAV
+// ══════════════════════════════
+const sectionMap = {
+  overview:'전체 현황', inquiries:'문의 / 상담 신청',
+  messages:'방문자 메시지', controls:'팝업 / 이벤트 제어',
+  stats:'취향 진단 통계', settings:'관리자 설정'
+};
+function showSection(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('s-'+id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>{
+    if(n.getAttribute('onclick')&&n.getAttribute('onclick').includes("'"+id+"'"))
+      n.classList.add('active');
+  });
+  document.getElementById('topbarTitle').textContent = sectionMap[id]||id;
+  if(id==='stats') animateBars();
+}
+
+// ══════════════════════════════
+// OVERVIEW TABLE
+// ══════════════════════════════
+function renderOverview(){
+  const tbody = document.getElementById('overviewTable');
+  tbody.innerHTML = inquiries.slice(0,5).map(r=>rowHTML(r)).join('');
+  document.getElementById('newBadge').textContent = inquiries.filter(r=>r.status==='new').length;
+}
+
+function rowHTML(r){
+  const badge = r.status==='new'
+    ? '<span class="status-badge status-new">신규</span>'
+    : r.status==='done'
+    ? '<span class="status-badge status-done">완료</span>'
+    : '<span class="status-badge status-pend">대기</span>';
+  return `<tr>
+    <td style="color:var(--gy);font-size:.68rem">#${r.id}</td>
+    <td style="font-weight:500">${r.name}</td>
+    <td style="font-family:monospace;font-size:.75rem">${r.phone}</td>
+    <td>${r.address}</td>
+    <td>${r.timing}</td>
+    <td><span style="color:var(--gold);font-size:.72rem">${r.service}</span></td>
+    <td style="color:var(--gy);font-size:.72rem">${r.date}</td>
+    <td>${badge}</td>
+    <td>
+      <button class="action-btn" onclick="openDetail(${r.id})">상세</button>
+      ${r.status!=='done'?`<button class="action-btn" onclick="markDone(${r.id})">완료</button>`:''}
+      <button class="action-btn danger" onclick="deleteInq(${r.id})">삭제</button>
+    </td>
+  </tr>`;
+}
+
+// ══════════════════════════════
+// INQUIRIES
+// ══════════════════════════════
+let curFilter = 'all';
+function renderInquiries(data){
+  const tbody = document.getElementById('inqTable');
+  const filtered = curFilter==='all' ? data : data.filter(r=>r.status===curFilter);
+  tbody.innerHTML = filtered.map(r=>rowHTML(r)).join('');
+  document.getElementById('inqCount').textContent = filtered.length;
+  document.getElementById('inqNew').textContent = data.filter(r=>r.status==='new').length;
+}
+function filterStatus(s){
+  curFilter = s;
+  document.querySelectorAll('#s-inquiries .badge-btn').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  renderInquiries(inquiries);
+}
+function filterTable(){
+  const q = document.getElementById('inqSearch').value.toLowerCase();
+  const filtered = inquiries.filter(r=>
+    r.name.includes(q)||r.phone.includes(q)||r.address.toLowerCase().includes(q)
+  );
+  renderInquiries(filtered);
+}
+function markDone(id){
+  const r = inquiries.find(r=>r.id===id);
+  if(r){ r.status='done'; renderOverview(); renderInquiries(inquiries); toast('완료 처리되었습니다'); }
+}
+function deleteInq(id){
+  if(!confirm('이 신청을 삭제하시겠습니까?')) return;
+  inquiries = inquiries.filter(r=>r.id!==id);
+  renderOverview(); renderInquiries(inquiries); toast('삭제되었습니다');
+}
+function openDetail(id){
+  const r = inquiries.find(r=>r.id===id);
+  if(!r) return;
+  document.getElementById('modalTitle').textContent = '상담 신청 상세 — '+r.name;
+  document.getElementById('modalBody').innerHTML = `
+    <div class="modal-field">
+      <span class="modal-label">이름</span>
+      <div class="modal-val">${r.name}</div>
+    </div>
+    <div class="modal-field">
+      <span class="modal-label">연락처</span>
+      <div class="modal-val highlight">${r.phone}</div>
+    </div>
+    <div class="modal-field">
+      <span class="modal-label">시공 주소</span>
+      <div class="modal-val">${r.address}</div>
+    </div>
+    <div class="modal-field">
+      <span class="modal-label">희망 시기</span>
+      <div class="modal-val">${r.timing}</div>
+    </div>
+    <div class="modal-field">
+      <span class="modal-label">신청 서비스</span>
+      <div class="modal-val highlight">${r.service}</div>
+    </div>
+    <div class="modal-sep"></div>
+    <div class="modal-field">
+      <span class="modal-label">신청일시</span>
+      <div class="modal-val" style="color:var(--gy)">${r.date}</div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:8px;">
+      ${r.status!=='done'?`<button class="send-btn" onclick="markDone(${r.id});closeModal()">완료 처리</button>`:''}
+      <button class="badge-btn danger" onclick="deleteInq(${r.id});closeModal()" style="color:var(--red)">삭제</button>
+    </div>
+  `;
+  document.getElementById('modalBg').classList.add('open');
+}
+function closeModal(){ document.getElementById('modalBg').classList.remove('open'); }
+
+// ══════════════════════════════
+// MEMOS
+// ══════════════════════════════
+function renderMemos(filter=''){
+  const list = document.getElementById('memoList');
+  const filtered = filter ? memos.filter(m=>
+    m.visitor.toLowerCase().includes(filter)||m.content.toLowerCase().includes(filter)
+  ) : memos;
+  list.innerHTML = filtered.length ? filtered.map(m=>`
+    <div style="padding:18px 24px;border-bottom:1px solid var(--bd);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <span style="font-size:.78rem;color:var(--wh);font-weight:500;">${m.visitor}</span>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <span class="memo-tag ${m.tag==='VIP'?'gold':''}">${m.tag}</span>
+          <span style="font-size:.6rem;color:var(--gy);">${m.time}</span>
+          <button class="action-btn danger" onclick="deleteMemo(${m.id})">삭제</button>
+        </div>
+      </div>
+      <div style="font-size:.8rem;color:rgba(250,250,248,.55);line-height:1.7;">${m.content}</div>
+    </div>
+  `).join('') : '<div style="padding:32px;text-align:center;font-size:.75rem;color:var(--gy);">메모가 없습니다.</div>';
+}
+function filterMemos(q){ renderMemos(q.toLowerCase()); }
+function addMemo(){
+  const v = document.getElementById('memoVisitor').value.trim();
+  const c = document.getElementById('memoContent').value.trim();
+  const t = document.getElementById('memoTag').value;
+  if(!v||!c){ toast('방문자 정보와 내용을 입력해주세요'); return; }
+  const now = new Date();
+  const ts = now.getFullYear()+'-'+(now.getMonth()+1).toString().padStart(2,'0')+'-'+now.getDate().toString().padStart(2,'0')
+    +' '+now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+  memos.unshift({id:Date.now(), visitor:v, content:c, tag:t, time:ts});
+  document.getElementById('memoVisitor').value='';
+  document.getElementById('memoContent').value='';
+  renderMemos();
+  toast('메모가 저장되었습니다');
+}
+function deleteMemo(id){
+  memos = memos.filter(m=>m.id!==id);
+  renderMemos();
+  toast('삭제되었습니다');
+}
+
+// ══════════════════════════════
+// TOGGLES
+// ══════════════════════════════
+function onToggle(el, name){
+  toast(name+' '+(el.checked?'활성화':'비활성화')+'되었습니다');
+}
+function syncToggle(src, targetId){
+  const target = document.getElementById(targetId);
+  if(target) target.checked = src.checked;
+  onToggle(src, src.id.replace('quick','').replace('main',''));
+}
+
+// ══════════════════════════════
+// SLOT
+// ══════════════════════════════
+function updateSlotUI(){
+  document.getElementById('usedSlot').textContent = usedSlots;
+  document.getElementById('remSlot').textContent = Math.max(0, 2-usedSlots);
+}
+function adjustSlot(delta){
+  usedSlots = Math.max(0, Math.min(2, usedSlots+delta));
+  updateSlotUI();
+  toast('슬롯 업데이트: '+usedSlots+'/2 사용');
+}
+
+// ══════════════════════════════
+// CHARTS
+// ══════════════════════════════
+function renderTypeChart(){
+  document.getElementById('typeChart').innerHTML = typeData.map(d=>`
+    <div class="bar-row">
+      <div class="bar-label">${d.label}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:0%" data-w="${d.pct}%"></div></div>
+      <div class="bar-pct">${d.pct}%</div>
+    </div>
+  `).join('');
+}
+function animateBars(){
+  setTimeout(()=>{
+    document.querySelectorAll('.bar-fill').forEach(b=>{
+      b.style.width = b.dataset.w;
+    });
+  }, 200);
+}
+function renderWeekChart(){
+  const max = Math.max(...weekData);
+  document.getElementById('weekChart').innerHTML = weekData.map((v,i)=>`
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+      <div style="font-size:.6rem;color:var(--gy)">${v}</div>
+      <div style="width:100%;background:rgba(201,169,110,${0.2+0.8*(v/max)});height:${Math.round(v/max*80)}px;min-height:4px;transition:height 1s var(--ez)"></div>
+    </div>
+  `).join('');
+}
+
+// ══════════════════════════════
+// SETTINGS
+// ══════════════════════════════
+function changePw(){
+  const a = document.getElementById('newPw').value;
+  const b = document.getElementById('newPw2').value;
+  if(!a||a.length<4){ toast('4자 이상 입력해주세요'); return; }
+  if(a!==b){ toast('비밀번호가 일치하지 않습니다'); return; }
+  localStorage.setItem(ADMIN_PW_KEY, a);
+  document.getElementById('newPw').value='';
+  document.getElementById('newPw2').value='';
+  toast('비밀번호가 변경되었습니다');
+}
+function saveSettings(){ toast('설정이 저장되었습니다'); }
+
+// ══════════════════════════════
+// TOAST
+// ══════════════════════════════
+let toastTimer=null;
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.remove('show'),2600);
+}
+
+// 모달 닫기 (배경 클릭)
+document.getElementById('modalBg').addEventListener('click',function(e){
+  if(e.target===this) closeModal();
+});
+// ESC
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape') closeModal();
+  if(e.key==='Enter'&&document.getElementById('loginScreen').style.display!=='none') doLogin();
+});
+</script>
+</body>
+</html>
