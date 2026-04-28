@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+
+  <!-- 외부 링 -->
+  <circle cx="100" cy="100" r="90" fill="none" stroke="#ffffff" stroke-width="0.8" opacity="0.22"/>
+  <circle cx="100" cy="100" r="94" fill="none" stroke="#ffffff" stroke-width="0.3" opacity="0.08"/>
+
+  <!-- 눈금 -->
+  <g stroke="#ffffff">
+    <line x1="100" y1="8"  x2="100" y2="18" stroke-width="0.9" opacity="0.5"/>
+    <line x1="192" y1="100" x2="182" y2="100" stroke-width="0.9" opacity="0.5"/>
+    <line x1="100" y1="192" x2="100" y2="182" stroke-width="0.9" opacity="0.5"/>
+    <line x1="8"   y1="100" x2="18"  y2="100" stroke-width="0.9" opacity="0.5"/>
+    <line x1="100" y1="8" x2="100" y2="14" stroke-width="0.6" opacity="0.28" transform="rotate(45,100,100)"/>
+    <line x1="100" y1="8" x2="100" y2="14" stroke-width="0.6" opacity="0.28" transform="rotate(90,100,100)"/>
+    <line x1="100" y1="8" x2="100" y2="14" stroke-width="0.6" opacity="0.28" transform="rotate(135,100,100)"/>
+    <line x1="100" y1="8" x2="100" y2="14" stroke-width="0.6" opacity="0.28" transform="rotate(180,100,100)"/>
+    <line x1="100" y1="8" x2="100" y2="14" stroke-width="0.6" opacity="0.28" transform="rotate(225,100,100)"/>
+    <line x1="100" y1="8" x2="100" y2="14" stroke-width="0.6" opacity="0.28" transform="rotate(270,100,100)"/>
+    <line x1="100" y1="8" x2="100" y2="14" stroke-width="0.6" opacity="0.28" transform="rotate(315,100,100)"/>
+    <line x1="100" y1="8" x2="100" y2="12" stroke-width="0.4" opacity="0.15" transform="rotate(15,100,100)"/>
+    <line x1="100" y1="8" x2="100" y2="12" stroke-width="0.4" opacity="0.15" transform="rotate(30,100,100)"/>
+    <line x1="100" y1="8" x2="100" y2="12" stroke-width="0.4" opacity="0.15" transform="rotate(60,100,100)"/>
+    <line x1="100" y1="8" x2="100" y2="12" stroke-width="0.4" opacity="0.15" transform="rotate(75,100,100)"/>
+    <line x1="100" y1="8" x2="100" y2="12" stroke-width="0.4" opacity="0.15" transform="rotate(105,100,100)"/>
+    <line x1="100" y1="8" x2="100" y2="12" stroke-width="0.4" opacity="0.15" transform="rotate(120,100,100)"/>
+    <line x1="100" y1="8" x2="100" y2="12" stroke-width="0.4" opacity="0.15" transform="rotate(150,100,100)"/>
+    <line x1="100" y1="8" x2="100" y2="12" stroke-width="0.4" opacity="0.15" transform="rotate(165,100,100)"/>
+    <line x1="100" y1="8" x2="100" y2="12" stroke-width="0.4" opacity="0.15" transform="rotate(195,100,100)"/>
+    <line x1="100" y1="8" x2="100" y2="12" stroke-width="0.4" opacity="0.15" transform="rotate(210,100,100)"/>
+    <line x1="100" y1="8" x2="100" y2="12" stroke-width="0.4" opacity="0.15" transform="rotate(240,100,100)"/>
+    <line x1="100" y1="8" x2="100" y2="12" stroke-width="0.4" opacity="0.15" transform="rotate(255,100,100)"/>
+    <line x1="100" y1="8" x2="100" y2="12" stroke-width="0.4" opacity="0.15" transform="rotate(285,100,100)"/>
+    <line x1="100" y1="8" x2="100" y2="12" stroke-width="0.4" opacity="0.15" transform="rotate(300,100,100)"/>
+    <line x1="100" y1="8" x2="100" y2="12" stroke-width="0.4" opacity="0.15" transform="rotate(330,100,100)"/>
+    <line x1="100" y1="8" x2="100" y2="12" stroke-width="0.4" opacity="0.15" transform="rotate(345,100,100)"/>
+  </g>
+
+  <!-- 방위 레이블 -->
+  <g font-family="Georgia, serif" fill="#ffffff" text-anchor="middle" dominant-baseline="middle" font-size="7" letter-spacing="0.05em">
+    <text x="100" y="24" opacity="0.45">N</text>
+    <text x="100" y="178" opacity="0.22">S</text>
+    <text x="176" y="100.5" opacity="0.22">E</text>
+    <text x="24"  y="100.5" opacity="0.22">W</text>
+  </g>
+
+  <!-- 크로스헤어 -->
+  <line x1="100" y1="30"  x2="100" y2="72"  stroke="#ffffff" stroke-width="0.6" opacity="0.35"/>
+  <line x1="100" y1="128" x2="100" y2="170" stroke="#ffffff" stroke-width="0.6" opacity="0.35"/>
+  <line x1="30"  y1="100" x2="72"  y2="100" stroke="#ffffff" stroke-width="0.6" opacity="0.35"/>
+  <line x1="128" y1="100" x2="170" y2="100" stroke="#ffffff" stroke-width="0.6" opacity="0.35"/>
+
+  <!-- 대각선 보조 -->
+  <line x1="53"  y1="53"  x2="72"  y2="72"  stroke="#ffffff" stroke-width="0.35" opacity="0.1"/>
+  <line x1="128" y1="128" x2="147" y2="147" stroke="#ffffff" stroke-width="0.35" opacity="0.1"/>
+  <line x1="147" y1="53"  x2="128" y2="72"  stroke="#ffffff" stroke-width="0.35" opacity="0.1"/>
+  <line x1="72"  y1="128" x2="53"  y2="147" stroke="#ffffff" stroke-width="0.35" opacity="0.1"/>
+
+  <!-- 중간 링 -->
+  <circle cx="100" cy="100" r="50" fill="none" stroke="#ffffff" stroke-width="0.4" opacity="0.15"/>
+
+  <!-- 나침반 바늘 북 -->
+  <path d="M100 42 L105.5 97 L100 106 L94.5 97 Z" fill="#ffffff" opacity="0.92"/>
+  <!-- 나침반 바늘 남 -->
+  <path d="M100 158 L105.5 103 L100 94 L94.5 103 Z" fill="#ffffff" opacity="0.22"/>
+
+  <!-- 중앙 베젤 -->
+  <circle cx="100" cy="100" r="7"   fill="none" stroke="#ffffff" stroke-width="0.9" opacity="0.85"/>
+  <circle cx="100" cy="100" r="2.5" fill="#ffffff" opacity="0.9"/>
+
+  <!-- 조준 링 + 노치 -->
+  <circle cx="100" cy="100" r="16" fill="none" stroke="#ffffff" stroke-width="0.7" opacity="0.4"/>
+  <line x1="100" y1="82"  x2="100" y2="86"  stroke="#ffffff" stroke-width="0.9" opacity="0.55"/>
+  <line x1="100" y1="114" x2="100" y2="118" stroke="#ffffff" stroke-width="0.9" opacity="0.55"/>
+  <line x1="82"  y1="100" x2="86"  y2="100" stroke="#ffffff" stroke-width="0.9" opacity="0.55"/>
+  <line x1="114" y1="100" x2="118" y2="100" stroke="#ffffff" stroke-width="0.9" opacity="0.55"/>
+
+  <!-- 북쪽 다이아몬드 -->
+  <polygon points="100,8 102.5,14 100,17 97.5,14" fill="#ffffff" opacity="0.7"/>
+
+</svg>

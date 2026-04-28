@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0c0c0c">
 
     <!-- ══════════════════════════════════════════
          SEO 기본 메타태그
@@ -129,6 +130,9 @@
       })();
     </script>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://images.unsplash.com">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -1413,7 +1417,7 @@
                 </a>
             </div>
             <div class="philosophy-image reveal">
-                <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&q=80&w=900" alt="Philosophy Interior">
+                <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&q=80&w=900" alt="차분한 무드의 거실 인테리어" loading="lazy" decoding="async">
             </div>
         </div>
     </section>
@@ -1429,35 +1433,35 @@
         </div>
         <div class="portfolio-grid reveal">
             <div class="pf-item pf-item-1">
-                <img src="https://images.unsplash.com/photo-1600210492493-0946911123ea?auto=format&fit=crop&q=80&w=1200" alt="Project 1">
+                <img src="https://images.unsplash.com/photo-1600210492493-0946911123ea?auto=format&fit=crop&q=80&w=1200" alt="성북동 단독주택 리모델링 예시" loading="lazy" decoding="async">
                 <div class="pf-overlay">
                     <div class="pf-title">성북동 단독주택 리모델링</div>
                     <div class="pf-meta">Residential · Joy 서비스</div>
                 </div>
             </div>
             <div class="pf-item pf-item-2">
-                <img src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&q=80&w=800" alt="Project 2">
+                <img src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&q=80&w=800" alt="마포 아파트 침실 인테리어 예시" loading="lazy" decoding="async">
                 <div class="pf-overlay">
                     <div class="pf-title">마포 아파트 인테리어</div>
                     <div class="pf-meta">Residential · Smile 턴키</div>
                 </div>
             </div>
             <div class="pf-item pf-item-3">
-                <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&q=80&w=800" alt="Project 3">
+                <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&q=80&w=800" alt="강남 카페 주방 공간 설계 예시" loading="lazy" decoding="async">
                 <div class="pf-overlay">
                     <div class="pf-title">강남 카페 공간 설계</div>
                     <div class="pf-meta">Commercial · Smile 턴키</div>
                 </div>
             </div>
             <div class="pf-item pf-item-4">
-                <img src="https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&q=80&w=1000" alt="Project 4">
+                <img src="https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&q=80&w=1000" alt="용산 오피스텔 거실 인테리어 예시" loading="lazy" decoding="async">
                 <div class="pf-overlay">
                     <div class="pf-title">용산 오피스텔 인테리어</div>
                     <div class="pf-meta">Residential · Happy 서비스</div>
                 </div>
             </div>
             <div class="pf-item pf-item-5">
-                <img src="https://images.unsplash.com/photo-1598928506311-c55ded91a20c?auto=format&fit=crop&q=80&w=800" alt="Project 5">
+                <img src="https://images.unsplash.com/photo-1598928506311-c55ded91a20c?auto=format&fit=crop&q=80&w=800" alt="서울숲 스튜디오 인테리어 예시" loading="lazy" decoding="async">
                 <div class="pf-overlay">
                     <div class="pf-title">서울숲 스튜디오</div>
                     <div class="pf-meta">Studio · Joy 서비스</div>
@@ -1607,7 +1611,7 @@
     </section>
 
     <!-- CTA -->
-    <section class="contact-cta reveal">
+    <section id="contact" class="contact-cta reveal">
         <p class="section-tag">Get Started</p>
         <h2 class="section-title">
             지금, 당신의 공간을<br><em>이야기해 주세요.</em>
@@ -2121,7 +2125,9 @@
             const EMAILJS_TEMPLATE_ID = 'template_x7bv68n';
             // ════════════════════════════════════════════
 
-            emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+            if (window.emailjs) {
+                window.emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+            }
 
             const backdrop  = document.getElementById('popupBackdrop');
             const modal     = document.getElementById('popupModal');
@@ -2211,7 +2217,8 @@
                 pfSubmit.textContent = '전송 중...';
 
                 try {
-                    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+                    if (!window.emailjs) throw new Error('EmailJS SDK unavailable');
+                    await window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
                         to_email  : 'contact@skopos.kr',
                         from_name : name,
                         phone     : phone,
@@ -2265,9 +2272,9 @@
     <!-- ── 상담 신청 모달 JS ── -->
     <script>
         // EmailJS 초기화 (팝업용과 공유)
-        if(typeof emailjs !== 'undefined') emailjs.init({ publicKey: 'v6zxjqa6KQs7Ux7De' });
+        if(window.emailjs) window.emailjs.init({ publicKey: 'v6zxjqa6KQs7Ux7De' });
         else document.addEventListener('DOMContentLoaded', () => {
-            if(typeof emailjs !== 'undefined') emailjs.init({ publicKey: 'v6zxjqa6KQs7Ux7De' });
+            if(window.emailjs) window.emailjs.init({ publicKey: 'v6zxjqa6KQs7Ux7De' });
         });
 
         function openConsult() {
@@ -2312,7 +2319,8 @@
             btn.textContent = '전송 중...';
 
             try {
-                await emailjs.send('service_skopos', 'template_x7bv68n', {
+                if (!window.emailjs) throw new Error('EmailJS SDK unavailable');
+                await window.emailjs.send('service_skopos', 'template_x7bv68n', {
                     to_email : 'contact@skopos.kr',
                     from_name: name,
                     phone    : phone,

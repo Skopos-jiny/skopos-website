@@ -3,7 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0c0c0c">
 <title>SKOPOS Admin — skopos.kr/admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -406,7 +410,7 @@ input:checked + .toggle-slider::before{transform:translateX(20px);background:var
     <div class="login-logo">SKOPOS</div>
     <div class="login-sub">Admin Dashboard</div>
     <label class="login-label">Password</label>
-    <input class="login-input" id="pwInput" type="password"
+    <input class="login-input" id="pwInput" type="password" autocomplete="current-password"
       placeholder="관리자 비밀번호 입력"
       onkeydown="if(event.key==='Enter')doLogin()">
     <button class="login-btn" onclick="doLogin()">로그인</button>
@@ -949,7 +953,10 @@ input:checked + .toggle-slider::before{transform:translateX(20px);background:var
 const ADMIN_PW_KEY = 'skopos_admin_pw';
 const DEFAULT_PW   = 'skopos2024';
 
-function getPW(){ return localStorage.getItem(ADMIN_PW_KEY) || DEFAULT_PW; }
+function getPW(){
+  try { return localStorage.getItem(ADMIN_PW_KEY) || DEFAULT_PW; }
+  catch(e) { return DEFAULT_PW; }
+}
 
 // ══════════════════════════════
 // ANALYTICS
@@ -1072,15 +1079,13 @@ function clearUtmLog(){
   toast('로그 초기화 완료');
 }
 
-// sectionMap에 analytics 추가
-sectionMap['analytics'] = '유입 경로 분석';
-
 // ══════════════════════════════
 // LOGIN
 // ══════════════════════════════
 function doLogin(){
   const val = document.getElementById('pwInput').value;
   if(val === getPW()){
+    try { sessionStorage.setItem('skopos_admin_session', '1'); } catch(e) {}
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminApp').style.display = 'block';
     initApp();
@@ -1092,6 +1097,7 @@ function doLogin(){
   }
 }
 function doLogout(){
+  try { sessionStorage.removeItem('skopos_admin_session'); } catch(e) {}
   document.getElementById('adminApp').style.display = 'none';
   document.getElementById('loginScreen').style.display = 'flex';
   document.getElementById('pwInput').value = '';
@@ -1162,7 +1168,7 @@ function initApp(){
 const sectionMap = {
   overview:'전체 현황', inquiries:'문의 / 상담 신청',
   messages:'방문자 메시지', controls:'팝업 / 이벤트 제어',
-  stats:'취향 진단 통계', settings:'관리자 설정'
+  stats:'취향 진단 통계', analytics:'유입 경로 분석', settings:'관리자 설정'
 };
 function showSection(id){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
@@ -1385,7 +1391,8 @@ function changePw(){
   const b = document.getElementById('newPw2').value;
   if(!a||a.length<4){ toast('4자 이상 입력해주세요'); return; }
   if(a!==b){ toast('비밀번호가 일치하지 않습니다'); return; }
-  localStorage.setItem(ADMIN_PW_KEY, a);
+  try { localStorage.setItem(ADMIN_PW_KEY, a); }
+  catch(e) { toast('브라우저 저장소를 사용할 수 없습니다'); return; }
   document.getElementById('newPw').value='';
   document.getElementById('newPw2').value='';
   toast('비밀번호가 변경되었습니다');
@@ -1411,6 +1418,16 @@ document.getElementById('modalBg').addEventListener('click',function(e){
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape') closeModal();
   if(e.key==='Enter'&&document.getElementById('loginScreen').style.display!=='none') doLogin();
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  try {
+    if (sessionStorage.getItem('skopos_admin_session') === '1') {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('adminApp').style.display = 'block';
+      initApp();
+    }
+  } catch(e) {}
 });
 </script>
 </body>
