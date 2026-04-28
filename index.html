@@ -997,9 +997,185 @@
             white-space: nowrap;
         }
         .btn-quiz:hover { background: rgba(201,169,110,0.1); border-color: var(--gold); }
+
+        /* ── 상담 신청 모달 ── */
+        .consult-overlay {
+            position: fixed; inset: 0; z-index: 5000;
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(6px);
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.4s ease;
+            padding: 20px;
+        }
+        .consult-overlay.open {
+            opacity: 1; pointer-events: all;
+        }
+        .consult-modal {
+            background: var(--off-black);
+            border: 1px solid rgba(201,169,110,0.25);
+            width: min(520px, 100%);
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: translateY(24px) scale(0.97);
+            transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
+        }
+        .consult-overlay.open .consult-modal {
+            transform: translateY(0) scale(1);
+        }
+        .consult-bar {
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
+        .consult-head {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 24px 32px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .consult-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem; font-weight: 300; color: var(--white);
+        }
+        .consult-title em { font-style: italic; color: var(--gold); }
+        .consult-x {
+            width: 30px; height: 30px;
+            background: none; border: 1px solid rgba(255,255,255,0.1);
+            color: var(--gray); font-size: 0.9rem; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s;
+        }
+        .consult-x:hover { border-color: var(--gold); color: var(--gold); }
+        .consult-body { padding: 28px 32px 32px; }
+        .consult-sub {
+            font-size: 0.78rem; color: var(--gray);
+            line-height: 1.7; margin-bottom: 28px;
+        }
+        .cf-row { margin-bottom: 16px; }
+        .cf-label {
+            display: block; font-size: 0.62rem;
+            letter-spacing: 0.15em; text-transform: uppercase;
+            color: var(--gray); margin-bottom: 7px;
+        }
+        .cf-label span { color: var(--gold); }
+        .cf-input, .cf-select {
+            width: 100%;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.09);
+            color: var(--white);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.87rem; padding: 11px 14px; outline: none;
+            transition: border-color 0.25s;
+            appearance: none; -webkit-appearance: none;
+        }
+        .cf-input:focus, .cf-select:focus { border-color: var(--gold); }
+        .cf-input::placeholder { color: rgba(250,250,248,0.2); }
+        .cf-select {
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23c9a96e' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+        }
+        .cf-select option { background: #1a1a1a; color: var(--white); }
+        .cf-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .cf-error { font-size: 0.72rem; color: #e07070; margin-top: 6px; display: none; }
+        .cf-submit {
+            width: 100%; padding: 14px;
+            background: var(--gold); color: var(--black);
+            font-size: 0.74rem; font-weight: 500;
+            letter-spacing: 0.18em; text-transform: uppercase;
+            border: none; cursor: pointer; transition: all 0.3s;
+            margin-top: 8px;
+        }
+        .cf-submit:hover { background: var(--gold-light); }
+        .cf-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+        .cf-success {
+            text-align: center; padding: 20px 0;
+        }
+        .cf-success-icon { font-size: 2.5rem; margin-bottom: 14px; }
+        .cf-success-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.4rem; font-weight: 300; color: var(--white);
+            margin-bottom: 10px;
+        }
+        .cf-success-desc { font-size: 0.8rem; color: var(--gray); line-height: 1.8; }
+        @media (max-width: 560px) {
+            .consult-head { padding: 20px 24px; }
+            .consult-body { padding: 24px; }
+            .cf-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
+
+    <!-- ── 상담 신청 모달 ── -->
+    <div class="consult-overlay" id="consultOverlay">
+        <div class="consult-modal">
+            <div class="consult-bar"></div>
+            <div class="consult-head">
+                <h2 class="consult-title">상담 <em>신청하기</em></h2>
+                <button class="consult-x" onclick="closeConsult()">✕</button>
+            </div>
+            <div class="consult-body">
+                <!-- STEP 1: 폼 -->
+                <div id="cfForm">
+                    <p class="consult-sub">
+                        간단한 정보를 남겨주시면<br>
+                        빠른 시간 안에 연락드리겠습니다.
+                    </p>
+                    <div class="cf-grid">
+                        <div class="cf-row">
+                            <label class="cf-label">성함 <span>*</span></label>
+                            <input class="cf-input" id="cfName" type="text" placeholder="홍길동">
+                        </div>
+                        <div class="cf-row">
+                            <label class="cf-label">연락처 <span>*</span></label>
+                            <input class="cf-input" id="cfPhone" type="tel" placeholder="010-0000-0000">
+                        </div>
+                    </div>
+                    <div class="cf-row">
+                        <label class="cf-label">시공 지역 <span>*</span></label>
+                        <input class="cf-input" id="cfArea" type="text" placeholder="예) 서울 마포구, 경기 성남시">
+                    </div>
+                    <div class="cf-row">
+                        <label class="cf-label">시공 예정 시기 <span>*</span></label>
+                        <select class="cf-select" id="cfTiming">
+                            <option value="" disabled selected>선택해주세요</option>
+                            <option>1개월 이내</option>
+                            <option>1~3개월</option>
+                            <option>3~6개월</option>
+                            <option>6개월 이후</option>
+                            <option>미정</option>
+                        </select>
+                    </div>
+                    <div class="cf-row">
+                        <label class="cf-label">관심 서비스</label>
+                        <select class="cf-select" id="cfService">
+                            <option value="" disabled selected>선택해주세요 (선택)</option>
+                            <option>Happy — 셀프/반셀프 (150만원)</option>
+                            <option>Joy — 반셀프/컨설팅 (350만원)</option>
+                            <option>Smile — 턴키 (별도 문의)</option>
+                            <option>아직 모르겠어요</option>
+                        </select>
+                    </div>
+                    <div class="cf-row">
+                        <label class="cf-label">추가 문의사항</label>
+                        <input class="cf-input" id="cfMemo" type="text" placeholder="간단히 남겨주세요 (선택)">
+                    </div>
+                    <p class="cf-error" id="cfError">필수 항목을 모두 입력해주세요.</p>
+                    <button class="cf-submit" id="cfSubmit" onclick="submitConsult()">신청 완료하기</button>
+                </div>
+                <!-- STEP 2: 완료 -->
+                <div id="cfSuccess" style="display:none;" class="cf-success">
+                    <div class="cf-success-icon">✉️</div>
+                    <div class="cf-success-title">신청이 완료되었습니다!</div>
+                    <p class="cf-success-desc">
+                        빠른 시간 내에 연락드리겠습니다.<br>
+                        <span style="color:var(--gold);">contact@skopos.kr</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- NAV -->
     <nav>
@@ -1010,7 +1186,7 @@
             <li><a href="#pricing">가격정책</a></li>
             <li><a href="#testimonials">후기</a></li>
             <li><a href="skopos_quiz.html" style="color:var(--gold);border:1px solid rgba(201,169,110,0.4);padding:5px 12px;letter-spacing:0.1em;transition:background 0.3s;" onmouseover="this.style.background='rgba(201,169,110,0.1)'" onmouseout="this.style.background='none'">✦ 취향 진단</a></li>
-            <li><a href="mailto:contact@skopos.kr" class="nav-cta">상담신청</a></li>
+            <li><a href="#" class="nav-cta" onclick="openConsult();return false;">상담신청</a></li>
         </ul>
         <!-- 햄버거 버튼 (모바일) -->
         <button class="nav-hamburger" id="hamburger" aria-label="메뉴 열기" onclick="toggleDrawer()">
@@ -1051,7 +1227,7 @@
                 </a>
             </nav>
             <div class="drawer-cta">
-                <a href="mailto:contact@skopos.kr">상담 신청하기</a>
+                <a href="#" onclick="openConsult();closeDrawer();return false;">상담 신청하기</a>
             </div>
             <div class="drawer-footer">
                 <p>Space &amp; Life Curator<br>contact@skopos.kr</p>
@@ -1168,7 +1344,7 @@
                 <p class="section-tag">Portfolio</p>
                 <h2 class="section-title">선별된 <em>프로젝트</em></h2>
             </div>
-            <a href="mailto:contact@skopos.kr" class="view-all-link">프로젝트 문의 →</a>
+            <a href="#" class="view-all-link" onclick="openConsult();return false;">프로젝트 문의 →</a>
         </div>
         <div class="portfolio-grid reveal">
             <div class="pf-item pf-item-1">
@@ -1229,7 +1405,7 @@
                     <li>행위허가 대행 비용 포함</li>
                     <li>3D 디자인 제공</li>
                 </ul>
-                <a href="mailto:contact@skopos.kr" class="price-btn price-btn-outline">문의하기</a>
+                <a href="#" class="price-btn price-btn-outline" onclick="openConsult();return false;">문의하기</a>
             </div>
             <!-- Joy -->
             <div class="price-card featured">
@@ -1245,7 +1421,7 @@
                     <li>현장 감리 포함</li>
                     <li>사후 A/S 관리 포함</li>
                 </ul>
-                <a href="mailto:contact@skopos.kr" class="price-btn price-btn-gold">선택하기</a>
+                <a href="#" class="price-btn price-btn-gold" onclick="openConsult();return false;">선택하기</a>
             </div>
             <!-- Smile -->
             <div class="price-card">
@@ -1259,7 +1435,7 @@
                     <li><strong>전 시공 하자보증 3년</strong></li>
                     <li>1:1 라이프스타일 코칭</li>
                 </ul>
-                <a href="mailto:contact@skopos.kr" class="price-btn price-btn-outline">문의하기</a>
+                <a href="#" class="price-btn price-btn-outline" onclick="openConsult();return false;">문의하기</a>
             </div>
         </div>
     </section>
@@ -1356,7 +1532,7 @@
             지금, 당신의 공간을<br><em>이야기해 주세요.</em>
         </h2>
         <p>처음 상담은 언제나 열려 있습니다.</p>
-        <a href="mailto:contact@skopos.kr" class="btn-primary" style="font-size:0.8rem; letter-spacing:0.18em;" onclick="trackEvent('click_consult',{location:'cta_section'})">상담 신청하기</a>
+        <a href="#" class="btn-primary" style="font-size:0.8rem; letter-spacing:0.18em;" onclick="openConsult();trackEvent('click_consult',{location:'cta_section'});return false;">상담 신청하기</a>
     </section>
 
     <!-- FOOTER -->
@@ -2003,6 +2179,80 @@
             // ── 페이지 로드 즉시 노출 (0.6초 딜레이로 자연스럽게)
             setTimeout(showPopup, 600);
         })();
+    </script>
+
+    <!-- ── 상담 신청 모달 JS ── -->
+    <script>
+        // EmailJS 초기화 (팝업용과 공유)
+        if(typeof emailjs !== 'undefined') emailjs.init({ publicKey: 'v6zxjqa6KQs7Ux7De' });
+        else document.addEventListener('DOMContentLoaded', () => {
+            if(typeof emailjs !== 'undefined') emailjs.init({ publicKey: 'v6zxjqa6KQs7Ux7De' });
+        });
+
+        function openConsult() {
+            const ov = document.getElementById('consultOverlay');
+            ov.classList.add('open');
+            document.body.style.overflow = 'hidden';
+            document.getElementById('cfForm').style.display = 'block';
+            document.getElementById('cfSuccess').style.display = 'none';
+            document.getElementById('cfError').style.display = 'none';
+            const btn = document.getElementById('cfSubmit');
+            if(btn){ btn.disabled = false; btn.textContent = '신청 완료하기'; }
+        }
+        function closeConsult() {
+            document.getElementById('consultOverlay').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+        document.getElementById('consultOverlay').addEventListener('click', function(e){
+            if(e.target === this) closeConsult();
+        });
+        document.addEventListener('keydown', e => {
+            if(e.key === 'Escape') closeConsult();
+        });
+
+        async function submitConsult() {
+            const name    = document.getElementById('cfName').value.trim();
+            const phone   = document.getElementById('cfPhone').value.trim();
+            const area    = document.getElementById('cfArea').value.trim();
+            const timing  = document.getElementById('cfTiming').value;
+            const service = document.getElementById('cfService').value || '미선택';
+            const memo    = document.getElementById('cfMemo').value.trim();
+            const errEl   = document.getElementById('cfError');
+
+            if(!name || !phone || !area || !timing) {
+                errEl.textContent = '필수 항목을 모두 입력해주세요.';
+                errEl.style.display = 'block';
+                return;
+            }
+            errEl.style.display = 'none';
+
+            const btn = document.getElementById('cfSubmit');
+            btn.disabled = true;
+            btn.textContent = '전송 중...';
+
+            try {
+                await emailjs.send('service_skopos', 'template_x7bv68n', {
+                    to_email : 'contact@skopos.kr',
+                    from_name: name,
+                    phone    : phone,
+                    address  : area,
+                    timing   : timing,
+                    service  : service,
+                    memo     : memo || '없음',
+                    subject  : '[SKOPOS] 상담 신청 — ' + name,
+                });
+                document.getElementById('cfForm').style.display = 'none';
+                document.getElementById('cfSuccess').style.display = 'block';
+                if(typeof trackEvent === 'function')
+                    trackEvent('submit_consult', { service, timing });
+            } catch(err) {
+                btn.disabled = false;
+                btn.textContent = '신청 완료하기';
+                errEl.textContent = '전송 중 오류가 발생했습니다. 다시 시도해주세요.';
+                errEl.style.display = 'block';
+                console.error('EmailJS error:', err);
+            }
+        }
     </script>
 </body>
 </html>
