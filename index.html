@@ -286,6 +286,8 @@
             letter-spacing: 0.15em;
             text-transform: uppercase;
             text-decoration: none;
+            background: transparent;
+            cursor: pointer;
             transition: all 0.3s;
         }
         .btn-ghost:hover { border-color: var(--white); }
@@ -983,8 +985,9 @@
             -webkit-tap-highlight-color: transparent;
         }
         .mobile-drawer.open .mobile-drawer-backdrop {
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.75);
             backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
         }
         .mobile-drawer-panel {
             position: absolute;
@@ -992,6 +995,7 @@
             width: 75vw;
             max-width: 300px;
             height: 100%;
+            height: 100dvh;
             background: #111111;
             border-left: 1px solid rgba(201,169,110,0.15);
             transform: translateX(100%);
@@ -1000,9 +1004,12 @@
             flex-direction: column;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
+            isolation: isolate;
+            z-index: 1;
         }
         .mobile-drawer.open .mobile-drawer-panel {
             transform: translateX(0);
+            box-shadow: -8px 0 40px rgba(0,0,0,0.6);
         }
         .drawer-header {
             display: flex;
@@ -1033,9 +1040,10 @@
         .drawer-close:hover { color: var(--gold); }
         .drawer-nav {
             flex: 1;
-            padding: 24px 0;
+            padding: 16px 0;
             display: flex;
             flex-direction: column;
+            background: #111111;
         }
         .drawer-nav a {
             display: flex;
@@ -1043,13 +1051,16 @@
             justify-content: space-between;
             padding: 15px 24px;
             text-decoration: none;
-            color: rgba(250,250,248,0.6);
-            font-size: 0.8rem;
+            color: rgba(250,250,248,0.65);
+            font-size: 0.82rem;
             letter-spacing: 0.14em;
             text-transform: uppercase;
-            border-bottom: 1px solid rgba(255,255,255,0.04);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
             transition: color 0.2s, background 0.2s;
             -webkit-tap-highlight-color: transparent;
+            background: #111111;
+            width: 100%;
+            box-sizing: border-box;
         }
         .drawer-nav a:active { background: rgba(255,255,255,0.03); }
         .drawer-nav a .drawer-arrow {
@@ -1885,7 +1896,7 @@
             모든 협업 파트너는 스코포스의 품질 기준을 통과한 검증된 전문가입니다.<br>
             Joy / Smile 서비스 이용 시 스코포스가 직접 파트너를 연결하고 감리합니다.
             <div style="margin-top:20px;">
-                <button onclick="openConsult()" class="btn-ghost" style="font-size:0.72rem; padding:12px 32px;">파트너 구성 문의하기</button>
+                <button onclick="openConsult()" style="display:inline-block;padding:12px 32px;border:1px solid rgba(250,250,248,0.3);color:var(--white);font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;background:transparent;cursor:pointer;transition:all 0.3s;" onmouseover="this.style.borderColor='rgba(201,169,110,0.8)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='rgba(250,250,248,0.3)';this.style.color='var(--white)'">파트너 구성 문의하기</button>
             </div>
         </div>
     </section>
@@ -1986,563 +1997,7 @@
         document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
     </script>
 
-    <!-- ── MAY EVENT POPUP ── -->
-    <style>
-        /* Backdrop */
-        .popup-backdrop {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.72);
-            backdrop-filter: blur(6px);
-            z-index: 900;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.5s ease;
-        }
-        .popup-backdrop.show {
-            opacity: 1;
-            pointer-events: all;
-        }
 
-        /* Modal */
-        .popup-modal {
-            position: fixed;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -52%) scale(0.94);
-            z-index: 901;
-            width: min(420px, 92vw);
-            max-height: 90vh;
-            overflow-y: auto;
-            background: var(--off-black);
-            border: 1px solid rgba(201,169,110,0.35);
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22,1,0.36,1);
-        }
-        .popup-modal.show {
-            opacity: 1;
-            pointer-events: all;
-            transform: translate(-50%, -50%) scale(1);
-        }
-
-        /* Top gold bar */
-        .popup-bar {
-            height: 4px;
-            background: linear-gradient(90deg, transparent, var(--gold), transparent);
-        }
-
-        /* Badge */
-        .popup-badge {
-            display: inline-block;
-            background: var(--gold);
-            color: var(--black);
-            font-size: 0.58rem;
-            font-weight: 600;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            padding: 4px 12px;
-            margin-bottom: 14px;
-        }
-
-        .popup-body {
-            padding: 24px 32px 28px;
-            text-align: center;
-        }
-
-        /* Countdown ring */
-        .popup-ring {
-            position: relative;
-            width: 72px;
-            height: 72px;
-            margin: 0 auto 16px;
-        }
-        .popup-ring svg {
-            transform: rotate(-90deg);
-            width: 72px;
-            height: 72px;
-        }
-        .popup-ring-track {
-            fill: none;
-            stroke: rgba(201,169,110,0.15);
-            stroke-width: 3;
-        }
-        .popup-ring-fill {
-            fill: none;
-            stroke: var(--gold);
-            stroke-width: 3;
-            stroke-linecap: round;
-            stroke-dasharray: 283;
-            stroke-dashoffset: 0;
-            transition: stroke-dashoffset 1s linear;
-        }
-        .popup-ring-inner {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        .popup-pct {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.4rem;
-            font-weight: 300;
-            color: var(--gold);
-            line-height: 1;
-        }
-        .popup-pct-label {
-            font-size: 0.52rem;
-            letter-spacing: 0.15em;
-            color: var(--gray);
-            text-transform: uppercase;
-        }
-
-        .popup-title {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.5rem;
-            font-weight: 300;
-            color: var(--white);
-            line-height: 1.25;
-            margin-bottom: 8px;
-        }
-        .popup-title em { font-style: italic; color: var(--gold); }
-
-        .popup-desc {
-            font-size: 0.78rem;
-            color: rgba(250,250,248,0.5);
-            line-height: 1.65;
-            margin-bottom: 16px;
-        }
-
-        /* Slots */
-        .popup-slots {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 6px;
-        }
-        .popup-slot {
-            width: 28px; height: 28px;
-            border: 1px solid rgba(201,169,110,0.5);
-            display: flex; align-items: center; justify-content: center;
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 0.9rem;
-            color: var(--gold);
-        }
-        .popup-slot.filled {
-            background: rgba(201,169,110,0.12);
-        }
-        .popup-slot-label {
-            font-size: 0.62rem;
-            letter-spacing: 0.1em;
-            color: var(--gray);
-            margin-bottom: 16px;
-            text-align: center;
-        }
-
-        /* Deadline */
-        .popup-deadline {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .popup-time-block {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 3px;
-        }
-        .popup-time-num {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.4rem;
-            font-weight: 300;
-            color: var(--white);
-            line-height: 1;
-            min-width: 40px;
-            text-align: center;
-            background: rgba(255,255,255,0.04);
-            padding: 6px 8px;
-            border: 1px solid rgba(255,255,255,0.07);
-        }
-        .popup-time-label {
-            font-size: 0.52rem;
-            letter-spacing: 0.12em;
-            color: var(--gray);
-            text-transform: uppercase;
-        }
-        .popup-time-sep {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.3rem;
-            color: var(--gold);
-            opacity: 0.5;
-            align-self: flex-start;
-            padding-top: 6px;
-        }
-
-        .popup-cta {
-            display: block;
-            width: 100%;
-            padding: 12px;
-            background: var(--gold);
-            color: var(--black);
-            font-size: 0.72rem;
-            font-weight: 500;
-            letter-spacing: 0.18em;
-            text-transform: uppercase;
-            text-decoration: none;
-            transition: background 0.3s;
-            margin-bottom: 14px;
-        }
-        .popup-cta:hover { background: var(--gold-light); }
-
-        .popup-close-text {
-            font-size: 0.68rem;
-            color: var(--gray);
-            cursor: pointer;
-            letter-spacing: 0.08em;
-            transition: color 0.3s;
-            background: none;
-            border: none;
-            display: block;
-            width: 100%;
-            text-align: center;
-        }
-        .popup-close-text:hover { color: var(--white); }
-
-        /* X button */
-        .popup-x {
-            position: absolute;
-            top: 16px; right: 16px;
-            width: 28px; height: 28px;
-            background: none;
-            border: 1px solid rgba(255,255,255,0.12);
-            color: var(--gray);
-            font-size: 1rem;
-            cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            transition: all 0.2s;
-            line-height: 1;
-        }
-        .popup-x:hover { border-color: var(--gold); color: var(--gold); }
-
-        /* Sparkle decoration */
-        .popup-sparkles {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            overflow: hidden;
-        }
-        .sparkle {
-            position: absolute;
-            width: 3px; height: 3px;
-            border-radius: 50%;
-            background: var(--gold);
-            opacity: 0;
-            animation: sparkle-anim 3s ease-in-out infinite;
-        }
-        @keyframes sparkle-anim {
-            0%   { opacity: 0; transform: scale(0); }
-            50%  { opacity: 0.6; transform: scale(1); }
-            100% { opacity: 0; transform: scale(0); }
-        }
-    </style>
-
-    <!-- Backdrop -->
-    <div class="popup-backdrop" id="popupBackdrop"></div>
-
-    <!-- Modal -->
-    <div class="popup-modal" id="popupModal" role="dialog" aria-modal="true" aria-label="5월 한정 이벤트">
-        <div class="popup-bar"></div>
-        <div class="popup-sparkles" id="sparkleContainer"></div>
-        <button class="popup-x" id="popupX" aria-label="닫기">✕</button>
-
-        <div class="popup-body">
-            <span class="popup-badge">🎁 May Limited Event</span>
-
-            <!-- Discount ring -->
-            <div class="popup-ring">
-                <svg width="72" height="72" viewBox="0 0 100 100">
-                    <circle class="popup-ring-track" cx="50" cy="50" r="45"/>
-                    <circle class="popup-ring-fill" id="ringFill" cx="50" cy="50" r="45"/>
-                </svg>
-                <div class="popup-ring-inner">
-                    <div class="popup-pct">30%</div>
-                    <div class="popup-pct-label">DISCOUNT</div>
-                </div>
-            </div>
-
-            <h2 class="popup-title">5월 한정<br><em>특별 할인 이벤트</em></h2>
-            <p class="popup-desc">
-                스코포스의 모든 서비스를 <strong style="color:var(--white)">30% 할인</strong>된 가격으로 경험하세요.<br>
-                단, 선착순 2명에게만 제공되는 특별한 기회입니다.
-            </p>
-
-            <!-- Slots -->
-            <div class="popup-slots">
-                <div class="popup-slot filled">1</div>
-                <div class="popup-slot">2</div>
-            </div>
-            <p class="popup-slot-label">잔여 슬롯 — 1 / 2석</p>
-
-            <!-- Countdown timer -->
-            <div class="popup-deadline">
-                <div class="popup-time-block">
-                    <div class="popup-time-num" id="timerDays">--</div>
-                    <div class="popup-time-label">Days</div>
-                </div>
-                <div class="popup-time-sep">:</div>
-                <div class="popup-time-block">
-                    <div class="popup-time-num" id="timerHours">--</div>
-                    <div class="popup-time-label">Hours</div>
-                </div>
-                <div class="popup-time-sep">:</div>
-                <div class="popup-time-block">
-                    <div class="popup-time-num" id="timerMins">--</div>
-                    <div class="popup-time-label">Mins</div>
-                </div>
-                <div class="popup-time-sep">:</div>
-                <div class="popup-time-block">
-                    <div class="popup-time-num" id="timerSecs">--</div>
-                    <div class="popup-time-label">Secs</div>
-                </div>
-            </div>
-
-            <!-- Step 1: CTA -->
-            <div id="popupStep1">
-                <button class="popup-cta" id="popupOpenForm">지금 바로 신청하기</button>
-                <button class="popup-close-text" id="popupCloseText">오늘 하루 보지 않기</button>
-            </div>
-
-            <!-- Step 2: Form (hidden by default) -->
-            <div id="popupStep2" style="display:none; text-align:left;">
-                <p style="font-size:0.7rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--gold); margin-bottom:20px; text-align:center;">신청 정보 입력</p>
-                <div class="pf-field">
-                    <label class="pf-label">이름 *</label>
-                    <input class="pf-input" id="pfName" type="text" placeholder="홍길동" required>
-                </div>
-                <div class="pf-field">
-                    <label class="pf-label">연락처 *</label>
-                    <input class="pf-input" id="pfPhone" type="tel" placeholder="010-0000-0000" required>
-                </div>
-                <div class="pf-field">
-                    <label class="pf-label">시공 주소 *</label>
-                    <input class="pf-input" id="pfAddress" type="text" placeholder="서울시 마포구 ..." required>
-                </div>
-                <div class="pf-field">
-                    <label class="pf-label">희망 시공 시기 *</label>
-                    <select class="pf-input pf-select" id="pfTiming">
-                        <option value="" disabled selected>선택해주세요</option>
-                        <option>1개월 이내</option>
-                        <option>1~3개월</option>
-                        <option>3~6개월</option>
-                        <option>6개월 이후</option>
-                        <option>미정</option>
-                    </select>
-                </div>
-                <p class="pf-error" id="pfError" style="display:none;">모든 항목을 입력해주세요.</p>
-                <button class="popup-cta" id="pfSubmit" style="margin-top:8px;">신청 완료하기</button>
-                <button class="popup-close-text" id="pfBack" style="margin-top:10px;">← 뒤로가기</button>
-            </div>
-
-            <!-- Step 3: Success -->
-            <div id="popupStep3" style="display:none; text-align:center; padding: 20px 0;">
-                <div style="font-size:2.8rem; margin-bottom:16px;">✉️</div>
-                <p style="font-family:'Cormorant Garamond',serif; font-size:1.5rem; color:var(--white); margin-bottom:10px;">신청이 완료되었습니다!</p>
-                <p style="font-size:0.82rem; color:var(--gray); line-height:1.8; margin-bottom:24px;">
-                    빠른 시간 내에 연락드리겠습니다.<br>
-                    <span style="color:var(--gold)">contact@skopos.kr</span>
-                </p>
-                <button class="popup-cta" id="pfDone">확인</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- EmailJS SDK -->
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-
-    <style>
-        /* ── Form fields ── */
-        .pf-field { margin-bottom: 14px; }
-        .pf-label {
-            display: block;
-            font-size: 0.68rem;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: var(--gray);
-            margin-bottom: 6px;
-        }
-        .pf-input {
-            width: 100%;
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: var(--white);
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.88rem;
-            padding: 11px 14px;
-            outline: none;
-            transition: border-color 0.25s;
-            appearance: none;
-            -webkit-appearance: none;
-        }
-        .pf-input:focus { border-color: var(--gold); }
-        .pf-input::placeholder { color: rgba(255,255,255,0.2); }
-        .pf-select { cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23c9a96e' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; }
-        .pf-select option { background: #1a1a1a; color: var(--white); }
-        .pf-error { font-size: 0.75rem; color: #e07070; margin-bottom: 8px; }
-        #pfSubmit:disabled { opacity: 0.5; cursor: not-allowed; }
-    </style>
-
-    <script>
-        (function() {
-            // ════════════════════════════════════════════
-            // ✅ EmailJS 설정 — 아래 3개 값을 본인 계정으로 교체하세요
-            // https://www.emailjs.com 에서 발급
-            const EMAILJS_PUBLIC_KEY  = 'v6zxjqa6KQs7Ux7De';
-            const EMAILJS_SERVICE_ID  = 'service_skopos';
-            const EMAILJS_TEMPLATE_ID = 'template_x7bv68n';
-            // ════════════════════════════════════════════
-
-            emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
-
-            const backdrop  = document.getElementById('popupBackdrop');
-            const modal     = document.getElementById('popupModal');
-            const closeX    = document.getElementById('popupX');
-            const closeBtn  = document.getElementById('popupCloseText');
-            const openForm  = document.getElementById('popupOpenForm');
-            const pfBack    = document.getElementById('pfBack');
-            const pfSubmit  = document.getElementById('pfSubmit');
-            const pfDone    = document.getElementById('pfDone');
-            const step1     = document.getElementById('popupStep1');
-            const step2     = document.getElementById('popupStep2');
-            const step3     = document.getElementById('popupStep3');
-            let shown       = false;
-
-            // ── Sparkles
-            const sparkleContainer = document.getElementById('sparkleContainer');
-            for (let i = 0; i < 12; i++) {
-                const s = document.createElement('div');
-                s.className = 'sparkle';
-                s.style.left  = Math.random() * 100 + '%';
-                s.style.top   = Math.random() * 100 + '%';
-                s.style.animationDelay    = (Math.random() * 3) + 's';
-                s.style.animationDuration = (2 + Math.random() * 2) + 's';
-                sparkleContainer.appendChild(s);
-            }
-
-            // ── Ring fill animation (30%)
-            const ring = document.getElementById('ringFill');
-            const circumference = 2 * Math.PI * 45;
-            ring.style.strokeDasharray  = circumference;
-            ring.style.strokeDashoffset = circumference;
-            function animateRing() {
-                setTimeout(() => {
-                    ring.style.transition = 'stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1)';
-                    ring.style.strokeDashoffset = circumference * (1 - 0.30);
-                }, 300);
-            }
-
-            // ── Countdown to May 31
-            function updateTimer() {
-                const now = new Date();
-                const end = new Date(now.getFullYear(), 4, 31, 23, 59, 59);
-                const diff = end - now;
-                if (diff <= 0) {
-                    ['Days','Hours','Mins','Secs'].forEach(k => {
-                        document.getElementById('timer'+k).textContent = '00';
-                    });
-                    return;
-                }
-                const d = Math.floor(diff / 86400000);
-                const h = Math.floor((diff % 86400000) / 3600000);
-                const m = Math.floor((diff % 3600000)  / 60000);
-                const s = Math.floor((diff % 60000)    / 1000);
-                document.getElementById('timerDays').textContent  = String(d).padStart(2,'0');
-                document.getElementById('timerHours').textContent = String(h).padStart(2,'0');
-                document.getElementById('timerMins').textContent  = String(m).padStart(2,'0');
-                document.getElementById('timerSecs').textContent  = String(s).padStart(2,'0');
-            }
-            updateTimer();
-            setInterval(updateTimer, 1000);
-
-            // ── Step navigation
-            function goStep(n) {
-                step1.style.display = n === 1 ? 'block' : 'none';
-                step2.style.display = n === 2 ? 'block' : 'none';
-                step3.style.display = n === 3 ? 'block' : 'none';
-            }
-
-            openForm.addEventListener('click', () => goStep(2));
-            pfBack.addEventListener('click',   () => goStep(1));
-            pfDone.addEventListener('click',   () => closePopup(false));
-
-            // ── EmailJS send
-            pfSubmit.addEventListener('click', async () => {
-                const name    = document.getElementById('pfName').value.trim();
-                const phone   = document.getElementById('pfPhone').value.trim();
-                const address = document.getElementById('pfAddress').value.trim();
-                const timing  = document.getElementById('pfTiming').value;
-                const errEl   = document.getElementById('pfError');
-
-                if (!name || !phone || !address || !timing) {
-                    errEl.style.display = 'block';
-                    return;
-                }
-                errEl.style.display = 'none';
-                pfSubmit.disabled = true;
-                pfSubmit.textContent = '전송 중...';
-
-                try {
-                    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-                        to_email  : 'contact@skopos.kr',
-                        from_name : name,
-                        phone     : phone,
-                        address   : address,
-                        timing    : timing,
-                        subject   : '[SKOPOS] 5월 한정 이벤트 신청 — ' + name,
-                    });
-                    goStep(3);
-                } catch(err) {
-                    pfSubmit.disabled = false;
-                    pfSubmit.textContent = '신청 완료하기';
-                    errEl.textContent = '전송 중 오류가 발생했습니다. 다시 시도해주세요.';
-                    errEl.style.display = 'block';
-                    console.error('EmailJS error:', err);
-                }
-            });
-
-            // ── Show / Close popup
-            function showPopup() {
-                if (shown) return;
-                shown = true;
-                backdrop.classList.add('show');
-                modal.classList.add('show');
-                animateRing();
-                document.body.style.overflow = 'hidden';
-            }
-            function closePopup(hideToday) {
-                backdrop.classList.remove('show');
-                modal.classList.remove('show');
-                document.body.style.overflow = '';
-                goStep(1);
-                if (hideToday) {
-                    try { sessionStorage.setItem('skopos_popup_hidden', '1'); } catch(e) {}
-                }
-            }
-
-            closeX.addEventListener('click',  () => closePopup(false));
-            closeBtn.addEventListener('click', () => closePopup(true));
-            backdrop.addEventListener('click', () => closePopup(false));
-
-            // ── Skip if hidden today
-            try {
-                if (sessionStorage.getItem('skopos_popup_hidden') === '1') return;
-            } catch(e) {}
-
-            // ── 페이지 로드 즉시 노출 (0.6초 딜레이로 자연스럽게)
-            setTimeout(showPopup, 600);
-        })();
-    </script>
 
     <!-- ── 상담 신청 모달 JS ── -->
     <script>
