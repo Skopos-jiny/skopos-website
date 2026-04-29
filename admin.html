@@ -3,11 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#0c0c0c">
 <title>SKOPOS Admin — skopos.kr/admin</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -410,7 +406,7 @@ input:checked + .toggle-slider::before{transform:translateX(20px);background:var
     <div class="login-logo">SKOPOS</div>
     <div class="login-sub">Admin Dashboard</div>
     <label class="login-label">Password</label>
-    <input class="login-input" id="pwInput" type="password" autocomplete="current-password"
+    <input class="login-input" id="pwInput" type="password"
       placeholder="관리자 비밀번호 입력"
       onkeydown="if(event.key==='Enter')doLogin()">
     <button class="login-btn" onclick="doLogin()">로그인</button>
@@ -498,11 +494,7 @@ input:checked + .toggle-slider::before{transform:translateX(20px);background:var
             <div class="stat-val">138</div>
             <div class="stat-change up">↑ 이번 주 +22</div>
           </div>
-          <div class="stat-card">
-            <div class="stat-label">이벤트 잔여 슬롯</div>
-            <div class="stat-val" style="color:var(--red)">1</div>
-            <div class="stat-change dn">선착순 2명 중 1명 마감</div>
-          </div>
+          
         </div>
 
         <!-- 최근 신청 -->
@@ -527,16 +519,6 @@ input:checked + .toggle-slider::before{transform:translateX(20px);background:var
         <div class="table-wrap">
           <div class="table-head"><div class="table-title">빠른 제어</div></div>
           <div style="padding:20px 24px; display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-            <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border:1px solid var(--bd);background:var(--dk);">
-              <div>
-                <div style="font-size:.78rem;color:var(--wh);margin-bottom:3px;">5월 이벤트 팝업</div>
-                <div style="font-size:.65rem;color:var(--gy);">30% 할인 / 선착순 2명</div>
-              </div>
-              <label class="toggle-switch">
-                <input type="checkbox" id="quickPopup" checked onchange="syncToggle(this,'mainPopup')">
-                <span class="toggle-slider"></span>
-              </label>
-            </div>
             <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border:1px solid var(--bd);background:var(--dk);">
               <div>
                 <div style="font-size:.78rem;color:var(--wh);margin-bottom:3px;">취향 진단 서비스</div>
@@ -614,21 +596,13 @@ input:checked + .toggle-slider::before{transform:translateX(20px);background:var
       <!-- ── 팝업/이벤트 제어 ── -->
       <div class="section" id="s-controls">
         <div class="toggle-grid">
-          <div class="toggle-card active-card">
-            <div class="toggle-info">
-              <div class="toggle-name">5월 한정 이벤트 팝업</div>
-              <div class="toggle-desc">30% 할인 / 선착순 2명<br>홈페이지 접속 0.6초 후 노출</div>
-            </div>
+          
             <label class="toggle-switch">
               <input type="checkbox" id="mainPopup" checked onchange="onToggle(this,'5월 이벤트 팝업')">
               <span class="toggle-slider"></span>
             </label>
           </div>
-          <div class="toggle-card">
-            <div class="toggle-info">
-              <div class="toggle-name">이벤트 슬롯 수 표시</div>
-              <div class="toggle-desc">팝업 내 잔여 슬롯 숫자 노출<br>현재: 1 / 2석 잔여</div>
-            </div>
+          
             <label class="toggle-switch">
               <input type="checkbox" id="mainSlot" checked onchange="onToggle(this,'슬롯 표시')">
               <span class="toggle-slider"></span>
@@ -664,11 +638,7 @@ input:checked + .toggle-slider::before{transform:translateX(20px);background:var
               <span class="toggle-slider"></span>
             </label>
           </div>
-          <div class="toggle-card">
-            <div class="toggle-info">
-              <div class="toggle-name">카운트다운 타이머</div>
-              <div class="toggle-desc">팝업 내 5월 31일까지<br>실시간 카운트다운</div>
-            </div>
+          
             <label class="toggle-switch">
               <input type="checkbox" id="mainTimer" checked onchange="onToggle(this,'카운트다운')">
               <span class="toggle-slider"></span>
@@ -676,28 +646,7 @@ input:checked + .toggle-slider::before{transform:translateX(20px);background:var
           </div>
         </div>
 
-        <!-- 이벤트 슬롯 조정 -->
-        <div class="table-wrap">
-          <div class="table-head"><div class="table-title">이벤트 슬롯 수동 관리</div></div>
-          <div style="padding:24px 28px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;">
-            <div>
-              <div class="stat-label">전체 슬롯</div>
-              <div class="stat-val">2</div>
-            </div>
-            <div>
-              <div class="stat-label">사용된 슬롯</div>
-              <div class="stat-val" style="color:var(--gold)" id="usedSlot">1</div>
-            </div>
-            <div>
-              <div class="stat-label">잔여 슬롯</div>
-              <div class="stat-val" style="color:var(--green)" id="remSlot">1</div>
-            </div>
-            <div style="display:flex;gap:8px;margin-left:auto;">
-              <button class="badge-btn" onclick="adjustSlot(-1)">− 슬롯 사용</button>
-              <button class="badge-btn" onclick="adjustSlot(1)">+ 슬롯 반환</button>
-            </div>
-          </div>
-        </div>
+        
       </div>
 
       <!-- ── 취향 진단 통계 ── -->
@@ -953,10 +902,7 @@ input:checked + .toggle-slider::before{transform:translateX(20px);background:var
 const ADMIN_PW_KEY = 'skopos_admin_pw';
 const DEFAULT_PW   = 'skopos2024';
 
-function getPW(){
-  try { return localStorage.getItem(ADMIN_PW_KEY) || DEFAULT_PW; }
-  catch(e) { return DEFAULT_PW; }
-}
+function getPW(){ return localStorage.getItem(ADMIN_PW_KEY) || DEFAULT_PW; }
 
 // ══════════════════════════════
 // ANALYTICS
@@ -1079,13 +1025,15 @@ function clearUtmLog(){
   toast('로그 초기화 완료');
 }
 
+// sectionMap에 analytics 추가
+sectionMap['analytics'] = '유입 경로 분석';
+
 // ══════════════════════════════
 // LOGIN
 // ══════════════════════════════
 function doLogin(){
   const val = document.getElementById('pwInput').value;
   if(val === getPW()){
-    try { sessionStorage.setItem('skopos_admin_session', '1'); } catch(e) {}
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminApp').style.display = 'block';
     initApp();
@@ -1097,7 +1045,6 @@ function doLogin(){
   }
 }
 function doLogout(){
-  try { sessionStorage.removeItem('skopos_admin_session'); } catch(e) {}
   document.getElementById('adminApp').style.display = 'none';
   document.getElementById('loginScreen').style.display = 'flex';
   document.getElementById('pwInput').value = '';
@@ -1168,7 +1115,7 @@ function initApp(){
 const sectionMap = {
   overview:'전체 현황', inquiries:'문의 / 상담 신청',
   messages:'방문자 메시지', controls:'팝업 / 이벤트 제어',
-  stats:'취향 진단 통계', analytics:'유입 경로 분석', settings:'관리자 설정'
+  stats:'취향 진단 통계', settings:'관리자 설정'
 };
 function showSection(id){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
@@ -1391,8 +1338,7 @@ function changePw(){
   const b = document.getElementById('newPw2').value;
   if(!a||a.length<4){ toast('4자 이상 입력해주세요'); return; }
   if(a!==b){ toast('비밀번호가 일치하지 않습니다'); return; }
-  try { localStorage.setItem(ADMIN_PW_KEY, a); }
-  catch(e) { toast('브라우저 저장소를 사용할 수 없습니다'); return; }
+  localStorage.setItem(ADMIN_PW_KEY, a);
   document.getElementById('newPw').value='';
   document.getElementById('newPw2').value='';
   toast('비밀번호가 변경되었습니다');
@@ -1418,16 +1364,6 @@ document.getElementById('modalBg').addEventListener('click',function(e){
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape') closeModal();
   if(e.key==='Enter'&&document.getElementById('loginScreen').style.display!=='none') doLogin();
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-  try {
-    if (sessionStorage.getItem('skopos_admin_session') === '1') {
-      document.getElementById('loginScreen').style.display = 'none';
-      document.getElementById('adminApp').style.display = 'block';
-      initApp();
-    }
-  } catch(e) {}
 });
 </script>
 </body>
