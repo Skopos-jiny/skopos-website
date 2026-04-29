@@ -1433,6 +1433,26 @@ const SVC={
   Joy:{sub:'반셀프 / 컨설팅',price:'350만원',desc:'전 과정 동행 감리 + A/S 포함, 가장 인기 있는 선택'},
   Smile:{sub:'턴키',price:'별도 문의',desc:'처음부터 끝까지 올인원, 3년 하자보증 포함'},
 };
+
+// ═══════════════════════════════════════════════════════
+// SVG 캐릭터 — DOM에서 읽기 + 12가지 신규 ID 매핑
+// ═══════════════════════════════════════════════════════
+const SVG_ID_MAP={
+  'sanctuary_deep':'s_deep',   'sanctuary_zen':'s_zen',
+  'nature_forest' :'n_forest', 'nature_earth'  :'n_earth',
+  'luxe_royal'    :'l_royal',  'luxe_gallery'  :'l_gallery',
+  'artistic_wild' :'a_wild',   'artistic_indie' :'a_indie',
+  'minimal_pure'  :'m_pure',   'minimal_grid'   :'m_grid',
+  'cozy_hearth'   :'c_hearth', 'cozy_family'    :'c_family',
+};
+function makeSVG(id){
+  const mapped = SVG_ID_MAP[id] || id;
+  const el = document.getElementById('svg-'+mapped);
+  if(el) return el.innerHTML;
+  const fb = document.getElementById('svg-s_calm');
+  return fb ? fb.innerHTML : '';
+}
+
 const Q_TIME=8.0;
 let cur=0,ans={},qTimer=null,resultType=null,resultSub=null;
 
@@ -1609,13 +1629,13 @@ function compute(){
 // ═══════════════════════════════════════════════════════
 function runResult(){
   show('sl');
-  const steps=['응답 패턴 벡터화 중...','욕구 구조 매핑 중...','뇌 성향 프로파일링 중...','공간 유형 알고리즘 적용 중...','보고서 생성 중...'];
+  const steps=['응답 패턴 분석 중...','욕구 구조 매핑 중...','유형 알고리즘 적용 중...','보고서 생성 중...'];
   const c=document.getElementById('ldsteps');c.innerHTML='';
   steps.forEach((s,i)=>{
     const el=document.createElement('div');el.className='ld-step';
-    el.style.animationDelay=(i*.45)+'s';
+    el.style.animationDelay=(i*.3)+'s';
     el.innerHTML=`<div class="ld-dot"></div>${s}`;c.appendChild(el);
-    setTimeout(()=>el.classList.add('done'),(i*.45+.3)*1000);
+    setTimeout(()=>el.classList.add('done'),(i*.3+.25)*1000);
   });
   setTimeout(()=>{
     const {type,sub}=compute();
@@ -1633,7 +1653,7 @@ function runResult(){
     show('sr');
     window.scrollTo({top:0,behavior:'smooth'});
     setTimeout(()=>document.querySelectorAll('.rbar').forEach(b=>b.style.width=b.dataset.val+'%'),400);
-  },(steps.length*.45+.8)*1000);
+  },(steps.length*.3+.5)*1000);
 }
 
 // ═══════════════════════════════════════════════════════
