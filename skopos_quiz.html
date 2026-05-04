@@ -2012,7 +2012,7 @@ function toggleFreeConsent(){
 // ── Airtable DB 연동 (Netlify Function 경유 — 토큰 서버 보관) ──
 async function saveToAirtable(fields){
   try{
-    const res = await fetch('/.netlify/functions/save-participant', {
+    const res = await fetch('https://skopos153.netlify.app/.netlify/functions/save-participant', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(fields)
