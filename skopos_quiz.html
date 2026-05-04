@@ -1845,7 +1845,7 @@ function buildBehaviorBlock(typeId){
   const paras = parts.filter(p => !p.startsWith('취향 키워드'));
   return `<div class="behavior-block">
     <p class="bblk-tag">✦ ${regName ? regName+'님의' : '나의'} 공간 취향 분석</p>
-    <h3 class="bblk-title">${nameLabel}님, <em>맞죠?</em></h3>
+    <h3 class="bblk-title">${nameLabel}님을 담아낸 이야기입니다<em> — 공감이 가시나요?</em></h3>
     <div class="bblk-body">${paras.map(p=>`<p>${p.trim()}</p>`).join('')}</div>
     ${kwLine ? `<div class="bblk-kw">${kwLine.trim()}</div>` : ''}
   </div>`;
@@ -2025,6 +2025,52 @@ async function saveToAirtable(fields){
   }
 }
 
+// ── 무료 퀴즈 섹션 점수 계산 ──
+function calcFreeScores(){
+  // ans 객체에서 태그별 합산
+  const c = {};
+  Object.values(ans).forEach(a =>
+    Object.entries(a.tags || {}).forEach(([k,v]) => { c[k] = (c[k]||0) + v; })
+  );
+  // 태그 → 8개 섹션 매핑
+  const total = (keys) => keys.reduce((s,k) => s+(c[k]||0), 0);
+  const pct   = (keys, maxPerQ) => {
+    const t = total(keys);
+    const max = keys.length * maxPerQ * Object.keys(ans).length / 14;
+    return Math.min(99, Math.round((t / Math.max(max,1)) * 100));
+  };
+  return {
+    score_sensory:   pct(['sensitive','calm'], 3),
+    score_safety:    pct(['safety','warmth'], 3),
+    score_social:    pct(['energy','open'], 3),
+    score_identity:  pct(['identity','artistic'], 3),
+    score_aesthetic: pct(['luxe','cozy'], 3),
+    score_control:   pct(['control','minimal'], 3),
+    score_nature:    pct(['natural','flow'], 3),
+    score_lifestyle: pct(['energy','open','flow'], 3),
+  };
+}
+
+// ── 이름 입력 후 행동패턴 블록 업데이트 ──
+function refreshBehaviorBlock(name){
+  const container = document.querySelector('.behavior-block');
+  if(!container || !resultType) return;
+  const profile = (typeof BEHAVIOR_PROFILES !== 'undefined') && BEHAVIOR_PROFILES[resultType.id];
+  if(!profile) return;
+
+  const filled = profile.replace(/\{\{name\}\}/g, name);
+  const parts  = filled.split('\n\n').filter(p => p.trim());
+  const kwLine = parts.find(p => p.startsWith('취향 키워드'));
+  const paras  = parts.filter(p => !p.startsWith('취향 키워드'));
+
+  container.innerHTML = `
+    <p class="bblk-tag">✦ ${name}님의 공간 취향 분석</p>
+    <h3 class="bblk-title">${name}님을 담아낸 이야기입니다<em> — 공감이 가시나요?</em></h3>
+    <div class="bblk-body">${paras.map(p=>`<p>${p.trim()}</p>`).join('')}</div>
+    ${kwLine ? `<div class="bblk-kw">${kwLine.trim()}</div>` : ''}
+  `;
+}
+
 async function submitRegAndUnlock(){
   const name  = (document.getElementById('regName')?.value || '').trim();
   const email = (document.getElementById('regEmail')?.value || '').trim();
@@ -2045,6 +2091,9 @@ async function submitRegAndUnlock(){
     sessionStorage.setItem('skopos_reg_email', email);
   }catch(e){}
 
+  // 실제 응답 기반 섹션 점수 계산
+  const scores = calcFreeScores();
+
   // Airtable 저장
   if(resultType){
     await saveToAirtable({
@@ -2055,20 +2104,21 @@ async function submitRegAndUnlock(){
       result_type:       resultSub ? (resultSub.plain || resultSub.sub) : (resultType.plain || resultType.id),
       result_group:      resultType.group || '',
       marketing_consent: mktOk || false,
-      score_sensory:     0,
-      score_safety:      0,
-      score_social:      0,
-      score_identity:    0,
-      score_aesthetic:   0,
-      score_control:     0,
-      score_nature:      0,
-      score_lifestyle:   0,
+      score_sensory:     scores.score_sensory,
+      score_safety:      scores.score_safety,
+      score_social:      scores.score_social,
+      score_identity:    scores.score_identity,
+      score_aesthetic:   scores.score_aesthetic,
+      score_control:     scores.score_control,
+      score_nature:      scores.score_nature,
+      score_lifestyle:   scores.score_lifestyle,
       participated_at:   new Date().toISOString().split('T')[0],
     });
   }
 
-  // 잠금 해제
+  // 잠금 해제 + 이름으로 행동패턴 블록 즉시 업데이트
   unlockResult(true);
+  refreshBehaviorBlock(name);
 }
 
 function unlockResult(skipSave){
