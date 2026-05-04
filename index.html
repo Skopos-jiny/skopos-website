@@ -1988,13 +1988,23 @@
 
 
 
+    <!-- EmailJS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
     <!-- ── 상담 신청 모달 JS ── -->
     <script>
-        // EmailJS 초기화 (팝업용과 공유)
-        if(typeof emailjs !== 'undefined') emailjs.init({ publicKey: 'v6zxjqa6KQs7Ux7De' });
-        else document.addEventListener('DOMContentLoaded', () => {
-            if(typeof emailjs !== 'undefined') emailjs.init({ publicKey: 'v6zxjqa6KQs7Ux7De' });
-        });
+        // EmailJS 초기화
+        (function initEmailJS() {
+            if (typeof emailjs !== 'undefined') {
+                emailjs.init({ publicKey: 'v6zxjqa6KQs7Ux7De' });
+            } else {
+                window.addEventListener('load', function() {
+                    if (typeof emailjs !== 'undefined') {
+                        emailjs.init({ publicKey: 'v6zxjqa6KQs7Ux7De' });
+                    }
+                });
+            }
+        })();
 
         function openConsult() {
             const ov = document.getElementById('consultOverlay');
