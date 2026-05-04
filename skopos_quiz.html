@@ -225,8 +225,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;justify-content
   letter-spacing:.15em;text-transform:uppercase;color:var(--gold);
 }
 .space-note{
-  font-size:.65rem;color:var(--gy2);text-align:center;
-  line-height:1.6;padding:12px 0;
+  border:1px solid rgba(201,169,110,.2);
+  background:rgba(201,169,110,.03);
+  padding:22px 24px;margin-top:8px;
+  text-align:left;
 }
 @media(max-width:600px){
   .space-grid{grid-template-columns:1fr;}
@@ -249,6 +251,29 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;justify-content
 .blur-msg{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:300;color:var(--wh);text-align:center;line-height:1.4}
 .blur-msg em{font-style:italic;color:var(--gold)}
 .blur-sub{font-size:.72rem;color:var(--gy);text-align:center;line-height:1.6;max-width:280px}
+
+/* ── 소식 수신 동의 (블러 게이트) ── */
+.consent-wrap{
+  width:100%;max-width:300px;
+  border:1px solid rgba(201,169,110,.2);
+  background:rgba(201,169,110,.04);
+  padding:12px 14px;
+  cursor:pointer;
+  display:flex;align-items:flex-start;gap:10px;
+  transition:border-color .2s;
+}
+.consent-wrap:hover{border-color:rgba(201,169,110,.4);}
+.cbox{
+  width:16px;height:16px;flex-shrink:0;margin-top:2px;
+  border:1px solid rgba(255,255,255,.2);
+  background:rgba(255,255,255,.04);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.55rem;color:var(--bk);font-weight:700;
+  transition:all .18s;
+}
+.cbox.on{background:var(--gold);border-color:var(--gold);}
+.ctxt{font-size:.65rem;color:rgba(250,250,248,.6);line-height:1.6;}
+.ctxt strong{color:var(--gold);font-weight:400;display:block;margin-bottom:2px;}
 .blur-actions{display:flex;flex-direction:column;gap:8px;width:100%;max-width:300px;margin-top:4px}
 .blur-btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 20px;font-size:.72rem;font-weight:500;letter-spacing:.13em;text-transform:uppercase;cursor:pointer;transition:all .3s;border:none;font-family:'DM Sans',sans-serif;text-decoration:none;text-align:center}
 .blur-btn.primary{background:var(--gold);color:var(--bk)}
@@ -281,7 +306,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;justify-content
   <div class="ibg"></div>
   <div class="orb" style="width:600px;height:600px"></div>
   <div class="orb" style="width:360px;height:360px;animation-delay:-3s"></div>
-  <p class="ie">✦ SKOPOS — 공간 욕구 진단</p>
+  <div style="display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(201,169,110,.35);padding:5px 16px;margin-bottom:18px;opacity:0;animation:fu .8s var(--ez) forwards 0s">
+    <span style="font-size:.55rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)">✦ BETA</span>
+    <span style="width:1px;height:10px;background:rgba(201,169,110,.3)"></span>
+    <span style="font-size:.58rem;letter-spacing:.12em;color:rgba(201,169,110,.7)">현재 무료 진행 중</span>
+  </div>
+  <p class="ie">SKOPOS — 공간 욕구 진단</p>
   <h1 class="it">당신의 공간이<br><em>원하는 것</em>은 무엇인가요?</h1>
   <p class="is">환경심리학 · 공간심리 · 뇌과학 · 긍정심리학 기반의 공간 욕구 진단입니다.<br>인간의 핵심 욕구 구조와 감각 처리 방식을 분석하여<br>당신만의 고유한 공간 언어를 찾아드립니다.</p>
   <div class="ibgs">
@@ -294,8 +324,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;justify-content
     <div style="text-align:center"><div class="sv">8<span style="font-size:1rem">초</span></div><div class="sl">문항당 시간</div></div>
     <div style="text-align:center"><div class="sv">12</div><div class="sl">공간 유형</div></div>
   </div>
-  <button class="bstart" onclick="startQuiz()">진단 시작하기</button>
-  <p class="disc">본 진단은 환경심리학 · 공간심리 · 뇌과학 · 긍정심리학 이론을 공간 설계에 적용한 전문 도구입니다.</p>
+  <button class="bstart" onclick="startQuiz()">무료로 시작하기</button>
+  <p class="disc">베타 운영 기간 동안 무료 제공됩니다 · 환경심리학 · 공간심리 · 뇌과학 · 긍정심리학 기반 전문 진단 도구</p>
 </div>
 
 <!-- QUIZ -->
@@ -1726,22 +1756,51 @@ function renderResult(t, sub, unlocked){
         <div style="height:120px"></div>
       </div>
 
-      <!-- 잠금 오버레이 (공개 시 숨김) -->
+      <!-- 등록 오버레이 (공개 시 숨김) -->
       <div class="blur-overlay ${isUnlocked ? 'hidden' : ''}" id="blurOverlay">
         <div class="blur-lock-icon">🔍</div>
-        <p class="blur-msg">상세 분석 결과를<br><em>지금 바로 확인하세요</em></p>
-        <p class="blur-sub">공유하거나 상담 신청 시<br>핵심 욕구 인사이트 · 공간 처방 · 추천 서비스가 공개됩니다.</p>
-        <div class="blur-actions">
-          <a href="mailto:contact@skopos.kr?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}"
-             class="blur-btn primary" onclick="unlockResult()">
-            📩 결과 포함 상담 신청하기
-          </a>
-          <button class="blur-btn kk" onclick="shareKakaoAndUnlock()">
-            💬 카카오톡 공유 후 보기
+        <p class="blur-msg">세부 분석 결과를<br><em>무료로 확인하세요</em></p>
+        <p class="blur-sub">이름과 이메일을 남겨주시면<br>핵심 욕구 · 공간 처방 · 추천 서비스를 바로 열람하실 수 있습니다.</p>
+
+        <!-- 등록 폼 -->
+        <div id="regForm" style="width:100%;max-width:300px;display:flex;flex-direction:column;gap:9px;">
+          <input id="regName" type="text" placeholder="성함"
+            style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+                   color:#fafaf8;font-family:'DM Sans',sans-serif;font-size:.82rem;padding:11px 14px;
+                   outline:none;transition:border-color .2s;"
+            onfocus="this.style.borderColor='rgba(201,169,110,.6)'"
+            onblur="this.style.borderColor='rgba(255,255,255,.12)'">
+          <input id="regEmail" type="email" placeholder="이메일"
+            style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+                   color:#fafaf8;font-family:'DM Sans',sans-serif;font-size:.82rem;padding:11px 14px;
+                   outline:none;transition:border-color .2s;"
+            onfocus="this.style.borderColor='rgba(201,169,110,.6)'"
+            onblur="this.style.borderColor='rgba(255,255,255,.12)'">
+          <input id="regPhone" type="tel" placeholder="연락처 (선택)"
+            style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+                   color:#fafaf8;font-family:'DM Sans',sans-serif;font-size:.82rem;padding:11px 14px;
+                   outline:none;transition:border-color .2s;"
+            onfocus="this.style.borderColor='rgba(201,169,110,.6)'"
+            onblur="this.style.borderColor='rgba(255,255,255,.12)'">
+
+          <!-- 소식 수신 동의 -->
+          <div class="consent-wrap" onclick="toggleFreeConsent()" id="freeConsentWrap">
+            <div class="cbox" id="freeConsentBox"></div>
+            <div class="ctxt">
+              <strong>✦ 스코포스 반셀프 소식 수신 동의 (선택)</strong>
+              반셀프 컨설팅 신규 사례, 인테리어 팁, 이벤트 소식을 이메일로 받아보실 수 있습니다.
+            </div>
+          </div>
+
+          <button onclick="submitRegAndUnlock()"
+            style="width:100%;padding:13px;background:#c9a96e;color:#080808;
+                   font-size:.74rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+                   border:none;cursor:pointer;transition:background .25s;"
+            onmouseover="this.style.background='#e8d5b0'"
+            onmouseout="this.style.background='#c9a96e'">
+            결과 열람하기 →
           </button>
-          <button class="blur-btn secondary" onclick="copyLinkAndUnlock()">
-            🔗 링크 복사 후 보기
-          </button>
+          <p id="regErr" style="color:#e07070;font-size:.65rem;text-align:center;min-height:14px;"></p>
         </div>
       </div>
 
@@ -1774,11 +1833,90 @@ function renderResult(t, sub, unlocked){
       <button class="bretry" style="flex:1;text-align:center" onclick="retryQuiz()">다시 하기</button>
     </div>
   `;
-  // [[strong]]/[[em]] 잔여 플레이스홀더 최종 정리 (안전망)
-  const rw = document.getElementById('rw');
-  rw.innerHTML = dec(rw.innerHTML);
+  // 마크업 플레이스홀더 최종 정리 — dec()를 직접 innerHTML에 적용
+  document.querySelectorAll('#rw [data-dec]').forEach(el=>{
+    el.innerHTML = dec(el.getAttribute('data-dec'));
+    el.removeAttribute('data-dec');
+  });
 }
-function unlockResult(){
+function toggleFreeConsent(){
+  const box = document.getElementById('freeConsentBox');
+  if(!box) return;
+  box.classList.toggle('on');
+  box.textContent = box.classList.contains('on') ? '✓' : '';
+}
+
+// ── Airtable DB 연동 ──
+const AT_TOKEN = 'patBcy06FnuEJnFOw.04d6686ae733e123e205c489b328a2bbbd9875f830fcd58824537189c396bb17';
+const AT_BASE  = 'app9SmqYVUb5ZYSBr';
+const AT_TABLE = 'tbl9aea8BJRlBQVo7';
+
+async function saveToAirtable(fields){
+  try{
+    const res = await fetch(`https://api.airtable.com/v0/${AT_BASE}/${AT_TABLE}`, {
+      method: 'POST',
+      headers:{
+        'Authorization': `Bearer ${AT_TOKEN}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ fields })
+    });
+    const data = await res.json();
+    if(data.error) console.warn('Airtable 오류:', data.error.message || data.error);
+    else console.log('Airtable 저장 완료:', data.id);
+    return data;
+  } catch(e){
+    console.error('Airtable 연결 실패:', e);
+  }
+}
+
+async function submitRegAndUnlock(){
+  const name  = (document.getElementById('regName')?.value || '').trim();
+  const email = (document.getElementById('regEmail')?.value || '').trim();
+  const phone = (document.getElementById('regPhone')?.value || '').trim();
+  const errEl = document.getElementById('regErr');
+
+  if(!name){ errEl.textContent = '성함을 입력해주세요.'; return; }
+  if(!email || !email.includes('@')){ errEl.textContent = '올바른 이메일을 입력해주세요.'; return; }
+  errEl.textContent = '';
+
+  const btn = document.querySelector('#regForm button');
+  if(btn){ btn.disabled = true; btn.textContent = '저장 중...'; }
+
+  const mktOk = document.getElementById('freeConsentBox')?.classList.contains('on');
+  try{
+    sessionStorage.setItem('skopos_mkt_consent', mktOk ? 'Y' : 'N');
+    sessionStorage.setItem('skopos_reg_name', name);
+    sessionStorage.setItem('skopos_reg_email', email);
+  }catch(e){}
+
+  // Airtable 저장
+  if(resultType){
+    await saveToAirtable({
+      name,
+      email,
+      phone,
+      quiz_type:         '무료',
+      result_type:       resultSub ? (resultSub.plain || resultSub.sub) : (resultType.plain || resultType.id),
+      result_group:      resultType.group || '',
+      marketing_consent: mktOk || false,
+      score_sensory:     0,
+      score_safety:      0,
+      score_social:      0,
+      score_identity:    0,
+      score_aesthetic:   0,
+      score_control:     0,
+      score_nature:      0,
+      score_lifestyle:   0,
+      participated_at:   new Date().toISOString().split('T')[0],
+    });
+  }
+
+  // 잠금 해제
+  unlockResult(true);
+}
+
+function unlockResult(skipSave){
   const inner=document.getElementById('blurInner');
   const overlay=document.getElementById('blurOverlay');
   const unlockedActions=document.getElementById('unlockedActions');
@@ -1788,12 +1926,12 @@ function unlockResult(){
   overlay.classList.add('hidden');
   unlockedActions.style.display='block';
   lockedActions.style.display='none';
-  try{sessionStorage.setItem('skopos_unlocked','1');}catch(e){}
+  try{ sessionStorage.setItem('skopos_unlocked','1'); }catch(e){}
 
   // ── 공간 이미지 섹션 표시 ──
   renderSpaceImages();
 
-  // 스크롤 유도 (이미지 섹션으로)
+  // 스크롤 유도
   setTimeout(()=>{
     const imgSec = document.getElementById('spaceReveal');
     if(imgSec) imgSec.scrollIntoView({behavior:'smooth',block:'start'});
@@ -1817,8 +1955,8 @@ function renderSpaceImages(){
   section.id = 'spaceReveal';
   section.innerHTML = `
     <p class="space-reveal-tag">✦ 나의 유형에 맞는 공간</p>
-    <h3 class="space-reveal-title">${data.title}</h3>
-    <p class="space-reveal-sub">${data.sub}</p>
+    <h3 class="space-reveal-title">${dec(data.title)}</h3>
+    <p class="space-reveal-sub">${dec(data.sub)}</p>
     <div class="space-grid">
       ${data.rooms.map((r,i)=>`
         <div class="space-card">
@@ -1835,10 +1973,19 @@ function renderSpaceImages(){
         </div>
       `).join('')}
     </div>
-    <p class="space-note">
-      📌 위 이미지는 레퍼런스입니다. 스코포스 취향저격 프로젝트를 통해<br>
-      당신만의 공간으로 구체화해 드립니다.
-    </p>
+    <div class="space-note">
+      <p style="font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;">✦ 취향저격 리포트 안내</p>
+      <p style="font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:300;color:var(--wh);line-height:1.5;margin-bottom:10px;">
+        당신의 취향을 <em style="font-style:italic;color:var(--gold)">정확히 저격하겠습니다</em>
+      </p>
+      <p style="font-size:.78rem;color:rgba(250,250,248,.55);line-height:1.9;">
+        진단 결과를 바탕으로 <strong style="color:var(--wh);font-weight:400;">${resultType.plain || ''}</strong> 유형에 맞는<br>
+        인테리어 취향 정보, 소재 트렌드, 공간 레퍼런스를<br>
+        지속적으로 리포팅해 드립니다.<br><br>
+        스코포스 취향저격 프로젝트를 통해<br>
+        당신만의 공간 언어를 함께 완성해 나가겠습니다.
+      </p>
+    </div>
   `;
 
   // unlockedActions 앞에 삽입
