@@ -121,7 +121,7 @@
 </script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Cormorant+Garamond:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root{
   --pink:#E91E8C;--pink-lt:#fce4f3;
@@ -263,7 +263,7 @@ nav.scrolled{background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border-
 
 /* ── SCIENCE ── */
 .sci-grid{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center}
-.sci-quote{font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-weight:300;color:var(--dark);line-height:1.55;margin-bottom:22px;font-style:italic}
+.sci-quote{font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-weight:300;color:var(--dark);line-height:1.55;margin-bottom:22px;font-style:normal}
 .sci-quote strong{color:var(--pink);font-style:normal;font-weight:500}
 .sci-body{font-size:.92rem;color:var(--gray);line-height:1.9}
 .sci-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:36px}
@@ -379,6 +379,7 @@ footer{background:var(--dark);color:rgba(255,255,255,.5);padding:52px 24px 36px}
 /* ── ANIMATION ── */
 .fade-up{opacity:0;transform:translateY(28px);transition:opacity .65s ease,transform .65s ease}
 .fade-up.on{opacity:1;transform:none}
+em{font-style:normal}
 </style>
 </head>
 <body>
@@ -520,48 +521,56 @@ footer{background:var(--dark);color:rgba(255,255,255,.5);padding:52px 24px 36px}
     <div class="s-head">
       <div class="s-eye">공간 욕구 유형</div>
       <h2 class="s-title">나는 어떤 공간 유형일까?</h2>
-      <p class="s-sub">가구·소품·조명·소재까지 — 내 유형에 맞는 공간 스타일이 따로 있어요</p>
+      <p class="s-sub">12가지 유형 중 나는 어디에? 진단으로 내 유형을 확인해보세요</p>
     </div>
     <div class="type-grid">
       <a class="type-card" href="skopos_quiz.html" style="--tc:var(--green);--tc-bg:rgba(123,195,74,.1)">
-        <div class="type-emoji">🌿</div><div class="type-name">🌿 초록 충전형</div>
+        <div class="type-emoji">🌿</div>
+        <div class="type-name">초록 충전형</div>
         <div class="type-desc">식물 없으면 뭔가 허전한 당신</div>
-        <div class="type-tag">식물 · 원목 · 자연소재</div>
+        <div class="type-tag">식물 · 원목 · 라탄</div>
       </a>
       <a class="type-card" href="skopos_quiz.html" style="--tc:#7E57C2;--tc-bg:rgba(126,87,194,.1)">
-        <div class="type-emoji">⚡</div><div class="type-name">🖼️ 갤러리 큐레이터형</div>
+        <div class="type-emoji">🖼️</div>
+        <div class="type-name">갤러리 큐레이터형</div>
         <div class="type-desc">집이 갤러리처럼 보여야 직성이 풀리는 당신</div>
         <div class="type-tag">아트워크 · 스포트조명</div>
       </a>
       <a class="type-card" href="skopos_quiz.html" style="--tc:var(--orange);--tc-bg:rgba(255,152,0,.1)">
-        <div class="type-emoji">🕯️</div><div class="type-name">불가 지킴이</div>
+        <div class="type-emoji">🛋️</div>
+        <div class="type-name">포근함 최우선형</div>
         <div class="type-desc">따뜻하고 폭신한 게 없으면 못 쉬는 당신</div>
         <div class="type-tag">부클레 · 러그 · 캔들</div>
       </a>
       <a class="type-card" href="skopos_quiz.html" style="--tc:var(--blue);--tc-bg:rgba(41,182,246,.1)">
-        <div class="type-emoji">🔲</div><div class="type-name">⬛ 구조·정렬 추구형</div>
+        <div class="type-emoji">⬛</div>
+        <div class="type-name">구조·정렬 추구형</div>
         <div class="type-desc">모든 게 딱 맞아 떨어져야 하는 당신</div>
         <div class="type-tag">블랙스틸 · 모듈수납</div>
       </a>
       <a class="type-card" href="skopos_quiz.html" style="--tc:var(--pink);--tc-bg:var(--pink-lt)">
-        <div class="type-emoji">🌙</div><div class="type-name">🌙 완전 차단형</div>
+        <div class="type-emoji">🌙</div>
+        <div class="type-name">완전 차단형</div>
         <div class="type-desc">집에 오면 완전히 꺼지고 싶은 당신</div>
         <div class="type-tag">간접조명 · 방음 · 히든수납</div>
       </a>
       <a class="type-card" href="skopos_quiz.html" style="--tc:#E53935;--tc-bg:rgba(229,57,53,.1)">
-        <div class="type-emoji">🎨</div><div class="type-name">🎨 개성 폭발형</div>
+        <div class="type-emoji">🎨</div>
+        <div class="type-name">개성 폭발형</div>
         <div class="type-desc">내 집은 내 세계관이어야 하는 당신</div>
-        <div class="type-tag">빈티지 믹스 · 갤러리월</div>
+        <div class="type-tag">갤러리월 · 빈티지 믹스</div>
       </a>
       <a class="type-card" href="skopos_quiz.html" style="--tc:var(--green);--tc-bg:rgba(123,195,74,.1)">
-        <div class="type-emoji">👨‍👩‍👧</div><div class="type-name">🏡 함께하는 공간형</div>
+        <div class="type-emoji">🏡</div>
+        <div class="type-name">함께하는 공간형</div>
         <div class="type-desc">집에 사람이 모여야 비로소 완성되는 당신</div>
         <div class="type-tag">다이닝 · 오픈키친</div>
       </a>
       <a class="type-card" href="skopos_quiz.html" style="--tc:var(--orange);--tc-bg:rgba(255,152,0,.1)">
-        <div class="type-emoji">☀️</div><div class="type-name">☀️ 자연광 집착형</div>
-        <div class="type-desc">채광이 모든 인테리어 결정의 기준인 당신</div>
-        <div class="type-tag">자연광 · 쉬어커튼</div>
+        <div class="type-emoji">✨</div>
+        <div class="type-name">품격 추구형</div>
+        <div class="type-desc">싸구려 소재는 눈에 바로 보이는 당신</div>
+        <div class="type-tag">마블 · 황동 · 벨벳</div>
       </a>
     </div>
   </div>
@@ -603,19 +612,150 @@ footer{background:var(--dark);color:rgba(255,255,255,.5);padding:52px 24px 36px}
   <!-- 마퀴 (자동 스크롤) -->
   <div class="reviews-marquee">
     <div class="reviews-track" id="track">
-      <div class="rv"><div class="rv-type">포레스트 드리머</div><div class="rv-stars">★★★★★</div><p class="rv-text"><span>인테리어 바꿀 때마다 왜 항상 어색했는지 이제야 알겠어요. 예쁜 걸 따라 했던 게 아니라 나한테 맞는 걸 몰랐던 거더라고요.</span></p><div class="rv-foot"><div class="rv-av" style="background:linear-gradient(135deg,#7CB342,#4CAF50)">김</div><div><div class="rv-name">김○○님</div><div class="rv-info">30대 · 신혼집 인테리어 준비 중</div></div></div></div>
-      <div class="rv"><div class="rv-type">딥나이트 안식처</div><div class="rv-stars">★★★★★</div><p class="rv-text"><span>집에 오면 더 피곤한 게 이상하다 생각했는데, 공간이 내 신경계를 자극하고 있었다는 게 충격이었어요. 조명부터 바꿨더니 진짜로 달라졌어요. 어떤 조명을 사야 할지 기준이 생겼어요.</span></p><div class="rv-foot"><div class="rv-av" style="background:linear-gradient(135deg,#29B6F6,#0277BD)">이</div><div><div class="rv-name">이○○님</div><div class="rv-info">20대 · 1인 가구</div></div></div></div>
-      <div class="rv"><div class="rv-type">갤러리 디렉터</div><div class="rv-stars">★★★★★</div><p class="rv-text"><span>3분짜리 테스트인데 결과가 이렇게 정확할 줄 몰랐어요. 남편이랑 유형이 달라서 왜 의견 충돌이 났는지도 이해됐어요.</span></p><div class="rv-foot"><div class="rv-av" style="background:linear-gradient(135deg,#E91E8C,#C0177A)">박</div><div><div class="rv-name">박○○님</div><div class="rv-info">40대 · 부부 인테리어 의견 조율 중</div></div></div></div>
-      <div class="rv"><div class="rv-type">그리드 아키텍트</div><div class="rv-stars">★★★★★</div><p class="rv-text"><span>단순 MBTI류 테스트랑 다르게 느껴졌어요. 점수 분포 보면서 왜 집에서는 집중이 안 됐는지 설명이 됐습니다.</span></p><div class="rv-foot"><div class="rv-av" style="background:linear-gradient(135deg,#FF9800,#E65100)">최</div><div><div class="rv-name">최○○님</div><div class="rv-info">30대 · 재택근무 홈오피스 구성 중</div></div></div></div>
-      <div class="rv"><div class="rv-type">불가 지킴이</div><div class="rv-stars">★★★★★</div><p class="rv-text"><span>유형 설명에 "따뜻한 소재 없이는 쉬어지지 않는다"는 문장이 정말 제 얘기였어요. 소파 고르는 기준이 완전히 달라졌어요.</span></p><div class="rv-foot"><div class="rv-av" style="background:linear-gradient(135deg,#FF7043,#BF360C)">정</div><div><div class="rv-name">정○○님</div><div class="rv-info">30대 · 이사 준비 중</div></div></div></div>
-      <div class="rv"><div class="rv-type">와일드 크리에이터</div><div class="rv-stars">★★★★★</div><p class="rv-text"><span>주변에서 인테리어 취향이 이상하다는 말 들었는데, 제 유형 읽고 처음으로 '이게 나야' 했어요. 이상한 게 아니라 나한테 맞는 공간이 따로 있는 거였더라고요.</span></p><div class="rv-foot"><div class="rv-av" style="background:linear-gradient(135deg,#AB47BC,#6A1B9A)">한</div><div><div class="rv-name">한○○님</div><div class="rv-info">20대 · 첫 자취방 꾸미는 중</div></div></div></div>
-      <!-- 무한 루프용 복제 -->
-      <div class="rv"><div class="rv-type">포레스트 드리머</div><div class="rv-stars">★★★★★</div><p class="rv-text"><span>인테리어 바꿀 때마다 왜 항상 어색했는지 이제야 알겠어요. 예쁜 걸 따라 했던 게 아니라 나한테 맞는 걸 몰랐던 거더라고요.</span></p><div class="rv-foot"><div class="rv-av" style="background:linear-gradient(135deg,#7CB342,#4CAF50)">김</div><div><div class="rv-name">김○○님</div><div class="rv-info">30대 · 신혼집 인테리어 준비 중</div></div></div></div>
-      <div class="rv"><div class="rv-type">딥나이트 안식처</div><div class="rv-stars">★★★★★</div><p class="rv-text"><span>집에 오면 더 피곤한 게 이상하다 생각했는데, 공간이 내 신경계를 자극하고 있었다는 게 충격이었어요. 조명부터 바꿨더니 진짜로 달라졌어요. 어떤 조명을 사야 할지 기준이 생겼어요.</span></p><div class="rv-foot"><div class="rv-av" style="background:linear-gradient(135deg,#29B6F6,#0277BD)">이</div><div><div class="rv-name">이○○님</div><div class="rv-info">20대 · 1인 가구</div></div></div></div>
-      <div class="rv"><div class="rv-type">갤러리 디렉터</div><div class="rv-stars">★★★★★</div><p class="rv-text"><span>3분짜리 테스트인데 결과가 이렇게 정확할 줄 몰랐어요. 남편이랑 유형이 달라서 왜 의견 충돌이 났는지도 이해됐어요.</span></p><div class="rv-foot"><div class="rv-av" style="background:linear-gradient(135deg,#E91E8C,#C0177A)">박</div><div><div class="rv-name">박○○님</div><div class="rv-info">40대 · 부부 인테리어 의견 조율 중</div></div></div></div>
-      <div class="rv"><div class="rv-type">그리드 아키텍트</div><div class="rv-stars">★★★★★</div><p class="rv-text"><span>단순 MBTI류 테스트랑 다르게 느껴졌어요. 점수 분포 보면서 왜 집에서는 집중이 안 됐는지 설명이 됐습니다.</span></p><div class="rv-foot"><div class="rv-av" style="background:linear-gradient(135deg,#FF9800,#E65100)">최</div><div><div class="rv-name">최○○님</div><div class="rv-info">30대 · 재택근무 홈오피스 구성 중</div></div></div></div>
-      <div class="rv"><div class="rv-type">불가 지킴이</div><div class="rv-stars">★★★★★</div><p class="rv-text"><span>유형 설명에 "따뜻한 소재 없이는 쉬어지지 않는다"는 문장이 정말 제 얘기였어요. 소파 고르는 기준이 완전히 달라졌어요.</span></p><div class="rv-foot"><div class="rv-av" style="background:linear-gradient(135deg,#FF7043,#BF360C)">정</div><div><div class="rv-name">정○○님</div><div class="rv-info">30대 · 이사 준비 중</div></div></div></div>
-      <div class="rv"><div class="rv-type">와일드 크리에이터</div><div class="rv-stars">★★★★★</div><p class="rv-text"><span>주변에서 인테리어 취향이 이상하다는 말 들었는데, 제 유형 읽고 처음으로 '이게 나야' 했어요.</span></p><div class="rv-foot"><div class="rv-av" style="background:linear-gradient(135deg,#AB47BC,#6A1B9A)">한</div><div><div class="rv-name">한○○님</div><div class="rv-info">20대 · 첫 자취방 꾸미는 중</div></div></div></div>
+      <div class="rv">
+        <div class="rv-type">🌿 초록 충전형</div>
+        <div class="rv-stars">★★★★★</div>
+        <p class="rv-text"><span>인테리어 바꿀 때마다 왜 항상 어색했는지 이제야 알겠어요. 예쁜 걸 따라 했던 게 아니라 나한테 맞는 걸 몰랐던 거더라고요.</span></p>
+        <div class="rv-foot">
+          <div class="rv-av" style="background:linear-gradient(135deg,#7CB342,#4CAF50)">김</div>
+          <div>
+            <div class="rv-name">김○○님</div>
+            <div class="rv-info">30대 · 신혼집 인테리어 준비 중</div>
+          </div>
+        </div>
+      </div>
+      <div class="rv">
+        <div class="rv-type">🌙 완전 차단형</div>
+        <div class="rv-stars">★★★★★</div>
+        <p class="rv-text"><span>집에 오면 더 피곤한 게 이상하다 생각했는데, 공간이 내 신경계를 자극하고 있었다는 게 충격이었어요. 조명부터 바꿨더니 진짜로 달라졌어요.</span></p>
+        <div class="rv-foot">
+          <div class="rv-av" style="background:linear-gradient(135deg,#29B6F6,#0277BD)">이</div>
+          <div>
+            <div class="rv-name">이○○님</div>
+            <div class="rv-info">20대 · 1인 가구</div>
+          </div>
+        </div>
+      </div>
+      <div class="rv">
+        <div class="rv-type">🖼️ 갤러리 큐레이터형</div>
+        <div class="rv-stars">★★★★★</div>
+        <p class="rv-text"><span>3분짜리 테스트인데 결과가 이렇게 정확할 줄 몰랐어요. 남편이랑 유형이 달라서 왜 의견 충돌이 났는지도 이해됐어요.</span></p>
+        <div class="rv-foot">
+          <div class="rv-av" style="background:linear-gradient(135deg,#E91E8C,#C0177A)">박</div>
+          <div>
+            <div class="rv-name">박○○님</div>
+            <div class="rv-info">40대 · 부부 인테리어 의견 조율 중</div>
+          </div>
+        </div>
+      </div>
+      <div class="rv">
+        <div class="rv-type">⬛ 구조·정렬 추구형</div>
+        <div class="rv-stars">★★★★★</div>
+        <p class="rv-text"><span>단순 MBTI류 테스트랑 다르게 느껴졌어요. 점수 분포 보면서 왜 집에서는 집중이 안 됐는지 설명이 됐습니다.</span></p>
+        <div class="rv-foot">
+          <div class="rv-av" style="background:linear-gradient(135deg,#FF9800,#E65100)">최</div>
+          <div>
+            <div class="rv-name">최○○님</div>
+            <div class="rv-info">30대 · 재택근무 홈오피스 구성 중</div>
+          </div>
+        </div>
+      </div>
+      <div class="rv">
+        <div class="rv-type">🛋️ 포근함 최우선형</div>
+        <div class="rv-stars">★★★★★</div>
+        <p class="rv-text"><span>유형 설명에 "따뜻한 소재 없이는 쉬어지지 않는다"는 문장이 정말 제 얘기였어요. 소파 고르는 기준이 완전히 달라졌어요.</span></p>
+        <div class="rv-foot">
+          <div class="rv-av" style="background:linear-gradient(135deg,#FF7043,#BF360C)">정</div>
+          <div>
+            <div class="rv-name">정○○님</div>
+            <div class="rv-info">30대 · 이사 준비 중</div>
+          </div>
+        </div>
+      </div>
+      <div class="rv">
+        <div class="rv-type">🎨 개성 폭발형</div>
+        <div class="rv-stars">★★★★★</div>
+        <p class="rv-text"><span>주변에서 인테리어 취향이 이상하다는 말 들었는데, 제 유형 읽고 처음으로 "이게 나야" 했어요. 이상한 게 아니라 나한테 맞는 공간이 따로 있는 거였더라고요.</span></p>
+        <div class="rv-foot">
+          <div class="rv-av" style="background:linear-gradient(135deg,#AB47BC,#6A1B9A)">한</div>
+          <div>
+            <div class="rv-name">한○○님</div>
+            <div class="rv-info">20대 · 첫 자취방 꾸미는 중</div>
+          </div>
+        </div>
+      </div>
+      <div class="rv">
+        <div class="rv-type">🌿 초록 충전형</div>
+        <div class="rv-stars">★★★★★</div>
+        <p class="rv-text"><span>인테리어 바꿀 때마다 왜 항상 어색했는지 이제야 알겠어요. 예쁜 걸 따라 했던 게 아니라 나한테 맞는 걸 몰랐던 거더라고요.</span></p>
+        <div class="rv-foot">
+          <div class="rv-av" style="background:linear-gradient(135deg,#7CB342,#4CAF50)">김</div>
+          <div>
+            <div class="rv-name">김○○님</div>
+            <div class="rv-info">30대 · 신혼집 인테리어 준비 중</div>
+          </div>
+        </div>
+      </div>
+      <div class="rv">
+        <div class="rv-type">🌙 완전 차단형</div>
+        <div class="rv-stars">★★★★★</div>
+        <p class="rv-text"><span>집에 오면 더 피곤한 게 이상하다 생각했는데, 공간이 내 신경계를 자극하고 있었다는 게 충격이었어요. 조명부터 바꿨더니 진짜로 달라졌어요.</span></p>
+        <div class="rv-foot">
+          <div class="rv-av" style="background:linear-gradient(135deg,#29B6F6,#0277BD)">이</div>
+          <div>
+            <div class="rv-name">이○○님</div>
+            <div class="rv-info">20대 · 1인 가구</div>
+          </div>
+        </div>
+      </div>
+      <div class="rv">
+        <div class="rv-type">🖼️ 갤러리 큐레이터형</div>
+        <div class="rv-stars">★★★★★</div>
+        <p class="rv-text"><span>3분짜리 테스트인데 결과가 이렇게 정확할 줄 몰랐어요. 남편이랑 유형이 달라서 왜 의견 충돌이 났는지도 이해됐어요.</span></p>
+        <div class="rv-foot">
+          <div class="rv-av" style="background:linear-gradient(135deg,#E91E8C,#C0177A)">박</div>
+          <div>
+            <div class="rv-name">박○○님</div>
+            <div class="rv-info">40대 · 부부 인테리어 의견 조율 중</div>
+          </div>
+        </div>
+      </div>
+      <div class="rv">
+        <div class="rv-type">⬛ 구조·정렬 추구형</div>
+        <div class="rv-stars">★★★★★</div>
+        <p class="rv-text"><span>단순 MBTI류 테스트랑 다르게 느껴졌어요. 점수 분포 보면서 왜 집에서는 집중이 안 됐는지 설명이 됐습니다.</span></p>
+        <div class="rv-foot">
+          <div class="rv-av" style="background:linear-gradient(135deg,#FF9800,#E65100)">최</div>
+          <div>
+            <div class="rv-name">최○○님</div>
+            <div class="rv-info">30대 · 재택근무 홈오피스 구성 중</div>
+          </div>
+        </div>
+      </div>
+      <div class="rv">
+        <div class="rv-type">🛋️ 포근함 최우선형</div>
+        <div class="rv-stars">★★★★★</div>
+        <p class="rv-text"><span>유형 설명에 "따뜻한 소재 없이는 쉬어지지 않는다"는 문장이 정말 제 얘기였어요. 소파 고르는 기준이 완전히 달라졌어요.</span></p>
+        <div class="rv-foot">
+          <div class="rv-av" style="background:linear-gradient(135deg,#FF7043,#BF360C)">정</div>
+          <div>
+            <div class="rv-name">정○○님</div>
+            <div class="rv-info">30대 · 이사 준비 중</div>
+          </div>
+        </div>
+      </div>
+      <div class="rv">
+        <div class="rv-type">🎨 개성 폭발형</div>
+        <div class="rv-stars">★★★★★</div>
+        <p class="rv-text"><span>주변에서 인테리어 취향이 이상하다는 말 들었는데, 제 유형 읽고 처음으로 "이게 나야" 했어요. 이상한 게 아니라 나한테 맞는 공간이 따로 있는 거였더라고요.</span></p>
+        <div class="rv-foot">
+          <div class="rv-av" style="background:linear-gradient(135deg,#AB47BC,#6A1B9A)">한</div>
+          <div>
+            <div class="rv-name">한○○님</div>
+            <div class="rv-info">20대 · 첫 자취방 꾸미는 중</div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
