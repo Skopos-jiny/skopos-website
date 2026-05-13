@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SKOPOS 결제</title>
+<script src="https://cdn.portone.io/v2/browser-sdk.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Apple SD Gothic Neo',sans-serif;background:#F7F8FC;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}
+.card{background:#fff;border-radius:20px;padding:36px 32px;max-width:420px;width:100%;box-shadow:0 4px 32px rgba(0,0,0,.08)}
+.logo{font-size:1.1rem;font-weight:900;color:#0F0F1A;margin-bottom:28px;letter-spacing:-.02em}
+.logo span{color:#E91E8C}
+.prod-box{background:#F7F8FC;border-radius:12px;padding:18px;margin-bottom:24px}
+.prod-name{font-size:.92rem;font-weight:700;color:#0F0F1A;margin-bottom:4px}
+.prod-desc{font-size:.78rem;color:#8890A4;line-height:1.5}
+.price-row{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:12px;border-top:1px solid rgba(0,0,0,.06)}
+.price-label{font-size:.82rem;color:#8890A4}
+.price-val{font-size:1.3rem;font-weight:900;color:#E91E8C}
+.divider{height:1px;background:rgba(0,0,0,.06);margin-bottom:20px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:.75rem;font-weight:700;color:#3D3D5C;margin-bottom:6px}
+.field input{width:100%;padding:11px 14px;border:1.5px solid rgba(0,0,0,.1);border-radius:10px;font-size:.88rem;font-family:inherit;outline:none;transition:border-color .2s}
+.field input:focus{border-color:#E91E8C}
+.btn-pay{width:100%;padding:16px;background:linear-gradient(135deg,#E91E8C,#FF6B9D);color:#fff;border:none;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;transition:all .2s;margin-top:4px;font-family:inherit}
+.btn-pay:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(233,30,140,.35)}
+.btn-pay:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.notice{font-size:.72rem;color:#8890A4;text-align:center;margin-top:14px;line-height:1.6}
+.badge-row{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.badge{font-size:.65rem;background:#F7F8FC;border:1px solid rgba(0,0,0,.08);border-radius:50px;padding:4px 10px;color:#8890A4}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:#0F0F1A;color:#fff;padding:10px 20px;border-radius:50px;font-size:.8rem;font-weight:600;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="logo">SKO<span>POS</span> 스코포스</div>
+
+  <div class="prod-box">
+    <div class="prod-name">정밀 공간 취향 욕구 진단</div>
+    <div class="prod-desc">144문항 · 24가지 유형 · 8개 영역 분석<br>공간별 소품 처방 + PDF 리포트 포함</div>
+    <div class="price-row">
+      <span class="price-label">결제 금액</span>
+      <span class="price-val">₩9,900</span>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="field">
+    <label>이름</label>
+    <input type="text" id="buyerName" placeholder="이름을 입력해주세요" autocomplete="name">
+  </div>
+  <div class="field">
+    <label>이메일 <span style="color:#8890A4;font-weight:400">(결과 발송)</span></label>
+    <input type="email" id="buyerEmail" placeholder="이메일을 입력해주세요" autocomplete="email">
+  </div>
+  <div class="field">
+    <label>연락처 <span style="color:#8890A4;font-weight:400">(선택)</span></label>
+    <input type="tel" id="buyerPhone" placeholder="010-0000-0000" autocomplete="tel">
+  </div>
+
+  <button class="btn-pay" id="payBtn" onclick="requestPay()">
+    신용카드로 결제하기 ₩9,900
+  </button>
+
+  <div class="notice">
+    1회 결제 · 영구 열람 · 언제든 다시 확인 가능<br>
+    결제 완료 후 즉시 진단이 시작됩니다
+  </div>
+  <div class="badge-row">
+    <span class="badge">🔒 NHN KCP 안전결제</span>
+    <span class="badge">포트원 V2</span>
+    <span class="badge">SSL 보안</span>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// 포트원 V2 + NHN KCP 신용카드 일반결제
+// ═══════════════════════════════════════════════════
+const STORE_ID    = 'store-b9bfe99b-d71d-4f4d-83d8-9f9b26739add';
+const CHANNEL_KEY = 'YOUR_CHANNEL_KEY'; // ← 포트원 채널 저장 후 교체
+
+function toast(msg, dur=2800){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), dur);
+}
+
+async function requestPay(){
+  const name  = document.getElementById('buyerName').value.trim();
+  const email = document.getElementById('buyerEmail').value.trim();
+  const phone = document.getElementById('buyerPhone').value.trim();
+
+  if(!name)  { toast('이름을 입력해주세요'); return; }
+  if(!email || !email.includes('@')) { toast('올바른 이메일을 입력해주세요'); return; }
+
+  const btn = document.getElementById('payBtn');
+  btn.disabled = true;
+  btn.textContent = '결제창 호출 중...';
+
+  const paymentId = 'SKOPOS-' + Date.now() + '-' + Math.random().toString(36).slice(2,6).toUpperCase();
+
+  try{
+    const response = await PortOne.requestPayment({
+      // 포트원 V2 필수값
+      storeId:     STORE_ID,
+      channelKey:  CHANNEL_KEY,
+      paymentId:   paymentId,
+      orderName:   'SKOPOS 정밀 공간 취향 진단',
+      totalAmount: 9900,
+      currency:    'KRW',
+      payMethod:   'CARD',        // 신용카드 일반결제
+
+      // 구매자 정보
+      customer:{
+        fullName:    name,
+        email:       email,
+        phoneNumber: phone || '',
+      },
+
+      // 모바일 리다이렉트 URL (모바일 결제 필수)
+      redirectUrl: window.location.href,
+
+      // NHN KCP 전용 파라미터
+      bypass:{
+        kcp_v2:{
+          site_name:   'SKOPOS 스코포스',     // KCP 상점명
+          shop_user_id: email,                // 구매자 ID
+        }
+      }
+    });
+
+    if(response.code != null){
+      // 결제 실패 / 사용자 취소
+      if(response.message !== '사용자가 결제를 취소하였습니다.'){
+        toast('결제 실패: ' + (response.message || ''), 4000);
+      } else {
+        toast('결제가 취소되었습니다');
+      }
+      btn.disabled = false;
+      btn.textContent = '신용카드로 결제하기 ₩9,900';
+      return;
+    }
+
+    // 결제 성공 → Netlify 서버 검증
+    toast('✅ 결제 완료! 검증 중입니다...', 2000);
+    await verifyAndRedirect(paymentId, name, email, phone);
+
+  }catch(err){
+    console.error('결제 오류:', err);
+    toast('결제 중 오류가 발생했습니다. 다시 시도해 주세요.', 4000);
+    btn.disabled = false;
+    btn.textContent = '신용카드로 결제하기 ₩9,900';
+  }
+}
+
+async function verifyAndRedirect(paymentId, name, email, phone){
+  try{
+    const res = await fetch('/.netlify/functions/verify-payment', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ paymentId, amount: 9900, name, email, phone }),
+    });
+    const result = await res.json();
+
+    if(result.success){
+      // 결제 + 검증 완료 → 진단 페이지로 이동
+      sessionStorage.setItem('skopos_paid', '1');
+      sessionStorage.setItem('skopos_buyer_name', name);
+      sessionStorage.setItem('skopos_buyer_email', email);
+      window.location.href = 'skopos_premium_quiz.html?paid=1&pid=' + encodeURIComponent(paymentId);
+    } else {
+      toast('결제 검증 실패: ' + (result.message || '관리자에게 문의해 주세요'), 5000);
+      document.getElementById('payBtn').disabled = false;
+      document.getElementById('payBtn').textContent = '신용카드로 결제하기 ₩9,900';
+    }
+  }catch(err){
+    console.error('검증 오류:', err);
+    // 검증 서버 오류 시 임시로 진단 허용
+    sessionStorage.setItem('skopos_paid', '1');
+    window.location.href = 'skopos_premium_quiz.html?paid=1';
+  }
+}
+
+// 모바일 결제 후 리다이렉트 처리
+window.addEventListener('load', async ()=>{
+  const params = new URLSearchParams(window.location.search);
+  const paymentId = params.get('paymentId');
+  const code      = params.get('code');      // 실패 시 존재
+
+  if(paymentId && !code){
+    toast('결제 확인 중입니다...', 2000);
+    const name  = sessionStorage.getItem('skopos_buyer_name')  || '';
+    const email = sessionStorage.getItem('skopos_buyer_email') || '';
+    await verifyAndRedirect(paymentId, name, email, '');
+  } else if(code){
+    toast('결제가 완료되지 않았습니다: ' + (params.get('message')||''), 4000);
+  }
+});
+</script>
+
+</body>
+</html>
