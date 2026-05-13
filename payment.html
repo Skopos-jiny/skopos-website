@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>SKOPOS 결제</title>
-<script src="https://cdn.portone.io/v2/browser-sdk.js"></script>
+<!-- 포트원 V1 SDK -->
+<script src="https://cdn.iamport.kr/v1/iamport.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Apple SD Gothic Neo',sans-serif;background:#F7F8FC;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}
@@ -71,7 +72,7 @@ body{font-family:'Apple SD Gothic Neo',sans-serif;background:#F7F8FC;display:fle
   </div>
   <div class="badge-row">
     <span class="badge">🔒 NHN KCP 안전결제</span>
-    <span class="badge">포트원 V2</span>
+    <span class="badge">포트원 V1</span>
     <span class="badge">SSL 보안</span>
   </div>
 </div>
@@ -80,10 +81,12 @@ body{font-family:'Apple SD Gothic Neo',sans-serif;background:#F7F8FC;display:fle
 
 <script>
 // ═══════════════════════════════════════════════════
-// 포트원 V2 + NHN KCP 신용카드 일반결제
+// 포트원 V1 + NHN KCP 신용카드 일반결제
 // ═══════════════════════════════════════════════════
-const STORE_ID    = 'store-b9bfe99b-d71d-4f4d-83d8-9f9b26739add';
-const CHANNEL_KEY = 'channel-key-3843b97e-9854-45d7-864c-316c3edf3450'; // ← 포트원 채널 저장 후 교체
+const IMP_CODE = 'imp57703773'; // ← 포트원 콘솔 > 연동 정보 > 가맹점 식별코드 (imp_XXXXXXXX)
+
+// 포트원 V1 초기화
+IMP.init(IMP_CODE);
 
 function toast(msg, dur=2800){
   const t=document.getElementById('toast');
@@ -91,7 +94,7 @@ function toast(msg, dur=2800){
   setTimeout(()=>t.classList.remove('show'), dur);
 }
 
-async function requestPay(){
+function requestPay(){
   const name  = document.getElementById('buyerName').value.trim();
   const email = document.getElementById('buyerEmail').value.trim();
   const phone = document.getElementById('buyerPhone').value.trim();
@@ -103,77 +106,50 @@ async function requestPay(){
   btn.disabled = true;
   btn.textContent = '결제창 호출 중...';
 
-  const paymentId = 'SKOPOS-' + Date.now() + '-' + Math.random().toString(36).slice(2,6).toUpperCase();
+  const merchantUid = 'SKOPOS-' + Date.now();
 
-  try{
-    const response = await PortOne.requestPayment({
-      // 포트원 V2 필수값
-      storeId:     STORE_ID,
-      channelKey:  CHANNEL_KEY,
-      paymentId:   paymentId,
-      orderName:   'SKOPOS 정밀 공간 취향 진단',
-      totalAmount: 9900,
-      currency:    'KRW',
-      payMethod:   'CARD',        // 신용카드 일반결제
-
-      // 구매자 정보
-      customer:{
-        fullName:    name,
-        email:       email,
-        phoneNumber: phone || '',
-      },
-
-      // 모바일 리다이렉트 URL (모바일 결제 필수)
-      redirectUrl: window.location.href,
-
-      // NHN KCP 전용 파라미터
-      bypass:{
-        kcp_v2:{
-          site_name:   'SKOPOS 스코포스',     // KCP 상점명
-          shop_user_id: email,                // 구매자 ID
-        }
-      }
-    });
-
-    if(response.code != null){
+  IMP.request_pay({
+    pg:          'kcp',                        // NHN KCP
+    pay_method:  'card',                       // 신용카드
+    merchant_uid: merchantUid,
+    name:        'SKOPOS 정밀 공간 취향 진단',
+    amount:       9900,
+    buyer_name:   name,
+    buyer_email:  email,
+    buyer_tel:    phone || '',
+    m_redirect_url: window.location.href,     // 모바일 필수
+  }, async (rsp) => {
+    if(rsp.success){
+      // 결제 성공 → 서버 검증
+      toast('✅ 결제 완료! 확인 중입니다...', 2000);
+      await verifyAndRedirect(rsp.imp_uid, rsp.merchant_uid, name, email);
+    } else {
       // 결제 실패 / 사용자 취소
-      if(response.message !== '사용자가 결제를 취소하였습니다.'){
-        toast('결제 실패: ' + (response.message || ''), 4000);
+      if(rsp.error_msg && rsp.error_msg !== '사용자가 결제를 취소하였습니다.'){
+        toast('결제 실패: ' + rsp.error_msg, 4000);
       } else {
         toast('결제가 취소되었습니다');
       }
       btn.disabled = false;
       btn.textContent = '신용카드로 결제하기 ₩9,900';
-      return;
     }
-
-    // 결제 성공 → Netlify 서버 검증
-    toast('✅ 결제 완료! 검증 중입니다...', 2000);
-    await verifyAndRedirect(paymentId, name, email, phone);
-
-  }catch(err){
-    console.error('결제 오류:', err);
-    toast('결제 중 오류가 발생했습니다. 다시 시도해 주세요.', 4000);
-    btn.disabled = false;
-    btn.textContent = '신용카드로 결제하기 ₩9,900';
-  }
+  });
 }
 
-async function verifyAndRedirect(paymentId, name, email, phone){
+async function verifyAndRedirect(impUid, merchantUid, name, email){
   try{
     const res = await fetch('/.netlify/functions/verify-payment', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ paymentId, amount: 9900, name, email, phone }),
+      body: JSON.stringify({ imp_uid: impUid, merchant_uid: merchantUid, amount: 9900, name, email }),
     });
     const result = await res.json();
 
     if(result.success){
-      // 결제 + 검증 완료 → 진단 페이지로 이동
       sessionStorage.setItem('skopos_paid', '1');
-      sessionStorage.setItem('skopos_buyer_name', name);
+      sessionStorage.setItem('skopos_buyer_name',  name);
       sessionStorage.setItem('skopos_buyer_email', email);
-      window.location.href = 'skopos_premium_quiz.html?paid=1&pid=' + encodeURIComponent(paymentId);
+      window.location.href = 'skopos_premium_quiz.html?paid=1';
     } else {
       toast('결제 검증 실패: ' + (result.message || '관리자에게 문의해 주세요'), 5000);
       document.getElementById('payBtn').disabled = false;
@@ -181,7 +157,6 @@ async function verifyAndRedirect(paymentId, name, email, phone){
     }
   }catch(err){
     console.error('검증 오류:', err);
-    // 검증 서버 오류 시 임시로 진단 허용
     sessionStorage.setItem('skopos_paid', '1');
     window.location.href = 'skopos_premium_quiz.html?paid=1';
   }
@@ -190,16 +165,17 @@ async function verifyAndRedirect(paymentId, name, email, phone){
 // 모바일 결제 후 리다이렉트 처리
 window.addEventListener('load', async ()=>{
   const params = new URLSearchParams(window.location.search);
-  const paymentId = params.get('paymentId');
-  const code      = params.get('code');      // 실패 시 존재
+  const impUid      = params.get('imp_uid');
+  const merchantUid = params.get('merchant_uid');
+  const impSuccess  = params.get('imp_success');
 
-  if(paymentId && !code){
+  if(impUid && impSuccess === 'true'){
     toast('결제 확인 중입니다...', 2000);
     const name  = sessionStorage.getItem('skopos_buyer_name')  || '';
     const email = sessionStorage.getItem('skopos_buyer_email') || '';
-    await verifyAndRedirect(paymentId, name, email, '');
-  } else if(code){
-    toast('결제가 완료되지 않았습니다: ' + (params.get('message')||''), 4000);
+    await verifyAndRedirect(impUid, merchantUid, name, email);
+  } else if(impUid && impSuccess === 'false'){
+    toast('결제가 완료되지 않았습니다', 4000);
   }
 });
 </script>
