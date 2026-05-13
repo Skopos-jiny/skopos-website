@@ -85,9 +85,6 @@ body{font-family:'Apple SD Gothic Neo',sans-serif;background:#F7F8FC;display:fle
 // ═══════════════════════════════════════════════════
 const IMP_CODE = 'imp57703773'; // ← 포트원 콘솔 > 연동 정보 > 가맹점 식별코드 (imp_XXXXXXXX)
 
-// 포트원 V1 초기화
-IMP.init(IMP_CODE);
-
 function toast(msg, dur=2800){
   const t=document.getElementById('toast');
   t.textContent=msg; t.classList.add('show');
@@ -105,6 +102,9 @@ function requestPay(){
   const btn = document.getElementById('payBtn');
   btn.disabled = true;
   btn.textContent = '결제창 호출 중...';
+
+  // IMP 초기화 (SDK 로드 완료 후 실행 보장)
+  IMP.init(IMP_CODE);
 
   const merchantUid = 'SKOPOS-' + Date.now();
 
