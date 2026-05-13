@@ -249,6 +249,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:60px;display:flex;ali
 
 @media(max-width:600px){.space-imgs-grid{grid-template-columns:1fr}}
 </style>
+<!-- 포트원 V2 SDK -->
+<script src="https://cdn.portone.io/v2/browser-sdk.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
@@ -1817,23 +1819,82 @@ function toast(msg,dur=2800){const t=document.getElementById('toast');t.textCont
 function trackEvent(n,p){if(typeof gtag!=='undefined')gtag('event',n,p||{});}
 
 // ── PAYMENT ──────────────────────────────────────────────────────
-function initPayment(){
-  // Toss Payments 연동 포인트
-  // 실제 연동 시 아래 주석 해제 후 clientKey 교체
-  /*
-  const tossPayments = TossPayments('YOUR_TOSS_CLIENT_KEY');
-  tossPayments.requestPayment('카드',{
-    amount:9900,
-    orderId:'SKOPOS-'+Date.now(),
-    orderName:'SKOPOS 정밀 공간 취향 진단',
-    customerName:'고객',
-    successUrl:window.location.origin+'/payment-success',
-    failUrl:window.location.origin+'/payment-fail',
-  });
-  */
-  // 현재는 데모로 진행
-  alert('결제 연동 준비 중입니다.\n지금은 데모로 진행됩니다.');
-  startQuiz(true);
+// 포트원 V2 + NHN KCP 설정
+const PORTONE_STORE_ID    = 'store-b9bfe99b-d71d-4f4d-83d8-9f9b26739add';      // 포트원 콘솔 > 연동 정보 > 상점 아이디
+const PORTONE_CHANNEL_KEY = 'YOUR_CHANNEL_KEY';   // 포트원 콘솔 > 채널 관리 > 채널키
+const WEBHOOK_SECRET      = 'YOUR_WEBHOOK_SECRET'; // 포트원 콘솔 > 웹훅 > 시크릿키 (재발급 후 입력)
+
+async function initPayment(){
+  try{
+    const paymentId = 'SKOPOS-' + Date.now() + '-' + Math.random().toString(36).slice(2,7).toUpperCase();
+
+    const response = await PortOne.requestPayment({
+      // 포트원 V2 필수 파라미터
+      storeId:   PORTONE_STORE_ID,
+      channelKey: PORTONE_CHANNEL_KEY,
+      paymentId:  paymentId,
+      orderName:  'SKOPOS 정밀 공간 취향 진단',
+      totalAmount: 9900,
+      currency:   'KRW',
+      payMethod:  'CARD',
+
+      // 구매자 정보 (선택)
+      customer:{
+        fullName:    '고객',
+        phoneNumber: '',
+        email:       '',
+      },
+
+      // 결제 완료 후 리다이렉트 (모바일 필수)
+      redirectUrl: window.location.href,
+
+      // NHN KCP 전용 bypass 파라미터
+      bypass:{
+        kcp_v2:{
+          site_name: 'SKOPOS 스코포스',
+        }
+      }
+    });
+
+    if(response.code != null){
+      // 결제 실패 또는 사용자 취소
+      if(response.message !== '사용자가 결제를 취소하였습니다.'){
+        alert('결제 실패\n' + (response.message || ''));
+      }
+      return;
+    }
+
+    // 결제 성공 → 서버 검증
+    await verifyPayment(paymentId);
+
+  }catch(err){
+    console.error('결제 오류:', err);
+    alert('결제 중 오류가 발생했습니다. 다시 시도해 주세요.');
+  }
+}
+
+// 결제 금액 검증 (Netlify Function)
+async function verifyPayment(paymentId){
+  try{
+    const res = await fetch('/.netlify/functions/verify-payment', {
+      method: 'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ paymentId, amount: 9900 })
+    });
+    const result = await res.json();
+
+    if(result.success){
+      toast('✅ 결제 완료! 진단을 시작합니다.', 2500);
+      setTimeout(()=> startQuiz(true), 800);
+    } else {
+      alert('결제 검증 실패: ' + (result.message || '관리자에게 문의해 주세요.'));
+    }
+  }catch(err){
+    console.error('검증 오류:', err);
+    // 검증 서버 오류 시 진단은 임시 허용 (추후 서버 검증 강화)
+    toast('결제 확인 중 오류가 발생했습니다. 진단을 시작합니다.', 3000);
+    setTimeout(()=> startQuiz(true), 1000);
+  }
 }
 
 // ── QUIZ ──────────────────────────────────────────────────────
