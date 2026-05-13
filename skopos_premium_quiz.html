@@ -249,8 +249,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:60px;display:flex;ali
 
 @media(max-width:600px){.space-imgs-grid{grid-template-columns:1fr}}
 </style>
-<!-- 포트원 V2 SDK -->
-<script src="https://cdn.portone.io/v2/browser-sdk.js"></script>
+<!-- 포트원 V1 SDK -->
+<script src="https://cdn.iamport.kr/v1/iamport.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
@@ -1819,80 +1819,53 @@ function toast(msg,dur=2800){const t=document.getElementById('toast');t.textCont
 function trackEvent(n,p){if(typeof gtag!=='undefined')gtag('event',n,p||{});}
 
 // ── PAYMENT ──────────────────────────────────────────────────────
-// 포트원 V2 + NHN KCP 설정
-const PORTONE_STORE_ID    = 'store-b9bfe99b-d71d-4f4d-83d8-9f9b26739add';      // 포트원 콘솔 > 연동 정보 > 상점 아이디
-const PORTONE_CHANNEL_KEY = 'channel-key-3843b97e-9854-45d7-864c-316c3edf3450';   // 포트원 콘솔 > 채널 관리 > 채널키
-const WEBHOOK_SECRET      = 'YOUR_WEBHOOK_SECRET'; // 포트원 콘솔 > 웹훅 > 시크릿키 (재발급 후 입력)
+const IMP_CODE = 'imp57703773'; // 포트원 가맹점 식별코드
 
 async function initPayment(){
-  try{
-    const paymentId = 'SKOPOS-' + Date.now() + '-' + Math.random().toString(36).slice(2,7).toUpperCase();
+  // IMP 초기화
+  IMP.init(IMP_CODE);
 
-    const response = await PortOne.requestPayment({
-      // 포트원 V2 필수 파라미터
-      storeId:   PORTONE_STORE_ID,
-      channelKey: PORTONE_CHANNEL_KEY,
-      paymentId:  paymentId,
-      orderName:  'SKOPOS 정밀 공간 취향 진단',
-      totalAmount: 9900,
-      currency:   'KRW',
-      payMethod:  'CARD',
+  const merchantUid = 'SKOPOS-' + Date.now();
 
-      // 구매자 정보 (선택)
-      customer:{
-        fullName:    '고객',
-        phoneNumber: '',
-        email:       '',
-      },
-
-      // 결제 완료 후 리다이렉트 (모바일 필수)
-      redirectUrl: window.location.href,
-
-      // NHN KCP 전용 bypass 파라미터
-      bypass:{
-        kcp_v2:{
-          site_name: 'SKOPOS 스코포스',
-        }
+  IMP.request_pay({
+    pg:           'kcp',
+    pay_method:   'card',
+    merchant_uid:  merchantUid,
+    name:         'SKOPOS 정밀 공간 취향 진단',
+    amount:        9900,
+    buyer_name:   '',
+    buyer_email:  '',
+    buyer_tel:    '',
+    m_redirect_url: window.location.href,
+  }, async (rsp) => {
+    if(rsp.success){
+      toast('✅ 결제 완료! 진단을 시작합니다.', 2500);
+      await verifyPayment(rsp.imp_uid, rsp.merchant_uid);
+    } else {
+      if(rsp.error_msg && rsp.error_msg !== '사용자가 결제를 취소하였습니다.'){
+        alert('결제 실패: ' + rsp.error_msg);
       }
-    });
-
-    if(response.code != null){
-      // 결제 실패 또는 사용자 취소
-      if(response.message !== '사용자가 결제를 취소하였습니다.'){
-        alert('결제 실패\n' + (response.message || ''));
-      }
-      return;
     }
-
-    // 결제 성공 → 서버 검증
-    await verifyPayment(paymentId);
-
-  }catch(err){
-    console.error('결제 오류:', err);
-    alert('결제 중 오류가 발생했습니다. 다시 시도해 주세요.');
-  }
+  });
 }
 
-// 결제 금액 검증 (Netlify Function)
-async function verifyPayment(paymentId){
+async function verifyPayment(impUid, merchantUid){
   try{
     const res = await fetch('/.netlify/functions/verify-payment', {
       method: 'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ paymentId, amount: 9900 })
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ imp_uid: impUid, merchant_uid: merchantUid, amount: 9900 }),
     });
     const result = await res.json();
-
     if(result.success){
-      toast('✅ 결제 완료! 진단을 시작합니다.', 2500);
+      toast('✅ 결제 확인 완료! 진단을 시작합니다.', 2000);
       setTimeout(()=> startQuiz(true), 800);
     } else {
       alert('결제 검증 실패: ' + (result.message || '관리자에게 문의해 주세요.'));
     }
   }catch(err){
     console.error('검증 오류:', err);
-    // 검증 서버 오류 시 진단은 임시 허용 (추후 서버 검증 강화)
-    toast('결제 확인 중 오류가 발생했습니다. 진단을 시작합니다.', 3000);
+    toast('결제 확인 중 오류. 진단을 시작합니다.', 2000);
     setTimeout(()=> startQuiz(true), 1000);
   }
 }
