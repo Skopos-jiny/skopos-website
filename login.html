@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>로그인 / 회원가입 | SKOPOS 스코포스</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%}
@@ -145,12 +145,14 @@ body{font-family:'Apple SD Gothic Neo','Noto Sans KR',sans-serif;background:#F7F
 const SUPABASE_URL  = 'https://rgbukqphcqptnfeqipfn.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJnYnVrcXBoY3FwdG5mZXFpcGZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2OTkzMDMsImV4cCI6MjA5NDI3NTMwM30.fWUHe2AoWr9fMLUNSQkbhosUO7FH9dvZOIZbz_XyzFM';
 const NAVER_CLIENT_ID = 'MUwb6Wq_YGvDSIbbkRB1';
+const KAKAO_APP_KEY  = 'd0c68901a08c4272cce34084fca1372d'; // 재발급 후 교체
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
 
 // ── 이미 로그인된 경우 리다이렉트 ─────────────────────────
 (async()=>{
-  const { data:{ session } } = await supabase.auth.getSession();
+  const { data:{ session } } = await sb.auth.getSession();
   if(session){
     const redirect = new URLSearchParams(window.location.search).get('redirect') || 'mypage.html';
     window.location.href = redirect;
@@ -176,13 +178,13 @@ function showInfo(msg) { const el=document.getElementById('alertInfo');  el.text
 async function loginKakao(){
   clearAlerts();
   const redirect = new URLSearchParams(window.location.search).get('redirect') || 'mypage.html';
-  const { error } = await supabase.auth.signInWithOAuth({
+  const { error } = await sb.auth.signInWithOAuth({
     provider: 'kakao',
     options: {
       redirectTo: window.location.origin + '/' + redirect,
     }
   });
-  if(error) showError('카카오 로그인 오류: ' + error.message);
+  if(error){ console.error('카카오:', error); showError('카카오 로그인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.'); }
 }
 
 // ── 네이버 로그인 ──────────────────────────────────────────
@@ -216,8 +218,12 @@ async function loginEmail(){
   btn.disabled = true; btn.textContent = '로그인 중...';
   errEl.classList.remove('show');
 
-  const { error } = await supabase.auth.signInWithPassword({ email, password: pw });
+  const { error } = await sb.auth.signInWithPassword({ email, password: pw });
   if(error){
+    const msg = error.message.includes('Invalid') ? '이메일 또는 비밀번호가 올바르지 않습니다' :
+                error.message.includes('Email not confirmed') ? '이메일 인증이 필요합니다. 받은 편지함을 확인해주세요.' :
+                '로그인 오류: ' + error.message;
+    errEl.textContent = msg;
     errEl.classList.add('show');
     btn.disabled = false; btn.textContent = '로그인';
   } else {
@@ -244,7 +250,7 @@ async function signupEmail(){
   btn.disabled = true; btn.textContent = '가입 중...';
   errEl.classList.remove('show');
 
-  const { error } = await supabase.auth.signUp({
+  const { error } = await sb.auth.signUp({
     email, password: pw,
     options: { data: { full_name: name } }
   });
@@ -254,7 +260,9 @@ async function signupEmail(){
     btn.disabled = false; btn.textContent = '회원가입';
   } else {
     document.getElementById('signupSuccess').classList.add('show');
-    btn.disabled = false; btn.textContent = '회원가입';
+    btn.disabled = false; btn.textContent = '회원가입 완료';
+    // 이메일 인증 불필요 설정 시 자동 로그인
+    setTimeout(()=> switchTab('login'), 2000);
   }
 }
 
@@ -262,7 +270,7 @@ async function signupEmail(){
 async function resetPassword(){
   const email = document.getElementById('loginEmail').value.trim();
   if(!email || !email.includes('@')){ showError('이메일을 먼저 입력해주세요'); return; }
-  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+  const { error } = await sb.auth.resetPasswordForEmail(email, {
     redirectTo: window.location.origin + '/login.html',
   });
   if(error) showError('오류: ' + error.message);
