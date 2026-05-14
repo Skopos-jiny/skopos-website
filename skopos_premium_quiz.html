@@ -2049,314 +2049,110 @@ function renderSpaceImgs(refs,tab){
 
 // ── PDF 생성 ──────────────────────────────────────────────────
 async function downloadPDF(){
-  const btn=document.getElementById('pdfBtn');
-  btn.disabled=true;
-  btn.innerHTML='⏳ PDF 생성 중... (30~60초)';
-  toast('PDF 생성을 시작합니다. 잠시 기다려주세요.',3000);
+  const btn = document.getElementById('pdfBtn');
+  btn.disabled = true;
+  btn.innerHTML = '⏳ PDF 캡처 중... (30~60초)';
+  toast('PDF를 생성하고 있어요. 잠시 기다려주세요.', 4000);
 
   try{
-    const {jsPDF}=window.jspdf;
-    const pdf=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
-    const W=210, margin=16;
-    const contentW=W-margin*2;
-    let y=margin;
-    const pink=[233,30,140], dark=[15,15,26], gray=[136,144,164], gold=[201,169,110];
+    // ── html2canvas로 결과지 DOM 캡처 ──
+    const {jsPDF} = window.jspdf;
+    const rw      = document.getElementById('rw');
+    if(!rw) throw new Error('결과지를 찾을 수 없어요');
 
-    // ── 헬퍼 함수들 ──
-    function addPage(){pdf.addPage();y=margin;}
-    function checkY(need){if(y+need>285){addPage();}}
-    function setFont(size,style,color){
-      pdf.setFontSize(size);
-      pdf.setFont('helvetica',style||'normal');
-      pdf.setTextColor(...(color||dark));
+    // PDF 다운로드 버튼과 카카오 공유 버튼 임시 숨기기
+    const hideEls = rw.querySelectorAll('.pdf-download-wrap, .share-wrap');
+    hideEls.forEach(el => el.style.visibility = 'hidden');
+
+    const canvas = await html2canvas(rw, {
+      scale:            2,            // 고해상도 (레티나)
+      useCORS:          true,         // 외부 이미지 허용
+      allowTaint:       false,
+      backgroundColor: '#F7F8FC',
+      scrollX:          0,
+      scrollY:          -window.scrollY,
+      windowWidth:      rw.scrollWidth,
+      windowHeight:     rw.scrollHeight,
+      logging:          false,
+    });
+
+    // 버튼 다시 표시
+    hideEls.forEach(el => el.style.visibility = '');
+
+    // ── 캡처 이미지 → PDF ──
+    const imgData   = canvas.toDataURL('image/jpeg', 0.92);
+    const A4_W      = 210;
+    const A4_H      = 297;
+    const imgW      = A4_W;
+    const imgH      = (canvas.height / canvas.width) * imgW;
+
+    const pdf = new jsPDF({
+      orientation: 'portrait',
+      unit:        'mm',
+      format:      'a4',
+    });
+
+    // 여러 페이지로 분할 처리
+    let posY = 0;
+    while(posY < imgH){
+      if(posY > 0) pdf.addPage();
+
+      // 현재 페이지에 들어갈 이미지 부분 계산
+      const remainH = imgH - posY;
+      const pageH   = Math.min(A4_H, remainH);
+
+      // 이미지 비율로 canvas 자르기
+      const srcY    = Math.round((posY / imgH) * canvas.height);
+      const srcH    = Math.round((pageH / imgH) * canvas.height);
+
+      const pageCanvas = document.createElement('canvas');
+      pageCanvas.width  = canvas.width;
+      pageCanvas.height = srcH;
+      const ctx = pageCanvas.getContext('2d');
+      ctx.fillStyle = '#F7F8FC';
+      ctx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
+      ctx.drawImage(canvas, 0, srcY, canvas.width, srcH, 0, 0, canvas.width, srcH);
+
+      const pageImgData = pageCanvas.toDataURL('image/jpeg', 0.92);
+      pdf.addImage(pageImgData, 'JPEG', 0, 0, A4_W, pageH);
+      posY += A4_H;
     }
-    function addText(text,x,yPos,opts){
-      pdf.text(text,x,yPos,opts||{});
-    }
-    function addRect(x,yPos,w,h,color,filled){
-      pdf.setFillColor(...(color||[247,248,252]));
-      pdf.setDrawColor(...(color||[247,248,252]));
-      if(filled!==false) pdf.rect(x,yPos,w,h,'F');
-      else pdf.rect(x,yPos,w,h,'S');
-    }
-    function wrapText(text,x,yPos,maxW,lineH,color,size){
-      setFont(size||9,'normal',color||gray);
-      const lines=pdf.splitTextToSize(text,maxW);
-      lines.forEach(line=>{
-        checkY(lineH);
-        pdf.text(line,x,yPos);
-        yPos+=lineH;
-        y=yPos;
-      });
-      return yPos;
-    }
 
-    // ══ 표지 ══════════════════════════════════════════════════
-    // 배경
-    pdf.setFillColor(15,15,26);
-    pdf.rect(0,0,210,297,'F');
-    // 핑크 원
-    pdf.setFillColor(233,30,140);
-    pdf.setGState(new pdf.GState({opacity:0.12}));
-    pdf.circle(185,40,60,'F');
-    pdf.setGState(new pdf.GState({opacity:0.08}));
-    pdf.circle(25,260,70,'F');
-    pdf.setGState(new pdf.GState({opacity:1}));
-    // 골드 라인
-    pdf.setDrawColor(...gold);pdf.setLineWidth(.5);
-    pdf.line(margin,margin+5,W-margin,margin+5);
-    // 브랜드
-    setFont(10,'bold',[201,169,110]);
-    pdf.text('SKOPOS 스코포스',margin,margin+15);
-    setFont(8,'normal',[136,144,164]);
-    pdf.text('공간·소품·인테리어 취향 욕구 정밀 진단',margin,margin+22);
-    // 유형 이모지 + 이름
-    const emoji=resultType.emoji||'✨';
-    setFont(28,'bold',[255,255,255]);
-    pdf.text(resultType.plain,margin,90);
-    setFont(13,'normal',[201,169,110]);
-    pdf.text(resultType.name.replace(/\[\[hl\]\]|\[\[\/hl\]\]/g,''),margin,102);
-    // 구분선
-    pdf.setDrawColor(...gold);pdf.setLineWidth(.4);
-    pdf.line(margin,110,W-margin,110);
-    // 설명
-    setFont(9,'normal',[200,200,210]);
-    const descLines=pdf.splitTextToSize(resultType.desc||'',contentW);
-    let dy=120;
-    descLines.slice(0,6).forEach(l=>{pdf.text(l,margin,dy);dy+=6;});
-    // 날짜
-    setFont(8,'normal',[80,80,100]);
-    pdf.text('진단일: '+new Date().toLocaleDateString('ko-KR'),margin,260);
-    pdf.text('skopos.kr',W-margin,260,{align:'right'});
-    pdf.setDrawColor(...gold);pdf.line(margin,265,W-margin,265);
-
-    pdf.addPage();y=margin;
-
-    // ══ 2p: 8영역 레이더 바 ══════════════════════════════════
-    // 섹션 헤더
-    setFont(7,'bold',pink);pdf.text('SECTION 01',margin,y);y+=6;
-    setFont(14,'bold',dark);pdf.text('8개 영역 취향 욕구 프로파일',margin,y);y+=8;
-    setFont(9,'normal',gray);pdf.text('8가지 영역에서 측정된 당신의 공간 욕구 점수예요',margin,y);y+=10;
-
-    const secColors=[[233,30,140],[255,152,0],[124,179,66],[41,182,246],[171,71,188],[255,112,67],[38,166,154],[92,107,192]];
-    const bars=resultType.bars||{};
-    SECS.forEach((sec,i)=>{
-      checkY(12);
-      const val=bars[sec.label]||55;
-      // 라벨
-      setFont(8,'bold',dark);pdf.text(sec.icon+' '+sec.label,margin,y);
-      // 바 배경
-      pdf.setFillColor(240,240,240);
-      pdf.rect(margin+55,y-4,contentW-65,5,'F');
-      // 바 채움
-      pdf.setFillColor(...secColors[i]);
-      pdf.rect(margin+55,y-4,(contentW-65)*(val/100),5,'F');
-      // 점수
-      setFont(8,'bold',secColors[i]);
-      pdf.text(String(val),W-margin,y,{align:'right'});
-      y+=10;
-    });
-    y+=4;
-
-    // ══ 3p: 공간 처방 ════════════════════════════════════════
-    checkY(40);
-    pdf.setDrawColor(230,230,230);pdf.setLineWidth(.3);
-    pdf.line(margin,y,W-margin,y);y+=8;
-    setFont(7,'bold',pink);pdf.text('SECTION 02',margin,y);y+=6;
-    setFont(14,'bold',dark);pdf.text('공간별 소품 처방',margin,y);y+=8;
-
-    const rooms=resultType.rooms||{};
-    const roomIcons={거실:'[거실]',침실:'[침실]',주방:'[주방]',서재:'[서재]'};
-    Object.entries(rooms).forEach(([name,desc])=>{
-      checkY(28);
-      pdf.setFillColor(247,248,252);
-      pdf.rect(margin,y,contentW,22,'F');
-      pdf.setDrawColor(233,30,140);pdf.setLineWidth(.4);
-      pdf.line(margin,y,margin,y+22);
-      setFont(9,'bold',dark);
-      pdf.text(roomIcons[name]||name,margin+4,y+8);
-      setFont(8,'normal',gray);
-      const descLines=pdf.splitTextToSize(desc,contentW-8);
-      descLines.slice(0,2).forEach((l,li)=>{
-        pdf.text(l,margin+4,y+14+li*5);
-      });
-      y+=26;
-    });
-
-    // ══ 4p: 추천 소품 vs 피해야 할 것 ════════════════════════
-    checkY(40);
-    pdf.setDrawColor(230,230,230);pdf.line(margin,y,W-margin,y);y+=8;
-    setFont(7,'bold',pink);pdf.text('SECTION 03',margin,y);y+=6;
-    setFont(14,'bold',dark);pdf.text('추천 소품 vs 피해야 할 것들',margin,y);y+=10;
-
-    const halfW=(contentW-6)/2;
-    // 추천
-    pdf.setFillColor(242,252,240);
-    pdf.rect(margin,y,halfW,8,'F');
-    setFont(8,'bold',[74,138,32]);pdf.text('✓ 추천 소품·소재',margin+3,y+5.5);
-    y+=10;
-    (resultType.keys||[]).forEach(k=>{
-      checkY(7);
-      setFont(8,'normal',dark);pdf.text('• '+k,margin+3,y);y+=6;
-    });
-
-    let y2=y-((resultType.keys||[]).length)*6-10;
-    pdf.setFillColor(255,245,248);
-    pdf.rect(margin+halfW+6,y2,halfW,8,'F');
-    setFont(8,'bold',[200,30,80]);pdf.text('✗ 피해야 할 것들',margin+halfW+9,y2+5.5);
-    y2+=10;
-    (resultType.avoid||[]).forEach(a=>{
-      setFont(8,'normal',dark);pdf.text('• '+a,margin+halfW+9,y2);y2+=6;
-    });
-
-    // ══ 5p: 예산 배분 + 컬러 팔레트 ═════════════════════════
-    pdf.addPage();y=margin;
-    setFont(7,'bold',pink);pdf.text('SECTION 04',margin,y);y+=6;
-    setFont(14,'bold',dark);pdf.text('인테리어 예산 배분 가이드',margin,y);y+=8;
-    setFont(9,'normal',gray);pdf.text('내 유형에 최적화된 투자 비율이에요',margin,y);y+=10;
-
-    const budgetColors=[[233,30,140],[255,152,0],[124,179,66],[41,182,246]];
-    Object.entries(resultType.budget||{}).forEach(([name,pct],i)=>{
-      checkY(12);
-      setFont(9,'bold',dark);pdf.text(name,margin,y);
-      pdf.setFillColor(240,240,240);
-      pdf.rect(margin+22,y-4,contentW-32,6,'F');
-      pdf.setFillColor(...budgetColors[i]);
-      pdf.rect(margin+22,y-4,(contentW-32)*(pct/100),6,'F');
-      setFont(9,'bold',budgetColors[i]);
-      pdf.text(pct+'%',W-margin,y,{align:'right'});
-      y+=10;
-    });
-
-    y+=6;pdf.setDrawColor(230,230,230);pdf.line(margin,y,W-margin,y);y+=8;
-    setFont(7,'bold',pink);pdf.text('SECTION 05',margin,y);y+=6;
-    setFont(14,'bold',dark);pdf.text('나의 공간 컬러 팔레트',margin,y);y+=8;
-    setFont(9,'normal',gray);pdf.text('이 4가지 색으로 공간을 완성하세요',margin,y);y+=10;
-
-    (resultType.palette||[]).forEach((hex,i)=>{
-      checkY(16);
-      const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
-      pdf.setFillColor(r,g,b);
-      pdf.roundedRect(margin+i*42,y,36,16,2,2,'F');
-      setFont(7,'normal',gray);
-      pdf.text(hex,margin+i*42+2,y+21);
-    });
-    y+=28;
-
-    // ══ 6p: 취향 이야기 ═══════════════════════════════════════
-    checkY(40);
-    pdf.setDrawColor(230,230,230);pdf.line(margin,y,W-margin,y);y+=8;
-    setFont(7,'bold',pink);pdf.text('SECTION 06',margin,y);y+=6;
-    setFont(14,'bold',dark);pdf.text('나의 공간 취향 이야기',margin,y);y+=8;
-
-    const bp=(typeof BEHAVIOR_PROFILES!=='undefined'&&BEHAVIOR_PROFILES[resultType.id])||resultType.desc||'';
-    const bpClean=bp.replace(/취향 키워드:.*/s,'').trim();
-    const bpLines=pdf.splitTextToSize(bpClean,contentW);
-    bpLines.forEach(line=>{
-      checkY(6);
-      setFont(9,'normal',dark);pdf.text(line,margin,y);y+=5.5;
-    });
-
-    // ══ 7p: 궁합 + 인사이트 ══════════════════════════════════
-    y+=4;checkY(40);
-    pdf.setDrawColor(230,230,230);pdf.line(margin,y,W-margin,y);y+=8;
-    setFont(7,'bold',pink);pdf.text('SECTION 07',margin,y);y+=6;
-    setFont(14,'bold',dark);pdf.text('인사이트 + 유형 궁합',margin,y);y+=10;
-    // 인사이트 박스
-    pdf.setFillColor(253,240,248);
-    const insightText=resultType.insight.replace(/<[^>]+>/g,'');
-    const insLines=pdf.splitTextToSize('💡 '+insightText,contentW-8);
-    const boxH=insLines.length*5.5+8;
-    pdf.rect(margin,y,contentW,boxH,'F');
-    setFont(9,'normal',dark);
-    insLines.forEach(l=>{pdf.text(l,margin+4,y+6);y+=5.5;});
-    y+=6;
-    // 궁합
-    y+=4;setFont(10,'bold',dark);pdf.text('잘 어울리는 유형',margin,y);y+=7;
-    (resultType.compat||[]).forEach(id=>{
-      const ct=TYPE_MAP[id];
-      if(ct){
-        checkY(8);
-        pdf.setFillColor(247,248,252);pdf.rect(margin,y-4,contentW,7,'F');
-        setFont(9,'normal',dark);pdf.text(ct.emoji+' '+ct.plain,margin+4,y);
-        y+=8;
+    // ── 헤더·푸터 오버레이 ──
+    const totalPages = pdf.getNumberOfPages();
+    for(let i = 1; i <= totalPages; i++){
+      pdf.setPage(i);
+      // 상단 브랜드
+      pdf.setFillColor(15, 15, 26);
+      pdf.rect(0, 0, A4_W, 8, 'F');
+      pdf.setTextColor(201, 169, 110);
+      pdf.setFontSize(7);
+      pdf.text('SKOPOS 스코포스  |  공간·소품·인테리어 취향 욕구 정밀 진단  |  skopos.kr', 8, 5.5);
+      pdf.setTextColor(255, 255, 255);
+      pdf.text(`${i} / ${totalPages}`, A4_W - 8, 5.5, {align: 'right'});
+      // 하단 라인
+      if(i === totalPages){
+        pdf.setFillColor(15, 15, 26);
+        pdf.rect(0, A4_H - 7, A4_W, 7, 'F');
+        pdf.setTextColor(100, 100, 120);
+        pdf.setFontSize(6.5);
+        pdf.text(`© 2026 SKOPOS 스코포스  ·  ${resultType ? resultType.plain : '공간 취향 유형'} 정밀 진단 리포트  ·  ${new Date().toLocaleDateString('ko-KR')}`, A4_W / 2, A4_H - 3, {align: 'center'});
       }
-    });
+    }
 
-    // ══ 뒷표지 ═══════════════════════════════════════════════
-    pdf.addPage();
-    pdf.setFillColor(15,15,26);pdf.rect(0,0,210,297,'F');
-    pdf.setFillColor(...gold);pdf.setGState(new pdf.GState({opacity:.08}));
-    pdf.circle(160,150,80,'F');pdf.setGState(new pdf.GState({opacity:1}));
-    pdf.setDrawColor(...gold);pdf.setLineWidth(.4);
-    pdf.line(margin,margin+5,W-margin,margin+5);
-    setFont(10,'bold',gold);pdf.text('SKOPOS 스코포스',margin,margin+15);
-    setFont(24,'bold',[255,255,255]);pdf.text('당신의 공간 언어를',margin,100);
-    pdf.text('찾아드렸습니다.',margin,116);
-    setFont(10,'normal',gold);pdf.text(resultType.plain,margin,132);
-    setFont(8,'normal',[136,144,164]);
-    pdf.text('이 리포트를 인테리어 쇼핑·상담 전에 꺼내보세요.',margin,148);
-    pdf.text('더 정확한 소품·공간 추천을 받을 수 있어요.',margin,156);
-    setFont(8,'normal',[80,80,100]);
-    pdf.text('skopos.kr  ·  contact@skopos.kr',W/2,260,{align:'center'});
-    pdf.setDrawColor(...gold);pdf.line(margin,268,W-margin,268);
-    setFont(7,'normal',[80,80,100]);
-    pdf.text('© 2026 SKOPOS. 공간심리학·환경심리학·뇌과학 기반 공간 욕구 심리검사 플랫폼',W/2,274,{align:'center'});
-
-    // 저장
-    const filename=`SKOPOS_${resultType.plain}_공간취향리포트_${new Date().toLocaleDateString('ko-KR').replace(/\./g,'').replace(/ /g,'')}.pdf`;
+    // ── 저장 ──
+    const filename = `SKOPOS_${resultType ? resultType.plain : '공간취향'}_정밀진단리포트_${new Date().toLocaleDateString('ko-KR').replace(/\. /g,'-').replace('.','')}.pdf`;
     pdf.save(filename);
-    toast('✅ PDF 저장 완료!',3000);
-    trackEvent('pdf_download',{result_type:resultType.id});
+    toast('✅ PDF 저장 완료!', 3000);
+    trackEvent('pdf_download', {result_type: resultType ? resultType.id : ''});
 
   }catch(err){
-    console.error('PDF 생성 오류:',err);
-    toast('PDF 생성 중 오류가 발생했어요. 다시 시도해주세요.',3000);
+    console.error('PDF 오류:', err);
+    toast('PDF 생성 중 오류가 발생했어요. 다시 시도해주세요.', 3500);
   }finally{
-    btn.disabled=false;
-    btn.innerHTML=`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> PDF 리포트 다운로드`;
+    btn.disabled = false;
+    btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> PDF 리포트 다운로드`;
   }
 }
 
-function retryQuiz(){
-  try{sessionStorage.removeItem('skopos_premium_result');}catch(e){}
-  cur=0;ans={};resultType=null;
-  show('sp');
-}
-
-// ── ON LOAD ──────────────────────────────────────────────────────
-// 결제 완료 후 리다이렉트 처리
-window.addEventListener('load',()=>{
-  const _p = new URLSearchParams(window.location.search);
-  if(_p.get('paid')==='1'){ startQuiz(true); return; }
-  const urlParams = new URLSearchParams(window.location.search);
-  if(urlParams.get('paid') === '1'){
-    startQuiz(true);
-    return;
-  }
-  try{
-    const p=new URLSearchParams(window.location.search);
-    const r=p.get('r');
-    if(r){
-      const id=decodeURIComponent(atob(r));
-      const type=TYPE_MAP[id];
-      if(type){
-        resultType=type;
-        const scores={};
-        SECS.forEach(s=>{scores[s.label]=type.bars?type.bars[s.label]||55:55;});
-        renderResult(type,scores);
-        show('sr');
-        setTimeout(()=>{
-          document.querySelectorAll('.r-bar-fill').forEach(b=>{b.style.width=b.dataset.val+'%';});
-          document.querySelectorAll('.budget-fill').forEach(b=>{b.style.width=b.dataset.val+'%';});
-          setTimeout(()=>{if(resultType)renderSpaceRefs(resultType);},700);
-        },400);
-        return;
-      }
-    }
-  }catch(e){}
-});
-
-</script>
-</body>
-</html>
+>
