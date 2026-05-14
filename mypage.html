@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>마이페이지 | SKOPOS 스코포스</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Apple SD Gothic Neo','Noto Sans KR',sans-serif;background:#F7F8FC;min-height:100vh;-webkit-font-smoothing:antialiased}
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,0,0,.06);height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 24px}
+.nav-logo{font-size:1.1rem;font-weight:900;color:#0F0F1A;text-decoration:none}
+.nav-logo span{color:#E91E8C}
+.nav-right{display:flex;align-items:center;gap:12px}
+.nav-user{font-size:.8rem;color:#8890A4;font-weight:600}
+.nav-logout{font-size:.78rem;color:#8890A4;background:none;border:1px solid rgba(0,0,0,.1);border-radius:50px;padding:6px 14px;cursor:pointer;transition:all .2s;font-family:inherit}
+.nav-logout:hover{border-color:#E91E8C;color:#E91E8C}
+/* 메인 */
+.container{max-width:720px;margin:0 auto;padding:32px 24px 60px}
+/* 프로필 카드 */
+.profile-card{background:linear-gradient(135deg,#0F0F1A,#1E1040);border-radius:20px;padding:28px;margin-bottom:24px;display:flex;align-items:center;gap:20px}
+.avatar{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#E91E8C,#FF6B9D);display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:900;color:#fff;flex-shrink:0}
+.profile-info{flex:1;min-width:0}
+.profile-name{font-size:1.1rem;font-weight:800;color:#fff;margin-bottom:3px}
+.profile-email{font-size:.78rem;color:rgba(255,255,255,.5);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.profile-provider{display:inline-block;font-size:.65rem;font-weight:700;padding:3px 10px;border-radius:50px;margin-top:6px}
+.provider-kakao{background:#FEE500;color:#191919}
+.provider-naver{background:#03C75A;color:#fff}
+.provider-email{background:rgba(233,30,140,.2);color:#FF6B9D}
+/* 섹션 */
+.section{background:#fff;border-radius:16px;padding:24px;margin-bottom:16px;box-shadow:0 2px 12px rgba(0,0,0,.05)}
+.section-title{font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#8890A4;margin-bottom:16px}
+/* 진단 결과 */
+.result-card{border:1.5px solid rgba(233,30,140,.15);border-radius:12px;padding:18px;display:flex;align-items:center;gap:14px;margin-bottom:10px;transition:all .2s;text-decoration:none;color:inherit}
+.result-card:hover{border-color:#E91E8C;background:rgba(233,30,140,.03);transform:translateX(3px)}
+.result-emoji{font-size:2rem;flex-shrink:0}
+.result-info{flex:1;min-width:0}
+.result-type{font-size:.92rem;font-weight:800;color:#0F0F1A;margin-bottom:3px}
+.result-sub{font-size:.75rem;color:#8890A4}
+.result-badge{font-size:.65rem;font-weight:700;padding:3px 10px;border-radius:50px;background:rgba(233,30,140,.08);color:#E91E8C;white-space:nowrap;flex-shrink:0}
+.result-badge.premium{background:linear-gradient(135deg,#E91E8C,#FF9800);color:#fff}
+/* 결제 내역 */
+.pay-item{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid rgba(0,0,0,.05)}
+.pay-item:last-child{border-bottom:none}
+.pay-name{font-size:.86rem;font-weight:700;color:#0F0F1A;margin-bottom:3px}
+.pay-date{font-size:.72rem;color:#8890A4}
+.pay-amount{font-size:.92rem;font-weight:800;color:#E91E8C}
+.pay-status{display:inline-block;font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:50px;background:rgba(3,199,90,.1);color:#027a35;margin-left:6px}
+/* 빈 상태 */
+.empty-state{text-align:center;padding:32px 0;color:#8890A4}
+.empty-icon{font-size:2.5rem;margin-bottom:10px}
+.empty-text{font-size:.86rem;line-height:1.7}
+/* CTA */
+.btn-cta{display:block;text-align:center;padding:14px;background:linear-gradient(135deg,#E91E8C,#FF6B9D);color:#fff;border-radius:50px;font-size:.9rem;font-weight:800;text-decoration:none;transition:all .2s;margin-top:12px}
+.btn-cta:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(233,30,140,.3)}
+.btn-cta.outline{background:none;border:1.5px solid rgba(233,30,140,.3);color:#E91E8C}
+/* 로딩 */
+.loading{display:flex;align-items:center;justify-content:center;padding:40px;color:#8890A4;font-size:.86rem;gap:10px}
+.spinner{width:20px;height:20px;border:2px solid rgba(233,30,140,.2);border-top-color:#E91E8C;border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">SKO<span>POS</span></a>
+  <div class="nav-right">
+    <span class="nav-user" id="navUser"></span>
+    <button class="nav-logout" onclick="logout()">로그아웃</button>
+  </div>
+</nav>
+
+<div class="container">
+
+  <!-- 프로필 -->
+  <div class="profile-card" id="profileCard">
+    <div class="avatar" id="avatarEl">?</div>
+    <div class="profile-info">
+      <div class="profile-name" id="profileName">로딩 중...</div>
+      <div class="profile-email" id="profileEmail"></div>
+      <span class="profile-provider" id="profileProvider"></span>
+    </div>
+  </div>
+
+  <!-- 진단 결과 -->
+  <div class="section">
+    <div class="section-title">나의 진단 결과</div>
+    <div id="resultsArea"><div class="loading"><div class="spinner"></div>불러오는 중...</div></div>
+  </div>
+
+  <!-- 결제 내역 -->
+  <div class="section">
+    <div class="section-title">결제 내역</div>
+    <div id="paymentsArea"><div class="loading"><div class="spinner"></div>불러오는 중...</div></div>
+  </div>
+
+</div>
+
+<script>
+const SUPABASE_URL  = 'https://rgbukqphcqptnfeqipfn.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJnYnVrcXBoY3FwdG5mZXFpcGZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2OTkzMDMsImV4cCI6MjA5NDI3NTMwM30.fWUHe2AoWr9fMLUNSQkbhosUO7FH9dvZOIZbz_XyzFM';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+// ── 유형 정보 ──────────────────────────────────────────────
+const TYPE_INFO = {
+  'sanctuary_deep': {name:'완전 차단형', emoji:'🌙'},
+  'sanctuary_zen':  {name:'비움 추구형', emoji:'🤍'},
+  'nature_forest':  {name:'초록 충전형', emoji:'🌿'},
+  'nature_earth':   {name:'핸드메이드 감성형', emoji:'🪴'},
+  'luxe_royal':     {name:'품격 추구형', emoji:'✨'},
+  'luxe_gallery':   {name:'갤러리 큐레이터형', emoji:'🖼️'},
+  'artistic_bold':  {name:'개성 폭발형', emoji:'🎨'},
+  'artistic_vintage':{name:'빈티지 스토리형', emoji:'🕰️'},
+  'minimal_empty':  {name:'극도 미니멀형', emoji:'◻️'},
+  'minimal_grid':   {name:'구조·정렬 추구형', emoji:'⬛'},
+  'cozy_warm':      {name:'포근함 최우선형', emoji:'🛋️'},
+  'cozy_family':    {name:'함께하는 공간형', emoji:'🏡'},
+};
+
+(async()=>{
+  // 로그인 확인
+  const { data:{ session } } = await supabase.auth.getSession();
+  if(!session){
+    window.location.href = 'login.html?redirect=mypage.html';
+    return;
+  }
+
+  const user = session.user;
+  const meta = user.user_metadata || {};
+  const provider = user.app_metadata?.provider || 'email';
+
+  // 프로필 렌더
+  const name  = meta.full_name || meta.name || user.email?.split('@')[0] || '사용자';
+  const email = user.email || '';
+  const initial = name.charAt(0).toUpperCase();
+
+  document.getElementById('avatarEl').textContent = initial;
+  document.getElementById('profileName').textContent = name;
+  document.getElementById('profileEmail').textContent = email;
+  document.getElementById('navUser').textContent = name + '님';
+
+  const provEl = document.getElementById('profileProvider');
+  if(provider === 'kakao'){
+    provEl.textContent = '카카오 로그인'; provEl.className = 'profile-provider provider-kakao';
+  } else if(provider === 'naver'){
+    provEl.textContent = '네이버 로그인'; provEl.className = 'profile-provider provider-naver';
+  } else {
+    provEl.textContent = '이메일 가입'; provEl.className = 'profile-provider provider-email';
+  }
+
+  // 진단 결과 로드
+  renderResults(user);
+
+  // 결제 내역 로드
+  renderPayments(user);
+})();
+
+async function renderResults(user){
+  const area = document.getElementById('resultsArea');
+  // Supabase quiz_results 테이블 조회
+  const { data, error } = await supabase
+    .from('quiz_results')
+    .select('*')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false });
+
+  if(error || !data || data.length === 0){
+    // 로컬 스토리지에서도 확인 (비로그인 상태 결과)
+    const freeId    = sessionStorage.getItem('skopos_result');
+    const premiumId = sessionStorage.getItem('skopos_premium_result');
+
+    if(!freeId && !premiumId){
+      area.innerHTML = `<div class="empty-state">
+        <div class="empty-icon">🔍</div>
+        <div class="empty-text">아직 진단 결과가 없어요<br>지금 바로 내 공간 취향을 확인해보세요!</div>
+      </div>
+      <a class="btn-cta" href="skopos_quiz.html">무료 진단 시작하기</a>
+      <a class="btn-cta outline" href="payment.html" style="margin-top:8px">정밀 진단 ₩9,900</a>`;
+      return;
+    }
+
+    let html = '';
+    if(freeId){
+      const t = TYPE_INFO[freeId];
+      if(t) html += `<a class="result-card" href="skopos_quiz.html">
+        <span class="result-emoji">${t.emoji}</span>
+        <div class="result-info">
+          <div class="result-type">${t.name}</div>
+          <div class="result-sub">무료 진단 결과</div>
+        </div>
+        <span class="result-badge">무료</span>
+      </a>`;
+    }
+    if(premiumId){
+      const t = TYPE_INFO[premiumId] || {name:premiumId, emoji:'✨'};
+      html += `<a class="result-card" href="skopos_premium_quiz.html">
+        <span class="result-emoji">${t.emoji}</span>
+        <div class="result-info">
+          <div class="result-type">${t.name}</div>
+          <div class="result-sub">정밀 진단 결과</div>
+        </div>
+        <span class="result-badge premium">정밀</span>
+      </a>`;
+    }
+    area.innerHTML = html;
+    return;
+  }
+
+  area.innerHTML = data.map(r => {
+    const t = TYPE_INFO[r.result_type] || {name:r.result_type, emoji:'✨'};
+    const date = new Date(r.created_at).toLocaleDateString('ko-KR');
+    const link = r.quiz_type === '정밀' ? 'skopos_premium_quiz.html' : 'skopos_quiz.html';
+    return `<a class="result-card" href="${link}?r=${btoa(r.result_type)}">
+      <span class="result-emoji">${t.emoji}</span>
+      <div class="result-info">
+        <div class="result-type">${t.name}</div>
+        <div class="result-sub">${r.quiz_type || '무료'} 진단 · ${date}</div>
+      </div>
+      <span class="result-badge ${r.quiz_type==='정밀'?'premium':''}">${r.quiz_type||'무료'}</span>
+    </a>`;
+  }).join('');
+}
+
+async function renderPayments(user){
+  const area = document.getElementById('paymentsArea');
+  const { data, error } = await supabase
+    .from('payments')
+    .select('*')
+    .eq('buyer_email', user.email)
+    .order('paid_at', { ascending: false });
+
+  if(error || !data || data.length === 0){
+    area.innerHTML = `<div class="empty-state">
+      <div class="empty-icon">💳</div>
+      <div class="empty-text">아직 결제 내역이 없어요</div>
+    </div>`;
+    return;
+  }
+
+  area.innerHTML = data.map(p => {
+    const date = new Date(p.paid_at || p.created_at).toLocaleDateString('ko-KR');
+    return `<div class="pay-item">
+      <div>
+        <div class="pay-name">${p.order_name || 'SKOPOS 정밀 공간 취향 진단'}
+          <span class="pay-status">결제완료</span>
+        </div>
+        <div class="pay-date">${date} · ${p.pg || 'NHN KCP'}</div>
+      </div>
+      <div class="pay-amount">₩${(p.amount||9900).toLocaleString()}</div>
+    </div>`;
+  }).join('');
+}
+
+async function logout(){
+  await supabase.auth.signOut();
+  window.location.href = 'login.html';
+}
+</script>
+</body>
+</html>

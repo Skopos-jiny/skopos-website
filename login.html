@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>로그인 / 회원가입 | SKOPOS 스코포스</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:'Apple SD Gothic Neo','Noto Sans KR',sans-serif;background:#F7F8FC;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}
+.wrap{width:100%;max-width:400px}
+.logo-area{text-align:center;margin-bottom:32px}
+.logo{font-size:1.4rem;font-weight:900;color:#0F0F1A;letter-spacing:-.02em}
+.logo span{color:#E91E8C}
+.tagline{font-size:.78rem;color:#8890A4;margin-top:4px}
+.card{background:#fff;border-radius:20px;padding:32px;box-shadow:0 4px 32px rgba(0,0,0,.08)}
+/* 탭 */
+.tabs{display:flex;background:#F7F8FC;border-radius:10px;padding:4px;margin-bottom:24px}
+.tab{flex:1;padding:9px;text-align:center;font-size:.82rem;font-weight:700;color:#8890A4;border-radius:8px;cursor:pointer;transition:all .2s;border:none;background:none;font-family:inherit}
+.tab.active{background:#fff;color:#0F0F1A;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+/* 소셜 버튼 */
+.social-btns{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+.btn-social{display:flex;align-items:center;justify-content:center;gap:10px;padding:14px;border-radius:12px;border:none;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s;font-family:inherit;width:100%}
+.btn-social:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.12)}
+.btn-kakao{background:#FEE500;color:#191919}
+.btn-naver{background:#03C75A;color:#fff}
+.social-icon{width:20px;height:20px;flex-shrink:0}
+/* 구분선 */
+.or-line{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.or-line::before,.or-line::after{content:'';flex:1;height:1px;background:rgba(0,0,0,.08)}
+.or-text{font-size:.72rem;color:#8890A4;white-space:nowrap}
+/* 폼 */
+.field{margin-bottom:14px}
+.field label{display:block;font-size:.75rem;font-weight:700;color:#3D3D5C;margin-bottom:6px}
+.field input{width:100%;padding:12px 14px;border:1.5px solid rgba(0,0,0,.1);border-radius:10px;font-size:.88rem;font-family:inherit;outline:none;transition:border-color .2s;background:#fff}
+.field input:focus{border-color:#E91E8C}
+.field input.error{border-color:#E53935}
+.err-msg{font-size:.72rem;color:#E53935;margin-top:4px;display:none}
+.err-msg.show{display:block}
+.btn-submit{width:100%;padding:14px;background:linear-gradient(135deg,#E91E8C,#FF6B9D);color:#fff;border:none;border-radius:50px;font-size:.92rem;font-weight:800;cursor:pointer;transition:all .2s;font-family:inherit;margin-top:4px}
+.btn-submit:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(233,30,140,.35)}
+.btn-submit:disabled{opacity:.6;cursor:not-allowed;transform:none}
+/* 하단 링크 */
+.bottom-link{text-align:center;margin-top:16px;font-size:.78rem;color:#8890A4}
+.bottom-link a{color:#E91E8C;font-weight:700;cursor:pointer;text-decoration:none}
+/* 탭 패널 */
+.panel{display:none}
+.panel.active{display:block}
+/* 성공 메시지 */
+.success-box{background:rgba(3,199,90,.06);border:1px solid rgba(3,199,90,.25);border-radius:10px;padding:14px;font-size:.82rem;color:#027a35;text-align:center;margin-bottom:16px;display:none}
+.success-box.show{display:block}
+/* 알림 */
+.alert{padding:12px 14px;border-radius:10px;font-size:.8rem;margin-bottom:14px;display:none}
+.alert.show{display:block}
+.alert.error{background:rgba(229,57,53,.06);border:1px solid rgba(229,57,53,.2);color:#c62828}
+.alert.info{background:rgba(233,30,140,.06);border:1px solid rgba(233,30,140,.2);color:#ad1457}
+/* 약관 */
+.terms-check{display:flex;align-items:flex-start;gap:8px;margin-bottom:14px;cursor:pointer}
+.terms-check input{margin-top:2px;accent-color:#E91E8C;flex-shrink:0}
+.terms-check span{font-size:.73rem;color:#8890A4;line-height:1.5}
+.terms-check a{color:#E91E8C;text-decoration:none}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="logo-area">
+    <div class="logo">SKO<span>POS</span></div>
+    <div class="tagline">공간·소품·인테리어 취향 욕구 진단</div>
+  </div>
+
+  <div class="card">
+
+    <!-- 탭 -->
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('login')">로그인</button>
+      <button class="tab" onclick="switchTab('signup')">회원가입</button>
+    </div>
+
+    <!-- 알림 -->
+    <div class="alert error" id="alertError"></div>
+    <div class="alert info"  id="alertInfo"></div>
+
+    <!-- 소셜 로그인 -->
+    <div class="social-btns">
+      <button class="btn-social btn-kakao" onclick="loginKakao()">
+        <svg class="social-icon" viewBox="0 0 24 24" fill="#191919"><path d="M12 3C6.477 3 2 6.477 2 10.805c0 2.756 1.633 5.187 4.116 6.64-.18.676-.655 2.454-.75 2.835-.117.468.171.463.36.337.148-.098 2.35-1.575 3.3-2.214.319.044.645.067.974.067 5.523 0 10-3.477 10-7.805S17.523 3 12 3z"/></svg>
+        카카오톡으로 시작하기
+      </button>
+      <button class="btn-social btn-naver" onclick="loginNaver()">
+        <svg class="social-icon" viewBox="0 0 24 24" fill="white"><path d="M16.273 12.845L7.376 0H0v24h7.727V11.155L16.624 24H24V0h-7.727z"/></svg>
+        네이버로 시작하기
+      </button>
+    </div>
+
+    <div class="or-line"><span class="or-text">또는 이메일로 계속</span></div>
+
+    <!-- 로그인 패널 -->
+    <div class="panel active" id="panel-login">
+      <div class="success-box" id="loginSuccess">✅ 이메일을 확인해주세요. 로그인 링크를 발송했습니다.</div>
+      <div class="field">
+        <label>이메일</label>
+        <input type="email" id="loginEmail" placeholder="이메일을 입력해주세요">
+      </div>
+      <div class="field">
+        <label>비밀번호</label>
+        <input type="password" id="loginPw" placeholder="비밀번호를 입력해주세요">
+        <div class="err-msg" id="loginErr">이메일 또는 비밀번호가 올바르지 않습니다</div>
+      </div>
+      <button class="btn-submit" id="loginBtn" onclick="loginEmail()">로그인</button>
+      <div class="bottom-link">
+        비밀번호를 잊으셨나요? <a onclick="resetPassword()">재설정</a>
+      </div>
+    </div>
+
+    <!-- 회원가입 패널 -->
+    <div class="panel" id="panel-signup">
+      <div class="success-box" id="signupSuccess">✅ 가입 완료! 이메일 인증 후 로그인해주세요.</div>
+      <div class="field">
+        <label>이름</label>
+        <input type="text" id="signupName" placeholder="이름을 입력해주세요">
+      </div>
+      <div class="field">
+        <label>이메일</label>
+        <input type="email" id="signupEmail" placeholder="이메일을 입력해주세요">
+      </div>
+      <div class="field">
+        <label>비밀번호</label>
+        <input type="password" id="signupPw" placeholder="8자 이상 입력해주세요">
+        <div class="err-msg" id="signupErr"></div>
+      </div>
+      <label class="terms-check">
+        <input type="checkbox" id="termsAgree">
+        <span><a href="index.html#terms" target="_blank">이용약관</a> 및 <a href="index.html#privacy" target="_blank">개인정보처리방침</a>에 동의합니다</span>
+      </label>
+      <button class="btn-submit" id="signupBtn" onclick="signupEmail()">회원가입</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ── Supabase 초기화 ──────────────────────────────────────────
+const SUPABASE_URL  = 'https://rgbukqphcqptnfeqipfn.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJnYnVrcXBoY3FwdG5mZXFpcGZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2OTkzMDMsImV4cCI6MjA5NDI3NTMwM30.fWUHe2AoWr9fMLUNSQkbhosUO7FH9dvZOIZbz_XyzFM';
+const NAVER_CLIENT_ID = 'MUwb6Wq_YGvDSIbbkRB1';
+
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+// ── 이미 로그인된 경우 리다이렉트 ─────────────────────────
+(async()=>{
+  const { data:{ session } } = await supabase.auth.getSession();
+  if(session){
+    const redirect = new URLSearchParams(window.location.search).get('redirect') || 'mypage.html';
+    window.location.href = redirect;
+  }
+})();
+
+// ── 탭 전환 ──────────────────────────────────────────────
+function switchTab(tab){
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active', (i===0&&tab==='login')||(i===1&&tab==='signup')));
+  document.getElementById('panel-login').classList.toggle('active', tab==='login');
+  document.getElementById('panel-signup').classList.toggle('active', tab==='signup');
+  clearAlerts();
+}
+
+function clearAlerts(){
+  document.getElementById('alertError').classList.remove('show');
+  document.getElementById('alertInfo').classList.remove('show');
+}
+function showError(msg){ const el=document.getElementById('alertError'); el.textContent=msg; el.classList.add('show'); }
+function showInfo(msg) { const el=document.getElementById('alertInfo');  el.textContent=msg; el.classList.add('show'); }
+
+// ── 카카오 로그인 ──────────────────────────────────────────
+async function loginKakao(){
+  clearAlerts();
+  const redirect = new URLSearchParams(window.location.search).get('redirect') || 'mypage.html';
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: 'kakao',
+    options: {
+      redirectTo: window.location.origin + '/' + redirect,
+    }
+  });
+  if(error) showError('카카오 로그인 오류: ' + error.message);
+}
+
+// ── 네이버 로그인 ──────────────────────────────────────────
+function loginNaver(){
+  clearAlerts();
+  const state = Math.random().toString(36).slice(2);
+  sessionStorage.setItem('naver_state', state);
+  const redirect = new URLSearchParams(window.location.search).get('redirect') || 'mypage.html';
+  sessionStorage.setItem('naver_redirect', redirect);
+
+  const params = new URLSearchParams({
+    response_type: 'code',
+    client_id:     NAVER_CLIENT_ID,
+    redirect_uri:  window.location.origin + '/naver-callback.html',
+    state:         state,
+  });
+  window.location.href = 'https://nid.naver.com/oauth2.0/authorize?' + params;
+}
+
+// ── 이메일 로그인 ──────────────────────────────────────────
+async function loginEmail(){
+  clearAlerts();
+  const email = document.getElementById('loginEmail').value.trim();
+  const pw    = document.getElementById('loginPw').value;
+  const errEl = document.getElementById('loginErr');
+  const btn   = document.getElementById('loginBtn');
+
+  if(!email || !email.includes('@')){ showError('이메일을 올바르게 입력해주세요'); return; }
+  if(!pw){ showError('비밀번호를 입력해주세요'); return; }
+
+  btn.disabled = true; btn.textContent = '로그인 중...';
+  errEl.classList.remove('show');
+
+  const { error } = await supabase.auth.signInWithPassword({ email, password: pw });
+  if(error){
+    errEl.classList.add('show');
+    btn.disabled = false; btn.textContent = '로그인';
+  } else {
+    const redirect = new URLSearchParams(window.location.search).get('redirect') || 'mypage.html';
+    window.location.href = redirect;
+  }
+}
+
+// ── 이메일 회원가입 ────────────────────────────────────────
+async function signupEmail(){
+  clearAlerts();
+  const name  = document.getElementById('signupName').value.trim();
+  const email = document.getElementById('signupEmail').value.trim();
+  const pw    = document.getElementById('signupPw').value;
+  const agree = document.getElementById('termsAgree').checked;
+  const errEl = document.getElementById('signupErr');
+  const btn   = document.getElementById('signupBtn');
+
+  if(!name)  { showError('이름을 입력해주세요'); return; }
+  if(!email || !email.includes('@')) { showError('올바른 이메일을 입력해주세요'); return; }
+  if(pw.length < 8) { errEl.textContent='비밀번호는 8자 이상이어야 합니다'; errEl.classList.add('show'); return; }
+  if(!agree) { showError('이용약관에 동의해주세요'); return; }
+
+  btn.disabled = true; btn.textContent = '가입 중...';
+  errEl.classList.remove('show');
+
+  const { error } = await supabase.auth.signUp({
+    email, password: pw,
+    options: { data: { full_name: name } }
+  });
+
+  if(error){
+    showError('가입 오류: ' + error.message);
+    btn.disabled = false; btn.textContent = '회원가입';
+  } else {
+    document.getElementById('signupSuccess').classList.add('show');
+    btn.disabled = false; btn.textContent = '회원가입';
+  }
+}
+
+// ── 비밀번호 재설정 ────────────────────────────────────────
+async function resetPassword(){
+  const email = document.getElementById('loginEmail').value.trim();
+  if(!email || !email.includes('@')){ showError('이메일을 먼저 입력해주세요'); return; }
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin + '/login.html',
+  });
+  if(error) showError('오류: ' + error.message);
+  else showInfo('✅ 비밀번호 재설정 메일을 발송했습니다');
+}
+
+// ── Enter 키 처리 ─────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if(e.key !== 'Enter') return;
+  if(document.getElementById('panel-login').classList.contains('active')) loginEmail();
+  else signupEmail();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>네이버 로그인 처리 중...</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+body{font-family:'Apple SD Gothic Neo',sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#F7F8FC;margin:0}
+.box{text-align:center;padding:40px}
+.spinner{width:40px;height:40px;border:3px solid rgba(233,30,140,.2);border-top-color:#E91E8C;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 20px}
+@keyframes spin{to{transform:rotate(360deg)}}
+p{font-size:.9rem;color:#8890A4}
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="spinner"></div>
+  <p>네이버 로그인 처리 중입니다...</p>
+</div>
+<script>
+const SUPABASE_URL  = 'https://rgbukqphcqptnfeqipfn.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJnYnVrcXBoY3FwdG5mZXFpcGZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2OTkzMDMsImV4cCI6MjA5NDI3NTMwM30.fWUHe2AoWr9fMLUNSQkbhosUO7FH9dvZOIZbz_XyzFM';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+(async()=>{
+  const params   = new URLSearchParams(window.location.search);
+  const code     = params.get('code');
+  const state    = params.get('state');
+  const savedState = sessionStorage.getItem('naver_state');
+  const redirect   = sessionStorage.getItem('naver_redirect') || 'mypage.html';
+
+  if(!code || state !== savedState){
+    alert('로그인에 실패했습니다. 다시 시도해주세요.');
+    window.location.href = 'login.html';
+    return;
+  }
+
+  // Netlify Function으로 코드 전달 → 네이버 토큰 교환 → Supabase 세션 생성
+  try{
+    const res = await fetch('/.netlify/functions/naver-auth', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ code, redirect_uri: window.location.origin + '/naver-callback.html' }),
+    });
+    const data = await res.json();
+
+    if(data.success && data.access_token && data.refresh_token){
+      const { error } = await supabase.auth.setSession({
+        access_token:  data.access_token,
+        refresh_token: data.refresh_token,
+      });
+      if(error) throw error;
+      sessionStorage.removeItem('naver_state');
+      sessionStorage.removeItem('naver_redirect');
+      window.location.href = redirect;
+    } else {
+      throw new Error(data.message || '네이버 인증 실패');
+    }
+  }catch(err){
+    console.error(err);
+    alert('로그인 처리 중 오류가 발생했습니다.\n' + err.message);
+    window.location.href = 'login.html';
+  }
+})();
+</script>
+</body>
+</html>
