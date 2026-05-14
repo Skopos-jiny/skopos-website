@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>SKOPOS 결제</title>
+<!-- Supabase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <!-- 포트원 V1 SDK -->
 <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
 <style>
@@ -66,6 +68,9 @@ body{font-family:'Apple SD Gothic Neo',sans-serif;background:#F7F8FC;display:fle
     신용카드로 결제하기 ₩9,900
   </button>
 
+  <div style="text-align:right;margin-bottom:10px">
+    <a href="mypage.html" style="font-size:.75rem;color:#8890A4;text-decoration:none">마이페이지 →</a>
+  </div>
   <div class="notice">
     1회 결제 · 영구 열람 · 언제든 다시 확인 가능<br>
     결제 완료 후 즉시 진단이 시작됩니다
@@ -83,7 +88,22 @@ body{font-family:'Apple SD Gothic Neo',sans-serif;background:#F7F8FC;display:fle
 // ═══════════════════════════════════════════════════
 // 포트원 V1 + NHN KCP 신용카드 일반결제
 // ═══════════════════════════════════════════════════
-const IMP_CODE = 'imp57703773'; // ← 포트원 콘솔 > 연동 정보 > 가맹점 식별코드 (imp_XXXXXXXX)
+const SUPABASE_URL  = 'https://rgbukqphcqptnfeqipfn.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJnYnVrcXBoY3FwdG5mZXFpcGZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2OTkzMDMsImV4cCI6MjA5NDI3NTMwM30.fWUHe2AoWr9fMLUNSQkbhosUO7FH9dvZOIZbz_XyzFM';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+const IMP_CODE = 'imp57703773';
+
+// ── 로그인 체크 ──────────────────────────────────────────
+let currentUser = null;
+(async()=>{
+  const { data:{ session } } = await supabase.auth.getSession();
+  if(session){
+    currentUser = session.user;
+    const name = session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || '';
+    document.getElementById('buyerName').value  = name;
+    document.getElementById('buyerEmail').value = session.user.email || '';
+  }
+})(); // ← 포트원 콘솔 > 연동 정보 > 가맹점 식별코드 (imp_XXXXXXXX)
 
 function toast(msg, dur=2800){
   const t=document.getElementById('toast');
@@ -149,6 +169,7 @@ async function verifyAndRedirect(impUid, merchantUid, name, email){
       sessionStorage.setItem('skopos_paid', '1');
       sessionStorage.setItem('skopos_buyer_name',  name);
       sessionStorage.setItem('skopos_buyer_email', email);
+      // 결제 완료 후 마이페이지로 이동
       window.location.href = 'skopos_premium_quiz.html?paid=1';
     } else {
       toast('결제 검증 실패: ' + (result.message || '관리자에게 문의해 주세요'), 5000);
