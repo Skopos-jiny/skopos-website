@@ -248,6 +248,103 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:60px;display:flex;ali
 .pdf-note{font-size:.68rem;color:var(--gray)}
 
 @media(max-width:600px){.space-imgs-grid{grid-template-columns:1fr}}
+
+/* ── PDF 전용 레이아웃 ── */
+#pdfContainer{position:fixed;left:-9999px;top:0;width:794px;background:#fff;z-index:-1;pointer-events:none}
+.pdf-page{width:794px;min-height:1123px;background:#fff;position:relative;overflow:hidden;page-break-after:always;display:flex;flex-direction:column}
+
+/* 표지 */
+.pdf-cover{background:linear-gradient(145deg,#0F0F1A 0%,#1A1040 60%,#0F0F1A 100%);width:100%;min-height:1123px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:80px 64px;position:relative;overflow:hidden}
+.pdf-cover::before{content:'';position:absolute;top:-120px;right:-80px;width:500px;height:500px;background:radial-gradient(circle,rgba(233,30,140,.18),transparent 70%);border-radius:50%}
+.pdf-cover::after{content:'';position:absolute;bottom:-80px;left:-60px;width:350px;height:350px;background:radial-gradient(circle,rgba(255,152,0,.1),transparent 70%);border-radius:50%}
+.pdf-brand{font-size:13px;letter-spacing:.3em;text-transform:uppercase;color:rgba(201,169,110,.8);margin-bottom:40px;font-weight:700}
+.pdf-cover-emoji{font-size:72px;margin-bottom:24px;line-height:1}
+.pdf-cover-type{font-size:13px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:rgba(201,169,110,.9);margin-bottom:12px}
+.pdf-cover-name{font-size:44px;font-weight:900;color:#fff;line-height:1.2;margin-bottom:20px}
+.pdf-cover-desc{font-size:14px;color:rgba(255,255,255,.6);line-height:1.9;max-width:520px;margin-bottom:40px}
+.pdf-cover-keys{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:48px}
+.pdf-cover-key{border:1px solid rgba(201,169,110,.35);padding:5px 14px;font-size:11px;color:rgba(201,169,110,.9);border-radius:4px;font-weight:600}
+.pdf-cover-footer{position:absolute;bottom:40px;left:64px;right:64px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(255,255,255,.08);padding-top:20px}
+.pdf-cover-footer-l{font-size:11px;color:rgba(255,255,255,.3)}
+.pdf-cover-footer-r{font-size:11px;color:rgba(255,255,255,.3)}
+
+/* 내지 공통 */
+.pdf-inner{padding:56px 64px;display:flex;flex-direction:column;flex:1}
+.pdf-inner-header{display:flex;justify-content:space-between;align-items:center;padding-bottom:16px;border-bottom:2px solid #f0f0f0;margin-bottom:32px}
+.pdf-inner-brand{font-size:12px;font-weight:900;color:#0F0F1A;letter-spacing:-.01em}
+.pdf-inner-brand span{color:#E91E8C}
+.pdf-page-num{font-size:11px;color:#C8CFDA;font-weight:600}
+.pdf-section-tag{font-size:10px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:#E91E8C;margin-bottom:8px}
+.pdf-section-title{font-size:22px;font-weight:900;color:#0F0F1A;margin-bottom:6px;line-height:1.2}
+.pdf-section-sub{font-size:13px;color:#8890A4;margin-bottom:28px;line-height:1.6}
+
+/* 레이더 바 차트 */
+.pdf-radar-row{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.pdf-radar-icon{font-size:16px;width:22px;text-align:center;flex-shrink:0}
+.pdf-radar-label{font-size:12px;font-weight:700;color:#0F0F1A;width:100px;flex-shrink:0;text-align:right}
+.pdf-radar-track{flex:1;height:8px;background:#F0F0F0;border-radius:4px;overflow:hidden}
+.pdf-radar-fill{height:8px;border-radius:4px}
+.pdf-radar-val{font-size:11px;font-weight:800;width:28px;text-align:right;flex-shrink:0}
+
+/* 공간 처방 */
+.pdf-rooms{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px}
+.pdf-room{background:#F7F8FC;border-radius:10px;padding:16px;border-left:3px solid #E91E8C}
+.pdf-room-icon{font-size:18px;margin-bottom:8px}
+.pdf-room-name{font-size:12px;font-weight:800;color:#0F0F1A;margin-bottom:6px}
+.pdf-room-desc{font-size:11px;color:#5A6070;line-height:1.65}
+
+/* 추천 vs 피해야 할 */
+.pdf-match-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:4px}
+.pdf-match-col{border-radius:10px;padding:16px}
+.pdf-match-good{background:rgba(123,195,74,.06);border:1.5px solid rgba(123,195,74,.25)}
+.pdf-match-bad{background:rgba(233,30,140,.04);border:1.5px solid rgba(233,30,140,.18)}
+.pdf-match-title{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.pdf-match-good .pdf-match-title{color:#4a8a20}
+.pdf-match-bad .pdf-match-title{color:#E91E8C}
+.pdf-match-item{font-size:11px;color:#3D3D5C;padding:5px 0;border-bottom:1px solid rgba(0,0,0,.05);display:flex;align-items:flex-start;gap:7px;line-height:1.4}
+.pdf-match-item:last-child{border-bottom:none}
+.pdf-match-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.pdf-match-good .pdf-match-dot{background:#4a8a20}
+.pdf-match-bad .pdf-match-dot{background:#E91E8C}
+
+/* 예산 배분 */
+.pdf-budget-row{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.pdf-budget-label{font-size:12px;font-weight:700;color:#0F0F1A;width:56px;flex-shrink:0}
+.pdf-budget-track{flex:1;height:10px;background:#F0F0F0;border-radius:5px;overflow:hidden}
+.pdf-budget-fill{height:10px;border-radius:5px}
+.pdf-budget-pct{font-size:11px;font-weight:800;color:#E91E8C;width:34px;text-align:right;flex-shrink:0}
+
+/* 컬러 팔레트 */
+.pdf-palette{display:flex;gap:12px;margin-top:4px;flex-wrap:wrap}
+.pdf-palette-item{display:flex;flex-direction:column;align-items:center;gap:6px}
+.pdf-palette-chip{width:72px;height:72px;border-radius:12px;box-shadow:0 3px 10px rgba(0,0,0,.15)}
+.pdf-palette-hex{font-size:10px;color:#8890A4;font-weight:600;font-family:monospace}
+
+/* 인사이트 박스 */
+.pdf-insight{background:rgba(233,30,140,.05);border:1.5px solid rgba(233,30,140,.2);border-radius:10px;padding:16px 18px;margin-top:16px}
+.pdf-insight-icon{font-size:14px;margin-bottom:6px}
+.pdf-insight-text{font-size:12px;color:#2A2A3A;line-height:1.8}
+
+/* 궁합 */
+.pdf-compat{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.pdf-compat-chip{border:1.5px solid rgba(233,30,140,.2);border-radius:50px;padding:6px 14px;font-size:11px;font-weight:700;color:#0F0F1A;background:#fff}
+
+/* 행동패턴 */
+.pdf-behavior-box{background:#F7F8FC;border-radius:10px;padding:20px;margin-top:4px}
+.pdf-behavior-text{font-size:12px;color:#3D3D5C;line-height:1.95;white-space:pre-line}
+
+/* 뒷표지 */
+.pdf-back{background:linear-gradient(145deg,#0F0F1A,#1E1040);width:100%;min-height:1123px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:60px;position:relative;overflow:hidden}
+.pdf-back::before{content:'';position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(233,30,140,.12),transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%)}
+.pdf-back-logo{font-size:24px;font-weight:900;color:#fff;margin-bottom:8px}
+.pdf-back-logo span{color:#E91E8C}
+.pdf-back-tagline{font-size:13px;color:rgba(255,255,255,.4);margin-bottom:48px}
+.pdf-back-quote{font-size:20px;font-weight:800;color:#fff;line-height:1.5;margin-bottom:12px}
+.pdf-back-type{font-size:14px;color:rgba(201,169,110,.8);font-weight:700;margin-bottom:48px}
+.pdf-back-tip{font-size:12px;color:rgba(255,255,255,.45);line-height:1.9;margin-bottom:48px}
+.pdf-back-contact{font-size:11px;color:rgba(255,255,255,.25);line-height:1.8}
+.pdf-back-line{width:48px;height:1px;background:rgba(201,169,110,.3);margin:32px auto}
+
 </style>
 <!-- 포트원 V1 SDK -->
 <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
@@ -2051,100 +2148,255 @@ function renderSpaceImgs(refs,tab){
 async function downloadPDF(){
   const btn = document.getElementById('pdfBtn');
   btn.disabled = true;
-  btn.innerHTML = '⏳ PDF 캡처 중... (30~60초)';
-  toast('PDF를 생성하고 있어요. 잠시 기다려주세요.', 4000);
+  btn.innerHTML = '⏳ PDF 생성 중... (30~60초)';
+  toast('PDF를 생성하고 있어요. 잠시 기다려주세요.', 5000);
 
   try{
-    // ── html2canvas로 결과지 DOM 캡처 ──
+    if(!resultType){ toast('결과가 없어요. 진단을 먼저 완료해주세요.', 3000); return; }
     const {jsPDF} = window.jspdf;
-    const rw      = document.getElementById('rw');
-    if(!rw) throw new Error('결과지를 찾을 수 없어요');
+    const pdf = new jsPDF({orientation:'portrait', unit:'px', format:[794,1123], hotfixes:['px_scaling']});
+    const t = resultType;
+    const secColors = ['#E91E8C','#FF9800','#7CB342','#29B6F6','#AB47BC','#FF7043','#26A69A','#5C6BC0'];
+    const budgetColors = ['#E91E8C','#FF9800','#7CB342','#29B6F6'];
+    const today = new Date().toLocaleDateString('ko-KR');
 
-    // PDF 다운로드 버튼과 카카오 공유 버튼 임시 숨기기
-    const hideEls = rw.querySelectorAll('.pdf-download-wrap, .share-wrap');
-    hideEls.forEach(el => el.style.visibility = 'hidden');
-
-    const canvas = await html2canvas(rw, {
-      scale:            2,            // 고해상도 (레티나)
-      useCORS:          true,         // 외부 이미지 허용
-      allowTaint:       false,
-      backgroundColor: '#F7F8FC',
-      scrollX:          0,
-      scrollY:          -window.scrollY,
-      windowWidth:      rw.scrollWidth,
-      windowHeight:     rw.scrollHeight,
-      logging:          false,
-    });
-
-    // 버튼 다시 표시
-    hideEls.forEach(el => el.style.visibility = '');
-
-    // ── 캡처 이미지 → PDF ──
-    const imgData   = canvas.toDataURL('image/jpeg', 0.92);
-    const A4_W      = 210;
-    const A4_H      = 297;
-    const imgW      = A4_W;
-    const imgH      = (canvas.height / canvas.width) * imgW;
-
-    const pdf = new jsPDF({
-      orientation: 'portrait',
-      unit:        'mm',
-      format:      'a4',
-    });
-
-    // 여러 페이지로 분할 처리
-    let posY = 0;
-    while(posY < imgH){
-      if(posY > 0) pdf.addPage();
-
-      // 현재 페이지에 들어갈 이미지 부분 계산
-      const remainH = imgH - posY;
-      const pageH   = Math.min(A4_H, remainH);
-
-      // 이미지 비율로 canvas 자르기
-      const srcY    = Math.round((posY / imgH) * canvas.height);
-      const srcH    = Math.round((pageH / imgH) * canvas.height);
-
-      const pageCanvas = document.createElement('canvas');
-      pageCanvas.width  = canvas.width;
-      pageCanvas.height = srcH;
-      const ctx = pageCanvas.getContext('2d');
-      ctx.fillStyle = '#F7F8FC';
-      ctx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
-      ctx.drawImage(canvas, 0, srcY, canvas.width, srcH, 0, 0, canvas.width, srcH);
-
-      const pageImgData = pageCanvas.toDataURL('image/jpeg', 0.92);
-      pdf.addImage(pageImgData, 'JPEG', 0, 0, A4_W, pageH);
-      posY += A4_H;
+    // ── 페이지별 HTML 생성 함수 ──────────────────────────────
+    function makeContainer(innerHtml){
+      const div = document.createElement('div');
+      div.id = 'pdfContainer';
+      div.innerHTML = innerHtml;
+      document.body.appendChild(div);
+      return div;
     }
 
-    // ── 헤더·푸터 오버레이 ──
-    const totalPages = pdf.getNumberOfPages();
-    for(let i = 1; i <= totalPages; i++){
-      pdf.setPage(i);
-      // 상단 브랜드
-      pdf.setFillColor(15, 15, 26);
-      pdf.rect(0, 0, A4_W, 8, 'F');
-      pdf.setTextColor(201, 169, 110);
-      pdf.setFontSize(7);
-      pdf.text('SKOPOS 스코포스  |  공간·소품·인테리어 취향 욕구 정밀 진단  |  skopos.kr', 8, 5.5);
-      pdf.setTextColor(255, 255, 255);
-      pdf.text(`${i} / ${totalPages}`, A4_W - 8, 5.5, {align: 'right'});
-      // 하단 라인
-      if(i === totalPages){
-        pdf.setFillColor(15, 15, 26);
-        pdf.rect(0, A4_H - 7, A4_W, 7, 'F');
-        pdf.setTextColor(100, 100, 120);
-        pdf.setFontSize(6.5);
-        pdf.text(`© 2026 SKOPOS 스코포스  ·  ${resultType ? resultType.plain : '공간 취향 유형'} 정밀 진단 리포트  ·  ${new Date().toLocaleDateString('ko-KR')}`, A4_W / 2, A4_H - 3, {align: 'center'});
-      }
+    async function capturePage(el){
+      const canvas = await html2canvas(el, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: false,
+        backgroundColor: '#ffffff',
+        width: 794,
+        height: 1123,
+        logging: false,
+      });
+      return canvas.toDataURL('image/jpeg', 0.92);
     }
 
-    // ── 저장 ──
-    const filename = `SKOPOS_${resultType ? resultType.plain : '공간취향'}_정밀진단리포트_${new Date().toLocaleDateString('ko-KR').replace(/\. /g,'-').replace('.','')}.pdf`;
+    async function addPage(imgData, pageNum, totalPages){
+      if(pageNum > 1) pdf.addPage([794,1123], 'px');
+      pdf.addImage(imgData, 'JPEG', 0, 0, 794, 1123);
+    }
+
+    // ── 공통 내지 헤더 ───────────────────────────────────────
+    function innerHeader(pageNum, totalPages){
+      return `<div class="pdf-inner-header">
+        <div class="pdf-inner-brand">SKO<span>POS</span> 스코포스</div>
+        <div class="pdf-page-num">${pageNum} / ${totalPages}</div>
+      </div>`;
+    }
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // PAGE 1 — 표지
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    const keysHtml = (t.keys||[]).map(k=>`<span class="pdf-cover-key">${k}</span>`).join('');
+    const coverHtml = `<div class="pdf-page">
+      <div class="pdf-cover">
+        <div class="pdf-brand">SKOPOS 스코포스 · 정밀 공간 취향 욕구 진단</div>
+        <div class="pdf-cover-emoji">${t.emoji||'✨'}</div>
+        <div class="pdf-cover-type">${t.group||''} TYPE</div>
+        <div class="pdf-cover-name">${t.name ? t.name.replace(/\[\[hl\]\]/g,'').replace(/\[\[\/hl\]\]/g,'') : t.plain}</div>
+        <div class="pdf-cover-desc">${(t.desc||'').substring(0,120)}...</div>
+        <div class="pdf-cover-keys">${keysHtml}</div>
+        <div class="pdf-cover-footer">
+          <div class="pdf-cover-footer-l">진단일: ${today} · 144문항 정밀 분석</div>
+          <div class="pdf-cover-footer-r">skopos.kr</div>
+        </div>
+      </div>
+    </div>`;
+    let c1 = makeContainer(coverHtml);
+    const img1 = await capturePage(c1.firstChild);
+    document.body.removeChild(c1);
+    await addPage(img1, 1, 5);
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // PAGE 2 — 8영역 레이더 바 차트 + 행동패턴
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    const barsHtml = SECS.map((sec,i)=>{
+      const val = t.bars ? (t.bars[sec.label]||55) : 55;
+      return `<div class="pdf-radar-row">
+        <span class="pdf-radar-icon">${sec.icon}</span>
+        <span class="pdf-radar-label">${sec.label}</span>
+        <div class="pdf-radar-track">
+          <div class="pdf-radar-fill" style="width:${val}%;background:${secColors[i]}"></div>
+        </div>
+        <span class="pdf-radar-val" style="color:${secColors[i]}">${val}</span>
+      </div>`;
+    }).join('');
+
+    const bpText = (typeof BEHAVIOR_PROFILES !== 'undefined' && BEHAVIOR_PROFILES[t.id]) || t.desc || '';
+    const bpShort = bpText.split('\n\n').slice(0,3).join('\n\n');
+
+    const p2Html = `<div class="pdf-page"><div class="pdf-inner">
+      ${innerHeader(2,5)}
+      <div class="pdf-section-tag">SECTION 01</div>
+      <div class="pdf-section-title">8개 영역 취향 욕구 프로파일</div>
+      <div class="pdf-section-sub">8가지 영역에서 측정된 당신의 공간 욕구 점수예요. 100점 기준 상대적 강도를 나타냅니다.</div>
+      <div style="margin-bottom:28px">${barsHtml}</div>
+      <div class="pdf-section-tag">SECTION 02</div>
+      <div class="pdf-section-title">나의 공간 취향 이야기</div>
+      <div class="pdf-behavior-box">
+        <div class="pdf-behavior-text">${bpShort}</div>
+      </div>
+      <div class="pdf-insight" style="margin-top:18px">
+        <div class="pdf-insight-icon">💡</div>
+        <div class="pdf-insight-text">${t.insight||''}</div>
+      </div>
+    </div></div>`;
+    let c2 = makeContainer(p2Html);
+    const img2 = await capturePage(c2.firstChild);
+    document.body.removeChild(c2);
+    await addPage(img2, 2, 5);
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // PAGE 3 — 공간별 소품 처방
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    const roomIcons = {거실:'🛋️',침실:'🛏️',주방:'🍳',서재:'💻'};
+    const roomsHtml2 = Object.entries(t.rooms||{}).map(([name,desc])=>`
+      <div class="pdf-room">
+        <div class="pdf-room-icon">${roomIcons[name]||'🏠'}</div>
+        <div class="pdf-room-name">${name}</div>
+        <div class="pdf-room-desc">${desc}</div>
+      </div>`).join('');
+
+    // 추가 행동패턴 텍스트
+    const bpRest = bpText.split('\n\n').slice(3,6).join('\n\n');
+
+    const p3Html = `<div class="pdf-page"><div class="pdf-inner">
+      ${innerHeader(3,5)}
+      <div class="pdf-section-tag">SECTION 03</div>
+      <div class="pdf-section-title">공간별 소품 처방</div>
+      <div class="pdf-section-sub">내 유형에 맞게 거실·침실·주방·서재를 꾸미는 구체적인 방법이에요.</div>
+      <div class="pdf-rooms">${roomsHtml2}</div>
+      ${bpRest ? `<div style="margin-top:24px">
+        <div class="pdf-section-tag">공간 취향 이야기 (계속)</div>
+        <div class="pdf-behavior-box" style="margin-top:8px">
+          <div class="pdf-behavior-text">${bpRest}</div>
+        </div>
+      </div>` : ''}
+    </div></div>`;
+    let c3 = makeContainer(p3Html);
+    const img3 = await capturePage(c3.firstChild);
+    document.body.removeChild(c3);
+    await addPage(img3, 3, 5);
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // PAGE 4 — 추천 소품 vs 피해야 할 것 + 예산 배분
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    const goodItems = (t.keys||[]).map(k=>`
+      <div class="pdf-match-item">
+        <div class="pdf-match-dot"></div><span>${k}</span>
+      </div>`).join('');
+    const badItems = (t.avoid||[]).map(a=>`
+      <div class="pdf-match-item">
+        <div class="pdf-match-dot"></div><span>${a}</span>
+      </div>`).join('');
+
+    const budgetHtml = Object.entries(t.budget||{}).map(([name,pct],i)=>`
+      <div class="pdf-budget-row">
+        <span class="pdf-budget-label">${name}</span>
+        <div class="pdf-budget-track">
+          <div class="pdf-budget-fill" style="width:${pct}%;background:${budgetColors[i%4]}"></div>
+        </div>
+        <span class="pdf-budget-pct">${pct}%</span>
+      </div>`).join('');
+
+    const p4Html = `<div class="pdf-page"><div class="pdf-inner">
+      ${innerHeader(4,5)}
+      <div class="pdf-section-tag">SECTION 04</div>
+      <div class="pdf-section-title">추천 소품 vs 피해야 할 것들</div>
+      <div class="pdf-section-sub">구매 전 반드시 확인하세요. 내 유형이 사면 후회하는 것들도 함께 정리했어요.</div>
+      <div class="pdf-match-grid">
+        <div class="pdf-match-col pdf-match-good">
+          <div class="pdf-match-title">✅ 추천 소품·소재</div>
+          ${goodItems}
+        </div>
+        <div class="pdf-match-col pdf-match-bad">
+          <div class="pdf-match-title">❌ 피해야 할 것들</div>
+          ${badItems || '<div class="pdf-match-item"><div class="pdf-match-dot"></div><span>내 유형과 맞지 않는 차가운 소재</span></div>'}
+        </div>
+      </div>
+      <div style="margin-top:28px">
+        <div class="pdf-section-tag">SECTION 05</div>
+        <div class="pdf-section-title">인테리어 예산 배분 가이드</div>
+        <div class="pdf-section-sub">내 유형에 최적화된 투자 비율이에요. 가구·조명·소품·패브릭 순으로 활용하세요.</div>
+        <div style="margin-top:8px">${budgetHtml}</div>
+      </div>
+    </div></div>`;
+    let c4 = makeContainer(p4Html);
+    const img4 = await capturePage(c4.firstChild);
+    document.body.removeChild(c4);
+    await addPage(img4, 4, 5);
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // PAGE 5 — 컬러 팔레트 + 궁합 + 뒷표지
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    const paletteHtml = (t.palette||[]).map(hex=>`
+      <div class="pdf-palette-item">
+        <div class="pdf-palette-chip" style="background:${hex}"></div>
+        <div class="pdf-palette-hex">${hex}</div>
+      </div>`).join('');
+
+    const compatHtml = (t.compat||[]).map(id=>{
+      const ct = TYPE_MAP[id];
+      return ct ? `<div class="pdf-compat-chip">${ct.emoji} ${ct.plain}</div>` : '';
+    }).join('');
+
+    const p5Html = `<div class="pdf-page"><div class="pdf-inner">
+      ${innerHeader(5,5)}
+      <div class="pdf-section-tag">SECTION 06</div>
+      <div class="pdf-section-title">나의 공간 컬러 팔레트</div>
+      <div class="pdf-section-sub">이 4가지 색으로 공간을 완성하세요. 가장 큰 면적(벽·소파)엔 첫 번째, 포인트(소품·쿠션)엔 세 번째 색을 추천해요.</div>
+      <div class="pdf-palette">${paletteHtml}</div>
+
+      <div style="margin-top:32px">
+        <div class="pdf-section-tag">SECTION 07</div>
+        <div class="pdf-section-title">함께 사는 사람과의 유형 궁합</div>
+        <div class="pdf-section-sub">같이 사는 분도 진단해보세요. 유형이 같으면 취향이 바로 맞고, 다르면 어떤 부분을 조율해야 할지 알 수 있어요.</div>
+        <div class="pdf-compat">${compatHtml||'<div class="pdf-compat-chip">진단 후 확인 가능</div>'}</div>
+      </div>
+
+      <div style="margin-top:32px">
+        <div class="pdf-section-tag">SECTION 08</div>
+        <div class="pdf-section-title">인테리어 쇼핑 전 체크리스트</div>
+        <div class="pdf-behavior-box" style="margin-top:8px">
+          <div class="pdf-behavior-text">구매 전 스스로에게 물어보세요.
+
+1. 이 소품의 소재가 내 유형에 맞는가? (추천 소재: ${(t.keys||[]).slice(0,3).join(', ')})
+2. 이 색상이 내 팔레트(${(t.palette||[]).slice(0,2).join(', ')})와 어울리는가?
+3. 이 가구가 내 공간 구조 욕구를 충족하는가?
+4. 5년 후에도 좋아할 수 있는가?
+5. 지금 집에 있는 것들과 톤이 맞는가?
+
+이 5가지에 모두 YES라면 구매해도 좋아요!</div>
+        </div>
+      </div>
+
+      <!-- 푸터 -->
+      <div style="margin-top:auto;padding-top:24px;border-top:1px solid #f0f0f0;display:flex;justify-content:space-between;align-items:center">
+        <div style="font-size:11px;color:#C8CFDA">© 2026 SKOPOS 스코포스 · contact@skopos.kr</div>
+        <div style="font-size:11px;color:#C8CFDA">skopos.kr · 공간 취향 욕구 정밀 진단 리포트</div>
+      </div>
+    </div></div>`;
+    let c5 = makeContainer(p5Html);
+    const img5 = await capturePage(c5.firstChild);
+    document.body.removeChild(c5);
+    await addPage(img5, 5, 5);
+
+    // ── 저장 ────────────────────────────────────────────────
+    const filename = `SKOPOS_${t.plain}_정밀진단리포트_${today.replace(/\. /g,'-').replace('.','')}.pdf`;
     pdf.save(filename);
-    toast('✅ PDF 저장 완료!', 3000);
-    trackEvent('pdf_download', {result_type: resultType ? resultType.id : ''});
+    toast('✅ PDF 저장 완료! 5페이지 리포트', 3500);
+    if(typeof trackEvent !== 'undefined') trackEvent('pdf_download', {result_type: t.id});
 
   }catch(err){
     console.error('PDF 오류:', err);
