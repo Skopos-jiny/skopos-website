@@ -345,7 +345,17 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:60px;display:flex;ali
 .pdf-back-contact{font-size:11px;color:rgba(255,255,255,.25);line-height:1.8}
 .pdf-back-line{width:48px;height:1px;background:rgba(201,169,110,.3);margin:32px auto}
 
+
+/* 사용자 이름 표시 */
+.user-greeting{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:50px;padding:6px 16px;margin-bottom:18px;font-size:.8rem;color:rgba(255,255,255,.8);font-weight:600}
+.user-greeting-avatar{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#E91E8C,#FF6B9D);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:900;color:#fff;flex-shrink:0}
+.q-user-badge{position:fixed;top:68px;right:16px;z-index:99;background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:50px;padding:5px 12px;font-size:.7rem;font-weight:700;color:#3D3D5C;box-shadow:0 2px 8px rgba(0,0,0,.08);display:flex;align-items:center;gap:6px}
+.q-user-badge-dot{width:6px;height:6px;border-radius:50%;background:#03C75A;flex-shrink:0}
+.r-user-greeting{font-size:.78rem;color:rgba(255,255,255,.5);margin-bottom:8px;display:block}
+
 </style>
+<!-- Supabase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <!-- 포트원 V1 SDK -->
 <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -365,8 +375,15 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:60px;display:flex;ali
 <div id="sp" class="screen active">
   <div class="gate-inner">
     <div class="gate-badge"><span>✦ PREMIUM</span><span style="width:1px;height:10px;background:rgba(201,169,110,.3)"></span><span>정밀 공간 욕구 진단</span></div>
-    <h1 class="gate-title">144문항으로 알아보는<br><span class="hl">나의 정밀 공간 취향</span></h1>
-    <p class="gate-sub">무료 진단이 유형을 알려준다면<br>정밀 진단은 구체적인 소품·컬러·예산·공간 이미지까지 알려드립니다.</p>
+    <!-- 로그인 이름 표시 -->
+    <div id="gateUserGreeting" style="display:none">
+      <div class="user-greeting">
+        <div class="user-greeting-avatar" id="gateAvatarLetter">?</div>
+        <span id="gateUserName">반갑습니다</span>님, 준비됐나요?
+      </div>
+    </div>
+    <h1 class="gate-title" id="gateTitle">144문항으로 알아보는<br><span class="hl">나의 정밀 공간 취향</span></h1>
+    <p class="gate-sub" id="gateSub">무료 진단이 유형을 알려준다면<br>정밀 진단은 구체적인 소품·컬러·예산·공간 이미지까지 알려드립니다.</p>
 
     <div class="features-grid">
       <div class="feat"><div class="feat-icon">🧠</div><div class="feat-title">144문항 정밀 분석</div><div class="feat-desc">8개 영역을 각 18문항으로 깊이 측정해요</div></div>
@@ -397,6 +414,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:60px;display:flex;ali
 
 <!-- 퀴즈 -->
 <div id="sq" class="screen">
+  <!-- 퀴즈 중 사용자 배지 -->
+  <div class="q-user-badge" id="qUserBadge" style="display:none">
+    <div class="q-user-badge-dot"></div>
+    <span id="qUserBadgeName"></span>님의 진단
+  </div>
   <div class="q-top">
     <div class="q-top-inner">
       <div class="q-progress-bar"><div class="q-progress-fill" id="qpf" style="width:0%"></div></div>
@@ -425,7 +447,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:60px;display:flex;ali
 <!-- 로딩 -->
 <div id="sl" class="screen">
   <div class="ld-icon">🔬</div>
-  <h2 class="ld-title">144개 응답 분석 중</h2>
+  <h2 class="ld-title" id="ldTitle">144개 응답 분석 중</h2>
   <p class="ld-sub">144개 응답을 바탕으로 8개 영역을 심층 분석해<br>나에게 가장 정확한 공간 취향 유형을 찾고 있어요</p>
   <div class="ld-stages" id="ldstages">
     <div class="ld-stage" id="ldst0">🧠 감각 프로파일</div>
@@ -1691,6 +1713,64 @@ const KAKAO_APP_KEY='YOUR_KAKAO_JS_APP_KEY';
 const Q_TIME=10.0;
 let cur=0,ans={},qTimer=null,timerEl=null,elapsed=0;
 let resultType=null,isPaid=false;
+let currentUserName = ''; // 로그인한 사용자 이름
+
+// ── Supabase 사용자 이름 불러오기 ──────────────────────────
+(async function loadUserName(){
+  try{
+    if(typeof supabase === 'undefined') return;
+    const { createClient } = supabase;
+    const sb = createClient(
+      'https://rgbukqphcqptnfeqipfn.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJnYnVrcXBoY3FwdG5mZXFpcGZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2OTkzMDMsImV4cCI6MjA5NDI3NTMwM30.fWUHe2AoWr9fMLUNSQkbhosUO7FH9dvZOIZbz_XyzFM'
+    );
+    const { data:{ session } } = await sb.auth.getSession();
+    if(!session) return;
+
+    const user = session.user;
+    const name = user.user_metadata?.full_name
+              || user.user_metadata?.name
+              || user.email?.split('@')[0]
+              || '';
+    if(!name) return;
+
+    currentUserName = name;
+    const initial   = name.charAt(0).toUpperCase();
+
+    // 결제 게이트 — 이름 표시
+    const greetEl = document.getElementById('gateUserGreeting');
+    const nameEl  = document.getElementById('gateUserName');
+    const avatarEl = document.getElementById('gateAvatarLetter');
+    if(greetEl && nameEl && avatarEl){
+      nameEl.textContent  = name;
+      avatarEl.textContent = initial;
+      greetEl.style.display = 'block';
+    }
+
+    // 퀴즈 배지 — 이름 표시
+    const badgeEl     = document.getElementById('qUserBadge');
+    const badgeNameEl = document.getElementById('qUserBadgeName');
+    if(badgeEl && badgeNameEl){
+      badgeNameEl.textContent = name;
+      badgeEl.style.display   = 'flex';
+    }
+
+  }catch(e){ console.warn('사용자 이름 로드 오류:', e); }
+})();
+
+// 이름 반영 헬퍼 — 로딩·결과 화면에 이름 적용
+function applyUserName(){
+  if(!currentUserName) return;
+  const name = currentUserName;
+
+  // 로딩 타이틀
+  const ldTitle = document.getElementById('ldTitle');
+  if(ldTitle) ldTitle.textContent = name + '님의 응답 분석 중';
+
+  // 결과 화면 인사
+  const rGreet = document.getElementById('rUserGreeting');
+  if(rGreet) rGreet.textContent = name + '님의 정밀 공간 취향 진단 결과예요';
+}
 
 // ── UTIL ──────────────────────────────────────────────────────
 function dec(s){
@@ -1720,7 +1800,7 @@ async function initPayment(){
     merchant_uid:  merchantUid,
     name:         'SKOPOS 정밀 공간 취향 진단',
     amount:        9900,
-    buyer_name:   '',
+    buyer_name:   currentUserName || '',
     buyer_email:  '',
     buyer_tel:    '',
     m_redirect_url: window.location.href,
@@ -1904,6 +1984,7 @@ function compute(){
 
 // ── LOADING ──────────────────────────────────────────────────────
 function runResult(){
+  applyUserName(); // 이름 로딩·결과 화면에 반영
   show('sl');
   const stages=document.querySelectorAll('.ld-stage');
   stages.forEach((el,i)=>{setTimeout(()=>{el.classList.add('on');},i*350);});
@@ -1970,6 +2051,7 @@ function renderResult(t,scores){
   document.getElementById('rw').innerHTML=`
     <div class="r-hero">
       <div class="r-hero-tag">✦ 정밀 진단 결과 · 12가지 유형 분석</div>
+      <span class="r-user-greeting" id="rUserGreeting"></span>
       <span class="r-emoji">${t.emoji||'✨'}</span>
       <h1 class="r-type-name">${dec(t.name)}</h1>
       <div class="r-type-plain">${t.plain}</div>
@@ -2202,6 +2284,7 @@ async function downloadPDF(){
     const coverHtml = `<div class="pdf-page">
       <div class="pdf-cover">
         <div class="pdf-brand">SKOPOS 스코포스 · 정밀 공간 취향 욕구 진단</div>
+        ${currentUserName ? `<div style="font-size:11px;color:rgba(201,169,110,.6);margin-bottom:20px;font-weight:600;letter-spacing:.05em">${currentUserName}님의 진단 리포트</div>` : ''}
         <div class="pdf-cover-emoji">${t.emoji||'✨'}</div>
         <div class="pdf-cover-type">${t.group||''} TYPE</div>
         <div class="pdf-cover-name">${t.name ? t.name.replace(/\[\[hl\]\]/g,'').replace(/\[\[\/hl\]\]/g,'') : t.plain}</div>
