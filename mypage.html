@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>마이페이지 | SKOPOS 스코포스</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Apple SD Gothic Neo','Noto Sans KR',sans-serif;background:#F7F8FC;min-height:100vh;-webkit-font-smoothing:antialiased}
@@ -99,7 +99,8 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
 <script>
 const SUPABASE_URL  = 'https://rgbukqphcqptnfeqipfn.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJnYnVrcXBoY3FwdG5mZXFpcGZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2OTkzMDMsImV4cCI6MjA5NDI3NTMwM30.fWUHe2AoWr9fMLUNSQkbhosUO7FH9dvZOIZbz_XyzFM';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
 
 // ── 유형 정보 ──────────────────────────────────────────────
 const TYPE_INFO = {
@@ -119,7 +120,7 @@ const TYPE_INFO = {
 
 (async()=>{
   // 로그인 확인
-  const { data:{ session } } = await supabase.auth.getSession();
+  const { data:{ session } } = await sb.auth.getSession();
   if(!session){
     window.location.href = 'login.html?redirect=mypage.html';
     return;
@@ -158,8 +159,7 @@ const TYPE_INFO = {
 async function renderResults(user){
   const area = document.getElementById('resultsArea');
   // Supabase quiz_results 테이블 조회
-  const { data, error } = await supabase
-    .from('quiz_results')
+  const { data, error } = await sb.from('quiz_results')
     .select('*')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false });
@@ -223,8 +223,7 @@ async function renderResults(user){
 
 async function renderPayments(user){
   const area = document.getElementById('paymentsArea');
-  const { data, error } = await supabase
-    .from('payments')
+  const { data, error } = await sb.from('payments')
     .select('*')
     .eq('buyer_email', user.email)
     .order('paid_at', { ascending: false });
@@ -252,7 +251,7 @@ async function renderPayments(user){
 }
 
 async function logout(){
-  await supabase.auth.signOut();
+  await sb.auth.signOut();
   window.location.href = 'login.html';
 }
 </script>
