@@ -116,8 +116,8 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
         <button class="btn-logout-sm" onclick="logout()">로그아웃</button>
       </div>
       <div class="prod-box">
-        <div class="prod-name">SKOPOS 정밀 공간 취향 진단</div>
-        <div class="prod-desc">144문항 · 12가지 유형 · 8개 영역 분석<br>공간별 소품 처방 + 컬러 팔레트 + PDF 리포트</div>
+        <div class="prod-name">SKOPOS SDTI 정밀 검사</div>
+        <div class="prod-desc">SDTI 144문항 · 12가지 욕구 유형 · 8영역 분석<br>소품 처방 + 컬러 팔레트 + 5페이지 PDF 리포트</div>
         <div class="price-row"><span class="price-label">결제 금액</span><span class="price-val">₩9,900</span></div>
       </div>
       <div class="alert error" id="payAlert"></div>
@@ -205,7 +205,7 @@ function requestPay(){
   sessionStorage.setItem('skopos_buyer_email',email);
   IMP.request_pay({
     pg:'kcp',pay_method:'card',merchant_uid:merchantUid,
-    name:'SKOPOS 정밀 공간 취향 진단',amount:9900,
+    name:'SKOPOS SDTI 정밀 검사',amount:9900,
     buyer_name:name,buyer_email:email,buyer_tel:'',
     m_redirect_url:window.location.href,
   },async(rsp)=>{
