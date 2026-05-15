@@ -388,7 +388,7 @@ footer{background:var(--dark);color:rgba(255,255,255,.5);padding:52px 24px 36px}
 em{font-style:normal}
 
 .nav-auth{display:flex;align-items:center}
-.nav-login-btn{font-size:.78rem;font-weight:700;color:var(--dark);border:1.5px solid rgba(15,15,26,.15);border-radius:50px;padding:7px 16px;text-decoration:none;transition:all .2s;white-space:nowrap}
+.nav-login-btn{font-size:.78rem;font-weight:700;color:var(--dark);margin-left:8px;border:1.5px solid rgba(15,15,26,.15);border-radius:50px;padding:7px 16px;text-decoration:none;transition:all .2s;white-space:nowrap}
 .nav-login-btn:hover{background:var(--dark);color:#fff;border-color:var(--dark)}
 .nav-login-btn.logged-in{background:var(--pink);color:#fff;border-color:var(--pink)}
 .nav-login-btn.logged-in:hover{background:#d01478;border-color:#d01478}
@@ -406,6 +406,7 @@ em{font-style:normal}
     <div class="nav-right">
       <a class="nav-ghost" href="skopos_quiz.html">무료 진단</a>
       <a class="nav-pill" href="skopos_premium_quiz.html">정밀 진단 ₩9,900 →</a>
+      <a class="nav-login-btn" href="login.html" id="navLoginBtn">로그인</a>
     </div>
   </div>
 </nav>
@@ -991,7 +992,9 @@ document.querySelectorAll('.fade-up').forEach(el=>obs.observe(el));
 document.querySelectorAll('.hero .fade-up').forEach(el=>el.classList.add('on'));
 </script>
 
-<!-- 로그인 상태 체크 -->
+
+
+<!-- Supabase 로그인 상태 체크 -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
 (async()=>{
@@ -1002,15 +1005,21 @@ document.querySelectorAll('.hero .fade-up').forEach(el=>el.classList.add('on'));
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJnYnVrcXBoY3FwdG5mZXFpcGZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2OTkzMDMsImV4cCI6MjA5NDI3NTMwM30.fWUHe2AoWr9fMLUNSQkbhosUO7FH9dvZOIZbz_XyzFM'
     );
     const { data:{ session } } = await sb.auth.getSession();
-    const loginBtn = document.getElementById('navLoginBtn');
-    if(session && loginBtn){
-      const name = session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || '마이';
-      loginBtn.textContent = name + '님';
-      loginBtn.href = 'mypage.html';
-      loginBtn.classList.add('logged-in');
+    const btn = document.getElementById('navLoginBtn');
+    if(!btn) return;
+    if(session){
+      const name = session.user.user_metadata?.full_name ||
+                   session.user.email?.split('@')[0] || '마이페이지';
+      btn.textContent = name + '님 ▾';
+      btn.href = 'mypage.html';
+      btn.classList.add('active');
+    } else {
+      btn.textContent = '로그인';
+      btn.href = 'login.html';
     }
-  }catch(e){}
+  }catch(e){ console.warn('auth check:', e); }
 })();
 </script>
+
 </body>
 </html>
