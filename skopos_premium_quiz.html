@@ -2155,4 +2155,41 @@ async function downloadPDF(){
   }
 }
 
->
+
+function retryQuiz(){
+  try{ sessionStorage.removeItem('skopos_premium_result'); }catch(e){}
+  cur=0; ans={}; resultType=null;
+  show('sp');
+}
+
+// ── 초기화: paid=1 자동시작 or URL 결과 복원 ─────────────────
+(function(){
+  const p = new URLSearchParams(window.location.search);
+  if(p.get('paid') === '1'){
+    startQuiz(true);
+    return;
+  }
+  const r = p.get('r');
+  if(r){
+    try{
+      const id   = decodeURIComponent(atob(r));
+      const type = TYPE_MAP[id];
+      if(type){
+        resultType = type;
+        const scores = {};
+        SECS.forEach(s => { scores[s.label] = type.bars ? (type.bars[s.label]||55) : 55; });
+        renderResult(type, scores);
+        show('sr');
+        setTimeout(()=>{
+          document.querySelectorAll('.r-bar-fill').forEach(b=>{ b.style.width=b.dataset.val+'%'; });
+          document.querySelectorAll('.budget-fill').forEach(b=>{ b.style.width=b.dataset.val+'%'; });
+          if(resultType) renderSpaceRefs(resultType);
+        }, 400);
+      }
+    }catch(e){ console.warn('결과 복원 오류:', e); }
+  }
+})();
+
+</script>
+</body>
+</html>
