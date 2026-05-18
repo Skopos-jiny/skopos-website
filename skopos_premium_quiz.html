@@ -2171,13 +2171,35 @@ function getShareUrl(){
     return url.toString();
   }catch(e){return window.location.href;}
 }
-function saveResult(id){
-  try{sessionStorage.setItem('skopos_premium_result',id);}catch(e){}
+async function saveResult(id){
+  // 1. 세션스토리지 저장
+  try{ sessionStorage.setItem('skopos_premium_result', id); }catch(e){}
+  // 2. URL 파라미터 저장 (공유용)
   try{
-    const url=new URL(window.location.href);
-    url.searchParams.set('r',btoa(encodeURIComponent(id)));
-    window.history.replaceState({},'',url.toString());
+    const url = new URL(window.location.href);
+    url.searchParams.set('r', btoa(encodeURIComponent(id)));
+    window.history.replaceState({}, '', url.toString());
   }catch(e){}
+  // 3. Supabase quiz_results 테이블 저장
+  try{
+    if(typeof supabase === 'undefined') return;
+    const { createClient } = supabase;
+    const sb = createClient(
+      'https://rgbukqphcqptnfeqipfn.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJnYnVrcXBoY3FwdG5mZXFpcGZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2OTkzMDMsImV4cCI6MjA5NDI3NTMwM30.fWUHe2AoWr9fMLUNSQkbhosUO7FH9dvZOIZbz_XyzFM'
+    );
+    const { data:{ session } } = await sb.auth.getSession();
+    if(!session) return;
+    const { error } = await sb.from('quiz_results').insert([{
+      user_id:     session.user.id,
+      quiz_type:   'SDTI 정밀',
+      result_type: id,
+      result_name: TYPE_MAP[id]?.plain || id,
+      created_at:  new Date().toISOString(),
+    }]);
+    if(error) console.warn('quiz_results 저장 오류:', error);
+    else       console.log('quiz_results 저장 완료:', id);
+  }catch(e){ console.warn('Supabase quiz_results 오류:', e); }
 }
 function sharePremium(){
   const url=getShareUrl();
@@ -2503,6 +2525,26 @@ function retryQuiz(){
   if(p.get('paid') === '1'){
     startQuiz(true);
     return;
+  }
+  // 마이페이지에서 PDF 재다운로드 요청
+  if(p.get('pdf') === '1' && p.get('r')){
+    const id = decodeURIComponent(atob(p.get('r')));
+    const type = TYPE_MAP[id];
+    if(type){
+      resultType = type;
+      const scores={};
+      SECS.forEach(s=>{ scores[s.label]=type.bars?(type.bars[s.label]||55):55; });
+      renderResult(type, scores);
+      show('sr');
+      setTimeout(async()=>{
+        document.querySelectorAll('.r-bar-fill').forEach(b=>b.style.width=b.dataset.val+'%');
+        document.querySelectorAll('.budget-fill').forEach(b=>b.style.width=b.dataset.val+'%');
+        if(resultType) renderSpaceRefs(resultType);
+        // 자동 PDF 다운로드
+        setTimeout(()=>downloadPDF(), 1200);
+      }, 500);
+      return;
+    }
   }
   const r = p.get('r');
   if(r){
