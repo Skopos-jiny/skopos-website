@@ -150,8 +150,10 @@ nav.scrolled{background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border-
 .nav-right{display:flex;align-items:center;gap:8px}
 .nav-ghost{padding:9px 20px;border-radius:50px;font-family:'Nunito',sans-serif;font-size:.83rem;font-weight:700;text-decoration:none;color:var(--mid);border:1.5px solid rgba(0,0,0,.1);transition:all .2s}
 .nav-ghost:hover{border-color:var(--pink);color:var(--pink)}
-.nav-pill{padding:10px 22px;border-radius:50px;font-family:'Nunito',sans-serif;font-size:.83rem;font-weight:800;text-decoration:none;background:linear-gradient(135deg,var(--pink) 0%,#FF6B9D 100%);color:#fff;box-shadow:0 4px 16px rgba(233,30,140,.3);transition:all .2s}
-.nav-pill:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(233,30,140,.4)}
+.nav-pill{display:flex;flex-direction:column;align-items:center;padding:7px 18px;border-radius:12px;font-family:'Nunito',sans-serif;text-decoration:none;background:linear-gradient(135deg,var(--pink) 0%,#FF6B9D 100%);color:#fff;box-shadow:0 3px 12px rgba(233,30,140,.28);transition:all .22s;gap:0;line-height:1}
+.nav-pill:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(233,30,140,.38)}
+.nav-pill-label{font-size:.72rem;font-weight:800;letter-spacing:-.01em;opacity:.92}
+.nav-pill-price{font-size:.82rem;font-weight:900;letter-spacing:-.02em;margin-top:2px}
 
 /* ── HERO ── */
 .hero{min-height:100vh;display:flex;align-items:center;padding:88px 24px 60px;position:relative;overflow:hidden}
@@ -378,6 +380,12 @@ footer{background:var(--dark);color:rgba(255,255,255,.5);padding:52px 24px 36px}
   .sci-cards{grid-template-columns:1fr 1fr}
   .numbers-grid{grid-template-columns:1fr 1fr}
   .nav-ghost{display:none}
+@media(max-width:480px){
+  .nav-pill{padding:6px 14px;border-radius:10px}
+  .nav-pill-label{font-size:.66rem}
+  .nav-pill-price{font-size:.76rem}
+  .nav-login-btn{padding:6px 12px;font-size:.7rem}
+}
   .footer-top{flex-direction:column;align-items:flex-start}
   .footer-biz-grid{flex-direction:column;gap:4px}
   .footer-legal{gap:12px}
@@ -412,7 +420,10 @@ em{font-style:normal}
     </a>
     <div class="nav-right">
       <a class="nav-ghost" href="skopos_quiz.html">무료 진단</a>
-      <a class="nav-pill" href="skopos_premium_quiz.html">정밀 진단 ₩9,900 →</a>
+      <a class="nav-pill" href="payment.html">
+        <span class="nav-pill-label">SDTI 정밀 검사</span>
+        <span class="nav-pill-price">₩9,900</span>
+      </a>
       <a class="nav-login-btn" href="login.html" id="navLoginBtn">로그인</a>
     </div>
   </div>
