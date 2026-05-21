@@ -170,6 +170,36 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:60px;display:flex;ali
 .ab-body p:last-child{margin-bottom:0}
 .ab-insight{border:1px solid rgba(233,30,140,.2);background:rgba(233,30,140,.04);border-radius:10px;padding:14px 16px;margin-top:16px;font-size:.8rem;color:var(--dark);line-height:1.7}
 
+/* ── 8개 영역 깊이 읽기 (Section Deep Dive) ── */
+.sdd-grid{display:flex;flex-direction:column;gap:14px}
+.sdd-card{background:linear-gradient(135deg,#FAFBFE 0%,#fff 100%);border-radius:12px;padding:20px 22px;transition:transform .2s var(--ez),box-shadow .2s var(--ez)}
+.sdd-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(15,15,26,.08)}
+.sdd-header{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.sdd-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+.sdd-meta{flex:1;min-width:0}
+.sdd-section-name{font-size:.78rem;font-weight:800;color:var(--dark);letter-spacing:.02em;margin-bottom:2px}
+.sdd-score-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sdd-score{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:600;line-height:1;letter-spacing:-.01em}
+.sdd-level{font-size:.65rem;font-weight:700;padding:3px 10px;border-radius:50px;letter-spacing:.02em}
+.sdd-headline{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:600;line-height:1.3;margin:8px 0 10px;letter-spacing:-.01em}
+.sdd-body{font-size:.86rem;color:#4A4A5A;line-height:1.85;margin-bottom:14px;font-weight:500}
+.sdd-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.sdd-detail{background:rgba(15,15,26,.025);border-radius:8px;padding:12px 14px}
+.sdd-detail-label{font-size:.68rem;font-weight:800;color:var(--dark);margin-bottom:5px;letter-spacing:.02em}
+.sdd-detail-text{font-size:.78rem;color:#4A4A5A;line-height:1.7;font-weight:500}
+.sdd-summary{display:flex;gap:14px;align-items:flex-start;margin-top:20px;padding:18px 20px;background:linear-gradient(135deg,rgba(233,30,140,.06),rgba(201,169,110,.04));border-radius:12px;border:1px solid rgba(233,30,140,.12)}
+.sdd-summary-icon{font-size:1.6rem;line-height:1;flex-shrink:0;margin-top:2px}
+.sdd-summary-body{flex:1}
+.sdd-summary-title{font-size:.92rem;font-weight:800;color:var(--dark);margin-bottom:6px;letter-spacing:-.005em}
+.sdd-summary-text{font-size:.82rem;color:#4A4A5A;line-height:1.85;font-weight:500}
+.sdd-summary-text strong{color:var(--pink);font-weight:700}
+@media(max-width:600px){
+  .sdd-detail-grid{grid-template-columns:1fr}
+  .sdd-card{padding:18px 16px}
+  .sdd-header{gap:10px}
+  .sdd-icon{width:38px;height:38px;font-size:1.2rem}
+}
+
 /* ── 행동패턴 분석 블록 (analysis-block과 동일 톤 카드) ── */
 .behavior-block{background:var(--white);border-radius:var(--radius);padding:26px;margin-bottom:16px;box-shadow:var(--sh)}
 .bblk-tag{font-size:.6rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:var(--pink);margin:0 0 8px 0}
@@ -905,6 +935,238 @@ html{scroll-behavior:smooth}
 // ═══════════════════════════════════════
 // 8개 영역 정의
 // ═══════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
+// 8개 영역별 점수 해석 데이터 (각 영역 × 4구간 = 32개 정밀 해석)
+// 점수에 따라 사용자에게 메타인지 효과를 주는 깊이 있는 해석 제공
+// ═══════════════════════════════════════════════════════════════
+const SECTION_INSIGHTS = {
+  'sensory': {
+    low:{
+      headline:'자극에 둔감한 편',
+      body:'환경의 소음, 빛, 색감 변화에 비교적 덤덤한 타입이에요. 다른 사람이 "너무 시끄럽다"고 말해도 별로 신경 쓰이지 않는 경우가 많고, 카페나 식당에서도 자리에 크게 영향받지 않습니다. 감각 정보를 깊게 처리하기보다는 흘려보내는 편이라, 공간 환경 자체가 일상의 큰 스트레스 요인이 되지 않아요.',
+      behavior:'어두운 곳, 시끄러운 카페, 형광등 사무실 어디서든 비교적 잘 견딥니다. 환경 변화에 잘 적응하는 편이에요.',
+      impl:'비싼 방음 자재나 특수 조명에 큰 비용을 쓰지 않아도 됩니다. 대신 가구의 기능성과 실용성에 투자하는 것이 만족도가 높아요.'
+    },
+    mid:{
+      headline:'환경 변화를 인지함',
+      body:'너무 시끄럽거나 너무 밝은 환경이 불편하다는 건 알지만, 그 정도가 일상에 큰 영향을 주지는 않는 균형 잡힌 타입이에요. 신경 쓰이는 자극이 있어도 다른 일에 집중하면 잊혀지는 편이고, 조금만 환경을 조정해도 금세 편안해집니다.',
+      behavior:'"이 식당은 좀 시끄럽네"라고 인지하지만 식사는 충분히 할 수 있어요. 환경에 100% 휘둘리지도, 100% 무시하지도 않는 중간 지점입니다.',
+      impl:'기본적인 조명·소재 선택만 신경 쓰면 충분합니다. 모든 디테일에 집착할 필요 없이, 자주 머무는 공간(거실, 침실) 위주로만 감각 친화적으로 꾸미세요.'
+    },
+    high:{
+      headline:'감각이 예민한 편',
+      body:'형광등의 미세한 깜빡임, 옆방 TV 소리, 소파의 거친 질감 같은 작은 자극도 비교적 또렷하게 느끼는 타입이에요. 환경이 맞지 않으면 머무는 자체가 피로해지고, 반대로 환경이 잘 맞으면 그 안에서 깊은 안정감을 얻습니다. 감각 정보를 깊게 처리한다는 건 디테일에 강한 안목을 가진다는 뜻이기도 해요.',
+      behavior:'조명 색온도, 의자 쿠션의 부드러움, 바닥재의 차가운 정도까지 무의식적으로 평가합니다. "왠지 모르게 이 공간은 불편해"의 정체를 잘 알아채요.',
+      impl:'조명(특히 색온도)과 소재 선택에 가장 큰 비용을 투자하세요. 디머 조명, 간접등, 천연 섬유 패브릭은 사치가 아니라 회복의 필수 도구입니다.'
+    },
+    veryhigh:{
+      headline:'고감각 회복형',
+      body:'환경의 작은 자극도 깊게 처리하는 매우 섬세한 감각 시스템을 가지고 있어요. 다른 사람은 못 느끼는 미세한 소음, 색온도의 약한 차이, 소재의 거친 정도까지 분명하게 인지합니다. 이건 약점이 아니라 다른 사람보다 더 풍부하게 환경을 경험한다는 의미이고, 동시에 회복에 더 많은 정돈이 필요한 타입이에요.',
+      behavior:'호텔에 들어서면 1분 안에 그 공간이 편한지 불편한지 판단합니다. 식당, 카페에서 자리에 따라 만족도가 크게 달라져요.',
+      impl:'집은 외부 자극을 차단하는 "회복 캡슐"이 되어야 합니다. 방음 커튼, 디머 조명, 부드러운 패브릭, 향기 관리에 투자하세요. 이는 사치가 아니라 일상의 생존 도구입니다.'
+    }
+  },
+  'spatial': {
+    low:{
+      headline:'구조에 자유로움',
+      body:'가구 배치나 동선의 정형성에 크게 얽매이지 않는 자유로운 타입이에요. "정석적인 거실 배치"보다는 그때그때 편한 대로 배치를 바꾸거나, 비대칭이거나 즉흥적인 구성에서 오히려 편안함을 느낍니다. 공간의 규칙성보다는 그 안의 분위기와 활용도가 더 중요해요.',
+      behavior:'가구를 자주 옮기거나, 한 가지 용도가 아닌 멀티 공간으로 활용하는 데 능숙합니다. 손님이 와도 즉흥적으로 자리를 만들어내요.',
+      impl:'모듈러 가구, 이동이 쉬운 사이드 테이블, 접이식 의자 같은 유연한 가구가 잘 맞습니다. 비싼 고정식 빌트인보다는 활용도 높은 가구에 투자하세요.'
+    },
+    mid:{
+      headline:'기본 구조는 갖추는 편',
+      body:'큰 가구의 자리는 정해두지만, 작은 소품이나 보조 가구의 배치는 유연하게 가는 균형형이에요. 너무 빡빡한 정렬도, 너무 흐트러진 배치도 불편하게 느낍니다. 동선이 자연스럽게 흘러가는 정도의 정돈을 선호해요.',
+      behavior:'거실에 큰 변화를 주는 일은 드물지만, 식탁 위 소품이나 책장의 책 정렬은 종종 바꿉니다. 큰 틀은 유지하면서 디테일을 즐기는 편이에요.',
+      impl:'메인 가구(소파, 침대, 식탁) 한 점씩에는 신중하게 투자하고, 나머지는 시즌마다 바꿀 수 있는 가벼운 소품 위주로 구성하세요.'
+    },
+    high:{
+      headline:'정돈된 구조 선호',
+      body:'가구의 라인, 동선의 효율성, 수납의 시스템화에 강한 만족을 느끼는 정돈형 타입이에요. 비대칭이거나 어수선한 배치를 보면 "정리해야지"라는 본능적 욕구가 일어나고, 잘 정돈된 공간에서 비로소 마음이 안정됩니다. 공간이 잘 짜여 있으면 머리도 잘 정리되는 사람이에요.',
+      behavior:'가구를 배치할 때 줄을 맞추고, 책장의 책 높이를 통일하려 하고, 매일 같은 자리에 같은 물건을 둡니다. "정리 = 휴식"인 사람입니다.',
+      impl:'빌트인 수납, 시스템 가구, 균일한 높이의 책장에 적극 투자하세요. 잡동사니를 시야에서 차단하는 히든 수납이 만족도를 크게 올립니다.'
+    },
+    veryhigh:{
+      headline:'그리드 마스터형',
+      body:'공간의 구조와 정렬에 대한 강한 욕구를 가진 타입이에요. 가구 사이의 간격, 벽과의 거리, 액자의 수평까지 무의식적으로 측정하고 조정합니다. 이는 강박이 아니라 시각적 질서에서 깊은 안정감을 얻는 감각 시스템이고, 동시에 디자인, 건축적 안목이 뛰어남을 뜻해요.',
+      behavior:'가구 배치 후에 줄자로 거리를 재거나, 액자 수평계로 맞춥니다. 다른 사람 집에 갔을 때 어수선한 배치가 거슬려요.',
+      impl:'모듈러 수납 시스템, 빌트인 가구, 시스템 책장에 큰 투자가 합리적입니다. 평수가 작아도 구조가 잘 잡힌 공간이 큰 평수의 어수선한 공간보다 훨씬 만족도가 높아요.'
+    }
+  },
+  'objects': {
+    low:{
+      headline:'필요한 것만 두는 편',
+      body:'장식적인 소품에 큰 관심이 없고, 실용적이지 않은 것은 두지 않는 편이에요. 깔끔한 빈 공간에서 오히려 편안함을 느끼고, 소품이 많은 집에 가면 "왜 이렇게 다 사놓았지"라고 의아해합니다. 비움이 곧 풍요인 타입이에요.',
+      behavior:'선물 받은 소품도 한동안 보고 안 쓰면 정리하는 편입니다. "이건 두 달째 안 썼네" 같은 판단이 빠릅니다.',
+      impl:'소품에 큰 비용을 쓰지 마세요. 대신 가구나 마감재의 품질을 한 단계 올리는 데 투자하는 것이 만족도가 높습니다.'
+    },
+    mid:{
+      headline:'고른 몇 개만 두는 편',
+      body:'소품이 많지 않지만, 신중하게 고른 몇 개에는 애착이 있는 균형형이에요. 무작정 늘리지는 않되, 마음에 드는 것이 보이면 천천히 추가합니다. "양보다 질"의 직관적 실천자예요.',
+      behavior:'새로운 가구, 소품을 보면 일주일 정도 고민하고 결정합니다. 후회 구매가 적은 편이에요.',
+      impl:'몇 점의 시그니처 소품(조명, 베이스, 미러)에 투자하세요. 평범한 10개보다 좋은 1개가 공간을 훨씬 풍성하게 만듭니다.'
+    },
+    high:{
+      headline:'소품 큐레이션을 즐김',
+      body:'작은 오브제 하나로 공간의 분위기가 어떻게 달라지는지 잘 아는 감각의 소유자예요. 새로운 소품을 들이는 것 자체가 일상의 즐거움이고, 계절과 기분에 따라 디스플레이를 자주 바꿉니다. 공간이 곧 자기 표현의 캔버스인 타입이에요.',
+      behavior:'카페나 편집숍에 가면 소품 코너에서 가장 오래 머뭅니다. 여행 가면 그 지역의 작은 오브제를 꼭 사 옵니다.',
+      impl:'정기적으로 소품을 교체할 수 있도록, 디스플레이용 선반이나 콘솔 테이블 자리를 미리 마련하세요. 빈티지 마켓, 플리마켓, 여행지 쇼핑이 가장 큰 즐거움이 될 것입니다.'
+    },
+    veryhigh:{
+      headline:'오브제 마스터형',
+      body:'소품 하나하나에 깊은 의미와 이야기를 부여하는 진정한 큐레이터형이에요. 그저 예쁜 것이 아니라, 어디서 누가 어떻게 만들었는지, 그것이 왜 좋은지에 대한 명확한 기준이 있습니다. 공간은 단순한 거주지가 아니라 자신만의 박물관 같은 곳이에요.',
+      behavior:'도자기, 빈티지 가구, 작가의 작품, 손으로 만든 것 등에 안목이 있고 콜렉션이 점점 늘어납니다. 친구들이 인테리어 조언을 자주 구해요.',
+      impl:'작가 작품, 빈티지 원작, 핸드메이드 도자기 등 시간이 지나도 가치가 유지되는 아이템에 투자하세요. 이건 인테리어가 아니라 미술 컬렉션입니다.'
+    }
+  },
+  'color': {
+    low:{
+      headline:'컬러에 무던한 편',
+      body:'어떤 색감이든 크게 거슬리지 않고, 색깔 조합에 대한 강한 선호도 없는 편이에요. 가구를 살 때 "이 색이 내 공간과 어울리는가"보다 "이 가구가 마음에 드는가"가 더 큰 기준입니다. 색감은 부수적이고, 형태와 기능이 우선이에요.',
+      behavior:'옷을 살 때도 색깔 매치를 크게 고민하지 않는 편입니다. "검정은 다 검정이지" 같은 실용적 태도가 있어요.',
+      impl:'가구 구매 시 색감보다는 형태, 기능에 집중하세요. 색깔 통일에 신경 쓰지 말고, 그때그때 마음에 드는 것을 사도 만족도는 높습니다.'
+    },
+    mid:{
+      headline:'기본 톤은 맞추는 편',
+      body:'공간 전체의 톤(따뜻한 톤, 차가운 톤)은 어느 정도 인지하지만, 모든 가구의 색감을 통일하려고 노력하지는 않아요. 큰 가구는 무난한 색으로 가고, 작은 소품에서 컬러 포인트를 주는 균형형입니다.',
+      behavior:'거실 소파는 베이지, 그레이로 가지만 쿠션 한두 개는 컬러 포인트로 들입니다. 안전한 베이스에 살짝 변화를 주는 스타일이에요.',
+      impl:'큰 가구는 무채색이나 베이지 같은 중성색으로, 작은 소품(쿠션, 러그, 액자)에서 시즌마다 컬러를 바꾸는 전략이 가장 효율적입니다.'
+    },
+    high:{
+      headline:'컬러 감각이 좋은 편',
+      body:'컬러의 미묘한 톤 차이를 감지하고, 공간 전체의 색감 흐름을 무의식적으로 평가하는 타입이에요. "이 베이지는 너무 노란기가 많네", "이 그레이는 푸른빛이 도네" 같은 미묘한 판단이 자연스럽게 됩니다. 톤이 맞지 않으면 시각적으로 피로감을 느껴요.',
+      behavior:'페인트 색을 고를 때 샘플을 여러 개 받아 햇빛 아래에서 비교합니다. 가구의 우드톤이 다르면 신경이 쓰여요.',
+      impl:'처음 인테리어 계획 시 3~5색 팔레트를 정하고, 그 안에서 모든 가구, 소품을 선택하세요. 색감 통일이 공간의 격을 가장 빠르게 올려줍니다.'
+    },
+    veryhigh:{
+      headline:'컬러리스트형',
+      body:'색감과 소재의 결을 거의 화가 수준으로 감지하고 조율하는 타고난 감각의 소유자예요. 같은 화이트라도 웜화이트인지 쿨화이트인지, 같은 우드라도 오크인지 월넛인지 한눈에 파악합니다. 컬러와 소재가 조화롭지 않은 공간에 있으면 머무는 자체가 힘들어요.',
+      behavior:'인테리어 잡지, 핀터레스트를 보면서 무드보드를 만들고, 페인트 컬러칩을 모으는 것이 일상의 즐거움입니다. 친구들이 컬러 추천을 자주 구해요.',
+      impl:'인테리어를 계획할 때 컬러 전문가처럼 5~7색 팔레트를 먼저 짜고, 모든 구매를 그 안에서 결정하세요. 무드보드와 컬러 핀터레스트는 사치가 아니라 효율 도구입니다.'
+    }
+  },
+  'life': {
+    low:{
+      headline:'공간 활용이 단순함',
+      body:'집에서 보내는 시간이 비교적 단순하고, 공간을 다용도로 활용할 필요를 크게 느끼지 않는 편이에요. 침실에서는 자고, 거실에서는 쉬고, 주방에서는 먹는다는 명확한 구분이 있고, 한 공간에서 여러 활동을 동시에 하는 일이 적습니다.',
+      behavior:'집에서 일하거나 운동하거나 취미를 하는 시간이 적고, 외부 활동이 많은 편입니다. 집은 휴식과 수면을 위한 공간이에요.',
+      impl:'메인 활동(주로 휴식)에 맞는 가구만 잘 선택하면 충분합니다. 멀티 기능 가구나 변신 가구에 비용을 쓰지 마세요.'
+    },
+    mid:{
+      headline:'일상이 균형 잡힌 편',
+      body:'집에서 휴식, 약간의 작업, 가벼운 운동이나 취미가 골고루 일어나는 균형형이에요. 한 가지 활동에만 매몰되지 않고, 시간대마다 다른 공간을 활용합니다. 공간이 라이프스타일을 받쳐주는 정도면 충분해요.',
+      behavior:'거실에서 책 읽고, 식탁에서 가끔 일하고, 침실에서 자는 분리된 패턴이 있습니다. 모든 활동이 너무 한 공간에 몰리지 않아요.',
+      impl:'각 공간(거실, 식탁, 침실)에 그 공간의 주 활동을 잘 받쳐주는 가구 한 점씩만 신경 쓰면 됩니다. 균형이 핵심이에요.'
+    },
+    high:{
+      headline:'공간을 풍성하게 씀',
+      body:'집이 단순한 거주지를 넘어 일, 휴식, 취미, 사교가 모두 일어나는 풍성한 공간인 타입이에요. 작은 평수도 잘 쪼개서 다용도로 활용하고, 시간대마다 같은 공간이 다른 역할을 하도록 디자인합니다. "집에서 모든 게 일어나는" 라이프스타일이에요.',
+      behavior:'거실에서 일하고, 운동하고, 영화 보고, 친구를 초대해 식사도 합니다. 한 공간이 여러 모드로 변신해요.',
+      impl:'변신 가능한 가구(접이식 책상, 슬라이딩 파티션, 모듈러 소파)에 적극 투자하세요. 멀티 사용을 위한 조명(밝기 조절 가능한 디머)도 핵심입니다.'
+    },
+    veryhigh:{
+      headline:'공간 최대 활용형',
+      body:'집을 단순히 살아가는 곳이 아니라, 일과 휴식, 창작, 관계 모든 활동의 베이스캠프로 디자인하는 타입이에요. 공간의 모든 구석을 의도적으로 활용하고, 시간대마다 다른 동선을 만듭니다. 집이 곧 라이프스타일 그 자체인 사람입니다.',
+      behavior:'새벽엔 책상이 명상 공간, 오전엔 작업실, 저녁엔 와인바, 주말엔 친구 모임 장소가 됩니다. 같은 공간이 변신해요.',
+      impl:'빌트인 멀티펑션 가구, 무드 조명 시스템, 가변형 파티션 등 라이프스타일 디자인 자체에 투자하는 것이 의미 있습니다. 인테리어 컨설팅을 받는 것도 좋은 선택이에요.'
+    }
+  },
+  'social': {
+    low:{
+      headline:'혼자만의 공간 중시',
+      body:'집은 외부 세계와 차단된 자신만의 영역이고, 손님을 자주 초대하지 않는 편이에요. 함께 사는 사람이 있어도 각자의 공간을 명확히 분리하는 것을 선호합니다. 혼자만의 시간이 회복의 핵심이에요.',
+      behavior:'친구나 손님을 집에 초대하는 일이 적고, 만남은 주로 외부에서 합니다. 집에서는 혼자만의 루틴을 지키고 싶어해요.',
+      impl:'손님용 가구(대형 식탁, 게스트 베드) 대신 자신만의 휴식 공간에 투자하세요. 1인용 안락의자, 개인 서재 자리가 훨씬 만족도가 높습니다.'
+    },
+    mid:{
+      headline:'선택적 관계를 즐김',
+      body:'가까운 사람 몇 명만 가끔 초대하지만, 자주 있는 일은 아닌 균형형이에요. 혼자만의 시간도 중요하고, 가까운 사람과의 시간도 중요한 양쪽 가치를 모두 가지고 있습니다.',
+      behavior:'분기에 한두 번 정도 친한 친구를 초대해 저녁 식사를 합니다. 자주 있는 일은 아니지만 즐거운 이벤트예요.',
+      impl:'평소엔 2~3인 식탁으로 충분하지만, 가끔 펼칠 수 있는 확장형 식탁이 좋습니다. 게스트 의자 1~2개만 따로 보관하면 됩니다.'
+    },
+    high:{
+      headline:'함께하는 시간을 즐김',
+      body:'집이 단순히 자신의 휴식 공간이 아니라, 가까운 사람들과 시간을 보내는 따뜻한 모임 장소인 타입이에요. 손님이 와도 부담스럽지 않고 오히려 활력을 얻습니다. 공유와 환대가 자연스러운 사람이에요.',
+      behavior:'친구, 가족을 자주 초대해 식사하고, 명절에는 모임의 호스트가 되는 경우가 많습니다. 함께 먹고 마시는 시간이 큰 행복이에요.',
+      impl:'확장형 식탁, 편안한 손님용 의자, 잘 보이지 않는 게스트 침구 보관 공간에 투자하세요. 거실 좌석도 모두 한 방향이 아닌 마주 보는 배치가 좋습니다.'
+    },
+    veryhigh:{
+      headline:'관계 중심형',
+      body:'집의 핵심 가치가 사람과의 연결이고, 함께 보내는 시간이 곧 삶의 핵심인 타입이에요. 손님이 자주 오는 것이 부담이 아니라 일상이고, 공간 설계 자체가 "여러 명이 함께 모일 수 있도록" 짜여 있습니다. 집은 자신만의 것이 아닌 모두의 공간이에요.',
+      behavior:'거의 매주 누군가를 초대하거나 모임이 있습니다. 가족, 친구가 부담 없이 들를 수 있는 분위기를 만드는 데 능숙해요.',
+      impl:'대형 식탁, 빌트인 게스트 베드, 여분 의자 보관 공간, 부엌과 다이닝의 오픈 구조에 적극 투자하세요. 손님이 함께 부엌에 머물 수 있는 아일랜드 테이블이 핵심 자산입니다.'
+    }
+  },
+  'identity': {
+    low:{
+      headline:'기능 우선, 표현은 부수적',
+      body:'공간을 자기 자신을 표현하는 캔버스라기보다는 편안하게 살아가는 도구로 보는 실용형 타입이에요. "나를 드러내는" 인테리어보다 "내가 편한" 인테리어가 우선이고, 트렌드나 SNS 노출용 공간에는 큰 관심이 없습니다.',
+      behavior:'집에 손님이 와서 가구나 인테리어에 대해 물어도 "그냥 사는 거지" 하고 자연스럽게 넘깁니다. 자랑하거나 보여주는 동기가 약해요.',
+      impl:'인스타그램용 가구, 트렌드 아이템에 돈 쓰지 마세요. 5년 후에도 편하게 쓸 수 있는 클래식하고 견고한 기본기에 투자하는 것이 최적입니다.'
+    },
+    mid:{
+      headline:'취향이 적당히 드러나는 편',
+      body:'자기 취향이 공간에 자연스럽게 묻어나지만, 적극적으로 자기를 드러내려고 하지는 않는 균형형이에요. 좋아하는 작가의 책, 여행지에서 산 소품 정도가 자연스럽게 놓여 있는 정도입니다.',
+      behavior:'손님이 책장이나 액자에 대해 물어보면 즐겁게 이야기하지만, 먼저 자랑하지는 않습니다. 은은한 표현을 선호해요.',
+      impl:'책장, 갤러리 월, 식기 디스플레이 같은 영역 한두 곳을 정해서 그곳만 자기 취향을 드러내세요. 나머지는 깔끔한 배경으로.'
+    },
+    high:{
+      headline:'공간이 곧 나의 이야기',
+      body:'공간 하나하나가 자기 정체성의 표현이고, 누가 와도 "이건 너답다"는 말을 들을 만한 독자적 색을 가진 타입이에요. 인테리어는 자기 자신을 알아가는 과정이자 표현 도구이고, 다른 사람과 똑같은 공간에 살고 싶지 않습니다.',
+      behavior:'친구들이 인테리어를 추천해달라고 자주 부탁합니다. 자기 집을 보여주는 것이 즐겁고, 사진 찍는 것도 좋아해요.',
+      impl:'다른 곳에서는 찾기 어려운 빈티지, 작가의 한정판, 직접 DIY한 가구에 투자하세요. 흔한 대량생산 아이템보다 빈티지 마켓, 작가 작품이 만족도가 큽니다.'
+    },
+    veryhigh:{
+      headline:'자기 표현 강한 큐레이터형',
+      body:'공간이 곧 자신의 정체성이고, 인테리어를 통해 자기 자신을 세상에 알리는 강한 표현 욕구를 가진 타입이에요. 다른 사람과 똑같은 공간은 견딜 수 없고, 자기만의 색이 명확히 드러나는 공간에서 비로소 살아있음을 느낍니다. 공간이 곧 작품이에요.',
+      behavior:'인테리어 SNS 운영, 블로그 포스팅, 잡지 인터뷰 같은 활동에 자연스럽게 참여합니다. 자기 집이 콘텐츠가 되는 것을 즐겨요.',
+      impl:'갤러리 월, 작가의 원작, 한정판 빈티지, 컬렉션 디스플레이에 큰 비용을 들여도 충분히 가치 있습니다. 집을 매개로 한 사회적 활동(브런치 모임, 인테리어 컨설팅 등)도 즐겁게 할 수 있어요.'
+    }
+  },
+  'restore': {
+    low:{
+      headline:'회복 욕구가 낮은 편',
+      body:'집에서 적극적으로 쉬어야 한다는 절박함이 크지 않은 편이에요. 외부 활동이 즐겁고, 집에서도 활동적인 시간을 보내는 것을 선호합니다. "쉬는 공간"보다 "지내는 공간"의 의미가 더 큽니다.',
+      behavior:'주말에도 집에서 가만히 쉬기보다는 외출하거나 활동을 합니다. 침대에 누워 있는 시간이 짧은 편이에요.',
+      impl:'회복 특화 가구(매트리스, 침구, 안락의자)에 큰 비용을 쓰지 마세요. 활동성을 받쳐주는 가구(편한 식탁, 작업 공간)에 투자하는 것이 만족도가 높습니다.'
+    },
+    mid:{
+      headline:'균형 잡힌 회복 욕구',
+      body:'하루 활동 후 집에서 적당히 쉬는 것이 자연스러운 균형형이에요. 회복이 절박한 정도는 아니지만, 잠자리와 휴식 자리가 편하지 않으면 다음날 컨디션에 영향을 받습니다.',
+      behavior:'평일엔 활동, 주말엔 쉼이라는 패턴이 비교적 명확합니다. 무리하면 회복에 시간이 더 걸려요.',
+      impl:'매트리스와 침구는 평균 이상의 품질에 투자하세요. 거실 소파는 무난한 정도면 충분하지만, 침실은 회복 캡슐로 만드는 것이 효율적입니다.'
+    },
+    high:{
+      headline:'회복 공간이 중요한 편',
+      body:'외부 활동으로 쌓인 에너지를 집에서 회복하는 시간이 필수적인 타입이에요. 침실의 어둠 정도, 침구의 부드러움, 거실의 조명 무드가 다음날 컨디션에 직접 영향을 미칩니다. 집 = 회복 시스템인 사람이에요.',
+      behavior:'평일 저녁이나 주말에는 집에서 푹 쉬는 시간을 의도적으로 만듭니다. 회복이 부족하면 일주일이 무너져요.',
+      impl:'매트리스, 침구, 거실 소파, 무드 조명에 큰 비용을 투자하는 것이 합리적입니다. 회복은 사치가 아니라 다음 주의 생산성을 위한 필수 인프라예요.'
+    },
+    veryhigh:{
+      headline:'회복 최우선형',
+      body:'외부 자극에 깊이 영향받고 회복에 많은 시간과 정성이 필요한 매우 예민한 타입이에요. 집은 단순한 거주지가 아니라 일상을 가능하게 하는 회복 시스템이고, 그 시스템이 무너지면 일과 관계, 건강 모두에 영향을 줍니다. 회복은 게으름이 아니라 생존이에요.',
+      behavior:'외부 활동 후 1~2일은 의도적으로 집에 머물며 회복합니다. 다른 사람보다 회복에 시간이 더 필요해요.',
+      impl:'매트리스, 침구, 방음, 디머 조명, 향기 관리, 부드러운 패브릭 모두에 적극 투자하세요. 이는 사치가 아니라 다음 일주일의 모든 활동을 가능하게 하는 기반 투자입니다.'
+    }
+  }
+};
+
+// 점수 → 구간 키 매핑 함수
+function getScoreLevel(score){
+  const v = Number(score) || 0;
+  if(v <= 30) return 'low';
+  if(v <= 60) return 'mid';
+  if(v <= 85) return 'high';
+  return 'veryhigh';
+}
+
+// 영역별 해석문 안전 조회
+function getSectionInsight(sectionKey, score){
+  const sectionData = SECTION_INSIGHTS[sectionKey];
+  if(!sectionData) return null;
+  const level = getScoreLevel(score);
+  return sectionData[level] || sectionData['mid'] || null;
+}
+
 const SECS=[
   {key:'sensory', label:'감각·자극 처리', sub:'소재·조명·소음에 대한 나의 민감도',  color:'#E91E8C', icon:'🧠'},
   {key:'spatial', label:'공간·구조 욕구', sub:'레이아웃·수납·동선에 대한 나의 선호', color:'#FF9800', icon:'📐'},
@@ -3137,6 +3399,7 @@ function buildMainTOC(){
   const items = [
     {id:'sec-hero',         label:'결과 카드'},
     {id:'sec-radar',        label:'8개 영역 차트'},
+    {id:'sec-deep-dive',    label:'8개 영역 깊이 읽기'},
     {id:'sec-story',        label:'공간 취향 이야기'},
     {id:'sec-insights',     label:'나만의 3가지'},
     {id:'sec-psychology',   label:'심리학적 뿌리'},
@@ -3580,6 +3843,58 @@ function renderResult(t,scores){
         }).join('')}
       </div>
     </div>
+
+    ${(()=>{
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // 8개 영역 깊이 읽기 — 점수별 맞춤 해석 32개 풀에서 자동 매칭
+      // 메타인지 효과를 강화하는 핵심 콘텐츠 섹션
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      const sectionDeepDive = SECS.map((sec,i)=>{
+        const val = t.bars?t.bars[sec.label]||scores[sec.label]||50:scores[sec.label]||50;
+        const insight = getSectionInsight(sec.key, val);
+        if(!insight) return '';
+        const levelLabel = val<=30?'매우 낮음':val<=60?'보통':val<=85?'높음':'매우 높음';
+        return `
+          <div class="sdd-card" style="border-left:4px solid ${secColors[i]}">
+            <div class="sdd-header">
+              <div class="sdd-icon" style="background:${secColors[i]}22;color:${secColors[i]}">${sec.icon}</div>
+              <div class="sdd-meta">
+                <div class="sdd-section-name">${sec.label}</div>
+                <div class="sdd-score-row">
+                  <span class="sdd-score" style="color:${secColors[i]}">${val}점</span>
+                  <span class="sdd-level" style="background:${secColors[i]}15;color:${secColors[i]}">${levelLabel}</span>
+                </div>
+              </div>
+            </div>
+            <div class="sdd-headline" style="color:${secColors[i]}">${insight.headline}</div>
+            <p class="sdd-body">${insight.body}</p>
+            <div class="sdd-detail-grid">
+              <div class="sdd-detail">
+                <div class="sdd-detail-label">📌 일상 행동 패턴</div>
+                <div class="sdd-detail-text">${insight.behavior}</div>
+              </div>
+              <div class="sdd-detail">
+                <div class="sdd-detail-label">💡 인테리어 시사점</div>
+                <div class="sdd-detail-text">${insight.impl}</div>
+              </div>
+            </div>
+          </div>`;
+      }).join('');
+
+      return `<div class="analysis-block" data-anchor id="sec-deep-dive" data-toc-label="8개 영역 깊이 읽기">
+        <div class="ab-tag">🔍 8개 영역 깊이 읽기</div>
+        <div class="ab-title">점수 하나하나가 당신에 대해 말하는 것</div>
+        <p style="font-size:.85rem;color:var(--gray);margin-bottom:22px;line-height:1.75">단순한 숫자가 아니에요. 각 영역의 점수는 당신이 공간을 어떻게 경험하고, 무엇에 만족하며, 어디에 돈을 써야 하는지를 알려주는 정밀한 지표입니다. 점수를 하나씩 함께 읽어볼게요.</p>
+        <div class="sdd-grid">${sectionDeepDive}</div>
+        <div class="sdd-summary">
+          <div class="sdd-summary-icon">💎</div>
+          <div class="sdd-summary-body">
+            <div class="sdd-summary-title">이 8개 점수를 함께 읽는 법</div>
+            <div class="sdd-summary-text">단일 점수보다 <strong>점수 간의 조합</strong>이 더 중요합니다. 예를 들어 감각이 예민하면서(높음) 회복 욕구도 강하다면(높음), 집을 절대적인 회복 캡슐로 만들어야 합니다. 감각이 둔감하면서(낮음) 관계 욕구가 강하다면(높음), 활기차고 사람이 모이는 공간이 잘 맞아요. <strong>가장 높은 3개</strong>와 <strong>가장 낮은 2개</strong>의 조합이 당신의 공간 의사결정 핵심이에요.</div>
+          </div>
+        </div>
+      </div>`;
+    })()}
 
     ${(()=>{
       const bp=buildBehaviorBlock(t.id);
