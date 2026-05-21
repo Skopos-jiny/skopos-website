@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SKOPOS SDTI 기초 검사 | 스코포스 공간 욕구 유형 검사 (무료) — Space Desire Type Inventory</title>스코포스 공간 욕구 유형 검사 (SDTI) | SKOPOS 스코포스</title>
+<title>SKOPOS SDTI 기초 검사 | 스코포스 공간 욕구 유형 검사 (무료)</title>
 <meta name="description" content="나에게 맞는 가구·소품·조명·소재를 찾아드립니다. 공간심리학 기반 22문항 무료 진단 — 12가지 공간 욕구 유형, 8개 영역 분석. 소파를 고르기 전에, 조명을 바꾸기 전에 나를 먼저 알아보세요.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://skopos.kr/skopos_quiz.html">
@@ -27,169 +27,208 @@
   function trackEvent(name,params){ if(typeof gtag!=='undefined') gtag('event',name,params); }
 </script>
 
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Nunito:wght@400;600;700;800;900&family=Noto+Sans+KR:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{--gold:#c9a96e;--gl:#e8d5b0;--bk:#0c0c0c;--off:#111;--dk:#1a1a1a;--gy:#777;--gy2:#444;--wh:#fafaf8;--ez:cubic-bezier(.22,1,.36,1)}
+:root{
+  /* 프리미엄 검사와 동일한 디자인 토큰 */
+  --pink:#E91E8C;
+  --pink-soft:#FF6B9D;
+  --orange:#FF9800;
+  --green:#7CB342;
+  --blue:#29B6F6;
+  --dark:#0F0F1A;
+  --mid:#2A2A3C;
+  --gray:#8890A4;
+  --bg:#F7F8FC;
+  --white:#fff;
+  --gold:#C9A96E;
+  --gold-lt:#E8D5B0;
+  --radius:16px;
+  --ez:cubic-bezier(.22,1,.36,1);
+  --sh:0 4px 24px rgba(15,15,26,.08);
+  /* 레거시 호환 (기존 클래스가 참조) */
+  --bk:#0F0F1A;
+  --off:#1A1A26;
+  --dk:#2A2A3C;
+  --gy:#8890A4;
+  --gy2:#5A5A6F;
+  --wh:#0F0F1A;
+  --gl:#E8D5B0;
+}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:'DM Sans',sans-serif;background:var(--bk);color:var(--wh);min-height:100vh;overflow-x:hidden}
-nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;justify-content:space-between;align-items:center;padding:0 48px;height:60px;background:rgba(12,12,12,.92);backdrop-filter:blur(20px);border-bottom:1px solid rgba(201,169,110,.1)}
-.nl{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:600;letter-spacing:.3em;color:var(--wh);text-decoration:none}
-.nb{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gy);text-decoration:none;transition:color .3s}
-.nb:hover{color:var(--gold)}
+body{font-family:'Nunito','Noto Sans KR',sans-serif;background:var(--bg);color:var(--dark);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+/* ── 네비게이션 (프리미엄 톤) ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:rgba(255,255,255,.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,0,0,.06)}
+.nav-brand{font-family:'Nunito','Noto Sans KR',sans-serif;font-size:1.1rem;font-weight:900;letter-spacing:-.02em;color:var(--dark);text-decoration:none}
+.nav-brand span{color:var(--pink)}
+.nav-right{display:flex;align-items:center;gap:10px}
+.nav-tag{font-size:.7rem;font-weight:700;background:linear-gradient(135deg,var(--pink),var(--orange));color:#fff;padding:4px 12px;border-radius:50px;letter-spacing:.02em}
+.nav-link{font-size:.78rem;color:var(--gray);text-decoration:none;transition:color .2s}
+.nav-link:hover{color:var(--dark)}
+
+/* 레거시 .nl, .nb 호환 (구버전 클래스 잔존 대비) */
+.nl{font-family:'Nunito','Noto Sans KR',sans-serif;font-size:1.1rem;font-weight:900;letter-spacing:-.02em;color:var(--dark);text-decoration:none}
+.nb{font-size:.78rem;color:var(--gray);text-decoration:none;transition:color .2s}
+.nb:hover{color:var(--dark)}
 .screen{display:none;min-height:100vh;padding:80px 24px 60px;align-items:center;justify-content:center;flex-direction:column}
 .screen.active{display:flex}
 
 /* ── INTRO ── */
-#si{text-align:center;position:relative;overflow:hidden}
-.ibg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 60%,rgba(201,169,110,.06),transparent 70%);pointer-events:none}
-.orb{position:absolute;border-radius:50%;border:1px solid rgba(201,169,110,.07);top:50%;left:50%;transform:translate(-50%,-50%);animation:op 6s ease-in-out infinite}
+#si{text-align:center;position:relative;overflow:hidden;background:linear-gradient(180deg,#FAFBFE 0%,var(--bg) 60%)}
+.ibg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%,rgba(233,30,140,.05),transparent 60%),radial-gradient(ellipse at 80% 70%,rgba(201,169,110,.05),transparent 60%);pointer-events:none}
+.orb{position:absolute;border-radius:50%;border:1px solid rgba(233,30,140,.06);top:50%;left:50%;transform:translate(-50%,-50%);animation:op 6s ease-in-out infinite;pointer-events:none}
 @keyframes op{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.5}50%{transform:translate(-50%,-50%) scale(1.04);opacity:1}}
-.ie{font-size:.62rem;letter-spacing:.35em;text-transform:uppercase;color:var(--gold);margin-bottom:20px;opacity:0;animation:fu .8s var(--ez) forwards .1s}
-.it{font-family:'Cormorant Garamond',serif;font-size:clamp(2.2rem,5vw,4rem);font-weight:300;line-height:1.15;margin-bottom:20px;opacity:0;animation:fu .8s var(--ez) forwards .25s}
-.it em{color:var(--gold)}
-.is{font-size:.88rem;color:var(--gy);line-height:1.85;max-width:480px;margin:0 auto 32px;opacity:0;animation:fu .8s var(--ez) forwards .4s}
-.ibgs{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:36px;opacity:0;animation:fu .8s var(--ez) forwards .55s}
-.bdg{border:1px solid rgba(201,169,110,.3);padding:5px 14px;font-size:.65rem;letter-spacing:.15em;color:var(--gold);text-transform:uppercase}
-.istat{display:flex;justify-content:center;gap:48px;margin-bottom:44px;opacity:0;animation:fu .8s var(--ez) forwards .7s}
-.sv{font-family:'Cormorant Garamond',serif;font-size:2.2rem;color:var(--gold);line-height:1}
-.sl{font-size:.62rem;letter-spacing:.1em;color:var(--gy);margin-top:5px}
-.bstart{display:inline-block;padding:15px 56px;background:var(--gold);color:var(--bk);font-size:.76rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;border:none;cursor:pointer;transition:background .3s;opacity:0;animation:fu .8s var(--ez) forwards .85s}
-.bstart:hover{background:var(--gl)}
-.disc{font-size:.65rem;color:var(--gy2);margin-top:16px;opacity:0;animation:fu .8s var(--ez) forwards 1s}
+.ie{font-size:.65rem;letter-spacing:.25em;text-transform:uppercase;color:var(--pink);font-weight:800;margin-bottom:18px;opacity:0;animation:fu .8s var(--ez) forwards .1s}
+.it{font-family:'Cormorant Garamond',serif;font-size:clamp(2.2rem,5vw,3.6rem);font-weight:400;line-height:1.2;letter-spacing:-.015em;color:var(--dark);margin-bottom:20px;opacity:0;animation:fu .8s var(--ez) forwards .25s}
+.it em{color:var(--pink);font-style:normal;font-weight:500}
+.is{font-size:.92rem;color:var(--gray);line-height:1.85;max-width:520px;margin:0 auto 32px;opacity:0;animation:fu .8s var(--ez) forwards .4s;font-weight:500}
+.ibgs{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:36px;opacity:0;animation:fu .8s var(--ez) forwards .55s}
+.bdg{border:1px solid rgba(233,30,140,.25);background:rgba(233,30,140,.04);padding:5px 14px;font-size:.7rem;letter-spacing:.02em;color:var(--pink);font-weight:700;border-radius:50px}
+.istat{display:flex;justify-content:center;gap:36px;margin-bottom:40px;opacity:0;animation:fu .8s var(--ez) forwards .7s;flex-wrap:wrap}
+.sv{font-family:'Cormorant Garamond',serif;font-size:2.4rem;color:var(--pink);line-height:1;font-weight:500;letter-spacing:-.02em}
+.sl{font-size:.68rem;letter-spacing:.05em;color:var(--gray);margin-top:6px;font-weight:600}
+.bstart{display:inline-block;padding:14px 44px;background:linear-gradient(135deg,var(--pink),var(--pink-soft));color:#fff;font-family:'Nunito',sans-serif;font-size:.92rem;font-weight:800;letter-spacing:.02em;border:none;border-radius:50px;cursor:pointer;transition:all .25s var(--ez);opacity:0;animation:fu .8s var(--ez) forwards .85s;box-shadow:0 4px 16px rgba(233,30,140,.25)}
+.bstart:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(233,30,140,.35)}
+.disc{font-size:.7rem;color:var(--gray);margin-top:18px;opacity:0;animation:fu .8s var(--ez) forwards 1s;font-weight:500}
 
 /* ── QUIZ ── */
 #sq{justify-content:flex-start;padding-top:80px}
-.qshell{width:100%;max-width:680px;margin:0 auto}
+.qshell{width:100%;max-width:680px;margin:0 auto;background:var(--white);border-radius:var(--radius);padding:32px 28px;box-shadow:var(--sh)}
 
 /* Section header */
-.sec-header{text-align:center;padding:20px 0 28px;border-bottom:1px solid rgba(201,169,110,.12);margin-bottom:32px}
-.sec-pill{display:inline-block;border:1px solid rgba(201,169,110,.3);padding:4px 16px;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
-.sec-title{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:300;color:rgba(250,250,248,.5)}
+.sec-header{text-align:center;padding:8px 0 24px;border-bottom:1px solid rgba(0,0,0,.06);margin-bottom:28px}
+.sec-pill{display:inline-block;background:linear-gradient(135deg,rgba(233,30,140,.08),rgba(201,169,110,.08));border:1px solid rgba(233,30,140,.2);padding:5px 14px;font-size:.65rem;letter-spacing:.05em;color:var(--pink);font-weight:800;margin-bottom:10px;border-radius:50px}
+.sec-title{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:500;color:var(--dark);letter-spacing:-.01em}
 
 /* Progress bar (top full-width) */
-.q-prog-wrap{width:100%;height:3px;background:rgba(255,255,255,.06);margin-bottom:0;position:relative}
-.q-prog-fill{height:3px;background:linear-gradient(90deg,var(--gold),var(--gl));transition:width .5s var(--ez);position:relative}
-.q-prog-fill::after{content:'';position:absolute;right:-3px;top:-2px;width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px rgba(201,169,110,.6)}
+.q-prog-wrap{width:100%;height:3px;background:rgba(15,15,26,.06);margin-bottom:0;position:relative}
+.q-prog-fill{height:3px;background:linear-gradient(90deg,var(--pink),var(--pink-soft));transition:width .5s var(--ez);position:relative}
+.q-prog-fill::after{content:'';position:absolute;right:-3px;top:-2px;width:7px;height:7px;border-radius:50%;background:var(--pink);box-shadow:0 0 8px rgba(233,30,140,.5)}
 
 /* Per-question auto timer */
-.q-timer-wrap{width:100%;height:2px;background:rgba(255,255,255,.04);margin-bottom:28px;overflow:hidden}
-.q-timer-bar{height:2px;background:var(--gold);width:100%;transition:none}
+.q-timer-wrap{width:100%;height:2px;background:rgba(0,0,0,.04);margin-bottom:24px;overflow:hidden;border-radius:1px}
+.q-timer-bar{height:2px;background:var(--pink);width:100%;transition:none}
 .q-timer-bar.running{transition:width linear}
-.q-timer-bar.urgent{background:#e07070}
+.q-timer-bar.urgent{background:#E91E48}
 
 /* Question card */
 .qcard{animation:fu .35s var(--ez) both}
-.q-num{font-size:.6rem;letter-spacing:.25em;text-transform:uppercase;color:var(--gy);margin-bottom:6px}
-.q-neuro{display:inline-block;background:rgba(201,169,110,.06);border:1px solid rgba(201,169,110,.15);padding:4px 12px;font-size:.58rem;letter-spacing:.08em;color:rgba(201,169,110,.6);margin-bottom:18px;line-height:1.5}
-.qtitle{font-family:'Cormorant Garamond',serif;font-size:clamp(1.4rem,3.2vw,2rem);font-weight:300;line-height:1.35;margin-bottom:20px}
-.qtitle em{color:var(--gold)}
+.q-num{font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gray);font-weight:700;margin-bottom:6px}
+.q-neuro{display:inline-block;background:rgba(233,30,140,.05);border:1px solid rgba(233,30,140,.12);padding:5px 12px;font-size:.66rem;letter-spacing:.02em;color:var(--pink);margin-bottom:18px;line-height:1.5;border-radius:50px;font-weight:600}
+.qtitle{font-family:'Cormorant Garamond',serif;font-size:clamp(1.35rem,3.2vw,1.85rem);font-weight:500;line-height:1.4;letter-spacing:-.01em;color:var(--dark);margin-bottom:20px}
+.qtitle em{color:var(--pink);font-style:normal;font-weight:600}
 
-/* Options grid — 2x2 by default */
-.opts{display:grid;gap:9px;margin-bottom:16px}
+/* Options grid */
+.opts{display:grid;gap:10px;margin-bottom:14px}
 .opts.c2{grid-template-columns:1fr 1fr}
 .opts.c1{grid-template-columns:1fr}
-.opt{border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.02);padding:14px 16px;cursor:pointer;transition:all .18s;display:flex;gap:12px;align-items:center;text-align:left;position:relative;user-select:none;-webkit-tap-highlight-color:transparent}
-.opt:hover,.opt:active{border-color:rgba(201,169,110,.4);background:rgba(201,169,110,.05)}
-.opt.sel{border-color:var(--gold);background:rgba(201,169,110,.1);animation:pulse .25s ease}
+.opt{border:1.5px solid rgba(0,0,0,.06);background:var(--bg);padding:14px 16px;cursor:pointer;transition:all .2s var(--ez);display:flex;gap:12px;align-items:center;text-align:left;position:relative;user-select:none;-webkit-tap-highlight-color:transparent;border-radius:12px}
+.opt:hover,.opt:active{border-color:rgba(233,30,140,.4);background:rgba(233,30,140,.03);transform:translateY(-1px)}
+.opt.sel{border-color:var(--pink);background:rgba(233,30,140,.06);animation:pulse .25s ease}
 @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.015)}100%{transform:scale(1)}}
 .opt-icon{font-size:1.3rem;flex-shrink:0;line-height:1}
 .opt-body{flex:1}
-.opt-label{font-size:.84rem;color:var(--wh);margin-bottom:2px;line-height:1.3}
-.opt-sub{font-size:.68rem;color:var(--gy);line-height:1.4}
-.opt-check{width:14px;height:14px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:.5rem;color:var(--bk);opacity:0;transition:opacity .15s;flex-shrink:0}
+.opt-label{font-size:.88rem;color:var(--dark);margin-bottom:2px;line-height:1.35;font-weight:600}
+.opt-sub{font-size:.72rem;color:var(--gray);line-height:1.5;font-weight:500}
+.opt-check{width:18px;height:18px;background:var(--pink);display:flex;align-items:center;justify-content:center;font-size:.55rem;color:#fff;opacity:0;transition:opacity .15s;flex-shrink:0;border-radius:50%}
 .opt.sel .opt-check{opacity:1}
 
 /* Skip hint */
-.skip-hint{font-size:.62rem;color:var(--gy2);text-align:center;margin-top:4px;height:16px;transition:opacity .3s}
-.skip-hint.warn{color:#e07070;animation:blink .5s ease infinite alternate}
+.skip-hint{font-size:.7rem;color:var(--gray);text-align:center;margin-top:6px;height:16px;transition:opacity .3s;font-weight:500}
+.skip-hint.warn{color:#E91E48;animation:blink .5s ease infinite alternate;font-weight:700}
 @keyframes blink{from{opacity:.5}to{opacity:1}}
 
 /* Count display */
 .q-count-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.q-count-txt{font-size:.68rem;color:var(--gy);letter-spacing:.08em}
-.q-timer-txt{font-family:'Cormorant Garamond',serif;font-size:1rem;color:var(--gold);min-width:32px;text-align:right}
-.q-timer-txt.warn{color:#e07070}
+.q-count-txt{font-size:.7rem;color:var(--gray);letter-spacing:.05em;font-weight:600}
+.q-timer-txt{font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--pink);min-width:32px;text-align:right;font-weight:500}
+.q-timer-txt.warn{color:#E91E48}
 
 /* ── LOADING ── */
 #sl{text-align:center}
 .ld-ring{width:80px;height:80px;margin:0 auto 32px}
 .ld-ring svg{animation:spin 2s linear infinite}
+.ld-ring svg circle:nth-child(1){stroke:rgba(233,30,140,.1) !important}
+.ld-ring svg circle:nth-child(2){stroke:#E91E8C !important}
 @keyframes spin{to{transform:rotate(360deg)}}
-.ld-title{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:300;margin-bottom:10px}
-.ld-sub{font-size:.78rem;color:var(--gy);line-height:1.7}
+.ld-title{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:500;color:var(--dark);margin-bottom:10px;letter-spacing:-.01em}
+.ld-sub{font-size:.85rem;color:var(--gray);line-height:1.7;font-weight:500}
 .ld-steps{margin-top:24px;display:flex;flex-direction:column;gap:7px;text-align:left;max-width:280px;margin-left:auto;margin-right:auto}
-.ld-step{font-size:.7rem;color:var(--gy2);display:flex;align-items:center;gap:8px;opacity:0;animation:fi .4s ease forwards}
-.ld-step.done{color:var(--gold)}
+.ld-step{font-size:.72rem;color:var(--gray);display:flex;align-items:center;gap:8px;opacity:0;animation:fi .4s ease forwards;font-weight:600}
+.ld-step.done{color:var(--pink)}
 .ld-dot{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0}
 
 /* ── RESULT ── */
 #sr{align-items:flex-start;padding-top:88px}
-.rw{width:100%;max-width:700px;margin:0 auto}
-.rh{text-align:center;margin-bottom:40px;padding-bottom:40px;border-bottom:1px solid rgba(255,255,255,.06)}
-.rtag{font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
-.rtype{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,5vw,3.2rem);font-weight:300;line-height:1.15;margin-bottom:12px}
-.rtype em{color:var(--gold)}
-.rdesc{font-size:.87rem;color:rgba(250,250,248,.58);line-height:1.9;max-width:520px;margin:0 auto 22px}
+.rw{width:100%;max-width:700px;margin:0 auto;background:var(--white);border-radius:var(--radius);padding:36px 28px;box-shadow:var(--sh)}
+.rh{text-align:center;margin-bottom:36px;padding-bottom:32px;border-bottom:1px solid rgba(0,0,0,.06)}
+.rtag{font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;color:var(--pink);font-weight:800;margin-bottom:12px}
+.rtype{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,5vw,2.8rem);font-weight:500;line-height:1.2;color:var(--dark);margin-bottom:12px;letter-spacing:-.015em}
+.rtype em{color:var(--pink);font-style:normal}
+.rdesc{font-size:.9rem;color:#4A4A5A;line-height:1.85;max-width:520px;margin:0 auto 22px;font-weight:500}
 .rkws{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
-.kw{border:1px solid rgba(201,169,110,.28);padding:4px 13px;font-size:.67rem;letter-spacing:.1em;color:var(--gold)}
+.kw{background:rgba(233,30,140,.06);border:1px solid rgba(233,30,140,.2);padding:5px 14px;font-size:.7rem;letter-spacing:.02em;color:var(--pink);font-weight:700;border-radius:50px}
 
 .radar{margin:32px 0}
-.radar-ttl{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gy);margin-bottom:16px;text-align:center}
+.radar-ttl{font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gray);font-weight:700;margin-bottom:16px;text-align:center}
 .rbars{width:100%;display:flex;flex-direction:column;gap:11px}
 .rrow{display:flex;align-items:center;gap:12px}
-.rlbl{font-size:.68rem;color:var(--gy);width:88px;text-align:right;flex-shrink:0}
-.rtrack{flex:1;height:4px;background:rgba(255,255,255,.05)}
-.rbar{height:4px;background:linear-gradient(90deg,var(--gold),var(--gl));width:0;transition:width 1.3s var(--ez)}
-.rval{font-size:.67rem;color:var(--gold);width:30px;flex-shrink:0}
+.rlbl{font-size:.72rem;color:var(--dark);width:88px;text-align:right;flex-shrink:0;font-weight:600}
+.rtrack{flex:1;height:6px;background:rgba(15,15,26,.06);border-radius:3px;overflow:hidden}
+.rbar{height:6px;background:linear-gradient(90deg,var(--pink),var(--pink-soft));width:0;transition:width 1.3s var(--ez);border-radius:3px}
+.rval{font-size:.72rem;color:var(--pink);width:30px;flex-shrink:0;font-weight:800}
 
-.iblk{border:1px solid rgba(255,255,255,.06);padding:24px 28px;margin-bottom:13px;background:rgba(255,255,255,.012)}
-.ittl{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:9px}
-.ibdy{font-size:.82rem;color:rgba(250,250,248,.58);line-height:1.85}
-.ibdy strong{color:var(--wh);font-weight:400}
+.iblk{border:1px solid rgba(0,0,0,.06);background:var(--bg);padding:22px 24px;margin-bottom:12px;border-radius:12px}
+.ittl{font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--pink);font-weight:800;margin-bottom:10px}
+.ibdy{font-size:.86rem;color:#4A4A5A;line-height:1.85;font-weight:500}
+.ibdy strong{color:var(--dark);font-weight:700}
 
 /* ── 행동패턴 분석 블록 ── */
 .behavior-block{
-  border:1px solid rgba(201,169,110,.25);
-  background:linear-gradient(135deg,rgba(201,169,110,.06) 0%,rgba(201,169,110,.02) 100%);
-  padding:28px;margin-bottom:16px;position:relative;overflow:hidden;
+  border:1px solid rgba(233,30,140,.15);
+  background:linear-gradient(135deg,rgba(233,30,140,.04) 0%,rgba(201,169,110,.03) 100%);
+  padding:26px 24px;margin-bottom:16px;position:relative;overflow:hidden;
+  border-radius:14px;
 }
 .behavior-block::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,transparent,var(--pink),transparent);
 }
 .bblk-tag{
-  font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;
-  color:var(--gold);margin-bottom:8px;
+  font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--pink);font-weight:800;margin-bottom:8px;
 }
 .bblk-title{
-  font-family:'Cormorant Garamond',serif;font-size:1.35rem;
-  font-weight:300;color:var(--wh);line-height:1.3;margin-bottom:18px;
+  font-family:'Cormorant Garamond',serif;font-size:1.4rem;
+  font-weight:500;color:var(--dark);line-height:1.35;margin-bottom:18px;
+  letter-spacing:-.01em;
 }
-.bblk-title em{color:var(--gold);}
+.bblk-title em{color:var(--pink);font-style:normal;font-weight:600;}
 .bblk-body{
-  font-size:.82rem;color:rgba(250,250,248,.62);line-height:2.0;
+  font-size:.88rem;color:#4A4A5A;line-height:1.95;font-weight:500;
 }
 .bblk-body p{margin-bottom:14px;}
 .bblk-body p:last-child{margin-bottom:0;}
 .bblk-kw{
   margin-top:18px;padding-top:14px;
-  border-top:1px solid rgba(201,169,110,.15);
-  font-size:.72rem;color:rgba(201,169,110,.75);line-height:1.7;
-  letter-spacing:.03em;
+  border-top:1px solid rgba(233,30,140,.12);
+  font-size:.78rem;color:var(--pink);line-height:1.7;
+  letter-spacing:.01em;font-weight:700;
 }
 
-.srec{border:1px solid rgba(201,169,110,.2);padding:19px 22px;margin-bottom:9px;display:flex;gap:15px;align-items:flex-start;background:rgba(201,169,110,.025);transition:background .3s}
-.srec:hover{background:rgba(201,169,110,.055)}
-.srec.best{border-color:var(--gold);background:rgba(201,169,110,.07)}
-.sbdg{font-size:.57rem;letter-spacing:.12em;text-transform:uppercase;color:var(--bk);background:var(--gold);padding:3px 8px;white-space:nowrap;margin-top:3px;flex-shrink:0}
-.sbdg.alt{background:transparent;border:1px solid rgba(201,169,110,.4);color:var(--gold)}
-.snm{font-family:'Cormorant Garamond',serif;font-size:1.15rem;color:var(--wh);margin-bottom:3px}
-.sds{font-size:.74rem;color:var(--gy);line-height:1.6}
+.srec{border:1px solid rgba(0,0,0,.06);padding:18px 20px;margin-bottom:10px;display:flex;gap:14px;align-items:flex-start;background:var(--white);transition:all .25s var(--ez);border-radius:12px}
+.srec:hover{background:var(--bg);border-color:rgba(233,30,140,.2);transform:translateX(2px)}
+.srec.best{border-color:var(--pink);background:rgba(233,30,140,.04);box-shadow:0 4px 16px rgba(233,30,140,.06)}
+.sbdg{font-size:.6rem;letter-spacing:.05em;text-transform:uppercase;color:#fff;background:linear-gradient(135deg,var(--pink),var(--pink-soft));padding:4px 10px;white-space:nowrap;margin-top:3px;flex-shrink:0;border-radius:50px;font-weight:800}
+.sbdg.alt{background:transparent;border:1px solid rgba(233,30,140,.3);color:var(--pink)}
+.snm{font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--dark);margin-bottom:3px;font-weight:500;letter-spacing:-.01em}
+.sds{font-size:.78rem;color:var(--gray);line-height:1.65;font-weight:500}
 
 /* SHARE */
-.shblk{margin-top:32px;padding-top:26px;border-top:1px solid rgba(255,255,255,.06)}
-.shttl{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gy);margin-bottom:14px;text-align:center}
+.shblk{margin-top:32px;padding-top:26px;border-top:1px solid rgba(0,0,0,.06)}
+.shttl{font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gray);font-weight:700;margin-bottom:14px;text-align:center}
 
 
 
@@ -205,107 +244,125 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;justify-content
 /* ── 공간 이미지 섹션 ── */
 .space-reveal{
   margin-top:40px;padding-top:36px;
-  border-top:1px solid rgba(255,255,255,.06);
+  border-top:1px solid rgba(0,0,0,.06);
   opacity:0;transform:translateY(24px);
   transition:opacity .8s var(--ez),transform .8s var(--ez);
 }
 .space-reveal.show{opacity:1;transform:translateY(0);}
 .space-reveal-tag{
-  font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;
-  color:var(--gold);margin-bottom:8px;
+  font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--pink);font-weight:800;margin-bottom:8px;
 }
 .space-reveal-title{
   font-family:'Cormorant Garamond',serif;
-  font-size:1.6rem;font-weight:300;line-height:1.2;
-  color:var(--wh);margin-bottom:6px;
+  font-size:1.7rem;font-weight:500;line-height:1.25;
+  color:var(--dark);margin-bottom:6px;letter-spacing:-.015em;
 }
-.space-reveal-title em{color:var(--gold);}
+.space-reveal-title em{color:var(--pink);font-style:normal;}
 .space-reveal-sub{
-  font-size:.78rem;color:var(--gy);margin-bottom:28px;line-height:1.6;
+  font-size:.85rem;color:var(--gray);margin-bottom:28px;line-height:1.7;font-weight:500;
 }
 .space-grid{
   display:grid;grid-template-columns:repeat(3,1fr);
   gap:12px;margin-bottom:16px;
 }
-.space-card{position:relative;overflow:hidden;cursor:pointer;}
+.space-card{position:relative;overflow:hidden;cursor:pointer;border-radius:12px;}
 .space-card-img{
   width:100%;aspect-ratio:4/3;object-fit:cover;display:block;
-  transition:transform .6s var(--ez);filter:brightness(.85);
+  transition:transform .6s var(--ez);filter:brightness(.92);
 }
 .space-card:hover .space-card-img{transform:scale(1.04);filter:brightness(1);}
 .space-card-overlay{
   position:absolute;inset:0;
-  background:linear-gradient(to top,rgba(12,12,12,.85) 0%,rgba(12,12,12,.1) 55%,transparent 100%);
+  background:linear-gradient(to top,rgba(15,15,26,.78) 0%,rgba(15,15,26,.15) 55%,transparent 100%);
   display:flex;flex-direction:column;justify-content:flex-end;
-  padding:16px;
+  padding:14px;
 }
 .space-card-name{
   font-family:'Cormorant Garamond',serif;
-  font-size:1rem;font-weight:400;color:var(--wh);
-  margin-bottom:3px;
+  font-size:1.05rem;font-weight:500;color:#fff;
+  margin-bottom:3px;letter-spacing:-.01em;
 }
 .space-card-kw{
-  font-size:.62rem;letter-spacing:.1em;color:var(--gold);
-  text-transform:uppercase;
+  font-size:.65rem;letter-spacing:.05em;color:rgba(255,255,255,.9);
+  font-weight:600;
 }
 .space-card-badge{
   position:absolute;top:10px;left:10px;
-  background:rgba(12,12,12,.7);
-  border:1px solid rgba(201,169,110,.3);
-  padding:3px 10px;font-size:.55rem;
-  letter-spacing:.15em;text-transform:uppercase;color:var(--gold);
+  background:linear-gradient(135deg,var(--pink),var(--pink-soft));
+  padding:4px 10px;font-size:.6rem;
+  letter-spacing:.05em;color:#fff;
+  font-weight:800;border-radius:50px;
+  box-shadow:0 2px 8px rgba(233,30,140,.3);
 }
 .space-note{
-  border:1px solid rgba(201,169,110,.2);
-  background:rgba(201,169,110,.03);
-  padding:22px 24px;margin-top:8px;
-  text-align:left;
+  border:1px solid rgba(233,30,140,.15);
+  background:linear-gradient(135deg,rgba(233,30,140,.04),rgba(201,169,110,.03));
+  padding:20px 22px;margin-top:8px;
+  text-align:left;border-radius:12px;
 }
 @media(max-width:600px){
   .space-grid{grid-template-columns:1fr;}
 }
 
 
-.bretry{padding:13px 18px;background:none;border:1px solid rgba(255,255,255,.1);color:var(--gy);font-size:.68rem;cursor:pointer;transition:all .3s}
-.bretry:hover{border-color:var(--wh);color:var(--wh)}
+/* 재진단·재시도 버튼 */
+.bretry{padding:13px 20px;background:var(--white);border:1.5px solid rgba(0,0,0,.08);color:var(--gray);font-size:.78rem;font-weight:700;cursor:pointer;transition:all .25s var(--ez);border-radius:50px}
+.bretry:hover{border-color:var(--pink);color:var(--pink);transform:translateY(-1px)}
 
-.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--gold);color:var(--bk);font-size:.72rem;font-weight:500;letter-spacing:.1em;padding:10px 22px;opacity:0;transition:all .4s;z-index:999;pointer-events:none}
+/* 토스트 */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:linear-gradient(135deg,var(--pink),var(--pink-soft));color:#fff;font-size:.78rem;font-weight:700;letter-spacing:.02em;padding:11px 22px;border-radius:50px;opacity:0;transition:all .4s var(--ez);z-index:999;pointer-events:none;box-shadow:0 6px 20px rgba(233,30,140,.3)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* ── BLUR GATE ── */
-
-
-
-
-
-
-
-
-
-
 /* ── 소식 수신 동의 (블러 게이트) ── */
+.blur-gate{
+  position:relative;margin-top:24px;padding:28px 24px;
+  background:linear-gradient(135deg,rgba(233,30,140,.04),rgba(201,169,110,.03));
+  border:1px solid rgba(233,30,140,.12);
+  border-radius:14px;text-align:center;
+}
+.blur-gate-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.3rem;font-weight:500;color:var(--dark);
+  margin-bottom:10px;letter-spacing:-.01em;
+}
+.blur-gate-title em{color:var(--pink);font-style:normal;}
+.blur-gate-sub{
+  font-size:.85rem;color:#4A4A5A;line-height:1.7;
+  margin-bottom:18px;font-weight:500;
+}
 
-  width:100%;max-width:300px;
-  border:1px solid rgba(201,169,110,.2);
-  background:rgba(201,169,110,.04);
-  padding:12px 14px;
+.consent-wrap{
+  width:100%;max-width:320px;margin:0 auto 12px;
+  border:1.5px solid rgba(233,30,140,.18);
+  background:var(--white);
+  padding:12px 14px;border-radius:12px;
   cursor:pointer;
   display:flex;align-items:flex-start;gap:10px;
-  transition:border-color .2s;
+  transition:border-color .2s,background .2s;
 }
-.consent-wrap:hover{border-color:rgba(201,169,110,.4);}
+.consent-wrap:hover{border-color:rgba(233,30,140,.4);background:rgba(233,30,140,.02);}
 
-  width:16px;height:16px;flex-shrink:0;margin-top:2px;
-  border:1px solid rgba(255,255,255,.2);
-  background:rgba(255,255,255,.04);
+.consent-box{
+  width:18px;height:18px;flex-shrink:0;margin-top:1px;
+  border:1.5px solid rgba(0,0,0,.15);
+  background:var(--white);
   display:flex;align-items:center;justify-content:center;
-  font-size:.55rem;color:var(--bk);font-weight:700;
-  transition:all .18s;
+  font-size:.6rem;color:#fff;font-weight:900;
+  transition:all .2s var(--ez);
+  border-radius:5px;
 }
+.consent-wrap.checked .consent-box{
+  background:linear-gradient(135deg,var(--pink),var(--pink-soft));
+  border-color:var(--pink);
+}
+.consent-text{
+  flex:1;font-size:.78rem;color:var(--dark);
+  line-height:1.55;font-weight:600;text-align:left;
+}
+.consent-text small{color:var(--gray);font-size:.7rem;font-weight:500;display:block;margin-top:2px;}
 
-
-
-.blur-actions{display:flex;flex-direction:column;gap:8px;width:100%;max-width:300px;margin-top:4px}
+.blur-actions{display:flex;flex-direction:column;gap:8px;width:100%;max-width:320px;margin:6px auto 0}
 
 
 
@@ -320,19 +377,25 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;justify-content
 
 @media(max-width:600px){
   nav{padding:0 20px}
+  .qshell{padding:24px 18px;border-radius:12px}
+  .rw{padding:28px 20px;border-radius:12px}
   .opts.c2{grid-template-columns:1fr}
   .ract,.shbtns{flex-direction:column;align-items:stretch}
   .istat{gap:24px}
+  .nav-tag{font-size:.65rem;padding:3px 10px}
 }
 
-.hl{color:var(--gold);font-style:normal;}
+.hl{color:var(--pink);font-style:normal;font-weight:700;}
 em{font-style:normal;}
 </style>
 </head>
 <body>
 <nav>
-  <a href="index.html" class="nl">SKOPOS</a>
-  <a href="index.html" class="nb">← 홈으로</a>
+  <a class="nav-brand" href="index.html">SKO<span>POS</span></a>
+  <div class="nav-right">
+    <span class="nav-tag">✦ 무료 기초 진단</span>
+    <a href="skopos_premium_quiz.html" class="nav-link">정밀 진단 →</a>
+  </div>
 </nav>
 
 <!-- INTRO -->
@@ -431,31 +494,9 @@ em{font-style:normal;}
       <!-- 담요 -->
       <path d="M38 95 Q60 88 82 95 L85 128 Q60 132 35 128Z" fill="#3a3a5e" opacity="0.9"/>
       <path d="M38 95 Q60 88 82 95" stroke="#c9a96e" stroke-width="1" fill="none" opacity="0.5"/>
-      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">고요한 밤</text>
+      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">완전 차단형</text>
     </svg></div>
-  <div id="svg-s_calm"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="60" cy="60" r="58" fill="#0f1520"/>
-      <!-- 창문 프레임 -->
-      <rect x="20" y="20" width="80" height="60" rx="4" fill="#1a2535" stroke="#c9a96e" stroke-width="0.8" opacity="0.6"/>
-      <line x1="60" y1="20" x2="60" y2="80" stroke="#c9a96e" stroke-width="0.5" opacity="0.4"/>
-      <line x1="20" y1="50" x2="100" y2="50" stroke="#c9a96e" stroke-width="0.5" opacity="0.4"/>
-      <!-- 빛 -->
-      <ellipse cx="60" cy="35" rx="20" ry="12" fill="#c9a96e" opacity="0.08"/>
-      <!-- 캐릭터 실루엣 -->
-      <ellipse cx="60" cy="105" rx="18" ry="22" fill="#2a3545"/>
-      <circle cx="60" cy="83" r="14" fill="#d4a574"/>
-      <path d="M54 81 Q57 79 60 81" stroke="#5a3e28" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-      <path d="M60 81 Q63 79 66 81" stroke="#5a3e28" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-      <path d="M57 87 Q60 90 63 87" stroke="#c9826e" stroke-width="1.2" fill="none"/>
-      <!-- 차 한잔 -->
-      <rect x="48" y="112" width="24" height="14" rx="2" fill="#3a4555"/>
-      <path d="M50 112 Q60 108 70 112" stroke="#c9a96e" stroke-width="1" fill="none" opacity="0.7"/>
-      <!-- 김 -->
-      <path d="M55 110 Q53 106 55 103" stroke="#c9a96e" stroke-width="0.8" fill="none" opacity="0.4"/>
-      <path d="M60 109 Q58 105 60 102" stroke="#c9a96e" stroke-width="0.8" fill="none" opacity="0.3"/>
-      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">새벽의 고요</text>
-    </svg></div>
-  <div id="svg-s_zen"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+<div id="svg-s_zen"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
       <circle cx="60" cy="60" r="58" fill="#12100e"/>
       <!-- 명상 방석 -->
       <ellipse cx="60" cy="115" rx="30" ry="8" fill="#3a2a1a"/>
@@ -477,33 +518,9 @@ em{font-style:normal;}
       <!-- 손 -->
       <ellipse cx="46" cy="100" rx="6" ry="4" fill="#d4a574" opacity="0.8"/>
       <ellipse cx="74" cy="100" rx="6" ry="4" fill="#d4a574" opacity="0.8"/>
-      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">내면의 정적</text>
+      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">비움 추구형</text>
     </svg></div>
-  <div id="svg-s_mono"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="60" cy="60" r="58" fill="#0e0e0e"/>
-      <!-- 미니멀 라인들 -->
-      <line x1="20" y1="35" x2="100" y2="35" stroke="#c9a96e" stroke-width="0.4" opacity="0.3"/>
-      <line x1="20" y1="40" x2="70" y2="40" stroke="#c9a96e" stroke-width="0.4" opacity="0.2"/>
-      <!-- 캐릭터 (흑백 실루엣) -->
-      <ellipse cx="60" cy="100" rx="20" ry="26" fill="#1a1a1a"/>
-      <circle cx="60" cy="74" r="15" fill="#e0d0b8"/>
-      <!-- 선명한 눈 -->
-      <circle cx="55" cy="72" r="2.5" fill="#1a1a1a"/>
-      <circle cx="65" cy="72" r="2.5" fill="#1a1a1a"/>
-      <circle cx="56" cy="71" r="0.8" fill="white"/>
-      <circle cx="66" cy="71" r="0.8" fill="white"/>
-      <!-- 직선 입 -->
-      <line x1="56" y1="78" x2="64" y2="78" stroke="#5a3e28" stroke-width="1.2" stroke-linecap="round"/>
-      <!-- 안경 -->
-      <rect x="51" y="69" width="8" height="6" rx="2" fill="none" stroke="#c9a96e" stroke-width="1"/>
-      <rect x="61" y="69" width="8" height="6" rx="2" fill="none" stroke="#c9a96e" stroke-width="1"/>
-      <line x1="59" y1="72" x2="61" y2="72" stroke="#c9a96e" stroke-width="1"/>
-      <!-- 터틀넥 -->
-      <rect x="50" y="88" width="20" height="10" rx="0" fill="#1a1a1a"/>
-      <rect x="53" y="85" width="14" height="6" rx="1" fill="#2a2a2a"/>
-      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">절제의 미학</text>
-    </svg></div>
-  <div id="svg-n_forest"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+<div id="svg-n_forest"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
       <circle cx="60" cy="60" r="58" fill="#0d1a0d"/>
       <!-- 나무들 배경 -->
       <rect x="15" y="50" width="8" height="40" fill="#1a2e1a" opacity="0.7"/>
@@ -532,7 +549,7 @@ em{font-style:normal;}
       <ellipse cx="40" cy="108" rx="8" ry="10" fill="#1e3a1e"/>
       <path d="M40 100 Q35 92 40 88 Q45 84 42 92" fill="#2d5a2d"/>
       <path d="M40 100 Q45 90 50 92 Q52 86 44 90" fill="#3a7a3a" opacity="0.8"/>
-      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#6ab06a" opacity="0.8" font-family="serif">숲의 친구</text>
+      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#6ab06a" opacity="0.8" font-family="serif">초록 충전형</text>
     </svg></div>
   <div id="svg-n_earth"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
       <circle cx="60" cy="60" r="58" fill="#1a1208"/>
@@ -562,70 +579,9 @@ em{font-style:normal;}
       <rect x="72" y="106" width="16" height="14" rx="2" fill="#8a5a3a"/>
       <path d="M80 106 Q76 98 80 93 Q84 90 82 98" fill="#3a6a3a"/>
       <path d="M80 106 Q84 96 88 98" fill="#4a8a4a" opacity="0.8"/>
-      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">대지의 감성</text>
+      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">핸드메이드 감성형</text>
     </svg></div>
-  <div id="svg-n_breeze"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="60" cy="60" r="58" fill="#0e1a14"/>
-      <!-- 바람 곡선 -->
-      <path d="M10 40 Q40 30 70 40 Q90 45 110 35" stroke="#4a9a6a" stroke-width="0.8" fill="none" opacity="0.4"/>
-      <path d="M10 50 Q35 38 65 50 Q85 58 110 45" stroke="#4a9a6a" stroke-width="0.6" fill="none" opacity="0.25"/>
-      <!-- 잎사귀들 -->
-      <ellipse cx="25" cy="45" rx="5" ry="8" fill="#3a7a4a" opacity="0.5" transform="rotate(-30,25,45)"/>
-      <ellipse cx="92" cy="38" rx="4" ry="7" fill="#3a7a4a" opacity="0.4" transform="rotate(20,92,38)"/>
-      <!-- 캐릭터 -->
-      <ellipse cx="60" cy="103" rx="18" ry="22" fill="#1e3a2a"/>
-      <!-- 흘러내린 머리 -->
-      <path d="M44 72 Q42 90 44 100" stroke="#3a2010" stroke-width="8" fill="none" stroke-linecap="round"/>
-      <path d="M76 72 Q78 90 76 100" stroke="#3a2010" stroke-width="6" fill="none" stroke-linecap="round"/>
-      <ellipse cx="60" cy="68" rx="18" ry="7" fill="#3a2010"/>
-      <!-- 얼굴 -->
-      <circle cx="60" cy="78" r="16" fill="#c8a07a"/>
-      <!-- 눈 (초승달형) -->
-      <path d="M52 75 Q55 73 58 75" stroke="#2a1a0a" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-      <path d="M62 75 Q65 73 68 75" stroke="#2a1a0a" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-      <!-- 볼터치 -->
-      <ellipse cx="51" cy="80" rx="3.5" ry="2" fill="#d4826e" opacity="0.5"/>
-      <ellipse cx="69" cy="80" rx="3.5" ry="2" fill="#d4826e" opacity="0.5"/>
-      <path d="M55 84 Q60 88 65 84" stroke="#8a4a2a" stroke-width="1.2" fill="none"/>
-      <!-- 스카프 (자연색) -->
-      <path d="M44 92 Q60 88 76 92 Q80 98 60 96 Q40 98 44 92" fill="#4a7a5a"/>
-      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#6ab06a" opacity="0.8" font-family="serif">바람의 결</text>
-    </svg></div>
-  <div id="svg-n_garden"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="60" cy="60" r="58" fill="#0d180d"/>
-      <!-- 정원 바닥 -->
-      <ellipse cx="60" cy="122" rx="48" ry="10" fill="#1a2e1a"/>
-      <!-- 꽃들 -->
-      <circle cx="25" cy="105" r="5" fill="#c9a96e" opacity="0.7"/>
-      <line x1="25" y1="110" x2="25" y2="122" stroke="#2d5a2d" stroke-width="1.5"/>
-      <circle cx="95" cy="108" r="4" fill="#e8c96e" opacity="0.6"/>
-      <line x1="95" y1="112" x2="95" y2="122" stroke="#2d5a2d" stroke-width="1.5"/>
-      <!-- 캐릭터 -->
-      <ellipse cx="60" cy="102" rx="18" ry="22" fill="#3a5a2a"/>
-      <!-- 꽃 머리장식 -->
-      <ellipse cx="60" cy="66" rx="17" ry="6" fill="#3a2010"/>
-      <path d="M43 66 Q60 56 77 66" fill="#3a2010"/>
-      <circle cx="55" cy="62" r="4" fill="#e8826e" opacity="0.8"/>
-      <circle cx="65" cy="60" r="3.5" fill="#c9a96e" opacity="0.9"/>
-      <circle cx="48" cy="66" r="3" fill="#e8c96e" opacity="0.7"/>
-      <!-- 얼굴 -->
-      <circle cx="60" cy="78" r="16" fill="#c8956a"/>
-      <!-- 눈 -->
-      <circle cx="55" cy="76" r="2.5" fill="#2a1a0a"/>
-      <circle cx="65" cy="76" r="2.5" fill="#2a1a0a"/>
-      <circle cx="55.8" cy="75.2" r="0.8" fill="white"/>
-      <circle cx="65.8" cy="75.2" r="0.8" fill="white"/>
-      <ellipse cx="51" cy="80" rx="3" ry="2" fill="#d4826e" opacity="0.6"/>
-      <ellipse cx="69" cy="80" rx="3" ry="2" fill="#d4826e" opacity="0.6"/>
-      <path d="M55 84 Q60 88 65 84" stroke="#8a4a2a" stroke-width="1.3" fill="none"/>
-      <!-- 물뿌리개 -->
-      <rect x="72" y="102" width="18" height="12" rx="2" fill="#5a7a6a"/>
-      <path d="M90 105 Q96 102 94 108" stroke="#5a7a6a" stroke-width="2" fill="none"/>
-      <line x1="93" y1="104" x2="96" y2="107" stroke="#6aaecc" stroke-width="0.8" opacity="0.6"/>
-      <line x1="94" y1="106" x2="97" y2="110" stroke="#6aaecc" stroke-width="0.8" opacity="0.5"/>
-      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#6ab06a" opacity="0.8" font-family="serif">정원사의 손길</text>
-    </svg></div>
-  <div id="svg-l_royal"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+<div id="svg-l_royal"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
       <defs><linearGradient id="lg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#1a1208"/><stop offset="100%" stop-color="#0c0c0c"/></linearGradient></defs>
       <circle cx="60" cy="60" r="58" fill="url(#lg1)"/>
       <!-- 왕관 -->
@@ -652,7 +608,7 @@ em{font-style:normal;}
       <circle cx="57" cy="85.5" r="1.5" fill="#e8e0d0"/>
       <circle cx="63" cy="85.5" r="1.5" fill="#e8e0d0"/>
       <circle cx="68" cy="87" r="1.5" fill="#e8e0d0"/>
-      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.8" font-family="serif">로열 에디터</text>
+      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.8" font-family="serif">품격 추구형</text>
     </svg></div>
   <div id="svg-l_gallery"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
       <circle cx="60" cy="60" r="58" fill="#0e0e0e"/>
@@ -682,71 +638,9 @@ em{font-style:normal;}
       <circle cx="40" cy="104" r="2" fill="#6a9a6a"/>
       <circle cx="44" cy="108" r="2" fill="#6a6aaa"/>
       <circle cx="37" cy="112" r="2" fill="#aa6a6a"/>
-      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.8" font-family="serif">갤러리스트</text>
+      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.8" font-family="serif">갤러리 큐레이터형</text>
     </svg></div>
-  <div id="svg-l_classic"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="60" cy="60" r="58" fill="#0c0c0a"/>
-      <!-- 대리석 패턴 -->
-      <path d="M0 80 Q30 70 60 80 Q90 90 120 80" stroke="#c9a96e" stroke-width="0.3" fill="none" opacity="0.15"/>
-      <path d="M0 90 Q40 82 80 90 Q100 94 120 90" stroke="#c9a96e" stroke-width="0.3" fill="none" opacity="0.1"/>
-      <!-- 캐릭터 -->
-      <ellipse cx="60" cy="102" rx="20" ry="24" fill="#1e1a14"/>
-      <!-- 머리카락 -->
-      <ellipse cx="60" cy="66" rx="18" ry="7" fill="#2a1e0a"/>
-      <path d="M42 66 Q60 55 78 66" fill="#2a1e0a"/>
-      <path d="M42 66 Q44 78 44 86" stroke="#2a1e0a" stroke-width="6" fill="none" stroke-linecap="round"/>
-      <path d="M78 66 Q76 78 76 86" stroke="#2a1e0a" stroke-width="5" fill="none" stroke-linecap="round"/>
-      <!-- 얼굴 -->
-      <circle cx="60" cy="78" r="16" fill="#d4a574"/>
-      <!-- 고전적 눈 -->
-      <path d="M52 75 Q55.5 72 59 75" stroke="#2a1a0a" stroke-width="1.5" fill="none"/>
-      <path d="M61 75 Q64.5 72 68 75" stroke="#2a1a0a" stroke-width="1.5" fill="none"/>
-      <ellipse cx="51" cy="79" rx="3" ry="1.8" fill="#c8825e" opacity="0.4"/>
-      <ellipse cx="69" cy="79" rx="3" ry="1.8" fill="#c8825e" opacity="0.4"/>
-      <path d="M56 83 Q60 86 64 83" stroke="#8a4a2a" stroke-width="1.1" fill="none"/>
-      <!-- 클래식 재킷 -->
-      <path d="M40 92 Q60 86 80 92 L82 126 Q60 130 38 126Z" fill="#1a1a2a"/>
-      <path d="M52 92 L56 110" stroke="#c9a96e" stroke-width="0.5" opacity="0.6"/>
-      <path d="M68 92 L64 110" stroke="#c9a96e" stroke-width="0.5" opacity="0.6"/>
-      <rect x="57" y="92" width="6" height="2" rx="1" fill="#c9a96e" opacity="0.7"/>
-      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.8" font-family="serif">클래식 에디터</text>
-    </svg></div>
-  <div id="svg-l_luxe"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
-      <defs><radialGradient id="lg2"><stop offset="0%" stop-color="#1a1408"/><stop offset="100%" stop-color="#0a0a08"/></radialGradient></defs>
-      <circle cx="60" cy="60" r="58" fill="url(#lg2)"/>
-      <!-- 황금 장식 -->
-      <circle cx="60" cy="20" r="6" fill="none" stroke="#c9a96e" stroke-width="1" opacity="0.5"/>
-      <line x1="60" y1="14" x2="60" y2="26" stroke="#c9a96e" stroke-width="0.5" opacity="0.4"/>
-      <line x1="54" y1="20" x2="66" y2="20" stroke="#c9a96e" stroke-width="0.5" opacity="0.4"/>
-      <!-- 캐릭터 -->
-      <ellipse cx="60" cy="102" rx="20" ry="24" fill="#1a1408"/>
-      <!-- 머리카락 (업스타일) -->
-      <ellipse cx="60" cy="63" rx="16" ry="9" fill="#1a0e04"/>
-      <ellipse cx="60" cy="57" rx="12" ry="6" fill="#2a1a08"/>
-      <circle cx="60" cy="54" r="4" fill="#c9a96e" opacity="0.7"/>
-      <!-- 얼굴 -->
-      <circle cx="60" cy="76" r="16" fill="#d4a574"/>
-      <!-- 눈 (우아함) -->
-      <path d="M52 73 Q55.5 70 59 73" stroke="#2a1a0a" stroke-width="1.8" fill="none"/>
-      <path d="M61 73 Q64.5 70 68 73" stroke="#2a1a0a" stroke-width="1.8" fill="none"/>
-      <line x1="52" y1="73" x2="50" y2="72" stroke="#2a1a0a" stroke-width="1"/>
-      <line x1="68" y1="73" x2="70" y2="72" stroke="#2a1a0a" stroke-width="1"/>
-      <ellipse cx="51" cy="78" rx="3" ry="1.5" fill="#c8725e" opacity="0.5"/>
-      <ellipse cx="69" cy="78" rx="3" ry="1.5" fill="#c8725e" opacity="0.5"/>
-      <path d="M56 82 Q60 85 64 82" stroke="#8a3a2a" stroke-width="1.2" fill="none"/>
-      <!-- 귀걸이 -->
-      <circle cx="44" cy="79" r="2" fill="#c9a96e"/>
-      <line x1="44" y1="81" x2="44" y2="86" stroke="#c9a96e" stroke-width="0.8"/>
-      <circle cx="44" cy="87" r="1.5" fill="#e8d5b0"/>
-      <circle cx="76" cy="79" r="2" fill="#c9a96e"/>
-      <line x1="76" y1="81" x2="76" y2="86" stroke="#c9a96e" stroke-width="0.8"/>
-      <circle cx="76" cy="87" r="1.5" fill="#e8d5b0"/>
-      <!-- 드레스 -->
-      <path d="M40 90 Q60 84 80 90 L85 130 Q60 134 35 130Z" fill="#1a1408"/>
-      <path d="M40 90 Q60 84 80 90" stroke="#c9a96e" stroke-width="0.6" fill="none" opacity="0.5"/>
-      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.8" font-family="serif">럭스 큐레이터</text>
-    </svg></div>
-  <div id="svg-a_wild"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+<div id="svg-a_wild"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
       <circle cx="60" cy="60" r="58" fill="#0e080e"/>
       <!-- 물감 튀김 -->
       <circle cx="20" cy="30" r="4" fill="#8a3a8a" opacity="0.6"/>
@@ -778,7 +672,7 @@ em{font-style:normal;}
       <circle cx="38" cy="104" r="2" fill="#8a3a8a" opacity="0.7"/>
       <circle cx="35" cy="108" r="1.5" fill="#3a8a3a" opacity="0.6"/>
       <circle cx="41" cy="107" r="1.5" fill="#c9a96e" opacity="0.7"/>
-      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.8" font-family="serif">야생의 예술가</text>
+      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.8" font-family="serif">개성 폭발형</text>
     </svg></div>
   <div id="svg-a_indie"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
       <circle cx="60" cy="60" r="58" fill="#080810"/>
@@ -805,68 +699,9 @@ em{font-style:normal;}
       <path d="M42 90 Q60 84 78 90 L80 126 Q60 130 40 126Z" fill="#18181e"/>
       <line x1="50" y1="90" x2="50" y2="126" stroke="#c9a96e" stroke-width="0.4" opacity="0.4"/>
       <line x1="70" y1="90" x2="70" y2="126" stroke="#c9a96e" stroke-width="0.4" opacity="0.4"/>
-      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.8" font-family="serif">인디 아티스트</text>
+      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.8" font-family="serif">빈티지 스토리형</text>
     </svg></div>
-  <div id="svg-a_vintage"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="60" cy="60" r="58" fill="#0e0a06"/>
-      <!-- 빈티지 프레임 -->
-      <rect x="8" y="8" width="104" height="104" rx="4" fill="none" stroke="#c9a96e" stroke-width="0.4" opacity="0.2"/>
-      <rect x="12" y="12" width="96" height="96" rx="3" fill="none" stroke="#c9a96e" stroke-width="0.3" opacity="0.15"/>
-      <!-- 캐릭터 -->
-      <ellipse cx="60" cy="102" rx="20" ry="22" fill="#2a1e10"/>
-      <!-- 복고풍 머리 -->
-      <ellipse cx="60" cy="65" rx="19" ry="9" fill="#2a1a08"/>
-      <path d="M41 65 Q60 52 79 65" fill="#2a1a08"/>
-      <path d="M41 68 Q43 80 44 88" stroke="#2a1a08" stroke-width="7" fill="none" stroke-linecap="round"/>
-      <path d="M79 68 Q77 80 76 88" stroke="#2a1a08" stroke-width="6" fill="none" stroke-linecap="round"/>
-      <!-- 얼굴 -->
-      <circle cx="60" cy="78" r="16" fill="#d4a574"/>
-      <!-- 복고풍 눈 -->
-      <path d="M51 74 Q55 71 59 74 L59 77 Q55 78 51 77Z" fill="#1a0a0a"/>
-      <path d="M61 74 Q65 71 69 74 L69 77 Q65 78 61 77Z" fill="#1a0a0a"/>
-      <circle cx="53" cy="74" r="0.8" fill="white"/>
-      <circle cx="63" cy="74" r="0.8" fill="white"/>
-      <ellipse cx="51" cy="80" rx="3" ry="1.8" fill="#c8825e" opacity="0.5"/>
-      <ellipse cx="69" cy="80" rx="3" ry="1.8" fill="#c8825e" opacity="0.5"/>
-      <path d="M55 84 Q60 87 65 84" stroke="#8a4a2a" stroke-width="1.3" fill="none"/>
-      <!-- 빈티지 의상 -->
-      <path d="M40 92 Q60 86 80 92 L82 128 Q60 132 38 128Z" fill="#2a1a10"/>
-      <circle cx="60" cy="98" r="3" fill="#c9a96e" opacity="0.6"/>
-      <circle cx="60" cy="106" r="3" fill="#c9a96e" opacity="0.5"/>
-      <circle cx="60" cy="114" r="3" fill="#c9a96e" opacity="0.4"/>
-      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.8" font-family="serif">빈티지 소울</text>
-    </svg></div>
-  <div id="svg-a_eccentric"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="60" cy="60" r="58" fill="#0a080e"/>
-      <!-- 별자리 같은 패턴 -->
-      <circle cx="22" cy="22" r="1.5" fill="#c9a96e" opacity="0.5"/>
-      <circle cx="95" cy="18" r="1" fill="#c9a96e" opacity="0.4"/>
-      <circle cx="18" cy="80" r="1" fill="#c9a96e" opacity="0.3"/>
-      <line x1="22" y1="22" x2="95" y2="18" stroke="#c9a96e" stroke-width="0.3" opacity="0.15"/>
-      <!-- 캐릭터 -->
-      <ellipse cx="60" cy="102" rx="20" ry="22" fill="#18101e"/>
-      <!-- 특이한 모자 -->
-      <ellipse cx="60" cy="58" rx="22" ry="8" fill="#3a1a3a"/>
-      <rect x="50" y="42" width="20" height="18" rx="2" fill="#2a1a2a"/>
-      <circle cx="60" cy="42" r="5" fill="#c9a96e" opacity="0.7"/>
-      <path d="M55 42 L60 36 L65 42" fill="none" stroke="#c9a96e" stroke-width="0.8" opacity="0.5"/>
-      <!-- 얼굴 -->
-      <circle cx="60" cy="76" r="15" fill="#c89a7a"/>
-      <!-- 눈 (한쪽 다름) -->
-      <circle cx="55" cy="74" r="3" fill="#1a0a1a"/>
-      <polygon points="65,70 66.2,73.2 69.7,73.2 67,75.2 68,78.5 65,76.5 62,78.5 63,75.2 60.3,73.2 63.8,73.2" fill="#1a0a1a"/>
-      <circle cx="55.8" cy="73" r="0.8" fill="white"/>
-      <ellipse cx="50" cy="78" rx="3" ry="2" fill="#c8625e" opacity="0.5"/>
-      <ellipse cx="70" cy="78" rx="3" ry="2" fill="#c8625e" opacity="0.5"/>
-      <path d="M55 82 Q60 85 65 82" stroke="#8a3a2a" stroke-width="1.2" fill="none"/>
-      <!-- 화려한 의상 -->
-      <path d="M40 90 Q60 84 80 90 L82 128 Q60 132 38 128Z" fill="#2a103a"/>
-      <circle cx="55" cy="95" r="2" fill="#c9a96e" opacity="0.6"/>
-      <circle cx="65" cy="95" r="2" fill="#8a4a9a" opacity="0.6"/>
-      <circle cx="60" cy="103" r="2" fill="#4a8a4a" opacity="0.5"/>
-      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.8" font-family="serif">에클레틱 소울</text>
-    </svg></div>
-  <div id="svg-m_pure"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+<div id="svg-m_pure"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
       <circle cx="60" cy="60" r="58" fill="#0a0a0a"/>
       <!-- 수평선 하나 -->
       <line x1="15" y1="95" x2="105" y2="95" stroke="#c9a96e" stroke-width="0.4" opacity="0.2"/>
@@ -885,7 +720,7 @@ em{font-style:normal;}
       <!-- 미니멀 의상 (흰 셔츠) -->
       <path d="M44 90 Q60 84 76 90 L78 128 Q60 132 42 128Z" fill="#e8e0d0"/>
       <line x1="60" y1="90" x2="60" y2="128" stroke="#d0c8b8" stroke-width="0.5"/>
-      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">순수 미니멀</text>
+      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">극도 미니멀형</text>
     </svg></div>
   <div id="svg-m_grid"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
       <circle cx="60" cy="60" r="58" fill="#080808"/>
@@ -906,54 +741,9 @@ em{font-style:normal;}
       <!-- 헤어 (기하학) -->
       <rect x="44" y="56" width="32" height="10" rx="0" fill="#0a0a0a"/>
       <rect x="46" y="52" width="28" height="8" rx="1" fill="#141414"/>
-      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">그리드 마스터</text>
+      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">구조·정렬 추구형</text>
     </svg></div>
-  <div id="svg-m_mono"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="60" cy="60" r="58" fill="#0a0a08"/>
-      <!-- 황금 비율 곡선 -->
-      <path d="M15 60 Q40 20 85 60 Q110 80 85 100" stroke="#c9a96e" stroke-width="0.4" fill="none" opacity="0.15"/>
-      <!-- 캐릭터 -->
-      <ellipse cx="60" cy="103" rx="18" ry="23" fill="#101008"/>
-      <!-- 얼굴 -->
-      <circle cx="60" cy="76" r="15" fill="#d8c4a8"/>
-      <!-- 눈 (감각적) -->
-      <path d="M52 74 Q55.5 71 59 74" stroke="#0a0a08" stroke-width="1.8" fill="none"/>
-      <path d="M61 74 Q64.5 71 68 74" stroke="#0a0a08" stroke-width="1.8" fill="none"/>
-      <ellipse cx="51" cy="77" rx="2.5" ry="1.5" fill="#c8825e" opacity="0.35"/>
-      <ellipse cx="69" cy="77" rx="2.5" ry="1.5" fill="#c8825e" opacity="0.35"/>
-      <line x1="57" y1="81" x2="63" y2="81" stroke="#5a3a28" stroke-width="1" stroke-linecap="round"/>
-      <!-- 머리카락 -->
-      <ellipse cx="60" cy="64" rx="17" ry="7" fill="#0a0a08"/>
-      <path d="M43 64 Q60 54 77 64" fill="#0a0a08"/>
-      <!-- 롤넥 -->
-      <rect x="50" y="89" width="20" height="8" rx="0" fill="#101008"/>
-      <rect x="52" y="85" width="16" height="6" rx="1" fill="#1a1a18"/>
-      <!-- 코트 -->
-      <path d="M40 93 Q60 87 80 93 L82 128 Q60 132 38 128Z" fill="#101008"/>
-      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">모노크롬</text>
-    </svg></div>
-  <div id="svg-m_line"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="60" cy="60" r="58" fill="#060606"/>
-      <!-- 수직선들 -->
-      <line x1="30" y1="10" x2="30" y2="115" stroke="#c9a96e" stroke-width="0.3" opacity="0.1"/>
-      <line x1="90" y1="10" x2="90" y2="115" stroke="#c9a96e" stroke-width="0.3" opacity="0.1"/>
-      <!-- 캐릭터 (선화 느낌) -->
-      <ellipse cx="60" cy="103" rx="16" ry="22" fill="none" stroke="#2a2a2a" stroke-width="1.5"/>
-      <ellipse cx="60" cy="103" rx="16" ry="22" fill="#0e0e0e"/>
-      <!-- 얼굴 -->
-      <circle cx="60" cy="76" r="15" fill="none" stroke="#d8c4a8" stroke-width="1"/>
-      <circle cx="60" cy="76" r="15" fill="#d8c4a8"/>
-      <!-- 눈 (선화) -->
-      <line x1="53" y1="73" x2="58" y2="73" stroke="#0a0a0a" stroke-width="1.5" stroke-linecap="round"/>
-      <line x1="62" y1="73" x2="67" y2="73" stroke="#0a0a0a" stroke-width="1.5" stroke-linecap="round"/>
-      <line x1="57" y1="79" x2="63" y2="79" stroke="#5a3a28" stroke-width="1" stroke-linecap="round"/>
-      <!-- 머리 (선화) -->
-      <path d="M45 68 Q60 56 75 68" fill="none" stroke="#0a0a0a" stroke-width="2" stroke-linecap="round"/>
-      <path d="M45 68 Q45 78 46 86" stroke="#0a0a0a" stroke-width="2" fill="none" stroke-linecap="round"/>
-      <path d="M75 68 Q75 78 74 86" stroke="#0a0a0a" stroke-width="2" fill="none" stroke-linecap="round"/>
-      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">라인 아키텍트</text>
-    </svg></div>
-  <div id="svg-c_hearth"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+<div id="svg-c_hearth"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
       <circle cx="60" cy="60" r="58" fill="#0e0a06"/>
       <!-- 벽난로 -->
       <rect x="15" y="85" width="30" height="28" rx="2" fill="#2a1a0a"/>
@@ -982,7 +772,7 @@ em{font-style:normal;}
       <!-- 담요/스웨터 -->
       <path d="M50 94 Q70 88 90 94 L92 128 Q70 132 48 128Z" fill="#4a3020"/>
       <path d="M54 94 Q70 90 86 94" stroke="#c9a96e" stroke-width="0.5" fill="none" opacity="0.4"/>
-      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">따뜻한 불가</text>
+      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">포근함 최우선형</text>
     </svg></div>
   <div id="svg-c_family"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
       <circle cx="60" cy="60" r="58" fill="#0c0a06"/>
@@ -1009,68 +799,7 @@ em{font-style:normal;}
       <!-- 손 잡기 -->
       <line x1="64" y1="110" x2="64" y2="110" stroke="#c8956a" stroke-width="2"/>
       <ellipse cx="63" cy="110" rx="4" ry="3" fill="#c8956a" opacity="0.7"/>
-      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">함께하는 온기</text>
-    </svg></div>
-  <div id="svg-c_blanket"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="60" cy="60" r="58" fill="#0c0808"/>
-      <!-- 소파 -->
-      <rect x="15" y="95" width="90" height="28" rx="4" fill="#2a1810"/>
-      <rect x="15" y="88" width="90" height="12" rx="3" fill="#3a2218"/>
-      <rect x="12" y="85" width="15" height="35" rx="3" fill="#2a1810"/>
-      <rect x="93" y="85" width="15" height="35" rx="3" fill="#2a1810"/>
-      <!-- 담요 -->
-      <path d="M28 88 Q60 78 92 88 Q88 110 60 108 Q32 110 28 88" fill="#4a2a18"/>
-      <path d="M28 88 Q60 78 92 88" stroke="#c9a96e" stroke-width="0.6" fill="none" opacity="0.4"/>
-      <!-- 캐릭터 -->
-      <circle cx="60" cy="78" r="18" fill="none"/>
-      <circle cx="60" cy="80" r="16" fill="#d4a574"/>
-      <!-- 꼬불꼬불 머리 -->
-      <path d="M44 74 Q42 60 48 54 Q54 50 60 56 Q66 50 72 54 Q78 60 76 74" fill="#3a2010"/>
-      <path d="M44 74 Q44 66 46 60" stroke="#4a2a10" stroke-width="4" fill="none"/>
-      <path d="M76 74 Q76 66 74 60" stroke="#4a2a10" stroke-width="4" fill="none"/>
-      <!-- 눈 (반달) -->
-      <path d="M52 78 Q56 76 60 78" stroke="#2a1a0a" stroke-width="2" fill="none" stroke-linecap="round"/>
-      <path d="M60 78 Q64 76 68 78" stroke="#2a1a0a" stroke-width="2" fill="none" stroke-linecap="round"/>
-      <!-- 볼터치 크게 -->
-      <ellipse cx="50" cy="83" rx="5" ry="3" fill="#e8826e" opacity="0.7"/>
-      <ellipse cx="70" cy="83" rx="5" ry="3" fill="#e8826e" opacity="0.7"/>
-      <path d="M55 88 Q60 93 65 88" stroke="#8a4a2a" stroke-width="1.5" fill="none"/>
-      <!-- 핫초코 -->
-      <rect x="78" y="86" width="14" height="12" rx="2" fill="#3a2010"/>
-      <path d="M81 86 Q85 82 89 86" stroke="#c9a96e" stroke-width="1" fill="none" opacity="0.5"/>
-      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">담요의 온도</text>
-    </svg></div>
-  <div id="svg-c_routine"><svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="60" cy="60" r="58" fill="#0c0c0a"/>
-      <!-- 달력/시계 -->
-      <circle cx="85" cy="28" r="12" fill="none" stroke="#c9a96e" stroke-width="0.6" opacity="0.4"/>
-      <line x1="85" y1="28" x2="85" y2="20" stroke="#c9a96e" stroke-width="1" opacity="0.5" stroke-linecap="round"/>
-      <line x1="85" y1="28" x2="90" y2="31" stroke="#c9a96e" stroke-width="1" opacity="0.4" stroke-linecap="round"/>
-      <circle cx="85" cy="28" r="1.5" fill="#c9a96e" opacity="0.6"/>
-      <!-- 캐릭터 -->
-      <ellipse cx="55" cy="103" rx="18" ry="22" fill="#2a2218"/>
-      <!-- 깔끔한 헤어 -->
-      <ellipse cx="55" cy="67" rx="17" ry="7" fill="#2a1a08"/>
-      <path d="M38 67 Q55 56 72 67" fill="#2a1a08"/>
-      <path d="M38 70 Q38 80 39 88" stroke="#2a1a08" stroke-width="6" fill="none" stroke-linecap="round"/>
-      <!-- 얼굴 -->
-      <circle cx="55" cy="79" r="16" fill="#d4a574"/>
-      <!-- 눈 -->
-      <circle cx="50" cy="77" r="2.5" fill="#2a1a0a"/>
-      <circle cx="60" cy="77" r="2.5" fill="#2a1a0a"/>
-      <circle cx="50.8" cy="76.2" r="0.8" fill="white"/>
-      <circle cx="60.8" cy="76.2" r="0.8" fill="white"/>
-      <ellipse cx="46" cy="81" rx="3.5" ry="2" fill="#e8826e" opacity="0.5"/>
-      <ellipse cx="64" cy="81" rx="3.5" ry="2" fill="#e8826e" opacity="0.5"/>
-      <path d="M50 85 Q55 89 60 85" stroke="#8a4a2a" stroke-width="1.3" fill="none"/>
-      <!-- 앞치마 -->
-      <path d="M37 92 Q55 86 73 92 L75 128 Q55 132 35 128Z" fill="#3a2a18"/>
-      <rect x="51" y="90" width="8" height="4" rx="1" fill="#5a3a28"/>
-      <!-- 커피 -->
-      <rect x="75" y="100" width="16" height="16" rx="2" fill="#2a1a08"/>
-      <path d="M77 100 Q83 95 89 100" stroke="#c9a96e" stroke-width="1" fill="none" opacity="0.6"/>
-      <path d="M82 98 Q80 93 82 90" stroke="#5a5a5a" stroke-width="0.8" fill="none" opacity="0.4"/>
-      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">일상의 리추얼</text>
+      <text x="60" y="138" text-anchor="middle" font-size="8" fill="#c9a96e" opacity="0.7" font-family="serif">함께하는 공간형</text>
     </svg></div>
 </div>
 <script>
@@ -1893,17 +1622,17 @@ function renderResult(t, sub, unlocked){
     <div class="rh">
       <p class="rtag">✦ 스코포스 공간 욕구 유형 검사 (SDTI) 결과</p>
       <h2 class="rtype">${dec(subName)}</h2>
-      <p style="font-size:.68rem;letter-spacing:.15em;color:var(--gy);margin-bottom:10px;text-transform:uppercase">${dec(t.plain)}</p>
+      <p style="font-size:.72rem;letter-spacing:.05em;color:var(--gray);font-weight:700;margin-bottom:10px;text-transform:uppercase">${dec(t.plain)}</p>
       <p class="rdesc">${dec(t.desc)}</p>
       <div class="rkws">${t.keys.map(k=>`<span class="kw">${k}</span>`).join('')}</div>
     </div>
 
     <!-- 캐릭터 -->
     <div style="display:flex;flex-direction:column;align-items:center;margin:28px 0 32px">
-      <p style="font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gy);margin-bottom:14px">나의 공간 캐릭터</p>
-      <div style="width:120px;height:140px;filter:drop-shadow(0 0 18px rgba(201,169,110,.18));animation:charIn .8s var(--ez) both">${charSVG}</div>
+      <p style="font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gray);font-weight:700;margin-bottom:14px">나의 공간 캐릭터</p>
+      <div style="width:120px;height:140px;filter:drop-shadow(0 4px 14px rgba(233,30,140,.18));animation:charIn .8s var(--ez) both;border-radius:50%;background:linear-gradient(135deg,#FAFBFE,#F0F2F8);padding:8px">${charSVG}</div>
       <p style="font-size:1.5rem;margin-top:10px;margin-bottom:2px">${t.emoji||''}</p>
-      <p style="font-size:.9rem;font-weight:700;color:var(--gold);margin-top:2px;letter-spacing:.04em">${dec(subPlain)}</p>
+      <p style="font-size:.95rem;font-weight:800;color:var(--pink);margin-top:2px;letter-spacing:-.005em">${dec(subPlain)}</p>
     </div>
 
     <!-- 취향 프로파일 바 -->
@@ -1935,9 +1664,9 @@ function renderResult(t, sub, unlocked){
     </div>
 
     <!-- 카카오톡 공유 버튼 -->
-    <div style="margin-top:36px;padding-top:28px;border-top:1px solid rgba(255,255,255,.06);display:flex;flex-direction:column;align-items:center;gap:14px">
-      <p style="font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gy)">✦ 결과 공유하기</p>
-      <button class="kk-share-btn" onclick="shareKakao()" style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;max-width:320px;padding:16px 24px;background:#FEE500;color:#191919;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:700;letter-spacing:.06em;transition:background .2s;border-radius:0">
+    <div style="margin-top:36px;padding-top:28px;border-top:1px solid rgba(0,0,0,.06);display:flex;flex-direction:column;align-items:center;gap:14px">
+      <p style="font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gray);font-weight:700">✦ 결과 공유하기</p>
+      <button class="kk-share-btn" onclick="shareKakao()" style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;max-width:320px;padding:14px 24px;background:#FEE500;color:#191919;border:none;cursor:pointer;font-family:'Nunito','Noto Sans KR',sans-serif;font-size:.92rem;font-weight:800;letter-spacing:.01em;transition:transform .2s var(--ez),box-shadow .2s var(--ez);border-radius:50px;box-shadow:0 4px 12px rgba(254,229,0,.3)">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M10 2C5.58 2 2 4.91 2 8.5c0 2.28 1.38 4.28 3.46 5.48l-.88 3.24a.3.3 0 0 0 .45.32L9.1 15.1c.3.03.6.04.9.04 4.42 0 8-2.91 8-6.5S14.42 2 10 2z" fill="#191919"/></svg>
         카카오톡으로 공유하기
       </button>
@@ -2063,18 +1792,18 @@ function showShareModal(txt){
   ].join(';');
 
   modal.innerHTML = `
-    <div style="width:100%;max-width:480px;background:#1a1a1a;border-radius:20px 20px 0 0;padding:28px 24px 40px;animation:slideUp .3s ease">
-      <div style="width:40px;height:4px;background:rgba(255,255,255,.2);border-radius:2px;margin:0 auto 24px"></div>
-      <p style="font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:#888;margin-bottom:12px;text-align:center">결과 공유하기</p>
-      <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:300;color:#fafaf8;text-align:center;margin-bottom:8px">📋 텍스트가 복사됐습니다</h3>
-      <p style="font-size:.78rem;color:#888;text-align:center;margin-bottom:24px;line-height:1.6">카카오톡 앱을 열어 채팅창에<br>붙여넣기(꾹 누르기)해 주세요</p>
+    <div style="width:100%;max-width:480px;background:#fff;border-radius:20px 20px 0 0;padding:28px 24px 40px;animation:slideUp .3s ease;box-shadow:0 -8px 32px rgba(15,15,26,.15)">
+      <div style="width:40px;height:4px;background:rgba(15,15,26,.15);border-radius:2px;margin:0 auto 24px"></div>
+      <p style="font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:#E91E8C;font-weight:800;margin-bottom:12px;text-align:center">결과 공유하기</p>
+      <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:500;color:#0F0F1A;text-align:center;margin-bottom:8px;letter-spacing:-.01em">📋 텍스트가 복사됐습니다</h3>
+      <p style="font-size:.85rem;color:#5A5A6F;text-align:center;margin-bottom:24px;line-height:1.7;font-weight:500">카카오톡 앱을 열어 채팅창에<br>붙여넣기(꾹 누르기)해 주세요</p>
 
       <div style="display:flex;flex-direction:column;gap:10px">
-        <a href="kakaotalk://launch" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:15px;background:#FEE500;color:#191919;text-decoration:none;font-weight:700;font-size:.88rem;font-family:'DM Sans',sans-serif;border-radius:0" onclick="setTimeout(()=>closeShareModal(),500)">
+        <a href="kakaotalk://launch" style="display:flex;align-items:center;justify-content:center;gap:10px;padding:15px;background:#FEE500;color:#191919;text-decoration:none;font-weight:800;font-size:.92rem;font-family:'Nunito','Noto Sans KR',sans-serif;border-radius:50px;box-shadow:0 4px 12px rgba(254,229,0,.3);transition:transform .2s" onclick="setTimeout(()=>closeShareModal(),500)">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M10 2C5.58 2 2 4.91 2 8.5c0 2.28 1.38 4.28 3.46 5.48l-.88 3.24a.3.3 0 0 0 .45.32L9.1 15.1c.3.03.6.04.9.04 4.42 0 8-2.91 8-6.5S14.42 2 10 2z" fill="#191919"/></svg>
           카카오톡 열기
         </a>
-        <button onclick="closeShareModal()" style="padding:13px;background:none;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.6);font-size:.8rem;font-family:'DM Sans',sans-serif;cursor:pointer">
+        <button onclick="closeShareModal()" style="padding:13px;background:#fff;border:1.5px solid rgba(15,15,26,.1);color:#5A5A6F;font-size:.85rem;font-family:'Nunito','Noto Sans KR',sans-serif;font-weight:700;cursor:pointer;border-radius:50px;transition:all .2s">
           닫기
         </button>
       </div>
