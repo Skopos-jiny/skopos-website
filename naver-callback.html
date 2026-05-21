@@ -17,46 +17,64 @@ p{font-size:.9rem;color:#8890A4}
   <div class="spinner"></div>
   <p>네이버 로그인 처리 중입니다...</p>
 </div>
+
 <script>
 const SUPABASE_URL  = 'https://rgbukqphcqptnfeqipfn.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJnYnVrcXBoY3FwdG5mZXFpcGZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2OTkzMDMsImV4cCI6MjA5NDI3NTMwM30.fWUHe2AoWr9fMLUNSQkbhosUO7FH9dvZOIZbz_XyzFM';
+
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
-(async()=>{
-  const params   = new URLSearchParams(window.location.search);
-  const code     = params.get('code');
-  const state    = params.get('state');
+(async () => {
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get('code');
+  const state = params.get('state');
   const savedState = sessionStorage.getItem('naver_state');
-  const redirect   = sessionStorage.getItem('naver_redirect') || 'mypage.html';
+  const redirect = sessionStorage.getItem('naver_redirect') || 'mypage.html';
 
-  if(!code || state !== savedState){
+  if (!code || !state || state !== savedState) {
     alert('로그인에 실패했습니다. 다시 시도해주세요.');
     window.location.href = 'login.html';
     return;
   }
 
-  // Netlify Function으로 코드 전달 → 네이버 토큰 교환 → Supabase 세션 생성
-  try{
+  try {
     const res = await fetch('/.netlify/functions/naver-auth', {
       method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ code, redirect_uri: window.location.origin + '/naver-callback.html' }),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        code,
+        state,
+        redirect_uri: window.location.origin + '/naver-callback.html'
+      }),
     });
+
+    const contentType = res.headers.get('content-type') || '';
+    if (!contentType.includes('application/json')) {
+      throw new Error('인증 서버 응답이 올바르지 않습니다. Netlify Function 배포 상태를 확인해주세요.');
+    }
+
     const data = await res.json();
 
-    if(data.success && data.access_token && data.refresh_token){
-      const { error } = await sb.auth.setSession({
-        access_token:  data.access_token,
-        refresh_token: data.refresh_token,
-      });
-      if(error) throw error;
-      sessionStorage.removeItem('naver_state');
-      sessionStorage.removeItem('naver_redirect');
-      window.location.href = redirect;
-    } else {
+    if (!res.ok || !data.success) {
       throw new Error(data.message || '네이버 인증 실패');
     }
-  }catch(err){
+
+    if (!data.access_token || !data.refresh_token) {
+      throw new Error('Supabase 세션 토큰을 받지 못했습니다.');
+    }
+
+    const { error } = await sb.auth.setSession({
+      access_token: data.access_token,
+      refresh_token: data.refresh_token,
+    });
+
+    if (error) throw error;
+
+    sessionStorage.removeItem('naver_state');
+    sessionStorage.removeItem('naver_redirect');
+
+    window.location.href = redirect;
+  } catch (err) {
     console.error(err);
     alert('로그인 처리 중 오류가 발생했습니다.\n' + err.message);
     window.location.href = 'login.html';
