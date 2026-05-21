@@ -1509,6 +1509,254 @@ const QS=[
 
 
 // ═══════════════════════════════════════
+// 유형별 "나랑은 어울리지 않는 것들" 데이터
+// 부드러운 톤으로 사용자가 거부감 없이 받아들일 수 있게 작성
+// ═══════════════════════════════════════
+const AVOID_BY_TYPE = {
+  'sanctuary_deep': [
+    '벽 한가운데에 걸린 큰 형광 조명',
+    '한눈에 다 보이는 오픈 수납장',
+    '광택이 강한 매끄러운 소재',
+    '시선이 분산되는 화려한 패턴 벽지',
+    '소리를 반사하는 빈 공간이 큰 인테리어',
+  ],
+  'sanctuary_zen': [
+    '한 공간에 빼곡히 채워둔 장식 소품',
+    '여러 색이 섞인 패턴 텍스타일',
+    '오픈된 책장에 가득한 책과 잡동사니',
+    '시선을 끄는 화려한 벽 데코',
+    '쓸 일이 적은데도 항상 꺼내둔 가전',
+  ],
+  'nature_forest': [
+    '인공 소재 위주의 가구 구성',
+    '식물 한 그루 없는 미니멀 인테리어',
+    '차가운 메탈·크롬 마감 가구',
+    '햇빛이 거의 들지 않는 어두운 배치',
+    '깔끔하지만 생기 없는 모노톤 배색',
+  ],
+  'nature_earth': [
+    '균일하게 찍어낸 듯한 공산품 가구',
+    '광택 강한 인조 가죽이나 비닐 소재',
+    '완벽하게 대칭으로 정돈된 배치',
+    '차가운 회색·메탈 톤 위주의 공간',
+    '저렴해 보이는 합성 섬유 러그',
+  ],
+  'luxe_royal': [
+    '저렴해 보이는 합판 가구',
+    '균일하게 깔린 패스트 가구 일색',
+    '엉성하게 마감된 페인트나 도배',
+    '디테일 없는 평범한 일자 라인 가구',
+    '플라스틱 느낌이 강한 조명',
+  ],
+  'luxe_gallery': [
+    '평범한 액자에 흔한 인쇄 포스터',
+    '벽이 가구로 가득 차서 비울 공간이 없는 구성',
+    '주제 없이 잡다하게 모인 소품',
+    '시선의 중심이 없는 평탄한 배치',
+    '톤이 충돌하는 색감의 가구 조합',
+  ],
+  'artistic_wild': [
+    '한 가지 톤으로만 맞춘 무난한 가구',
+    '특색 없는 깔끔한 일자 정렬',
+    '브랜드 로고만 보이는 흔한 아이템',
+    '실용성만 강조된 무미건조한 수납',
+    '개성을 지워버린 완벽한 좌우 대칭',
+  ],
+  'artistic_indie': [
+    '새것 티가 너무 나는 매끄러운 가구',
+    '대량 생산된 똑같은 디자인의 소품',
+    '아무 이야기 없는 무난한 배경 같은 가구',
+    '광택 코팅이 강한 신상품 위주의 구성',
+    '맥락 없이 트렌드만 따라간 데코',
+  ],
+  'minimal_pure': [
+    '한쪽 벽을 가득 채운 콜렉션 디스플레이',
+    '여러 패턴이 섞인 텍스타일',
+    '시선이 가는 자리마다 놓인 작은 소품들',
+    '용도가 겹치는 비슷한 가구의 중복 배치',
+    '컬러 포인트가 여러 곳에 분산된 구성',
+  ],
+  'minimal_grid': [
+    '제멋대로 배치된 비대칭 가구',
+    '높이와 라인이 들쑥날쑥한 수납장',
+    '시각적 정렬이 무너진 갤러리 월',
+    '소재와 톤이 통일되지 않은 가구 조합',
+    '계획 없이 추가된 임시 수납',
+  ],
+  'cozy_hearth': [
+    '차갑게 느껴지는 메탈·유리 위주의 마감',
+    '딱딱한 직선 위주의 모던 가구',
+    '온기 없는 차가운 화이트 조명',
+    '발이 시린 매끈한 타일 바닥 일색',
+    '안락함보다 보여주기 위한 가구 배치',
+  ],
+  'cozy_family': [
+    '혼자 쓰기에만 최적화된 1인용 가구',
+    '대화가 끊기는 등 돌린 좌석 배치',
+    '간식·차 한 잔 둘 자리가 없는 협소한 테이블',
+    '시선이 차단되는 칸막이 인테리어',
+    '함께 모이기 어려운 작은 거실 가구',
+  ],
+};
+
+// 그룹별 공통 폴백 (특정 type 데이터가 없을 때)
+const AVOID_BY_GROUP_FALLBACK = {
+  'sanctuary':[
+    '시선과 청각을 자극하는 화려한 마감',
+    '쉴 공간을 채우는 과도한 장식 소품',
+    '회복을 방해하는 차가운 톤의 조명',
+    '눈에 띄게 어수선해 보이는 오픈 수납',
+  ],
+  'nature':[
+    '생명감 없는 인공 소재 위주의 구성',
+    '식물·우드 톤이 빠진 차가운 인테리어',
+    '햇빛이 안 드는 어두운 배치',
+    '균일하게 찍어낸 듯한 공산품 가구',
+  ],
+  'luxe':[
+    '저렴해 보이는 마감의 가구',
+    '디테일 없는 평범한 라인의 아이템',
+    '주제 없이 잡다하게 모인 소품',
+    '톤이 충돌하는 색감 조합',
+  ],
+  'artistic':[
+    '특색 없는 깔끔한 일자 정렬',
+    '대량 생산된 똑같은 디자인의 소품',
+    '개성을 지운 완벽한 좌우 대칭',
+    '맥락 없이 트렌드만 따라간 데코',
+  ],
+  'minimal':[
+    '시선을 분산시키는 작은 소품들',
+    '용도가 겹치는 가구의 중복 배치',
+    '여러 패턴이 섞인 텍스타일',
+    '계획 없이 추가된 임시 수납',
+  ],
+  'cozy':[
+    '차갑게 느껴지는 메탈·유리 마감',
+    '온기 없는 화이트 일색 조명',
+    '딱딱한 직선 위주의 모던 가구',
+    '함께 모이기 어려운 좁은 좌석',
+  ],
+};
+
+// 최종 폴백 (그룹마저 매칭 안 될 때)
+const AVOID_GENERIC_FALLBACK = [
+  '내 취향과 동떨어진 일반적인 가구 구성',
+  '시선이 분산되어 피로감을 주는 배치',
+  '실용성과 감각 어느 쪽에도 맞지 않는 마감',
+  '맥락 없이 트렌드만 따라간 데코',
+];
+
+// ═══════════════════════════════════════
+// 그룹별 추가 폴백 데이터 (palette·compat·budget·rooms)
+// 결과지 공란 방지용 — 각 type 객체에 해당 필드가 없을 때 사용
+// ═══════════════════════════════════════
+const FALLBACK_BY_GROUP = {
+  'sanctuary': {
+    palette: ['#E8E2D8','#C9C0B0','#8B8378','#5A5347','#2E2A24'],
+    compat: ['minimal_pure','minimal_grid','nature_earth'],
+    budget: {'조명':35,'침구·패브릭':30,'가구':25,'소품':10},
+    rooms: {
+      '거실':'간접 조명과 묵직한 텍스타일로 차분한 베이스를',
+      '침실':'완전 암막 + 린넨·양모 침구로 회복의 핵심 공간을',
+      '주방':'시야에 잡히지 않는 히든 수납으로 어수선함 차단',
+      '서재':'스포트라이트만 켜고 나머지는 어둑하게',
+    },
+  },
+  'nature': {
+    palette: ['#F5F1E8','#D4C8A8','#8FA873','#5C7A4F','#3D5238'],
+    compat: ['cozy_hearth','sanctuary_zen','minimal_pure'],
+    budget: {'식물·우드':35,'조명':25,'가구':25,'패브릭':15},
+    rooms: {
+      '거실':'창가 식물 자리 + 우드톤 가구로 자연의 결을',
+      '침실':'리넨 침구와 라탄 소품으로 손맛이 느껴지는 공간',
+      '주방':'원목 도마·도자기 그릇으로 자연 소재 일상화',
+      '서재':'창가 책상 + 작은 화분 하나로 회복 동선',
+    },
+  },
+  'luxe': {
+    palette: ['#F8F4ED','#C9A96E','#8B6F47','#4A3A28','#1A1410'],
+    compat: ['minimal_grid','artistic_indie','sanctuary_deep'],
+    budget: {'시그니처 가구':40,'조명':25,'아트·소품':20,'마감재':15},
+    rooms: {
+      '거실':'한 점의 시그니처 가구 + 디테일 있는 조명으로 격조를',
+      '침실':'벨벳·실크 텍스타일과 무드 조명으로 사적인 럭셔리',
+      '주방':'마감과 손잡이 디테일까지 통일된 빌트인 라인',
+      '서재':'가죽 의자 + 책장 + 골드 디테일로 클래식 무드',
+    },
+  },
+  'artistic': {
+    palette: ['#F5E6D3','#E8956B','#9B4A6B','#3F2D5E','#1A1A2E'],
+    compat: ['nature_earth','cozy_family','luxe_gallery'],
+    budget: {'아트·오브제':40,'개성 가구':30,'조명':20,'마감재':10},
+    rooms: {
+      '거실':'벽 가득 갤러리 월 + 이야기가 있는 빈티지 가구',
+      '침실':'레이어드된 텍스타일과 컬렉션 디스플레이',
+      '주방':'다른 시대·문화의 식기를 섞어 매일이 작은 여행',
+      '서재':'자신만의 콜렉션과 영감 보드로 채우는 공간',
+    },
+  },
+  'minimal': {
+    palette: ['#FFFFFF','#F0EFEB','#C4C4C4','#5C5C5C','#1A1A1A'],
+    compat: ['sanctuary_zen','luxe_royal','sanctuary_deep'],
+    budget: {'고품질 기본 가구':45,'수납 시스템':25,'조명':20,'마감재':10},
+    rooms: {
+      '거실':'한 점의 완성도 높은 가구 + 비어있는 벽',
+      '침실':'시각적 정렬이 잡힌 침구 + 단 하나의 포인트',
+      '주방':'동선만 남기고 모두 빌트인으로 숨김',
+      '서재':'책상 하나, 의자 하나, 조명 하나의 단순함',
+    },
+  },
+  'cozy': {
+    palette: ['#FDF6E3','#E8C39E','#C18A5C','#7A4F38','#3A2418'],
+    compat: ['nature_forest','sanctuary_deep','artistic_indie'],
+    budget: {'소파·러그':40,'조명':25,'패브릭':20,'소품':15},
+    rooms: {
+      '거실':'폭신한 소파 + 두꺼운 러그로 모두가 모이는 자리',
+      '침실':'두툼한 이불·쿠션과 따뜻한 무드등',
+      '주방':'다이닝 테이블을 중심으로 함께 먹는 시간 디자인',
+      '서재':'편안한 1인 의자 + 작은 사이드 테이블',
+    },
+  },
+};
+
+// 안전한 데이터 조회 — 5개 핵심 필드 모두 보장
+function getTypeField(type, field){
+  if(!type) return null;
+  // 1순위: type 객체에 직접 정의된 값
+  if(type[field]!==undefined){
+    if(Array.isArray(type[field]) && type[field].length>0) return type[field];
+    if(typeof type[field]==='object' && type[field]!==null && Object.keys(type[field]).length>0) return type[field];
+    if(typeof type[field]==='string' && type[field].length>0) return type[field];
+  }
+  // 2순위: 그룹 폴백
+  const groupFallback = FALLBACK_BY_GROUP[type.group];
+  if(groupFallback && groupFallback[field]) return groupFallback[field];
+  // 3순위: 기본값
+  if(field==='palette') return ['#F5F5F5','#D5D5D5','#A5A5A5','#555555','#1A1A1A'];
+  if(field==='compat') return [];
+  if(field==='budget') return {'가구':40,'조명':25,'패브릭':20,'소품':15};
+  if(field==='rooms') return {'거실':'편안하고 자연스러운 공간으로','침실':'회복의 시간을 위한 공간','주방':'일상의 따뜻함이 흐르는 공간','서재':'집중과 휴식이 함께하는 공간'};
+  return null;
+}
+
+// 안전한 avoid 데이터 조회 — 무조건 4~5개 보장
+function getAvoidItems(type){
+  if(!type) return AVOID_GENERIC_FALLBACK;
+  // 1순위: type.avoid (TYPES 객체에 직접 정의된 경우)
+  if(Array.isArray(type.avoid) && type.avoid.length>=3) return type.avoid;
+  // 2순위: AVOID_BY_TYPE 매핑
+  const byType = AVOID_BY_TYPE[type.id];
+  if(byType && byType.length>=3) return byType;
+  // 3순위: 그룹별 폴백
+  const byGroup = AVOID_BY_GROUP_FALLBACK[type.group];
+  if(byGroup && byGroup.length>=3) return byGroup;
+  // 4순위: 최종 일반 폴백
+  return AVOID_GENERIC_FALLBACK;
+}
+
+
+// ═══════════════════════════════════════
 // 24가지 유형 정의
 // ═══════════════════════════════════════
 const TYPES=[
@@ -2800,8 +3048,12 @@ function recordAns(qi,idx){
 function selectOpt(i){
   clearInterval(qTimer);
   document.querySelectorAll('.scale-opt,.choice-opt').forEach(el=>el.classList.remove('sel'));
-  const selector=QS[cur].type==='scale'?'.scale-opt':'.choice-opt';
-  document.querySelectorAll(selector)[i]?.classList.add('sel');
+  if(QS[cur].type==='scale'){
+    // scale 옵션은 DOM 순서가 [4,3,2,1,0]이므로 data-i 속성으로 매칭해야 함
+    document.querySelector(`.scale-opt[data-i="${i}"]`)?.classList.add('sel');
+  } else {
+    document.querySelectorAll('.choice-opt')[i]?.classList.add('sel');
+  }
   recordAns(cur,i);
   saveProgress(); // 매 응답마다 진행 상태 저장
   setTimeout(()=>nextQ(),380);
@@ -2889,7 +3141,7 @@ function buildMainTOC(){
     {id:'sec-insights',     label:'나만의 3가지'},
     {id:'sec-psychology',   label:'심리학적 뿌리'},
     {id:'sec-rooms',        label:'공간별 소품 처방'},
-    {id:'sec-match',        label:'추천 vs 피해야 할'},
+    {id:'sec-match',        label:'어울리는 / 어울리지 않는'},
     {id:'sec-plan',         label:'30/60/90일 플랜'},
     {id:'sec-seasonal',     label:'계절별 가이드'},
     {id:'sec-budget',       label:'예산 배분 비율'},
@@ -3104,18 +3356,30 @@ async function submitSeasonSubscription(ev){
   if(!email || !agreed){ toast('이메일과 동의 체크가 필요해요.', 2800); return; }
   if(!resultType){ toast('결과 정보가 없어요. 진단을 먼저 완료해주세요.', 3000); return; }
 
+  // 이메일 형식 간단 검증
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if(!emailRegex.test(email)){
+    toast('이메일 주소 형식을 확인해주세요.', 2800);
+    return;
+  }
+
   submitBtn.disabled = true;
   submitBtn.textContent = '신청 중...';
 
   try{
-    if(typeof supabase === 'undefined') throw new Error('Supabase가 로드되지 않았어요');
+    // Supabase 라이브러리 로드 확인
+    if(typeof window.supabase === 'undefined' || !window.supabase.createClient){
+      throw new Error('LIB_NOT_LOADED');
+    }
 
-    const { createClient } = supabase;
-    const sb = createClient(
+    // 클라이언트 생성 (변수명 sbClient로 충돌 방지)
+    const sbClient = window.supabase.createClient(
       'https://rgbukqphcqptnfeqipfn.supabase.co',
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJnYnVrcXBoY3FwdG5mZXFpcGZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2OTkzMDMsImV4cCI6MjA5NDI3NTMwM30.fWUHe2AoWr9fMLUNSQkbhosUO7FH9dvZOIZbz_XyzFM'
     );
-    const { data:{ session } } = await sb.auth.getSession();
+
+    // 현재 로그인 세션 확인 (있으면 user_id 연결)
+    const { data:{ session } } = await sbClient.auth.getSession();
 
     // 구독 해지용 토큰 (이메일 하단 링크용)
     const unsubscribeToken = (typeof crypto !== 'undefined' && crypto.randomUUID)
@@ -3123,7 +3387,7 @@ async function submitSeasonSubscription(ev){
       : (Date.now() + Math.random().toString(36).slice(2));
 
     // upsert (이미 구독했다면 갱신)
-    const { error } = await sb.from('seasonal_subscriptions').upsert([{
+    const { error } = await sbClient.from('seasonal_subscriptions').upsert([{
       user_id:           session?.user?.id || null,
       email:             email,
       result_type:       resultType.id,
@@ -3134,7 +3398,29 @@ async function submitSeasonSubscription(ev){
       status:            'active',
     }], { onConflict: 'email' });
 
-    if(error) throw error;
+    if(error){
+      // 구체적인 에러 분기 (콘솔에 자세히 + 사용자에겐 친절하게)
+      console.error('[계절 구독] Supabase 에러:', error);
+      console.error('  code:', error.code);
+      console.error('  message:', error.message);
+      console.error('  details:', error.details);
+      console.error('  hint:', error.hint);
+
+      // 테이블 없음
+      if(error.code === '42P01' || (error.message||'').includes('does not exist')){
+        throw new Error('TABLE_NOT_FOUND');
+      }
+      // 권한 거부 (RLS)
+      if(error.code === '42501' || error.code === 'PGRST301' || (error.message||'').toLowerCase().includes('permission') || (error.message||'').toLowerCase().includes('policy')){
+        throw new Error('RLS_DENIED');
+      }
+      // 중복 키 등
+      if(error.code === '23505'){
+        throw new Error('DUPLICATE_EMAIL');
+      }
+      // 기타
+      throw error;
+    }
 
     // 로컬에도 표시 상태 저장 (페이지 새로고침 시 UI 갱신)
     try{ localStorage.setItem('skopos_season_subscribed', email); }catch(_){}
@@ -3145,8 +3431,28 @@ async function submitSeasonSubscription(ev){
     trackEvent('season_sub_complete', {result_type:resultType.id, group:resultType.group});
 
   }catch(err){
-    console.error('계절 구독 실패:', err);
-    toast('신청 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.', 3500);
+    console.error('[계절 구독] 최종 실패:', err);
+
+    // 에러 유형별 사용자 메시지
+    let userMsg = '신청 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.';
+    if(err.message === 'LIB_NOT_LOADED'){
+      userMsg = '잠시 후 다시 시도해주세요. (라이브러리 로딩 중)';
+    } else if(err.message === 'TABLE_NOT_FOUND'){
+      userMsg = '구독 시스템 준비 중이에요. 오픈 알림은 곧 시작됩니다.';
+    } else if(err.message === 'RLS_DENIED'){
+      userMsg = '구독 시스템 점검 중이에요. 잠시 후 다시 시도해주세요.';
+    } else if(err.message === 'DUPLICATE_EMAIL'){
+      // 중복은 사실상 성공 — 로컬에 저장 후 완료 처리
+      try{ localStorage.setItem('skopos_season_subscribed', email); }catch(_){}
+      closeSeasonSubModal();
+      updateSeasonSubBar(email);
+      toast('✅ 이미 신청되어 있어요!', 3500);
+      return;
+    } else if(err.message && err.message.includes('fetch')){
+      userMsg = '네트워크 연결을 확인해주세요.';
+    }
+
+    toast(userMsg, 3500);
     submitBtn.disabled = false;
     submitBtn.textContent = '알림 신청 완료';
   }
@@ -3218,29 +3524,34 @@ function renderResult(t,scores){
   document.querySelectorAll('#pdfContainer').forEach(el=>{ try{ el.remove(); }catch(e){} });
 
   const secColors=['#E91E8C','#FF9800','#7CB342','#29B6F6','#AB47BC','#FF7043','#26A69A','#5C6BC0'];
-  // 컬러 팔레트 칩
-  const palChips=(t.palette||[]).map(c=>`<div class="palette-chip" style="background:${c}" title="${c}"></div>`).join('');
-  // 궁합 유형
-  const compatChips=(t.compat||[]).map(id=>{
+  // 컬러 팔레트 칩 — 폴백 적용
+  const paletteData = getTypeField(t,'palette');
+  const palChips=paletteData.map(c=>`<div class="palette-chip" style="background:${c}" title="${c}"></div>`).join('');
+  // 궁합 유형 — 폴백 적용
+  const compatData = getTypeField(t,'compat');
+  const compatChips=compatData.map(id=>{
     const ct=TYPE_MAP[id];
     return ct?`<div class="compat-chip">${ct.emoji} ${ct.plain}</div>`:'';
-  }).join('');
-  // 예산 배분
+  }).join('') || '<div class="compat-chip">✨ 자신만의 고유한 길</div>';
+  // 예산 배분 — 폴백 적용
   const budgetColors=['#E91E8C','#FF9800','#7CB342','#29B6F6'];
-  const budgetItems=Object.entries(t.budget||{}).map(([k,v],i)=>`
+  const budgetData = getTypeField(t,'budget');
+  const budgetItems=Object.entries(budgetData).map(([k,v],i)=>`
     <div class="budget-row">
       <span class="budget-label">${k}</span>
       <div class="budget-track"><div class="budget-fill" data-val="${v}" style="background:${budgetColors[i%4]}"></div></div>
       <span class="budget-pct">${v}%</span>
     </div>`).join('');
-  // 공간 처방
-  const roomsHtml=Object.entries(t.rooms||{}).map(([name,desc])=>{
+  // 공간 처방 — 폴백 적용
+  const roomsData = getTypeField(t,'rooms');
+  const roomsHtml=Object.entries(roomsData).map(([name,desc])=>{
     const icons={거실:'🛋️',침실:'🛏️',주방:'🍳',서재:'💻'};
     return`<div class="room-card"><div class="room-icon">${icons[name]||'🏠'}</div><div class="room-name">${name}</div><div class="room-desc">${desc}</div></div>`;
   }).join('');
-  // 맞는 소품 vs 피해야 할 소품
-  const avoidHtml=(t.avoid||[]).map(item=>`<div class="match-item"><div class="match-dot"></div><span>${item}</span></div>`).join('');
-  const keysHtml=(t.keys||[]).map(item=>`<div class="match-item"><div class="match-dot"></div><span>${item}</span></div>`).join('');
+  // 어울리지 않는 항목 vs 어울리는 항목 — getAvoidItems() 호출로 항상 데이터 보장
+  const avoidItems = getAvoidItems(t);
+  const avoidHtml=(avoidItems.length?avoidItems:['내 취향과 동떨어진 가구 구성']).map(item=>`<div class="match-item"><div class="match-dot"></div><span>${item}</span></div>`).join('');
+  const keysHtml=((t.keys&&t.keys.length)?t.keys:['내 취향에 맞는 가구 구성']).map(item=>`<div class="match-item"><div class="match-dot"></div><span>${item}</span></div>`).join('');
 
   document.getElementById('rw').innerHTML=`
     <div class="r-hero" data-anchor id="sec-hero" data-toc-label="결과 카드">
@@ -3335,19 +3646,20 @@ function renderResult(t,scores){
       <div class="rooms-grid">${roomsHtml}</div>
     </div>
 
-    <div class="analysis-block" data-anchor id="sec-match" data-toc-label="추천 vs 피해야 할">
-      <div class="ab-tag">✅ 나에게 맞는 vs ❌ 피해야 할</div>
-      <div class="ab-title">구매 전에 꼭 확인하세요</div>
+    <div class="analysis-block" data-anchor id="sec-match" data-toc-label="어울리는 vs 어울리지 않는">
+      <div class="ab-tag">✅ 나에게 맞는 vs 🙅 나랑 어울리지 않는</div>
+      <div class="ab-title">구매 전에 한 번 살펴보세요</div>
       <div class="match-grid">
         <div class="match-col good">
-          <div class="match-col-title">✅ 추천 소품·소재</div>
+          <div class="match-col-title">✅ 내 공간에 어울려요</div>
           ${keysHtml}
         </div>
         <div class="match-col bad">
-          <div class="match-col-title">❌ 피해야 할 것들</div>
+          <div class="match-col-title">🙅 나랑은 어울리지 않아요</div>
           ${avoidHtml}
         </div>
       </div>
+      <p style="font-size:.78rem;color:var(--gray);margin-top:14px;line-height:1.65">"나쁜 것"이 아니라 "내 취향과 결이 다른 것"이에요. 누군가에게는 잘 맞는 인테리어일 수 있지만, 당신의 회복과 만족도를 위한 선택이 따로 있다는 의미입니다.</p>
     </div>
 
     ${(()=>{
@@ -3631,11 +3943,12 @@ function buildInstaCardHTML(t, scores){
     icon:  sec.icon,
   })).sort((a,b)=>b.val-a.val).slice(0,4);
 
-  const palChips = (t.palette||[]).slice(0,5).map(c=>
+  const igPaletteData = getTypeField(t,'palette');
+  const palChips = igPaletteData.slice(0,5).map(c=>
     `<div style="width:64px;height:64px;border-radius:16px;background:${c};box-shadow:0 4px 12px rgba(0,0,0,.25)"></div>`
   ).join('');
 
-  const keysChips = (t.keys||[]).slice(0,3).map(k=>
+  const keysChips = ((t.keys&&t.keys.length)?t.keys:['포근함','자연소재','회복']).slice(0,3).map(k=>
     `<span style="display:inline-block;padding:10px 22px;border:1.5px solid rgba(201,169,110,.5);border-radius:50px;font-size:22px;color:#C9A96E;font-weight:600;letter-spacing:.02em">${k}</span>`
   ).join('');
 
@@ -4024,7 +4337,8 @@ async function downloadPDF(){
     // PAGE 5 , 공간별 소품 처방 (기존 PAGE 3)
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     const roomIcons = {거실:'🛋️',침실:'🛏️',주방:'🍳',서재:'💻'};
-    const roomsHtml2 = Object.entries(t.rooms||{}).map(([name,desc])=>`
+    const pdfRoomsData = getTypeField(t,'rooms');
+    const roomsHtml2 = Object.entries(pdfRoomsData).map(([name,desc])=>`
       <div class="pdf-room">
         <div class="pdf-room-icon">${roomIcons[name]||'🏠'}</div>
         <div class="pdf-room-name">${name}</div>
@@ -4141,16 +4455,19 @@ async function downloadPDF(){
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     // PAGE 8 , 추천 소품 vs 피해야 할 것 + 예산 배분 비율
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    const goodItems = (t.keys||[]).map(k=>`
+    const pdfAvoidItems = getAvoidItems(t);
+    const pdfKeyItems = (t.keys && t.keys.length) ? t.keys : ['내 취향에 맞는 가구 구성'];
+    const goodItems = pdfKeyItems.map(k=>`
       <div class="pdf-match-item">
         <div class="pdf-match-dot"></div><span>${k}</span>
       </div>`).join('');
-    const badItems = (t.avoid||[]).map(a=>`
+    const badItems = (pdfAvoidItems.length?pdfAvoidItems:['내 취향과 동떨어진 가구 구성']).map(a=>`
       <div class="pdf-match-item">
         <div class="pdf-match-dot"></div><span>${a}</span>
       </div>`).join('');
 
-    const budgetHtml = Object.entries(t.budget||{}).map(([name,pct],i)=>`
+    const pdfBudgetData = getTypeField(t,'budget');
+    const budgetHtml = Object.entries(pdfBudgetData).map(([name,pct],i)=>`
       <div class="pdf-budget-row">
         <span class="pdf-budget-label">${name}</span>
         <div class="pdf-budget-track">
@@ -4162,16 +4479,16 @@ async function downloadPDF(){
     const p4Html = `<div class="pdf-page"><div class="pdf-inner">
       ${innerHeader(8,10)}
       <div class="pdf-section-tag">SECTION 07</div>
-      <div class="pdf-section-title">추천 소품 vs 피해야 할 것들</div>
-      <div class="pdf-section-sub">구매 전 반드시 확인하세요. 내 유형이 사면 후회하는 것들도 함께 정리했어요.</div>
+      <div class="pdf-section-title">나에게 어울리는 것 vs 어울리지 않는 것</div>
+      <div class="pdf-section-sub">구매 전 한 번 살펴보세요. "나쁜 것"이 아닌 "내 취향과 결이 다른 것"이에요.</div>
       <div class="pdf-match-grid">
         <div class="pdf-match-col pdf-match-good">
-          <div class="pdf-match-title">✅ 추천 소품·소재</div>
+          <div class="pdf-match-title">✅ 내 공간에 어울려요</div>
           ${goodItems}
         </div>
         <div class="pdf-match-col pdf-match-bad">
-          <div class="pdf-match-title">❌ 피해야 할 것들</div>
-          ${badItems || '<div class="pdf-match-item"><div class="pdf-match-dot"></div><span>내 유형과 맞지 않는 차가운 소재</span></div>'}
+          <div class="pdf-match-title">🙅 나랑은 어울리지 않아요</div>
+          ${badItems || '<div class="pdf-match-item"><div class="pdf-match-dot"></div><span>내 취향과 결이 다른 가구 구성</span></div>'}
         </div>
       </div>
       <div style="margin-top:28px">
@@ -4224,16 +4541,18 @@ async function downloadPDF(){
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     // PAGE 9 , 컬러 팔레트 + 궁합 + 체크리스트 (뒷표지)
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    const paletteHtml = (t.palette||[]).map(hex=>`
+    const pdfPaletteData = getTypeField(t,'palette');
+    const paletteHtml = pdfPaletteData.map(hex=>`
       <div class="pdf-palette-item">
         <div class="pdf-palette-chip" style="background:${hex}"></div>
         <div class="pdf-palette-hex">${hex}</div>
       </div>`).join('');
 
-    const compatHtml = (t.compat||[]).map(id=>{
+    const pdfCompatData = getTypeField(t,'compat');
+    const compatHtml = pdfCompatData.map(id=>{
       const ct = TYPE_MAP[id];
       return ct ? `<div class="pdf-compat-chip">${ct.emoji} ${ct.plain}</div>` : '';
-    }).join('');
+    }).join('') || '<div class="pdf-compat-chip">✨ 자신만의 고유한 길</div>';
 
     const p5Html = `<div class="pdf-page"><div class="pdf-inner">
       ${innerHeader(10,10)}
@@ -4255,8 +4574,8 @@ async function downloadPDF(){
         <div class="pdf-behavior-box" style="margin-top:8px">
           <div class="pdf-behavior-text">구매 전 스스로에게 물어보세요.
 
-1. 이 소품의 소재가 내 유형에 맞는가? (추천 소재: ${(t.keys||[]).slice(0,3).join(', ')})
-2. 이 색상이 내 팔레트(${(t.palette||[]).slice(0,2).join(', ')})와 어울리는가?
+1. 이 소품의 소재가 내 유형에 맞는가? (추천 소재: ${((t.keys&&t.keys.length)?t.keys:['우드','린넨','면']).slice(0,3).join(', ')})
+2. 이 색상이 내 팔레트(${pdfPaletteData.slice(0,2).join(', ')})와 어울리는가?
 3. 이 가구가 내 공간 구조 욕구를 충족하는가?
 4. 5년 후에도 좋아할 수 있는가?
 5. 지금 집에 있는 것들과 톤이 맞는가?
