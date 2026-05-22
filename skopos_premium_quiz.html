@@ -380,6 +380,42 @@ html{scroll-behavior:smooth}
   .toc-list{grid-template-columns:1fr}
 }
 
+/* ── 7개 챕터 그룹 TOC (통합 구조) ── */
+.toc-chapter-list{display:flex;flex-direction:column;gap:8px;position:relative;z-index:1}
+.toc-chapter{background:var(--white);border:1px solid rgba(0,0,0,.04);border-radius:12px;overflow:hidden;transition:all .25s var(--ez)}
+.toc-chapter:hover{border-color:rgba(233,30,140,.2);box-shadow:0 4px 16px rgba(233,30,140,.06)}
+.toc-chapter-head{display:flex;align-items:center;gap:14px;padding:13px 16px;cursor:pointer;text-decoration:none;color:inherit;transition:background .2s var(--ez)}
+.toc-chapter-head:hover{background:rgba(233,30,140,.025)}
+.toc-chapter-num{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;color:var(--pink);min-width:32px;line-height:1;letter-spacing:-.02em}
+.toc-chapter-meta{flex:1;min-width:0}
+.toc-chapter-title{font-size:.92rem;font-weight:800;color:var(--dark);margin-bottom:2px;line-height:1.3;letter-spacing:-.005em}
+.toc-chapter-sub{font-size:.72rem;font-weight:600;color:var(--gray);line-height:1.4}
+.toc-chapter-arrow{color:var(--pink);font-size:.95rem;font-weight:800;opacity:.5;transition:all .2s var(--ez)}
+.toc-chapter:hover .toc-chapter-arrow{opacity:1;transform:translateX(3px)}
+.toc-sub-list{display:flex;flex-wrap:wrap;gap:2px;padding:0 16px 12px 62px}
+.toc-sub-item{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;background:rgba(233,30,140,.04);border:1px solid rgba(233,30,140,.1);border-radius:30px;text-decoration:none;color:inherit;transition:all .2s var(--ez);cursor:pointer}
+.toc-sub-item:hover{background:rgba(233,30,140,.1);border-color:rgba(233,30,140,.25);transform:translateY(-1px)}
+.toc-sub-bullet{color:var(--pink);font-weight:700;font-size:.7rem;line-height:1}
+.toc-sub-label{font-size:.7rem;font-weight:700;color:var(--dark);letter-spacing:-.005em}
+
+/* 챕터 구분 헤더 (본문 내부, 그룹과 그룹 사이에 표시) */
+.chapter-divider{margin:32px 0 16px;padding:0 4px;position:relative}
+.chapter-divider-inner{display:flex;align-items:center;gap:14px;padding:0 4px}
+.chapter-divider-num{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:600;color:var(--pink);line-height:1;letter-spacing:-.025em;min-width:50px}
+.chapter-divider-meta{flex:1}
+.chapter-divider-label{font-size:.65rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:var(--pink);margin-bottom:3px}
+.chapter-divider-title{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:600;color:var(--dark);line-height:1.2;letter-spacing:-.01em;margin-bottom:3px}
+.chapter-divider-sub{font-size:.78rem;font-weight:600;color:var(--gray);line-height:1.5}
+.chapter-divider-line{margin-top:14px;height:1px;background:linear-gradient(90deg,rgba(233,30,140,.3),rgba(233,30,140,.05) 40%,transparent)}
+@media(max-width:680px){
+  .toc-chapter-head{gap:10px;padding:12px 14px}
+  .toc-chapter-num{font-size:1.3rem;min-width:26px}
+  .toc-chapter-title{font-size:.85rem}
+  .toc-sub-list{padding:0 14px 10px 42px}
+  .chapter-divider-num{font-size:1.8rem;min-width:42px}
+  .chapter-divider-title{font-size:1.35rem}
+}
+
 /* 스티키 미니 TOC , 스크롤 시 따라옴 */
 .sticky-toc{position:fixed;top:0;left:0;right:0;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(0,0,0,.06);z-index:90;transform:translateY(-100%);transition:transform .35s var(--ez);box-shadow:0 2px 12px rgba(0,0,0,.04)}
 .sticky-toc.show{transform:translateY(0)}
@@ -3408,9 +3444,137 @@ function runResult(){
 // 결과지 상단 메인 TOC HTML 생성
 // , renderResult 안에서 호출되며, anchor id는 실제 DOM에 직접 매핑됨
 //   각 섹션의 data-anchor + data-toc-label을 활용
+// ═══════════════════════════════════════════════════════
+// 챕터 구분 divider 헬퍼 (본문 내 그룹 구분선)
+// ═══════════════════════════════════════════════════════
+function chapterDivider(num, label, title, sub){
+  return `<div class="chapter-divider">
+    <div class="chapter-divider-inner">
+      <div class="chapter-divider-num">${num}</div>
+      <div class="chapter-divider-meta">
+        <div class="chapter-divider-label">${label}</div>
+        <div class="chapter-divider-title">${title}</div>
+        <div class="chapter-divider-sub">${sub}</div>
+      </div>
+    </div>
+    <div class="chapter-divider-line"></div>
+  </div>`;
+}
+
 function buildMainTOC(){
-  // 화면에 노출될 TOC 항목 정의 (조건부 섹션은 initTOC에서 실제 DOM 존재 여부로 동기화)
-  const items = [
+  // 7개 큰 챕터(그룹) × 그 안에 속한 세부 섹션 — 콘텐츠 밀도 향상을 위해 통합
+  // 본문 출력 순서에 맞춰 정렬됨
+  const chapters = [
+    {
+      num:'01',
+      title:'나의 공간 욕구 프로파일',
+      sub:'결과 카드 + 8개 영역 점수',
+      items:[
+        {id:'sec-hero',  label:'결과 카드'},
+        {id:'sec-radar', label:'8개 영역 차트'},
+      ]
+    },
+    {
+      num:'02',
+      title:'점수가 말하는 나의 본질',
+      sub:'8개 영역을 깊이 있게 읽어드려요',
+      items:[
+        {id:'sec-deep-dive', label:'8개 영역 깊이 읽기'},
+      ]
+    },
+    {
+      num:'03',
+      title:'공간 취향과 심리학적 뿌리',
+      sub:'당신의 공간 언어를 풀어봅니다',
+      items:[
+        {id:'sec-story',      label:'공간 취향 이야기'},
+        {id:'sec-insights',   label:'나만의 3가지 인사이트'},
+        {id:'sec-psychology', label:'심리학적 뿌리'},
+      ]
+    },
+    {
+      num:'04',
+      title:'나에게 어울리는 공간 처방',
+      sub:'공간별 소품·어울리는 것들',
+      items:[
+        {id:'sec-rooms', label:'공간별 소품 처방'},
+        {id:'sec-match', label:'어울리는 / 어울리지 않는'},
+      ]
+    },
+    {
+      num:'05',
+      title:'변화 로드맵',
+      sub:'30·60·90일 단계별 실행 플랜',
+      items:[
+        {id:'sec-plan', label:'30/60/90일 플랜'},
+      ]
+    },
+    {
+      num:'06',
+      title:'1년을 함께하는 가이드',
+      sub:'계절별 변화 가이드',
+      items:[
+        {id:'sec-seasonal', label:'계절별 가이드'},
+      ]
+    },
+    {
+      num:'07',
+      title:'예산 + 컬러 + 궁합',
+      sub:'어디에 얼마를·어떤 색을·누구와',
+      items:[
+        {id:'sec-budget',   label:'예산 배분 비율'},
+        {id:'sec-shopping', label:'예산대별 쇼핑 가이드'},
+        {id:'sec-palette',  label:'컬러 팔레트'},
+        {id:'sec-compat',   label:'취향 궁합'},
+      ]
+    },
+  ];
+
+  // 평탄화된 전체 아이템 (호환성 유지 — initTOC 등 기존 함수가 참조)
+  const items = chapters.flatMap(ch=>ch.items);
+
+  // 챕터 + 세부 항목 모두 한 HTML로
+  const chapterHtml = chapters.map((ch,ci)=>{
+    const subItems = ch.items.map((it,ii)=>`
+      <a class="toc-sub-item" onclick="scrollToSection('${it.id}',event)" data-target="${it.id}">
+        <span class="toc-sub-bullet">·</span>
+        <span class="toc-sub-label">${it.label}</span>
+      </a>`).join('');
+
+    return `
+      <div class="toc-chapter">
+        <a class="toc-chapter-head" onclick="scrollToSection('${ch.items[0].id}',event)" data-target="${ch.items[0].id}">
+          <div class="toc-chapter-num">${ch.num}</div>
+          <div class="toc-chapter-meta">
+            <div class="toc-chapter-title">${ch.title}</div>
+            <div class="toc-chapter-sub">${ch.sub}</div>
+          </div>
+          <div class="toc-chapter-arrow">→</div>
+        </a>
+        ${ch.items.length>1?`<div class="toc-sub-list">${subItems}</div>`:''}
+      </div>`;
+  }).join('');
+
+  return `<div class="toc-block">
+    <div class="toc-head">
+      <div class="toc-head-left">
+        <div class="toc-icon-box">📋</div>
+        <div>
+          <div class="toc-title">결과지 목차</div>
+          <div class="toc-meta">총 7개 챕터 · 클릭해 이동</div>
+        </div>
+      </div>
+    </div>
+    <p class="toc-sub">관심 있는 챕터부터 먼저 확인해보세요. 스크롤하면 상단에 미니 목차가 따라옵니다.</p>
+    <div class="toc-chapter-list">
+      ${chapterHtml}
+    </div>
+  </div>`;
+}
+
+// 평탄화된 전체 섹션 ID 목록 — initTOC 등 다른 코드가 참조하는 호환용
+function _getAllTocItems(){
+  return [
     {id:'sec-hero',         label:'결과 카드'},
     {id:'sec-radar',        label:'8개 영역 차트'},
     {id:'sec-deep-dive',    label:'8개 영역 깊이 읽기'},
@@ -3428,6 +3592,17 @@ function buildMainTOC(){
     {id:'spaceRefsSection', label:'공간 레퍼런스'},
     {id:'pdfSection',       label:'저장 & 공유'},
   ];
+}
+
+// 기존 함수 호환을 위해 원본 형태로 한 번 더 정의 — 다만 새 챕터 구조 위에서 동작
+function _buildLegacyTOCSpec(){
+  const items = _getAllTocItems();
+  return items;
+}
+
+// 아래 부분은 원본 코드 호환을 위해 더미로 둠
+function buildLegacyMainTOC_DEPRECATED(){
+  const items = _getAllTocItems();
   return `<div class="toc-block">
     <div class="toc-head">
       <div class="toc-head-left">
@@ -3843,6 +4018,8 @@ function renderResult(t,scores){
 
     ${buildMainTOC()}
 
+    ${chapterDivider('01','Chapter 01 · 프로파일','나의 공간 욕구 프로파일','결과 카드와 8개 영역 점수')}
+
     <div class="radar-section" data-anchor id="sec-radar" data-toc-label="8개 영역 차트">
       <div class="radar-title">한눈에 보는 8가지 공간 성향</div>
       <div class="radar-bars">
@@ -3895,7 +4072,8 @@ function renderResult(t,scores){
           </div>`;
       }).join('');
 
-      return `<div class="analysis-block" data-anchor id="sec-deep-dive" data-toc-label="8개 영역 깊이 읽기">
+      return `${chapterDivider('02','Chapter 02 · 본질 읽기','점수가 말하는 나의 본질','8개 영역을 깊이 있게 읽어드려요')}
+      <div class="analysis-block" data-anchor id="sec-deep-dive" data-toc-label="8개 영역 깊이 읽기">
         <div class="ab-tag">🔍 8개 영역 깊이 읽기</div>
         <div class="ab-title">점수로 읽는 나의 집 취향</div>
         <p style="font-size:.85rem;color:var(--gray);margin-bottom:22px;line-height:1.75">단순한 숫자가 아니에요. 각 영역의 점수는 내가 어떤 공간에서 편안한지, 무엇을 바꾸면 만족도가 올라가는지 알려주는 힌트입니다. 점수를 하나씩 함께 읽어볼게요.</p>
@@ -3913,7 +4091,8 @@ function renderResult(t,scores){
     ${(()=>{
       const bp=buildBehaviorBlock(t.id);
       if(bp) return bp;
-      return `<div class="analysis-block" data-anchor id="sec-story" data-toc-label="공간 취향 이야기">
+      return `${chapterDivider('03','Chapter 03 · 깊이 있는 이야기','공간 취향과 심리학적 뿌리','당신의 공간 언어를 풀어봅니다')}
+      <div class="analysis-block" data-anchor id="sec-story" data-toc-label="공간 취향 이야기">
         <div class="ab-tag">✦ 나의 공간 취향 이야기</div>
         <div class="ab-title">${t.plain} , 내가 편해지는 공간의 방식</div>
         <div class="ab-body">${t.desc||''}</div>
@@ -3969,6 +4148,7 @@ function renderResult(t,scores){
       </div>`;
     })()}
 
+    ${chapterDivider('04','Chapter 04 · 공간 처방','나에게 어울리는 공간 처방','공간별 소품·어울리는 것들')}
     <div class="analysis-block" data-anchor id="sec-rooms" data-toc-label="공간별 소품 처방">
       <div class="ab-tag">🛋️ 공간별 소품 처방</div>
       <div class="ab-title">집에서 바로 시도해볼 것들</div>
@@ -3994,7 +4174,8 @@ function renderResult(t,scores){
     ${(()=>{
       const plan = (typeof GROUP_ACTION_PLAN!=='undefined') && GROUP_ACTION_PLAN[t.group];
       if(!plan) return '';
-      return `<div class="analysis-block" data-anchor id="sec-plan" data-toc-label="30/60/90일 플랜">
+      return `${chapterDivider('05','Chapter 05 · 실행 로드맵','변화 로드맵','30·60·90일 단계별 실행 플랜')}
+      <div class="analysis-block" data-anchor id="sec-plan" data-toc-label="30/60/90일 플랜">
         <div class="ab-tag">🗓️ 30 / 60 / 90일 액션 플랜</div>
         <div class="ab-title">오늘부터 90일까지, 바꾸는 순서</div>
         <p style="font-size:.82rem;color:var(--gray);margin-bottom:18px;line-height:1.7">한 번에 바꾸려 하지 마세요. 작은 변화 → 중간 투자 → 큰 결정 순서로, 가장 적은 비용과 후회로 공간을 완성하는 방법이에요.</p>
@@ -4057,7 +4238,8 @@ function renderResult(t,scores){
           </div>`;
       }).join('');
 
-      return `<div class="analysis-block" data-anchor id="sec-seasonal" data-toc-label="계절별 가이드">
+      return `${chapterDivider('06','Chapter 06 · 1년 가이드','1년을 함께하는 가이드','계절별 변화 가이드')}
+      <div class="analysis-block" data-anchor id="sec-seasonal" data-toc-label="계절별 가이드">
         <div class="ab-tag">🗓️ 계절별 공간 변화 가이드</div>
         <div class="ab-title">사계절, 1년 내내 펼쳐보는 인테리어 로드맵</div>
         <p style="font-size:.82rem;color:var(--gray);margin-bottom:16px;line-height:1.7">같은 ${t.plain} 공간도 계절마다 강조하는 부분이 달라야 해요. 현재 계절은 자동으로 열려 있어요, 다른 계절도 미리 확인해보세요.</p>
@@ -4078,6 +4260,7 @@ function renderResult(t,scores){
       </div>`;
     })()}
 
+    ${chapterDivider('07','Chapter 07 · 실용 가이드','예산 + 컬러 + 궁합','어디에 얼마를·어떤 색을·누구와')}
     <div class="analysis-block" data-anchor id="sec-budget" data-toc-label="예산 배분 비율">
       <div class="ab-tag">💰 인테리어 예산 배분 가이드</div>
       <div class="ab-title">가장 만족도 높은 투자 비율</div>
