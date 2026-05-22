@@ -380,42 +380,6 @@ html{scroll-behavior:smooth}
   .toc-list{grid-template-columns:1fr}
 }
 
-/* ── 7개 챕터 그룹 TOC (통합 구조) ── */
-.toc-chapter-list{display:flex;flex-direction:column;gap:8px;position:relative;z-index:1}
-.toc-chapter{background:var(--white);border:1px solid rgba(0,0,0,.04);border-radius:12px;overflow:hidden;transition:all .25s var(--ez)}
-.toc-chapter:hover{border-color:rgba(233,30,140,.2);box-shadow:0 4px 16px rgba(233,30,140,.06)}
-.toc-chapter-head{display:flex;align-items:center;gap:14px;padding:13px 16px;cursor:pointer;text-decoration:none;color:inherit;transition:background .2s var(--ez)}
-.toc-chapter-head:hover{background:rgba(233,30,140,.025)}
-.toc-chapter-num{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;color:var(--pink);min-width:32px;line-height:1;letter-spacing:-.02em}
-.toc-chapter-meta{flex:1;min-width:0}
-.toc-chapter-title{font-size:.92rem;font-weight:800;color:var(--dark);margin-bottom:2px;line-height:1.3;letter-spacing:-.005em}
-.toc-chapter-sub{font-size:.72rem;font-weight:600;color:var(--gray);line-height:1.4}
-.toc-chapter-arrow{color:var(--pink);font-size:.95rem;font-weight:800;opacity:.5;transition:all .2s var(--ez)}
-.toc-chapter:hover .toc-chapter-arrow{opacity:1;transform:translateX(3px)}
-.toc-sub-list{display:flex;flex-wrap:wrap;gap:2px;padding:0 16px 12px 62px}
-.toc-sub-item{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;background:rgba(233,30,140,.04);border:1px solid rgba(233,30,140,.1);border-radius:30px;text-decoration:none;color:inherit;transition:all .2s var(--ez);cursor:pointer}
-.toc-sub-item:hover{background:rgba(233,30,140,.1);border-color:rgba(233,30,140,.25);transform:translateY(-1px)}
-.toc-sub-bullet{color:var(--pink);font-weight:700;font-size:.7rem;line-height:1}
-.toc-sub-label{font-size:.7rem;font-weight:700;color:var(--dark);letter-spacing:-.005em}
-
-/* 챕터 구분 헤더 (본문 내부, 그룹과 그룹 사이에 표시) */
-.chapter-divider{margin:32px 0 16px;padding:0 4px;position:relative}
-.chapter-divider-inner{display:flex;align-items:center;gap:14px;padding:0 4px}
-.chapter-divider-num{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:600;color:var(--pink);line-height:1;letter-spacing:-.025em;min-width:50px}
-.chapter-divider-meta{flex:1}
-.chapter-divider-label{font-size:.65rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:var(--pink);margin-bottom:3px}
-.chapter-divider-title{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:600;color:var(--dark);line-height:1.2;letter-spacing:-.01em;margin-bottom:3px}
-.chapter-divider-sub{font-size:.78rem;font-weight:600;color:var(--gray);line-height:1.5}
-.chapter-divider-line{margin-top:14px;height:1px;background:linear-gradient(90deg,rgba(233,30,140,.3),rgba(233,30,140,.05) 40%,transparent)}
-@media(max-width:680px){
-  .toc-chapter-head{gap:10px;padding:12px 14px}
-  .toc-chapter-num{font-size:1.3rem;min-width:26px}
-  .toc-chapter-title{font-size:.85rem}
-  .toc-sub-list{padding:0 14px 10px 42px}
-  .chapter-divider-num{font-size:1.8rem;min-width:42px}
-  .chapter-divider-title{font-size:1.35rem}
-}
-
 /* 스티키 미니 TOC , 스크롤 시 따라옴 */
 .sticky-toc{position:fixed;top:0;left:0;right:0;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(0,0,0,.06);z-index:90;transform:translateY(-100%);transition:transform .35s var(--ez);box-shadow:0 2px 12px rgba(0,0,0,.04)}
 .sticky-toc.show{transform:translateY(0)}
@@ -1204,14 +1168,14 @@ function getSectionInsight(sectionKey, score){
 }
 
 const SECS=[
-  {key:'sensory', label:'감각·자극 처리', sub:'소재·조명·소음에 대한 나의 민감도',  color:'#E91E8C', icon:'🧠'},
-  {key:'spatial', label:'공간·구조 욕구', sub:'레이아웃·수납·동선에 대한 나의 선호', color:'#FF9800', icon:'📐'},
-  {key:'objects', label:'소품·오브제 취향',sub:'물건을 고르고 배치하는 나의 기준',   color:'#7CB342', icon:'🏺'},
-  {key:'color',   label:'컬러·소재 언어', sub:'색감·질감·패턴에 대한 나의 감각',    color:'#29B6F6', icon:'🎨'},
-  {key:'life',    label:'라이프스타일',   sub:'공간을 실제로 쓰는 나의 생활 방식',   color:'#AB47BC', icon:'☕'},
-  {key:'social',  label:'관계·소속 욕구', sub:'함께 쓰는 공간에 대한 나의 태도',    color:'#FF7043', icon:'🏡'},
-  {key:'identity',label:'자아표현·정체성',sub:'공간을 통해 드러내고 싶은 나',       color:'#26A69A', icon:'✨'},
-  {key:'restore', label:'회복·안정 욕구', sub:'집에서 쉬고 회복하는 나의 방식',     color:'#5C6BC0', icon:'🌙'},
+  {key:'sensory', label:'빛·소리·촉감 민감도', legacyLabel:'감각·자극 처리', sub:'밝기·소음·소재가 편안함에 주는 영향',  color:'#E91E8C', icon:'🧠'},
+  {key:'spatial', label:'동선·정리 욕구', legacyLabel:'공간·구조 욕구', sub:'수납·가구 배치·이동 동선에 대한 선호', color:'#FF9800', icon:'📐'},
+  {key:'objects', label:'소품·살림 취향', legacyLabel:'소품·오브제 취향',sub:'집 안 물건을 고르고 놓는 기준',   color:'#7CB342', icon:'🏺'},
+  {key:'color',   label:'색감·소재 취향', legacyLabel:'컬러·소재 언어', sub:'색·질감·패턴을 느끼는 방식',    color:'#29B6F6', icon:'🎨'},
+  {key:'life',    label:'집에서 보내는 시간', legacyLabel:'라이프스타일',   sub:'집에서 쉬고 일하고 먹는 생활 패턴',   color:'#AB47BC', icon:'☕'},
+  {key:'social',  label:'함께 사는 방식', legacyLabel:'관계·소속 욕구', sub:'가족·파트너·손님과 공간을 나누는 방식',    color:'#FF7043', icon:'🏡'},
+  {key:'identity',label:'나를 드러내는 취향', legacyLabel:'자아표현·정체성',sub:'집에 나다운 분위기를 담는 방식',       color:'#26A69A', icon:'✨'},
+  {key:'restore', label:'쉼·회복 욕구', legacyLabel:'회복·안정 욕구', sub:'집에서 에너지를 되찾는 방식',     color:'#5C6BC0', icon:'🌙'},
 ];
 
 // ═══════════════════════════════════════
@@ -2474,6 +2438,187 @@ Object.assign(SPACE_REFS, {
   cozy_hearth:     SPACE_REFS.cozy_hearth     || SPACE_REFS.cozy_warm,
 });
 
+// 결과지 공유용 공간 레퍼런스는 사람이 없는 실내 사진만 사용합니다.
+// 각 유형의 핵심 욕구가 잘 보이도록 거실·침실·부엌 이미지를 별도 매칭합니다.
+const SPACE_REF_GROUP_FALLBACK={
+  sanctuary:'sanctuary_deep',
+  nature:'nature_forest',
+  luxe:'luxe_royal',
+  artistic:'artistic_wild',
+  minimal:'minimal_pure',
+  cozy:'cozy_hearth',
+};
+Object.assign(SPACE_REFS, {
+  sanctuary_deep:{
+    label:'자극을 줄이고 깊게 쉬는 공간',
+    living:[
+      {url:'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=900&q=85&auto=format&fit=crop',caption:'린넨 소파·낮은 채도·차분한 여백'},
+      {url:'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=900&q=85&auto=format&fit=crop',caption:'간접 조명·부드러운 패브릭·고요한 코너'},
+    ],
+    bedroom:[
+      {url:'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=900&q=85&auto=format&fit=crop',caption:'암막 커튼·포근한 침구·낮은 조도'},
+      {url:'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=900&q=85&auto=format&fit=crop',caption:'딥 베이지 톤·눈이 쉬는 침실'},
+    ],
+    kitchen:[
+      {url:'https://images.unsplash.com/photo-1600489000022-c2086d79f9d4?w=900&q=85&auto=format&fit=crop',caption:'상판 위를 비운 차분한 부엌'},
+      {url:'https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?w=900&q=85&auto=format&fit=crop',caption:'크림 톤 수납·은은한 조명'},
+    ]},
+  sanctuary_zen:{
+    label:'여백이 마음을 가볍게 하는 공간',
+    living:[
+      {url:'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=900&q=85&auto=format&fit=crop',caption:'화이트 팔레트·히든 수납·넓은 여백'},
+      {url:'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=900&q=85&auto=format&fit=crop',caption:'원목 포인트 하나·자연광·단정한 선'},
+    ],
+    bedroom:[
+      {url:'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=900&q=85&auto=format&fit=crop',caption:'화이트 침구·비워둔 협탁'},
+      {url:'https://images.unsplash.com/photo-1560448075-bb485b067938?w=900&q=85&auto=format&fit=crop',caption:'군더더기 없는 배치·맑은 톤'},
+    ],
+    kitchen:[
+      {url:'https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?w=900&q=85&auto=format&fit=crop',caption:'핸들리스 수납·화이트 상판'},
+      {url:'https://images.unsplash.com/photo-1600489000022-c2086d79f9d4?w=900&q=85&auto=format&fit=crop',caption:'정리된 동선·차분한 그레이 톤'},
+    ]},
+  nature_forest:{
+    label:'초록과 원목이 숨을 틔우는 공간',
+    living:[
+      {url:'https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=900&q=85&auto=format&fit=crop',caption:'식물·원목·라탄이 있는 거실'},
+      {url:'https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?w=900&q=85&auto=format&fit=crop',caption:'어스톤 팔레트·자연 소재'},
+    ],
+    bedroom:[
+      {url:'https://images.unsplash.com/photo-1617325247661-675ab4b64ae2?w=900&q=85&auto=format&fit=crop',caption:'원목 헤드보드·식물 포인트'},
+      {url:'https://images.unsplash.com/photo-1582582621959-48d27397dc4b?w=900&q=85&auto=format&fit=crop',caption:'린넨 침구·햇살이 드는 침실'},
+    ],
+    kitchen:[
+      {url:'https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=900&q=85&auto=format&fit=crop',caption:'허브 화분·원목 도마·따뜻한 햇살'},
+      {url:'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=900&q=85&auto=format&fit=crop',caption:'오픈 키친·식물·자연스러운 동선'},
+    ]},
+  nature_earth:{
+    label:'손맛과 흙빛이 편안한 공간',
+    living:[
+      {url:'https://images.unsplash.com/photo-1616046229478-9901c5536a45?w=900&q=85&auto=format&fit=crop',caption:'테라코타·황마·도자 오브제'},
+      {url:'https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?w=900&q=85&auto=format&fit=crop',caption:'핸드메이드 소품·어스 컬러'},
+    ],
+    bedroom:[
+      {url:'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=900&q=85&auto=format&fit=crop',caption:'어스톤 침구·자연 소재'},
+      {url:'https://images.unsplash.com/photo-1560448075-bb485b067938?w=900&q=85&auto=format&fit=crop',caption:'거친 질감·손맛 있는 레이어'},
+    ],
+    kitchen:[
+      {url:'https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=900&q=85&auto=format&fit=crop',caption:'오픈 선반·도자기·따뜻한 식탁'},
+      {url:'https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?w=900&q=85&auto=format&fit=crop',caption:'우드 상판·손때가 묻어나는 그릇'},
+    ]},
+  luxe_royal:{
+    label:'좋은 소재와 마감이 살아나는 공간',
+    living:[
+      {url:'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=900&q=85&auto=format&fit=crop',caption:'벨벳·마블·황동 포인트'},
+      {url:'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=900&q=85&auto=format&fit=crop',caption:'헤링본 무드·품격 있는 조명'},
+    ],
+    bedroom:[
+      {url:'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=900&q=85&auto=format&fit=crop',caption:'황동 벽등·실크 느낌 침구'},
+      {url:'https://images.unsplash.com/photo-1588046130717-0eb0c9a3ba15?w=900&q=85&auto=format&fit=crop',caption:'고급 패브릭·호텔 같은 침실'},
+    ],
+    kitchen:[
+      {url:'https://images.unsplash.com/photo-1600489000022-c2086d79f9d4?w=900&q=85&auto=format&fit=crop',caption:'마블 상판·정돈된 수납'},
+      {url:'https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?w=900&q=85&auto=format&fit=crop',caption:'화이트·우드·메탈 포인트'},
+    ]},
+  luxe_gallery:{
+    label:'집 안에 전시 장면이 생기는 공간',
+    living:[
+      {url:'https://images.unsplash.com/photo-1600210492493-0946911123ea?w=900&q=85&auto=format&fit=crop',caption:'스포트 조명·아트워크·모노톤'},
+      {url:'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=900&q=85&auto=format&fit=crop',caption:'픽처 레일·블랙 프레임'},
+    ],
+    bedroom:[
+      {url:'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=900&q=85&auto=format&fit=crop',caption:'헤드보드 위 아트워크'},
+      {url:'https://images.unsplash.com/photo-1560448075-bb485b067938?w=900&q=85&auto=format&fit=crop',caption:'여백과 오브제가 돋보이는 침실'},
+    ],
+    kitchen:[
+      {url:'https://images.unsplash.com/photo-1600489000022-c2086d79f9d4?w=900&q=85&auto=format&fit=crop',caption:'블랙 수납·선명한 조명'},
+      {url:'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=900&q=85&auto=format&fit=crop',caption:'오픈 키친·모던한 마감'},
+    ]},
+  artistic_wild:{
+    label:'내 취향이 분명하게 보이는 공간',
+    living:[
+      {url:'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=900&q=85&auto=format&fit=crop',caption:'갤러리 월·빈티지와 모던의 믹스'},
+      {url:'https://images.unsplash.com/photo-1616046229478-9901c5536a45?w=900&q=85&auto=format&fit=crop',caption:'강렬한 포인트·패턴 레이어'},
+    ],
+    bedroom:[
+      {url:'https://images.unsplash.com/photo-1617325247661-675ab4b64ae2?w=900&q=85&auto=format&fit=crop',caption:'포인트 벽·아트워크'},
+      {url:'https://images.unsplash.com/photo-1560448075-bb485b067938?w=900&q=85&auto=format&fit=crop',caption:'개성 있는 오브제·믹스매치'},
+    ],
+    kitchen:[
+      {url:'https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=900&q=85&auto=format&fit=crop',caption:'오픈 선반·취향이 보이는 그릇'},
+      {url:'https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?w=900&q=85&auto=format&fit=crop',caption:'색감 있는 소품·작은 포인트'},
+    ]},
+  artistic_indie:{
+    label:'시간의 흔적과 이야기가 쌓인 공간',
+    living:[
+      {url:'https://images.unsplash.com/photo-1600210492493-0946911123ea?w=900&q=85&auto=format&fit=crop',caption:'빈티지 소파·오래된 러그·컬렉션'},
+      {url:'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=900&q=85&auto=format&fit=crop',caption:'스토리 있는 소품·레이어드 무드'},
+    ],
+    bedroom:[
+      {url:'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=900&q=85&auto=format&fit=crop',caption:'빈티지 침대 프레임'},
+      {url:'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=900&q=85&auto=format&fit=crop',caption:'레이어드 패브릭·오래된 소품'},
+    ],
+    kitchen:[
+      {url:'https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=900&q=85&auto=format&fit=crop',caption:'오픈 선반·빈티지 식기'},
+      {url:'https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?w=900&q=85&auto=format&fit=crop',caption:'우드 스툴·생활감 있는 부엌'},
+    ]},
+  minimal_pure:{
+    label:'비움과 단정함이 편안한 공간',
+    living:[
+      {url:'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=900&q=85&auto=format&fit=crop',caption:'화이트 톤·비워둔 카운터'},
+      {url:'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=900&q=85&auto=format&fit=crop',caption:'히든 수납·깊은 여백'},
+    ],
+    bedroom:[
+      {url:'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=900&q=85&auto=format&fit=crop',caption:'화이트 침구·정돈된 사이드'},
+      {url:'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=900&q=85&auto=format&fit=crop',caption:'차분한 톤·최소한의 가구'},
+    ],
+    kitchen:[
+      {url:'https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?w=900&q=85&auto=format&fit=crop',caption:'화이트 수납·군더더기 없는 상판'},
+      {url:'https://images.unsplash.com/photo-1600489000022-c2086d79f9d4?w=900&q=85&auto=format&fit=crop',caption:'단정한 동선·필요한 것만 남긴 부엌'},
+    ]},
+  minimal_grid:{
+    label:'구조와 정렬이 아름다운 공간',
+    living:[
+      {url:'https://images.unsplash.com/photo-1616046229478-9901c5536a45?w=900&q=85&auto=format&fit=crop',caption:'블랙 스틸·직선이 보이는 배치'},
+      {url:'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=900&q=85&auto=format&fit=crop',caption:'모듈 수납·정렬된 소품'},
+    ],
+    bedroom:[
+      {url:'https://images.unsplash.com/photo-1617325247661-675ab4b64ae2?w=900&q=85&auto=format&fit=crop',caption:'대칭 배치·선명한 라인'},
+      {url:'https://images.unsplash.com/photo-1560448075-bb485b067938?w=900&q=85&auto=format&fit=crop',caption:'정밀한 정렬·미니멀 침실'},
+    ],
+    kitchen:[
+      {url:'https://images.unsplash.com/photo-1600489000022-c2086d79f9d4?w=900&q=85&auto=format&fit=crop',caption:'그레이 수납·직선 동선'},
+      {url:'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=900&q=85&auto=format&fit=crop',caption:'오픈 키친·선이 살아있는 구조'},
+    ]},
+  cozy_hearth:{
+    label:'온기와 촉감이 하루를 풀어주는 공간',
+    living:[
+      {url:'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=900&q=85&auto=format&fit=crop',caption:'부클레 소파·두꺼운 러그·따뜻한 조명'},
+      {url:'https://images.unsplash.com/photo-1600210492493-0946911123ea?w=900&q=85&auto=format&fit=crop',caption:'담요·쿠션·포근한 거실'},
+    ],
+    bedroom:[
+      {url:'https://images.unsplash.com/photo-1588046130717-0eb0c9a3ba15?w=900&q=85&auto=format&fit=crop',caption:'두꺼운 이불·앰버 조명'},
+      {url:'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=900&q=85&auto=format&fit=crop',caption:'부드러운 소재·감싸주는 침실'},
+    ],
+    kitchen:[
+      {url:'https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=900&q=85&auto=format&fit=crop',caption:'따뜻한 조명·머물고 싶은 식탁'},
+      {url:'https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?w=900&q=85&auto=format&fit=crop',caption:'홈카페 느낌의 포근한 부엌'},
+    ]},
+  cozy_family:{
+    label:'사람이 모이기 좋은 따뜻한 공간',
+    living:[
+      {url:'https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=900&q=85&auto=format&fit=crop',caption:'패밀리 소파·오픈 플랜·다이닝'},
+      {url:'https://images.unsplash.com/photo-1616046229478-9901c5536a45?w=900&q=85&auto=format&fit=crop',caption:'마주 보는 배치·대화가 쉬운 거실'},
+    ],
+    bedroom:[
+      {url:'https://images.unsplash.com/photo-1617325247661-675ab4b64ae2?w=900&q=85&auto=format&fit=crop',caption:'따뜻한 패브릭·추억을 놓기 좋은 침실'},
+      {url:'https://images.unsplash.com/photo-1582582621959-48d27397dc4b?w=900&q=85&auto=format&fit=crop',caption:'부드러운 톤·가족이 편한 침실'},
+    ],
+    kitchen:[
+      {url:'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=900&q=85&auto=format&fit=crop',caption:'오픈 키친·다이닝이 연결된 구조'},
+      {url:'https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=900&q=85&auto=format&fit=crop',caption:'따뜻한 조명·함께 머무는 식탁'},
+    ]},
+});
+
 // 유형 → 그룹 맵
 TYPES.forEach(t=>{ TYPE_MAP[t.id]=t; });
 
@@ -2609,7 +2754,7 @@ const SPACE_IMAGES={
     rooms:[
       {name:'거실',kw:'린넨 · 간접조명 · 여백',url:'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80&auto=format&fit=crop'},
       {name:'휴게공간',kw:'독서 코너 · 방음 · 고요',url:'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&q=80&auto=format&fit=crop'},
-      {name:'주방',kw:'핸들리스 · 크림 · 정돈',url:'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&q=80&auto=format&fit=crop'},
+      {name:'주방',kw:'핸들리스 · 크림 · 정돈',url:'https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?w=800&q=80&auto=format&fit=crop'},
     ]},
   sanctuary_zen:{
     title:'여백이 말하는 [[em]]공간들[[/em]]',
@@ -2633,7 +2778,7 @@ const SPACE_IMAGES={
     rooms:[
       {name:'거실',kw:'테라코타 · 도자 · 어스 컬러',url:'https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?w=800&q=80&auto=format&fit=crop'},
       {name:'휴게공간',kw:'황마 · 핸드메이드 · 온기',url:'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&q=80&auto=format&fit=crop'},
-      {name:'주방',kw:'어스톤 · 오픈 선반 · 도자기',url:'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&q=80&auto=format&fit=crop'},
+      {name:'주방',kw:'어스톤 · 오픈 선반 · 도자기',url:'https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?w=800&q=80&auto=format&fit=crop'},
     ]},
   luxe_royal:{
     title:'품격이 머무는 [[em]]공간들[[/em]]',
@@ -2649,7 +2794,7 @@ const SPACE_IMAGES={
     rooms:[
       {name:'거실',kw:'갤러리 조명 · 아트 · 모노크롬',url:'https://images.unsplash.com/photo-1600210492493-0946911123ea?w=800&q=80&auto=format&fit=crop'},
       {name:'휴게공간',kw:'스포트라이트 · 오브제 · 블랙',url:'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800&q=80&auto=format&fit=crop'},
-      {name:'주방',kw:'마블 포인트 · 블랙 스틸',url:'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&q=80&auto=format&fit=crop'},
+      {name:'주방',kw:'마블 포인트 · 블랙 스틸',url:'https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?w=800&q=80&auto=format&fit=crop'},
     ]},
   artistic_wild:{
     title:'나만의 언어로 쓰인 [[em]]공간들[[/em]]',
@@ -2657,7 +2802,7 @@ const SPACE_IMAGES={
     rooms:[
       {name:'거실',kw:'갤러리월 · 빈티지 · 패턴',url:'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=800&q=80&auto=format&fit=crop'},
       {name:'휴게공간',kw:'스튜디오 · 오브제 · 창의',url:'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&q=80&auto=format&fit=crop'},
-      {name:'주방',kw:'젤리지 · 구리 · 핸드메이드',url:'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&q=80&auto=format&fit=crop'},
+      {name:'주방',kw:'젤리지 · 구리 · 핸드메이드',url:'https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?w=800&q=80&auto=format&fit=crop'},
     ]},
   artistic_indie:{
     title:'시간이 쌓인 [[em]]공간들[[/em]]',
@@ -2681,7 +2826,7 @@ const SPACE_IMAGES={
     rooms:[
       {name:'거실',kw:'그리드 · 블랙 스틸 · 비례',url:'https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?w=800&q=80&auto=format&fit=crop'},
       {name:'휴게공간',kw:'모듈 수납 · 직선 · 산업적',url:'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&q=80&auto=format&fit=crop'},
-      {name:'주방',kw:'폴리싱 · 스틸 · 그리드',url:'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&q=80&auto=format&fit=crop'},
+      {name:'주방',kw:'폴리싱 · 스틸 · 그리드',url:'https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?w=800&q=80&auto=format&fit=crop'},
     ]},
   cozy_hearth:{
     title:'온기가 머무는 [[em]]공간들[[/em]]',
@@ -2697,7 +2842,7 @@ const SPACE_IMAGES={
     rooms:[
       {name:'거실',kw:'패밀리 소파 · 다이닝 · 함께',url:'https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=800&q=80&auto=format&fit=crop'},
       {name:'휴게공간',kw:'홈 카페 · 온기 · 대화',url:'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&q=80&auto=format&fit=crop'},
-      {name:'주방',kw:'오픈 키친 · 다이닝 테이블',url:'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&q=80&auto=format&fit=crop'},
+      {name:'주방',kw:'오픈 키친 · 다이닝 테이블',url:'https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?w=800&q=80&auto=format&fit=crop'},
     ]},
 };
 
@@ -3202,6 +3347,59 @@ function dec(s){
     .split('[[hl]]').join('<span class="hl">').split('[[em]]').join('<span class="hl">')
     .split('[[/hl]]').join('</span>').split('[[/em]]').join('</span>');
 }
+
+function krText(s){
+  if(s===undefined || s===null) return '';
+  return String(s)
+    .replace(/히든 수납/g,'문 달린 수납')
+    .replace(/히든수납/g,'문 달린 수납')
+    .replace(/무오브제/g,'소품을 거의 두지 않는')
+    .replace(/오브제/g,'소품')
+    .replace(/스포트라이트/g,'포인트 조명')
+    .replace(/스포트 조명/g,'포인트 조명')
+    .replace(/갤러리 월/g,'액자 벽')
+    .replace(/갤러리월/g,'액자 벽')
+    .replace(/모노크롬/g,'무채색')
+    .replace(/인더스트리얼/g,'블랙 철제·콘크리트 느낌')
+    .replace(/폴리싱 콘크리트/g,'매끈한 콘크리트 느낌')
+    .replace(/마이크로시멘트/g,'얇게 바르는 시멘트 마감')
+    .replace(/마블/g,'대리석 느낌')
+    .replace(/황동/g,'골드빛 금속')
+    .replace(/앰버/g,'따뜻한 전구색')
+    .replace(/부클레/g,'몽글몽글한 양털 느낌 원단')
+    .replace(/셰기 러그/g,'털이 긴 폭신한 러그')
+    .replace(/쉐기 러그/g,'털이 긴 폭신한 러그')
+    .replace(/러그/g,'러그(작은 카펫)')
+    .replace(/라탄/g,'등나무 느낌')
+    .replace(/황마/g,'내추럴한 마 소재')
+    .replace(/테라코타/g,'구운 흙빛')
+    .replace(/세이지 그린/g,'차분한 연두빛')
+    .replace(/오브 화이트/g,'따뜻한 흰색')
+    .replace(/그레이지/g,'회색빛 베이지')
+    .replace(/패티나/g,'시간이 지나 생긴 멋')
+    .replace(/에클레틱/g,'여러 스타일을 자연스럽게 섞은')
+    .replace(/모듈 수납/g,'칸을 맞춰 쓰는 수납')
+    .replace(/모듈러/g,'원하는 대로 조합하는')
+    .replace(/핸들리스/g,'손잡이 없는')
+    .replace(/아일랜드/g,'주방 가운데 작업대')
+    .replace(/오픈 플랜/g,'거실과 주방이 트인 구조')
+    .replace(/오픈 키친/g,'거실과 연결된 주방')
+    .replace(/패밀리 소파/g,'여럿이 앉기 좋은 소파')
+    .replace(/홈 카페/g,'집 안 커피 코너')
+    .replace(/홈카페/g,'집 안 커피 코너')
+    .replace(/드레스룸/g,'옷방')
+    .replace(/무드등/g,'작은 분위기 조명')
+    .replace(/플로어 램프/g,'스탠드 조명')
+    .replace(/사이드 테이블/g,'작은 보조 테이블')
+    .replace(/사이드보드/g,'낮은 수납장')
+    .replace(/코어 피스/g,'공간의 중심이 되는 가구')
+    .replace(/시그니처/g,'대표');
+}
+
+function getSectionScore(type, scores, sec, fallback=50){
+  const bar = type && type.bars ? type.bars : {};
+  return bar[sec.label] || (sec.legacyLabel ? bar[sec.legacyLabel] : null) || scores?.[sec.label] || scores?.[sec.legacyLabel] || fallback;
+}
 function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));const el=document.getElementById(id);if(el)el.classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
 function toast(msg,dur=2800){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),dur);}
 function trackEvent(n,p){if(typeof gtag!=='undefined')gtag('event',n,p||{});}
@@ -3444,172 +3642,34 @@ function runResult(){
 // 결과지 상단 메인 TOC HTML 생성
 // , renderResult 안에서 호출되며, anchor id는 실제 DOM에 직접 매핑됨
 //   각 섹션의 data-anchor + data-toc-label을 활용
-// ═══════════════════════════════════════════════════════
-// 챕터 구분 divider 헬퍼 (본문 내 그룹 구분선)
-// ═══════════════════════════════════════════════════════
-function chapterDivider(num, label, title, sub){
-  return `<div class="chapter-divider">
-    <div class="chapter-divider-inner">
-      <div class="chapter-divider-num">${num}</div>
-      <div class="chapter-divider-meta">
-        <div class="chapter-divider-label">${label}</div>
-        <div class="chapter-divider-title">${title}</div>
-        <div class="chapter-divider-sub">${sub}</div>
-      </div>
-    </div>
-    <div class="chapter-divider-line"></div>
-  </div>`;
-}
-
 function buildMainTOC(){
-  // 7개 큰 챕터(그룹) × 그 안에 속한 세부 섹션 — 콘텐츠 밀도 향상을 위해 통합
-  // 본문 출력 순서에 맞춰 정렬됨
-  const chapters = [
-    {
-      num:'01',
-      title:'나의 공간 욕구 프로파일',
-      sub:'결과 카드 + 8개 영역 점수',
-      items:[
-        {id:'sec-hero',  label:'결과 카드'},
-        {id:'sec-radar', label:'8개 영역 차트'},
-      ]
-    },
-    {
-      num:'02',
-      title:'점수가 말하는 나의 본질',
-      sub:'8개 영역을 깊이 있게 읽어드려요',
-      items:[
-        {id:'sec-deep-dive', label:'8개 영역 깊이 읽기'},
-      ]
-    },
-    {
-      num:'03',
-      title:'공간 취향과 심리학적 뿌리',
-      sub:'당신의 공간 언어를 풀어봅니다',
-      items:[
-        {id:'sec-story',      label:'공간 취향 이야기'},
-        {id:'sec-insights',   label:'나만의 3가지 인사이트'},
-        {id:'sec-psychology', label:'심리학적 뿌리'},
-      ]
-    },
-    {
-      num:'04',
-      title:'나에게 어울리는 공간 처방',
-      sub:'공간별 소품·어울리는 것들',
-      items:[
-        {id:'sec-rooms', label:'공간별 소품 처방'},
-        {id:'sec-match', label:'어울리는 / 어울리지 않는'},
-      ]
-    },
-    {
-      num:'05',
-      title:'변화 로드맵',
-      sub:'30·60·90일 단계별 실행 플랜',
-      items:[
-        {id:'sec-plan', label:'30/60/90일 플랜'},
-      ]
-    },
-    {
-      num:'06',
-      title:'1년을 함께하는 가이드',
-      sub:'계절별 변화 가이드',
-      items:[
-        {id:'sec-seasonal', label:'계절별 가이드'},
-      ]
-    },
-    {
-      num:'07',
-      title:'예산 + 컬러 + 궁합',
-      sub:'어디에 얼마를·어떤 색을·누구와',
-      items:[
-        {id:'sec-budget',   label:'예산 배분 비율'},
-        {id:'sec-shopping', label:'예산대별 쇼핑 가이드'},
-        {id:'sec-palette',  label:'컬러 팔레트'},
-        {id:'sec-compat',   label:'취향 궁합'},
-      ]
-    },
-  ];
-
-  // 평탄화된 전체 아이템 (호환성 유지 — initTOC 등 기존 함수가 참조)
-  const items = chapters.flatMap(ch=>ch.items);
-
-  // 챕터 + 세부 항목 모두 한 HTML로
-  const chapterHtml = chapters.map((ch,ci)=>{
-    const subItems = ch.items.map((it,ii)=>`
-      <a class="toc-sub-item" onclick="scrollToSection('${it.id}',event)" data-target="${it.id}">
-        <span class="toc-sub-bullet">·</span>
-        <span class="toc-sub-label">${it.label}</span>
-      </a>`).join('');
-
-    return `
-      <div class="toc-chapter">
-        <a class="toc-chapter-head" onclick="scrollToSection('${ch.items[0].id}',event)" data-target="${ch.items[0].id}">
-          <div class="toc-chapter-num">${ch.num}</div>
-          <div class="toc-chapter-meta">
-            <div class="toc-chapter-title">${ch.title}</div>
-            <div class="toc-chapter-sub">${ch.sub}</div>
-          </div>
-          <div class="toc-chapter-arrow">→</div>
-        </a>
-        ${ch.items.length>1?`<div class="toc-sub-list">${subItems}</div>`:''}
-      </div>`;
-  }).join('');
-
-  return `<div class="toc-block">
-    <div class="toc-head">
-      <div class="toc-head-left">
-        <div class="toc-icon-box">📋</div>
-        <div>
-          <div class="toc-title">결과지 목차</div>
-          <div class="toc-meta">총 7개 챕터 · 클릭해 이동</div>
-        </div>
-      </div>
-    </div>
-    <p class="toc-sub">관심 있는 챕터부터 먼저 확인해보세요. 스크롤하면 상단에 미니 목차가 따라옵니다.</p>
-    <div class="toc-chapter-list">
-      ${chapterHtml}
-    </div>
-  </div>`;
-}
-
-// 평탄화된 전체 섹션 ID 목록 — initTOC 등 다른 코드가 참조하는 호환용
-function _getAllTocItems(){
-  return [
+  // 화면에 노출될 TOC 항목 정의 (조건부 섹션은 initTOC에서 실제 DOM 존재 여부로 동기화)
+  const items = [
     {id:'sec-hero',         label:'결과 카드'},
-    {id:'sec-radar',        label:'8개 영역 차트'},
-    {id:'sec-deep-dive',    label:'8개 영역 깊이 읽기'},
+    {id:'sec-radar',        label:'집 취향 점수표'},
+    {id:'sec-deep-dive',    label:'내 점수 해석'},
     {id:'sec-story',        label:'공간 취향 이야기'},
-    {id:'sec-insights',     label:'나만의 3가지'},
-    {id:'sec-psychology',   label:'심리학적 뿌리'},
-    {id:'sec-rooms',        label:'공간별 소품 처방'},
-    {id:'sec-match',        label:'어울리는 / 어울리지 않는'},
-    {id:'sec-plan',         label:'30/60/90일 플랜'},
+    {id:'sec-insights',     label:'좋은 점과 챙길 점'},
+    {id:'sec-korean-home',  label:'한국 집 적용 팁'},
+    {id:'sec-psychology',   label:'왜 편할까'},
+    {id:'sec-rooms',        label:'공간별 추천'},
+    {id:'sec-match',        label:'살 것 / 피할 것'},
+    {id:'sec-plan',         label:'90일 바꾸는 순서'},
     {id:'sec-seasonal',     label:'계절별 가이드'},
-    {id:'sec-budget',       label:'예산 배분 비율'},
-    {id:'sec-shopping',     label:'예산대별 쇼핑 가이드'},
+    {id:'sec-budget',       label:'돈 쓰는 비율'},
+    {id:'sec-shopping',     label:'가격대별 추천'},
     {id:'sec-palette',      label:'컬러 팔레트'},
-    {id:'sec-compat',       label:'취향 궁합'},
-    {id:'spaceRefsSection', label:'공간 레퍼런스'},
-    {id:'pdfSection',       label:'저장 & 공유'},
+    {id:'sec-compat',       label:'같이 살 때 조율'},
+    {id:'spaceRefsSection', label:'참고 공간'},
+    {id:'pdfSection',       label:'저장하기'},
   ];
-}
-
-// 기존 함수 호환을 위해 원본 형태로 한 번 더 정의 — 다만 새 챕터 구조 위에서 동작
-function _buildLegacyTOCSpec(){
-  const items = _getAllTocItems();
-  return items;
-}
-
-// 아래 부분은 원본 코드 호환을 위해 더미로 둠
-function buildLegacyMainTOC_DEPRECATED(){
-  const items = _getAllTocItems();
   return `<div class="toc-block">
     <div class="toc-head">
       <div class="toc-head-left">
         <div class="toc-icon-box">📋</div>
         <div>
           <div class="toc-title">결과지 목차</div>
-          <div class="toc-meta">총 15개 섹션 · 클릭해 이동</div>
+          <div class="toc-meta">관심 있는 부분부터 클릭해 이동</div>
         </div>
       </div>
     </div>
@@ -3956,7 +4016,7 @@ function buildBehaviorBlock(typeId){
   const profile = (typeof BEHAVIOR_PROFILES !== 'undefined') && BEHAVIOR_PROFILES[typeId];
   if(!profile) return '';
   const nameLabel = currentUserName ? currentUserName + '님' : '나';
-  const filled = profile.replace(/\{\{name\}\}/g, nameLabel);
+  const filled = krText(profile.replace(/\{\{name\}\}/g, nameLabel));
   const parts = filled.split('\n\n').filter(p => p.trim());
   const kwLine = parts.find(p => p.startsWith('취향 키워드'));
   const paras = parts.filter(p => !p.startsWith('취향 키워드'));
@@ -3965,6 +4025,50 @@ function buildBehaviorBlock(typeId){
     <h3 class="bblk-title">읽다 보면 익숙한 장면이 떠오르는<em> 나의 공간 이야기</em></h3>
     <div class="bblk-body">${paras.map(p=>`<p>${p.trim()}</p>`).join('')}</div>
     ${kwLine ? `<div class="bblk-kw">${kwLine.trim()}</div>` : ''}
+  </div>`;
+}
+
+function buildKoreanHomeBlock(t){
+  const tips={
+    sanctuary:[
+      ['현관부터 조용하게','신발장 위 물건을 줄이고, 집에 들어오자마자 보이는 곳을 비워두면 하루의 긴장이 빨리 풀립니다.'],
+      ['전월세도 가능한 변화','벽을 크게 손대기 어렵다면 암막 커튼, 작은 분위기 조명, 문 달린 수납함만으로도 충분히 달라집니다.'],
+      ['층간·생활 소음 완충','침대 옆 러그(작은 카펫)나 두꺼운 커튼은 소리를 조금 눌러주고, 공간을 더 안정적으로 느끼게 해줍니다.'],
+    ],
+    nature:[
+      ['베란다와 창가 활용','한국 집에서는 베란다나 창가 한쪽을 작은 초록 코너로 만드는 것만으로도 분위기가 크게 달라집니다.'],
+      ['초보 식물부터','스투키, 스킨답서스, 고무나무처럼 관리가 쉬운 식물부터 시작하면 부담이 적습니다.'],
+      ['나무·면 소재 우선','큰 공사보다 원목 트레이, 면 커튼, 토분처럼 손에 닿는 소재를 바꾸는 쪽이 체감이 빠릅니다.'],
+    ],
+    luxe:[
+      ['작은 마감부터','문 손잡이, 조명 갓, 트레이처럼 자주 보이는 작은 마감만 바꿔도 집이 훨씬 단정해 보입니다.'],
+      ['생활감은 한곳에 모으기','고급스러운 공간도 리모컨, 충전기, 영수증이 흩어지면 금방 흐트러집니다. 낮은 수납함 하나에 모아두세요.'],
+      ['과한 반짝임은 줄이기','골드빛 금속은 한두 곳만 써도 충분합니다. 너무 많으면 한국 아파트 조명 아래에서 부담스럽게 보일 수 있어요.'],
+    ],
+    artistic:[
+      ['못질 없이도 가능','전월세라면 액자 벽 대신 선반 위에 기대 세우거나, 마스킹 테이프와 포스터로 시작해도 좋습니다.'],
+      ['책장 한 칸부터','집 전체를 바꾸기보다 책장 한 칸, 콘솔 위 한 자리부터 내 취향을 보여주는 작은 전시처럼 꾸며보세요.'],
+      ['색은 2곳만 반복','포인트 컬러를 쿠션과 액자처럼 두 곳에만 반복하면 개성은 살고 어수선함은 줄어듭니다.'],
+    ],
+    minimal:[
+      ['식탁 위부터 비우기','한국 집에서는 식탁과 주방 상판이 금방 물건 놓는 자리가 됩니다. 이 두 곳만 비워도 집이 넓어 보입니다.'],
+      ['문 달린 수납 활용','보이는 선반보다 문이 있는 수납장이 훨씬 편합니다. 생활용품은 보이지 않게 넣어두는 것이 핵심이에요.'],
+      ['청소 동선 만들기','바닥에 닿는 물건을 줄이면 청소가 쉬워지고, 정돈된 상태를 오래 유지하기 좋습니다.'],
+    ],
+    cozy:[
+      ['식탁 조명부터','가족이나 친구가 모이는 집이라면 식탁 위 조명 하나만 따뜻하게 바꿔도 대화 분위기가 좋아집니다.'],
+      ['방석·담요의 힘','큰 가구를 바꾸지 않아도 방석, 담요, 쿠션처럼 손이 닿는 물건이 집의 온도를 바꿉니다.'],
+      ['손님용 자리는 가볍게','접이식 의자나 스툴을 준비해두면 평소에는 부담 없고, 손님이 올 때만 자연스럽게 꺼낼 수 있어요.'],
+    ],
+  };
+  const rows = tips[t.group] || tips.cozy;
+  return `<div class="analysis-block" data-anchor id="sec-korean-home" data-toc-label="한국 집 적용 팁">
+    <div class="ab-tag">🏠 한국 집에서 바로 적용하기</div>
+    <div class="ab-title">아파트·빌라·전월세에서도 현실적으로 가능한 변화</div>
+    <p style="font-size:.82rem;color:var(--gray);margin-bottom:18px;line-height:1.7">큰 공사나 비싼 가구부터 시작하지 않아도 됩니다. 한국 집에서 자주 마주치는 현관, 주방 상판, 베란다, 수납 문제부터 작게 바꿔보세요.</p>
+    <div class="rooms-grid">
+      ${rows.map(r=>`<div class="room-card"><div class="room-icon">▫️</div><div class="room-name">${r[0]}</div><div class="room-desc">${r[1]}</div></div>`).join('')}
+    </div>
   </div>`;
 }
 
@@ -3983,7 +4087,7 @@ function renderResult(t,scores){
   const compatData = getTypeField(t,'compat');
   const compatChips=compatData.map(id=>{
     const ct=TYPE_MAP[id];
-    return ct?`<div class="compat-chip">${ct.emoji} ${ct.plain}</div>`:'';
+    return ct?`<div class="compat-chip">${ct.emoji} ${krText(ct.plain)}</div>`:'';
   }).join('') || '<div class="compat-chip">✨ 자신만의 고유한 길</div>';
   // 예산 배분 — 폴백 적용
   const budgetColors=['#E91E8C','#FF9800','#7CB342','#29B6F6'];
@@ -3998,33 +4102,31 @@ function renderResult(t,scores){
   const roomsData = getTypeField(t,'rooms');
   const roomsHtml=Object.entries(roomsData).map(([name,desc])=>{
     const icons={거실:'🛋️',침실:'🛏️',주방:'🍳',서재:'💻'};
-    return`<div class="room-card"><div class="room-icon">${icons[name]||'🏠'}</div><div class="room-name">${name}</div><div class="room-desc">${desc}</div></div>`;
+    return`<div class="room-card"><div class="room-icon">${icons[name]||'🏠'}</div><div class="room-name">${krText(name)}</div><div class="room-desc">${krText(desc)}</div></div>`;
   }).join('');
   // 어울리지 않는 항목 vs 어울리는 항목 — getAvoidItems() 호출로 항상 데이터 보장
   const avoidItems = getAvoidItems(t);
-  const avoidHtml=(avoidItems.length?avoidItems:['내 취향과 동떨어진 가구 구성']).map(item=>`<div class="match-item"><div class="match-dot"></div><span>${item}</span></div>`).join('');
-  const keysHtml=((t.keys&&t.keys.length)?t.keys:['내 취향에 맞는 가구 구성']).map(item=>`<div class="match-item"><div class="match-dot"></div><span>${item}</span></div>`).join('');
+  const avoidHtml=(avoidItems.length?avoidItems:['내 취향과 동떨어진 가구 구성']).map(item=>`<div class="match-item"><div class="match-dot"></div><span>${krText(item)}</span></div>`).join('');
+  const keysHtml=((t.keys&&t.keys.length)?t.keys:['내 취향에 맞는 가구 구성']).map(item=>`<div class="match-item"><div class="match-dot"></div><span>${krText(item)}</span></div>`).join('');
 
   document.getElementById('rw').innerHTML=`
     <div class="r-hero" data-anchor id="sec-hero" data-toc-label="결과 카드">
-      <div class="r-hero-tag">✦ SDTI 정밀 검사 결과 · 나의 공간 취향 리포트</div>
+      <div class="r-hero-tag">✦ SDTI 정밀 검사 결과 · 내 집 취향 리포트</div>
       <span class="r-user-greeting" id="rUserGreeting"></span>
       <span class="r-emoji">${t.emoji||'✨'}</span>
-      <h1 class="r-type-name">${dec(t.name)}</h1>
-      <div class="r-type-plain">${t.plain}</div>
-      <p class="r-desc">${dec(t.desc)}</p>
-      <div class="r-keys">${(t.keys||[]).map(k=>`<span class="r-key">${k}</span>`).join('')}</div>
+      <h1 class="r-type-name">${dec(krText(t.name))}</h1>
+      <div class="r-type-plain">${krText(t.plain)}</div>
+      <p class="r-desc">${dec(krText(t.desc))}</p>
+      <div class="r-keys">${(t.keys||[]).map(k=>`<span class="r-key">${krText(k)}</span>`).join('')}</div>
     </div>
 
     ${buildMainTOC()}
 
-    ${chapterDivider('01','Chapter 01 · 프로파일','나의 공간 욕구 프로파일','결과 카드와 8개 영역 점수')}
-
-    <div class="radar-section" data-anchor id="sec-radar" data-toc-label="8개 영역 차트">
+    <div class="radar-section" data-anchor id="sec-radar" data-toc-label="집 취향 점수표">
       <div class="radar-title">한눈에 보는 8가지 공간 성향</div>
       <div class="radar-bars">
         ${SECS.map((sec,i)=>{
-          const val=t.bars?t.bars[sec.label]||scores[sec.label]||50:scores[sec.label]||50;
+          const val=getSectionScore(t, scores, sec, 50);
           return`<div class="r-bar-row">
             <span class="r-bar-icon">${sec.icon}</span>
             <span class="r-bar-label">${sec.label}</span>
@@ -4041,7 +4143,7 @@ function renderResult(t,scores){
       // 메타인지 효과를 강화하는 핵심 콘텐츠 섹션
       // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       const sectionDeepDive = SECS.map((sec,i)=>{
-        const val = t.bars?t.bars[sec.label]||scores[sec.label]||50:scores[sec.label]||50;
+        const val = getSectionScore(t, scores, sec, 50);
         const insight = getSectionInsight(sec.key, val);
         if(!insight) return '';
         const levelLabel = val<=30?'매우 낮음':val<=60?'보통':val<=85?'높음':'매우 높음';
@@ -4057,25 +4159,24 @@ function renderResult(t,scores){
                 </div>
               </div>
             </div>
-            <div class="sdd-headline" style="color:${secColors[i]}">${insight.headline}</div>
-            <p class="sdd-body">${insight.body}</p>
+            <div class="sdd-headline" style="color:${secColors[i]}">${krText(insight.headline)}</div>
+            <p class="sdd-body">${krText(insight.body)}</p>
             <div class="sdd-detail-grid">
               <div class="sdd-detail">
                 <div class="sdd-detail-label">📌 일상 행동 패턴</div>
-                <div class="sdd-detail-text">${insight.behavior}</div>
+                <div class="sdd-detail-text">${krText(insight.behavior)}</div>
               </div>
               <div class="sdd-detail">
                 <div class="sdd-detail-label">💡 인테리어 시사점</div>
-                <div class="sdd-detail-text">${insight.impl}</div>
+                <div class="sdd-detail-text">${krText(insight.impl)}</div>
               </div>
             </div>
           </div>`;
       }).join('');
 
-      return `${chapterDivider('02','Chapter 02 · 본질 읽기','점수가 말하는 나의 본질','8개 영역을 깊이 있게 읽어드려요')}
-      <div class="analysis-block" data-anchor id="sec-deep-dive" data-toc-label="8개 영역 깊이 읽기">
+      return `<div class="analysis-block" data-anchor id="sec-deep-dive" data-toc-label="내 점수 해석">
         <div class="ab-tag">🔍 8개 영역 깊이 읽기</div>
-        <div class="ab-title">점수로 읽는 나의 집 취향</div>
+        <div class="ab-title">숫자로 읽는 내 집 취향</div>
         <p style="font-size:.85rem;color:var(--gray);margin-bottom:22px;line-height:1.75">단순한 숫자가 아니에요. 각 영역의 점수는 내가 어떤 공간에서 편안한지, 무엇을 바꾸면 만족도가 올라가는지 알려주는 힌트입니다. 점수를 하나씩 함께 읽어볼게요.</p>
         <div class="sdd-grid">${sectionDeepDive}</div>
         <div class="sdd-summary">
@@ -4091,71 +4192,71 @@ function renderResult(t,scores){
     ${(()=>{
       const bp=buildBehaviorBlock(t.id);
       if(bp) return bp;
-      return `${chapterDivider('03','Chapter 03 · 깊이 있는 이야기','공간 취향과 심리학적 뿌리','당신의 공간 언어를 풀어봅니다')}
-      <div class="analysis-block" data-anchor id="sec-story" data-toc-label="공간 취향 이야기">
+      return `<div class="analysis-block" data-anchor id="sec-story" data-toc-label="공간 취향 이야기">
         <div class="ab-tag">✦ 나의 공간 취향 이야기</div>
-        <div class="ab-title">${t.plain} , 내가 편해지는 공간의 방식</div>
-        <div class="ab-body">${t.desc||''}</div>
-        <div class="ab-insight">💡 ${dec(t.insight)}</div>
+        <div class="ab-title">${krText(t.plain)} , 내가 편해지는 공간의 방식</div>
+        <div class="ab-body">${krText(t.desc||'')}</div>
+        <div class="ab-insight">💡 ${dec(krText(t.insight))}</div>
       </div>`;
     })()}
 
     ${(()=>{
       const ins = (typeof GROUP_INSIGHTS!=='undefined') && GROUP_INSIGHTS[t.group];
       if(!ins) return '';
-      return `<div class="analysis-block" data-anchor id="sec-insights" data-toc-label="나만의 3가지">
+      return `<div class="analysis-block" data-anchor id="sec-insights" data-toc-label="좋은 점과 챙길 점">
         <div class="ab-tag">✦ 나만의 공간 포인트 3가지</div>
         <div class="ab-title">좋은 점, 챙길 점, 의외의 팁</div>
-        <p style="font-size:.82rem;color:var(--gray);margin-bottom:18px;line-height:1.7">${t.plain}에게 잘 맞는 점, 조금만 챙기면 더 편해지는 점, 그리고 의외로 잘 어울리는 팁을 정리했어요.</p>
+        <p style="font-size:.82rem;color:var(--gray);margin-bottom:18px;line-height:1.7">${krText(t.plain)}에게 잘 맞는 점, 조금만 챙기면 더 편해지는 점, 그리고 의외로 잘 어울리는 팁을 정리했어요.</p>
         <div class="insights-grid">
           <div class="insight-card strength">
             <div class="insight-icon">💎</div>
             <div class="insight-label">좋은 점</div>
-            <div class="insight-title">${ins.strength.title}</div>
-            <div class="insight-body">${ins.strength.body}</div>
+            <div class="insight-title">${krText(ins.strength.title)}</div>
+            <div class="insight-body">${krText(ins.strength.body)}</div>
           </div>
           <div class="insight-card caution">
             <div class="insight-icon">⚠️</div>
             <div class="insight-label">챙길 점</div>
-            <div class="insight-title">${ins.caution.title}</div>
-            <div class="insight-body">${ins.caution.body}</div>
+            <div class="insight-title">${krText(ins.caution.title)}</div>
+            <div class="insight-body">${krText(ins.caution.body)}</div>
           </div>
           <div class="insight-card surprise">
             <div class="insight-icon">✨</div>
             <div class="insight-label">의외의 팁</div>
-            <div class="insight-title">${ins.surprise.title}</div>
-            <div class="insight-body">${ins.surprise.body}</div>
+            <div class="insight-title">${krText(ins.surprise.title)}</div>
+            <div class="insight-body">${krText(ins.surprise.body)}</div>
           </div>
         </div>
       </div>`;
     })()}
 
+    ${buildKoreanHomeBlock(t)}
+
     ${(()=>{
       const psy = (typeof GROUP_PSYCHOLOGY!=='undefined') && GROUP_PSYCHOLOGY[t.group];
       if(!psy) return '';
-      return `<div class="psyche-block" data-anchor id="sec-psychology" data-toc-label="공간 심리로 읽기">
+      return `<div class="psyche-block" data-anchor id="sec-psychology" data-toc-label="왜 편할까">
         <div class="psyche-tag">🧬 SPACE PSYCHOLOGY</div>
         <div class="psyche-theory">왜 이런 공간이 <em>편하게 느껴질까요?</em></div>
         <div class="psyche-theory-en">${psy.theory} · ${psy.theory_en}</div>
         <div class="psyche-section">
           <div class="psyche-section-label">공간 심리 포인트</div>
-          <div class="psyche-section-body">${psy.science}</div>
+          <div class="psyche-section-body">${krText(psy.science)}</div>
         </div>
         <div class="psyche-section">
           <div class="psyche-section-label">생활에서 느껴지는 이유</div>
-          <div class="psyche-section-body">${psy.why}</div>
+          <div class="psyche-section-body">${krText(psy.why)}</div>
         </div>
       </div>`;
     })()}
 
-    ${chapterDivider('04','Chapter 04 · 공간 처방','나에게 어울리는 공간 처방','공간별 소품·어울리는 것들')}
-    <div class="analysis-block" data-anchor id="sec-rooms" data-toc-label="공간별 소품 처방">
-      <div class="ab-tag">🛋️ 공간별 소품 처방</div>
+    <div class="analysis-block" data-anchor id="sec-rooms" data-toc-label="공간별 추천">
+      <div class="ab-tag">🛋️ 공간별 추천</div>
       <div class="ab-title">집에서 바로 시도해볼 것들</div>
       <div class="rooms-grid">${roomsHtml}</div>
     </div>
 
-    <div class="analysis-block" data-anchor id="sec-match" data-toc-label="어울리는 vs 어울리지 않는">
+    <div class="analysis-block" data-anchor id="sec-match" data-toc-label="살 것 / 피할 것">
       <div class="ab-tag">✅ 잘 맞는 요소 vs 🙅 덜 맞을 수 있는 요소</div>
       <div class="ab-title">사기 전에 한 번만 체크해보세요</div>
       <div class="match-grid">
@@ -4174,8 +4275,7 @@ function renderResult(t,scores){
     ${(()=>{
       const plan = (typeof GROUP_ACTION_PLAN!=='undefined') && GROUP_ACTION_PLAN[t.group];
       if(!plan) return '';
-      return `${chapterDivider('05','Chapter 05 · 실행 로드맵','변화 로드맵','30·60·90일 단계별 실행 플랜')}
-      <div class="analysis-block" data-anchor id="sec-plan" data-toc-label="30/60/90일 플랜">
+      return `<div class="analysis-block" data-anchor id="sec-plan" data-toc-label="90일 바꾸는 순서">
         <div class="ab-tag">🗓️ 30 / 60 / 90일 액션 플랜</div>
         <div class="ab-title">오늘부터 90일까지, 바꾸는 순서</div>
         <p style="font-size:.82rem;color:var(--gray);margin-bottom:18px;line-height:1.7">한 번에 바꾸려 하지 마세요. 작은 변화 → 중간 투자 → 큰 결정 순서로, 가장 적은 비용과 후회로 공간을 완성하는 방법이에요.</p>
@@ -4184,8 +4284,8 @@ function renderResult(t,scores){
             <div class="timeline-item">
               <div class="timeline-dot">${p.day}</div>
               <span class="timeline-day">${p.day}일 안에</span>
-              <div class="timeline-title">${p.title}</div>
-              <div class="timeline-desc">${p.desc}</div>
+              <div class="timeline-title">${krText(p.title)}</div>
+              <div class="timeline-desc">${krText(p.desc)}</div>
             </div>
           `).join('')}
         </div>
@@ -4221,28 +4321,27 @@ function renderResult(t,scores){
             <div class="seasonal-header ${s.id}">
               <div class="seasonal-header-icon">${s.icon}</div>
               <div>
-                <div class="seasonal-keyword">${s.label} · ${data.keyword}</div>
-                <div class="seasonal-title">${s.label}의 ${t.plain}</div>
-                <div class="seasonal-shift">${data.shift.replace(/\*([^*]+)\*/g,'<em>$1</em>')}</div>
+                <div class="seasonal-keyword">${s.label} · ${krText(data.keyword)}</div>
+                <div class="seasonal-title">${s.label}의 ${krText(t.plain)}</div>
+                <div class="seasonal-shift">${krText(data.shift).replace(/\*([^*]+)\*/g,'<em>$1</em>')}</div>
               </div>
             </div>
             <div class="seasonal-actions">
               ${data.actions.map(a => `
                 <div class="seasonal-action">
                   <div class="seasonal-action-icon">${a.icon}</div>
-                  <div class="seasonal-action-title">${a.title}</div>
-                  <div class="seasonal-action-desc">${a.desc}</div>
+                  <div class="seasonal-action-title">${krText(a.title)}</div>
+                  <div class="seasonal-action-desc">${krText(a.desc)}</div>
                 </div>
               `).join('')}
             </div>
           </div>`;
       }).join('');
 
-      return `${chapterDivider('06','Chapter 06 · 1년 가이드','1년을 함께하는 가이드','계절별 변화 가이드')}
-      <div class="analysis-block" data-anchor id="sec-seasonal" data-toc-label="계절별 가이드">
+      return `<div class="analysis-block" data-anchor id="sec-seasonal" data-toc-label="계절별 가이드">
         <div class="ab-tag">🗓️ 계절별 공간 변화 가이드</div>
-        <div class="ab-title">사계절, 1년 내내 펼쳐보는 인테리어 로드맵</div>
-        <p style="font-size:.82rem;color:var(--gray);margin-bottom:16px;line-height:1.7">같은 ${t.plain} 공간도 계절마다 강조하는 부분이 달라야 해요. 현재 계절은 자동으로 열려 있어요, 다른 계절도 미리 확인해보세요.</p>
+        <div class="ab-title">계절이 바뀔 때 집도 조금씩 바꿔보세요</div>
+        <p style="font-size:.82rem;color:var(--gray);margin-bottom:16px;line-height:1.7">같은 ${krText(t.plain)} 공간도 봄, 여름, 가을, 겨울에 필요한 느낌이 조금씩 달라집니다. 현재 계절은 자동으로 열려 있어요.</p>
         <div class="seasonal-block">
           <div class="seasonal-tabs">${tabsHtml}</div>
           ${panesHtml}
@@ -4253,16 +4352,15 @@ function renderResult(t,scores){
           <div class="season-sub-icon">✉️</div>
           <div class="season-sub-body">
             <div class="season-sub-title" id="seasonSubTitle">계절이 바뀔 때마다 알려드릴까요?</div>
-            <div class="season-sub-desc" id="seasonSubDesc">3개월마다 ${t.plain} 전용 시즌 가이드를 이메일로 받아보세요. 그 계절에 딱 맞는 변화 포인트를 잊지 않을 수 있어요.</div>
+            <div class="season-sub-desc" id="seasonSubDesc">3개월마다 ${krText(t.plain)} 전용 계절 가이드를 이메일로 받아보세요. 그 계절에 딱 맞는 변화 포인트를 잊지 않을 수 있어요.</div>
           </div>
           <button class="season-sub-btn" id="seasonSubBtn" onclick="openSeasonSubModal()">알림 받기</button>
         </div>
       </div>`;
     })()}
 
-    ${chapterDivider('07','Chapter 07 · 실용 가이드','예산 + 컬러 + 궁합','어디에 얼마를·어떤 색을·누구와')}
-    <div class="analysis-block" data-anchor id="sec-budget" data-toc-label="예산 배분 비율">
-      <div class="ab-tag">💰 인테리어 예산 배분 가이드</div>
+    <div class="analysis-block" data-anchor id="sec-budget" data-toc-label="돈 쓰는 비율">
+      <div class="ab-tag">💰 돈 쓰는 순서</div>
       <div class="ab-title">가장 만족도 높은 투자 비율</div>
       <div class="budget-bars">${budgetItems}</div>
     </div>
@@ -4270,19 +4368,19 @@ function renderResult(t,scores){
     ${(()=>{
       const guide = (typeof GROUP_BUDGET_GUIDE!=='undefined') && GROUP_BUDGET_GUIDE[t.group];
       if(!guide) return '';
-      return `<div class="analysis-block" data-anchor id="sec-shopping" data-toc-label="예산대별 쇼핑 가이드">
-        <div class="ab-tag">🛒 예산대별 쇼핑 가이드</div>
+      return `<div class="analysis-block" data-anchor id="sec-shopping" data-toc-label="가격대별 추천">
+        <div class="ab-tag">🛒 가격대별 추천</div>
         <div class="ab-title">작게 시작해도 충분해요</div>
-        <p style="font-size:.82rem;color:var(--gray);margin-bottom:18px;line-height:1.7">가격대별로 가장 효과적인 ${t.plain} 추천 아이템을 정리했어요. 1만 원부터 시작해 천천히 늘려가셔도 충분합니다.</p>
+        <p style="font-size:.82rem;color:var(--gray);margin-bottom:18px;line-height:1.7">가격대별로 가장 효과적인 ${krText(t.plain)} 추천 아이템을 정리했어요. 1만 원부터 시작해 천천히 늘려가셔도 충분합니다.</p>
         <div class="budget-tier-grid">
           ${guide.map(g=>`
             <div class="budget-tier-card" style="--tier-color:${g.color}">
               <div class="budget-tier-head">
-                <span class="budget-tier-name">${g.tier}</span>
+                <span class="budget-tier-name">${krText(g.tier)}</span>
                 <span class="budget-tier-price">${g.price}</span>
               </div>
               <ul class="budget-tier-items">
-                ${g.items.map(it=>`<li>${it}</li>`).join('')}
+                ${g.items.map(it=>`<li>${krText(it)}</li>`).join('')}
               </ul>
             </div>
           `).join('')}
@@ -4294,20 +4392,20 @@ function renderResult(t,scores){
       <div class="ab-tag">🎨 나의 공간 컬러 팔레트</div>
       <div class="ab-title">이 색들을 기준으로 골라보세요</div>
       <div class="palette-row">${palChips}</div>
-      <p style="font-size:.75rem;color:var(--gray);margin-top:10px;line-height:1.6">위 팔레트를 메인·서브·포인트·뉴트럴로 활용하세요.<br>가장 큰 면적(벽·소파)에는 첫 번째 색을, 포인트(소품·쿠션)에는 세 번째 색을 추천합니다.</p>
+      <p style="font-size:.75rem;color:var(--gray);margin-top:10px;line-height:1.6">첫 번째 색은 벽·소파처럼 넓은 면적에, 세 번째 색은 쿠션·소품처럼 작은 포인트에 활용해보세요.<br>색 이름을 몰라도 이 조합 안에서 고르면 실패 확률이 줄어듭니다.</p>
     </div>
 
-    <div class="analysis-block" data-anchor id="sec-compat" data-toc-label="취향 궁합">
+    <div class="analysis-block" data-anchor id="sec-compat" data-toc-label="같이 살 때 조율">
       <div class="ab-tag">💑 함께 사는 사람과의 취향 궁합</div>
       <div class="ab-title">같이 살 때 어디를 맞추면 좋을까요?</div>
       <p style="font-size:.85rem;color:#4A4A5A;line-height:1.8;margin-bottom:12px">같이 사는 사람도 진단해보세요. 유형이 같으면 편한 지점이 비슷하고, 다르면 어떤 공간을 각자에게 맞춰 나눌지 정하기 쉬워요.</p>
-      <p style="font-size:.78rem;color:var(--gray);margin-bottom:10px">내 유형과 잘 어울리는 유형:</p>
+      <p style="font-size:.78rem;color:var(--gray);margin-bottom:10px">공간 취향을 맞추기 쉬운 유형:</p>
       <div class="compat-row">${compatChips}</div>
     </div>
 
     <!-- 공간 레퍼런스 이미지 -->
-    <div class="space-refs-section" id="spaceRefsSection" data-anchor data-toc-label="공간 레퍼런스">
-      <div class="ab-tag">📸 내 유형에 맞는 공간 레퍼런스</div>
+    <div class="space-refs-section" id="spaceRefsSection" data-anchor data-toc-label="참고 공간">
+      <div class="ab-tag">📸 내 유형에 맞는 참고 공간</div>
       <div class="ab-title">이런 공간에서 가장 나답게 존재할 수 있어요</div>
       <div class="space-tab-btns">
         <button class="space-tab-btn active" onclick="switchSpaceTab('living',this)">🛋️ 거실</button>
@@ -4407,33 +4505,38 @@ function fallback(txt){
 let currentSpaceTab='living';
 const DEFAULT_KITCHEN_REFS={
   sanctuary:[
-    {url:'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=900&q=85&auto=format&fit=crop',caption:'상판 위를 비운 차분한 부엌'},
-    {url:'https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=900&q=85&auto=format&fit=crop',caption:'크림 톤 수납·은은한 조명'},
+    {url:'https://images.unsplash.com/photo-1600489000022-c2086d79f9d4?w=900&q=85&auto=format&fit=crop',caption:'상판 위를 비운 차분한 부엌'},
+    {url:'https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?w=900&q=85&auto=format&fit=crop',caption:'크림 톤 수납·은은한 조명'},
   ],
   nature:[
     {url:'https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=900&q=85&auto=format&fit=crop',caption:'원목 도마·식물·따뜻한 햇살'},
-    {url:'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=900&q=85&auto=format&fit=crop',caption:'토분과 우드가 어울리는 부엌'},
+    {url:'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=900&q=85&auto=format&fit=crop',caption:'토분과 우드가 어울리는 부엌'},
   ],
   luxe:[
     {url:'https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=900&q=85&auto=format&fit=crop',caption:'정돈된 상판·고급스러운 마감'},
-    {url:'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=900&q=85&auto=format&fit=crop',caption:'세라믹·메탈 포인트 부엌'},
+    {url:'https://images.unsplash.com/photo-1600489000022-c2086d79f9d4?w=900&q=85&auto=format&fit=crop',caption:'세라믹·메탈 포인트 부엌'},
   ],
   artistic:[
-    {url:'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=900&q=85&auto=format&fit=crop',caption:'오픈 선반·취향이 보이는 그릇'},
+    {url:'https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=900&q=85&auto=format&fit=crop',caption:'오픈 선반·취향이 보이는 그릇'},
     {url:'https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=900&q=85&auto=format&fit=crop',caption:'색감 있는 소품과 빈티지 무드'},
   ],
   minimal:[
     {url:'https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=900&q=85&auto=format&fit=crop',caption:'손잡이 없는 수납·깨끗한 동선'},
-    {url:'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=900&q=85&auto=format&fit=crop',caption:'화이트 톤·군더더기 없는 부엌'},
+    {url:'https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?w=900&q=85&auto=format&fit=crop',caption:'화이트 톤·군더더기 없는 부엌'},
   ],
   cozy:[
     {url:'https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=900&q=85&auto=format&fit=crop',caption:'따뜻한 조명·함께 머무는 식탁'},
-    {url:'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=900&q=85&auto=format&fit=crop',caption:'홈카페 느낌의 포근한 부엌'},
+    {url:'https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?w=900&q=85&auto=format&fit=crop',caption:'홈카페 느낌의 포근한 부엌'},
   ],
 };
 
+function getSpaceRefsForType(type){
+  if(!type) return SPACE_REFS.cozy_hearth;
+  return SPACE_REFS[type.id] || SPACE_REFS[SPACE_REF_GROUP_FALLBACK[type.group]] || SPACE_REFS.cozy_hearth;
+}
+
 function renderSpaceRefs(type){
-  const refs=SPACE_REFS[type.id];
+  const refs=getSpaceRefsForType(type);
   if(!refs) return;
   renderSpaceImgs(refs,'living');
 }
@@ -4442,23 +4545,18 @@ function switchSpaceTab(tab,btn){
   currentSpaceTab=tab;
   document.querySelectorAll('.space-tab-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  const refs=SPACE_REFS[resultType.id];
+  const refs=getSpaceRefsForType(resultType);
   if(refs) renderSpaceImgs(refs,tab);
 }
 function getKitchenRefs(refs){
   if(refs.kitchen && refs.kitchen.length) return refs.kitchen;
-  const fromSpaceImages = (typeof SPACE_IMAGES!=='undefined' && resultType && SPACE_IMAGES[resultType.id])
-    ? (SPACE_IMAGES[resultType.id].rooms||[])
-        .filter(r=>r.name==='주방')
-        .map(r=>({url:r.url, caption:r.kw||'내 유형에 맞는 부엌'}))
-    : [];
   const groupFallback = (resultType && DEFAULT_KITCHEN_REFS[resultType.group]) || DEFAULT_KITCHEN_REFS.cozy;
-  return [...fromSpaceImages, ...groupFallback].slice(0,2);
+  return groupFallback.slice(0,2);
 }
 function renderSpaceImgs(refs,tab){
   const imgs=tab==='living'?refs.living:(tab==='bedroom'?refs.bedroom:getKitchenRefs(refs));
   const tabNames={living:'거실',bedroom:'침실',kitchen:'부엌'};
-  const label=tabNames[tab]+' 레퍼런스 · '+resultType.plain+'에 어울리는 '+tabNames[tab]+' 스타일';
+  const label=tabNames[tab]+' 참고 공간 · '+krText(resultType.plain)+'에 어울리는 '+tabNames[tab]+' 분위기';
   document.getElementById('spaceRefLabel').textContent=label;
   document.getElementById('spaceImgsGrid').innerHTML=(imgs||[]).map(img=>`
     <div class="space-img-card">
@@ -4485,84 +4583,108 @@ let _instaCardDataUrl = null; // 캡처된 이미지 dataURL 저장
 // , 1080×1080 컨테이너 안에 핵심 결과 요약만 압축적으로 표시
 function buildInstaCardHTML(t, scores){
   const secColors=['#E91E8C','#FF9800','#7CB342','#29B6F6','#AB47BC','#FF7043','#26A69A','#5C6BC0'];
-  // 8개 영역 중 상위 4개만 표시 (인스타 카드는 압축적이어야 함)
-  const top4 = SECS.map((sec,i)=>({
+  const cleanText = (s)=>String(s||'')
+    .replace(/\[\[hl\]\]|\[\[\/hl\]\]|\[\[em\]\]|\[\[\/em\]\]/g,'')
+    .replace(/<[^>]+>/g,'')
+    .replace(/\s+/g,' ')
+    .trim();
+
+  // 공유용 카드는 홍보성과 가독성이 우선이므로 상위 3개 욕구만 보여준다.
+  const top3 = SECS.map((sec,i)=>({
     label: sec.label,
-    val:   t.bars?t.bars[sec.label]||scores[sec.label]||50:scores[sec.label]||50,
+    val:   getSectionScore(t, scores, sec, 50),
     color: secColors[i],
     icon:  sec.icon,
-  })).sort((a,b)=>b.val-a.val).slice(0,4);
+  })).sort((a,b)=>b.val-a.val).slice(0,3);
 
   const igPaletteData = getTypeField(t,'palette');
-  const palChips = igPaletteData.slice(0,5).map(c=>
-    `<div style="width:64px;height:64px;border-radius:16px;background:${c};box-shadow:0 4px 12px rgba(0,0,0,.25)"></div>`
+  const palChips = igPaletteData.slice(0,5).map((c,i)=>
+    `<div style="width:58px;height:58px;border-radius:18px;background:${c};box-shadow:inset 0 0 0 1px rgba(255,255,255,.22),0 8px 18px rgba(0,0,0,.24);transform:translateY(${i%2===0?'0':'8'}px)"></div>`
   ).join('');
 
   const keysChips = ((t.keys&&t.keys.length)?t.keys:['포근함','자연소재','회복']).slice(0,3).map(k=>
-    `<span style="display:inline-block;padding:10px 22px;border:1.5px solid rgba(201,169,110,.5);border-radius:50px;font-size:22px;color:#C9A96E;font-weight:600;letter-spacing:.02em">${k}</span>`
+    `<span style="display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 20px;border:1.5px solid rgba(201,169,110,.48);background:rgba(201,169,110,.07);border-radius:999px;font-size:20px;color:#F1D48B;font-weight:800;white-space:nowrap">${cleanText(k)}</span>`
   ).join('');
 
+  const groupCopy={
+    sanctuary:'내 공간은 조용히 나를 회복시키는 곳',
+    nature:'내 공간은 자연스럽게 숨이 트이는 곳',
+    luxe:'내 공간은 일상의 품격을 올리는 곳',
+    artistic:'내 공간은 취향이 또렷하게 드러나는 곳',
+    minimal:'내 공간은 덜어낼수록 선명해지는 곳',
+    cozy:'내 공간은 함께 머물수록 따뜻해지는 곳',
+  };
+  const typeName = cleanText(t.plain || t.name || '나의 공간형');
+  const shortCopy = groupCopy[t.group] || '나에게 맞는 공간에는 이유가 있습니다';
+  const heroEmoji = t.emoji || '✨';
+
   return `
-    <div style="width:1080px;height:1080px;background:linear-gradient(145deg,#0F0F1A 0%,#1A1040 50%,#2A1545 100%);position:relative;overflow:hidden;font-family:'Noto Sans KR','Nunito',sans-serif;color:#fff;box-sizing:border-box;padding:80px 70px">
+    <div style="width:1080px;height:1080px;background:linear-gradient(145deg,#0F0F1A 0%,#1B1140 58%,#2A0F43 100%);position:relative;overflow:hidden;font-family:'Noto Sans KR','Malgun Gothic','Nunito',sans-serif;color:#fff;box-sizing:border-box;padding:64px 70px 54px;display:flex;flex-direction:column">
 
       <!-- 백그라운드 글로우 -->
-      <div style="position:absolute;top:-200px;right:-150px;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(233,30,140,.18),transparent 70%);pointer-events:none"></div>
-      <div style="position:absolute;bottom:-180px;left:-100px;width:480px;height:480px;border-radius:50%;background:radial-gradient(circle,rgba(201,169,110,.12),transparent 70%);pointer-events:none"></div>
+      <div style="position:absolute;top:-220px;right:-130px;width:620px;height:620px;border-radius:50%;background:radial-gradient(circle,rgba(233,30,140,.22),transparent 70%);pointer-events:none"></div>
+      <div style="position:absolute;bottom:-190px;left:-130px;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(41,182,246,.12),transparent 72%);pointer-events:none"></div>
+      <div style="position:absolute;left:76px;right:76px;top:176px;height:1px;background:linear-gradient(90deg,transparent,rgba(201,169,110,.28),transparent);pointer-events:none"></div>
 
       <!-- 상단 브랜드 영역 -->
-      <div style="position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;margin-bottom:60px">
+      <div style="position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;margin-bottom:52px;flex:0 0 auto">
         <div style="display:flex;align-items:center;gap:14px">
-          <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#E91E8C,#FF6B9D);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900">S</div>
+          <div style="width:58px;height:58px;border-radius:50%;background:conic-gradient(#E91E8C 0 25%,#FF9800 0 50%,#7CB342 0 75%,#29B6F6 0 100%);display:flex;align-items:center;justify-content:center;box-shadow:0 10px 28px rgba(0,0,0,.24)">
+            <div style="width:30px;height:30px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;color:#0F0F1A;font-size:16px;font-weight:900">S</div>
+          </div>
           <div>
-            <div style="font-size:20px;font-weight:800;letter-spacing:.05em">SKOPOS</div>
-            <div style="font-size:13px;color:rgba(255,255,255,.5);letter-spacing:.18em;font-weight:600">SDTI · 정밀 검사</div>
+            <div style="font-size:28px;font-weight:900;letter-spacing:.02em;line-height:1">SKO<span style="color:#E91E8C">POS</span></div>
+            <div style="font-size:14px;color:rgba(255,255,255,.55);letter-spacing:.14em;font-weight:800;margin-top:8px">SDTI 공간 욕구 정밀 검사</div>
           </div>
         </div>
-        <div style="display:inline-block;padding:8px 18px;border:1px solid rgba(201,169,110,.4);background:rgba(201,169,110,.08);border-radius:50px;font-size:14px;color:#C9A96E;font-weight:700;letter-spacing:.15em;text-transform:uppercase">✦ My Result</div>
+        <div style="display:inline-flex;align-items:center;height:42px;padding:0 20px;border:1px solid rgba(201,169,110,.42);background:rgba(201,169,110,.08);border-radius:999px;font-size:14px;color:#EED18A;font-weight:900;letter-spacing:.12em;text-transform:uppercase">SHARE CARD</div>
       </div>
 
       <!-- 메인 결과 영역 -->
-      <div style="position:relative;z-index:1;text-align:center;margin-bottom:50px">
-        <div style="font-size:120px;line-height:1;margin-bottom:24px">${t.emoji||'✨'}</div>
-        <div style="font-size:17px;color:rgba(201,169,110,.85);letter-spacing:.2em;font-weight:700;text-transform:uppercase;margin-bottom:14px">YOUR SPACE TYPE</div>
-        <div style="font-family:'Cormorant Garamond',serif;font-size:64px;font-weight:400;line-height:1.15;letter-spacing:-.01em;margin-bottom:14px;color:#fff">${(t.name||'').replace(/<[^>]+>/g,'')}</div>
-        <div style="font-size:28px;color:#C9A96E;font-weight:500;margin-bottom:24px;letter-spacing:.02em">${t.plain||''}</div>
+      <div style="position:relative;z-index:1;text-align:center;margin-bottom:30px;flex:0 0 auto">
+        <div style="display:inline-flex;align-items:center;justify-content:center;width:138px;height:138px;border-radius:42px;background:linear-gradient(145deg,rgba(255,255,255,.16),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.11);box-shadow:0 18px 42px rgba(0,0,0,.24);font-size:82px;line-height:1;margin-bottom:26px">${heroEmoji}</div>
+        <div style="font-size:17px;color:rgba(201,169,110,.86);letter-spacing:.22em;font-weight:900;text-transform:uppercase;margin-bottom:16px">MY SPACE TYPE</div>
+        <div style="font-size:70px;font-weight:900;line-height:1.1;letter-spacing:0;color:#fff;margin-bottom:18px;text-shadow:0 10px 34px rgba(0,0,0,.22)">${typeName}</div>
+        <div style="font-size:28px;color:#F1D48B;font-weight:800;letter-spacing:0;line-height:1.45">${shortCopy}</div>
       </div>
 
       <!-- 키워드 칩 -->
-      <div style="position:relative;z-index:1;text-align:center;margin-bottom:46px;display:flex;justify-content:center;gap:12px;flex-wrap:wrap">
+      <div style="position:relative;z-index:1;text-align:center;margin-bottom:32px;display:flex;justify-content:center;gap:12px;flex-wrap:wrap;min-height:44px;flex:0 0 auto">
         ${keysChips}
       </div>
 
       <!-- 컬러 팔레트 -->
-      <div style="position:relative;z-index:1;display:flex;justify-content:center;gap:14px;margin-bottom:46px">
+      <div style="position:relative;z-index:1;display:flex;justify-content:center;gap:12px;margin-bottom:34px;height:70px;flex:0 0 auto">
         ${palChips}
       </div>
 
-      <!-- 상위 4개 영역 미니바 -->
-      <div style="position:relative;z-index:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:20px;padding:28px 34px;margin-bottom:40px">
-        <div style="font-size:14px;color:rgba(201,169,110,.85);letter-spacing:.18em;font-weight:700;text-transform:uppercase;margin-bottom:18px;text-align:center">상위 4개 욕구 프로파일</div>
-        ${top4.map(b=>`
-          <div style="display:flex;align-items:center;gap:14px;margin-bottom:12px">
-            <span style="font-size:22px;width:30px">${b.icon}</span>
-            <span style="font-size:18px;font-weight:700;color:#fff;min-width:130px">${b.label}</span>
-            <div style="flex:1;height:8px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden">
+      <!-- 상위 3개 영역 미니바 -->
+      <div style="position:relative;z-index:1;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.08);border-radius:26px;padding:28px 34px 26px;margin-bottom:24px;box-shadow:0 18px 44px rgba(0,0,0,.2);flex:0 0 auto">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+          <div style="font-size:16px;color:#F1D48B;letter-spacing:.16em;font-weight:900;text-transform:uppercase">TOP 3 욕구 프로파일</div>
+          <div style="font-size:15px;color:rgba(255,255,255,.46);font-weight:800">8개 영역 분석</div>
+        </div>
+        ${top3.map(b=>`
+          <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px">
+            <span style="font-size:26px;width:34px;line-height:1;text-align:center">${b.icon}</span>
+            <span style="font-size:21px;font-weight:900;color:#fff;width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${krText(b.label)}</span>
+            <div style="flex:1;height:10px;background:rgba(255,255,255,.09);border-radius:999px;overflow:hidden">
               <div style="height:100%;width:${b.val}%;background:${b.color};border-radius:4px"></div>
             </div>
-            <span style="font-size:18px;font-weight:800;color:${b.color};min-width:42px;text-align:right">${b.val}</span>
+            <span style="font-size:24px;font-weight:900;color:${b.color};width:48px;text-align:right">${b.val}</span>
           </div>
         `).join('')}
       </div>
 
       <!-- 하단 CTA + 해시태그 -->
-      <div style="position:absolute;left:70px;right:70px;bottom:60px;z-index:1">
-        <div style="display:flex;align-items:center;justify-content:space-between;padding-top:28px;border-top:1px solid rgba(255,255,255,.1)">
+      <div style="position:relative;z-index:1;margin-top:auto;border-top:1px solid rgba(255,255,255,.11);padding-top:22px;flex:0 0 auto">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:22px">
           <div>
-            <div style="font-size:15px;color:rgba(255,255,255,.5);margin-bottom:6px;font-weight:600">나의 공간 취향 정밀 분석</div>
-            <div style="font-size:18px;color:#C9A96E;font-weight:700;letter-spacing:.02em">144문항 · 12개 유형 · SKOPOS.kr</div>
+            <div style="font-size:18px;color:rgba(255,255,255,.62);margin-bottom:8px;font-weight:800">내 공간 취향이 궁금하다면</div>
+            <div style="font-size:24px;color:#F1D48B;font-weight:900;letter-spacing:0">144문항 · 8개 영역 · 12가지 유형 · skopos.kr</div>
           </div>
-          <div style="text-align:right;font-size:14px;color:rgba(255,255,255,.4);font-weight:600;line-height:1.7">
-            #스코포스<br>#SDTI<br>#공간심리학
+          <div style="text-align:right;font-size:18px;color:rgba(255,255,255,.48);font-weight:900;line-height:1.55;white-space:nowrap">
+            #스코포스<br>#SDTI<br>#공간취향검사
           </div>
         </div>
       </div>
@@ -4733,15 +4855,15 @@ async function downloadPDF(){
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     // PAGE 1 , 표지
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    const keysHtml = (t.keys||[]).map(k=>`<span class="pdf-cover-key">${k}</span>`).join('');
+    const keysHtml = (t.keys||[]).map(k=>`<span class="pdf-cover-key">${krText(k)}</span>`).join('');
     const coverHtml = `<div class="pdf-page">
       <div class="pdf-cover">
         <div class="pdf-brand">SKOPOS 스코포스 · 정밀 SDTI 공간 욕구 유형 검사</div>
         ${currentUserName ? `<div style="font-size:11px;color:rgba(201,169,110,.6);margin-bottom:20px;font-weight:600;letter-spacing:.05em">${currentUserName}님의 진단 리포트</div>` : ''}
         <div class="pdf-cover-emoji">${t.emoji||'✨'}</div>
         <div class="pdf-cover-type">${t.group||''} TYPE</div>
-        <div class="pdf-cover-name">${t.name ? t.name.replace(/\[\[hl\]\]/g,'').replace(/\[\[\/hl\]\]/g,'') : t.plain}</div>
-        <div class="pdf-cover-desc">${(t.desc||'').substring(0,120)}...</div>
+        <div class="pdf-cover-name">${krText(t.name ? t.name.replace(/\[\[hl\]\]/g,'').replace(/\[\[\/hl\]\]/g,'') : t.plain)}</div>
+        <div class="pdf-cover-desc">${krText(t.desc||'').substring(0,120)}...</div>
         <div class="pdf-cover-keys">${keysHtml}</div>
         <div class="pdf-cover-footer">
           <div class="pdf-cover-footer-l">진단일: ${today} · 144문항 정밀 분석</div>
@@ -4758,10 +4880,10 @@ async function downloadPDF(){
     // PAGE 2 , 8영역 레이더 바 차트 + 행동패턴
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     const barsHtml = SECS.map((sec,i)=>{
-      const val = t.bars ? (t.bars[sec.label]||55) : 55;
+      const val = getSectionScore(t, {}, sec, 55);
       return `<div class="pdf-radar-row">
         <span class="pdf-radar-icon">${sec.icon}</span>
-        <span class="pdf-radar-label">${sec.label}</span>
+        <span class="pdf-radar-label">${krText(sec.label)}</span>
         <div class="pdf-radar-track">
           <div class="pdf-radar-fill" style="width:${val}%;background:${secColors[i]}"></div>
         </div>
@@ -4769,7 +4891,7 @@ async function downloadPDF(){
       </div>`;
     }).join('');
 
-    const bpText = (typeof BEHAVIOR_PROFILES !== 'undefined' && BEHAVIOR_PROFILES[t.id]) || t.desc || '';
+    const bpText = krText((typeof BEHAVIOR_PROFILES !== 'undefined' && BEHAVIOR_PROFILES[t.id]) || t.desc || '');
     const bpShort = bpText.split('\n\n').slice(0,3).join('\n\n');
 
     const p2Html = `<div class="pdf-page"><div class="pdf-inner">
@@ -4785,7 +4907,7 @@ async function downloadPDF(){
       </div>
       <div class="pdf-insight" style="margin-top:18px">
         <div class="pdf-insight-icon">💡</div>
-        <div class="pdf-insight-text">${t.insight||''}</div>
+        <div class="pdf-insight-text">${krText(t.insight||'')}</div>
       </div>
     </div></div>`;
     let c2 = makeContainer(p2Html);
@@ -4802,32 +4924,32 @@ async function downloadPDF(){
         <div class="pdf-insight-card strength">
           <div class="pdf-insight-icon-emoji">💎</div>
           <div class="pdf-insight-label">좋은 점</div>
-          <div class="pdf-insight-card-title">${insightsData.strength.title}</div>
-          <div class="pdf-insight-card-body">${insightsData.strength.body}</div>
+          <div class="pdf-insight-card-title">${krText(insightsData.strength.title)}</div>
+          <div class="pdf-insight-card-body">${krText(insightsData.strength.body)}</div>
         </div>
         <div class="pdf-insight-card caution">
           <div class="pdf-insight-icon-emoji">⚠️</div>
           <div class="pdf-insight-label">챙길 점</div>
-          <div class="pdf-insight-card-title">${insightsData.caution.title}</div>
-          <div class="pdf-insight-card-body">${insightsData.caution.body}</div>
+          <div class="pdf-insight-card-title">${krText(insightsData.caution.title)}</div>
+          <div class="pdf-insight-card-body">${krText(insightsData.caution.body)}</div>
         </div>
         <div class="pdf-insight-card surprise">
           <div class="pdf-insight-icon-emoji">✨</div>
           <div class="pdf-insight-label">의외의 팁</div>
-          <div class="pdf-insight-card-title">${insightsData.surprise.title}</div>
-          <div class="pdf-insight-card-body">${insightsData.surprise.body}</div>
+          <div class="pdf-insight-card-title">${krText(insightsData.surprise.title)}</div>
+          <div class="pdf-insight-card-body">${krText(insightsData.surprise.body)}</div>
         </div>`;
 
       const p3Html = `<div class="pdf-page"><div class="pdf-inner">
         ${innerHeader(3,10)}
         <div class="pdf-section-tag">SECTION 03</div>
         <div class="pdf-section-title">나만의 공간 포인트 3가지</div>
-        <div class="pdf-section-sub">${t.plain}에게 잘 맞는 점, 조금만 챙기면 더 편해지는 점, 그리고 의외로 잘 어울리는 팁을 정리했어요. 자기 이해와 인테리어 선택에 모두 적용할 수 있는 핵심 코드예요.</div>
+        <div class="pdf-section-sub">${krText(t.plain)}에게 잘 맞는 점, 조금만 챙기면 더 편해지는 점, 그리고 의외로 잘 어울리는 팁을 정리했어요. 자기 이해와 인테리어 선택에 모두 적용할 수 있는 핵심 코드예요.</div>
         <div class="pdf-insights-grid">${insightsHtml}</div>
 
         <div class="pdf-insight" style="margin-top:28px">
           <div class="pdf-insight-icon">💡</div>
-          <div class="pdf-insight-text"><strong>활용 팁:</strong> 좋은 점은 살리고, 챙길 점은 가볍게 보완하고, 의외의 팁은 한 가지만 먼저 시도해보세요. 작은 변화만으로도 ${t.plain} 공간의 만족도가 훨씬 올라갑니다.</div>
+          <div class="pdf-insight-text"><strong>활용 팁:</strong> 좋은 점은 살리고, 챙길 점은 가볍게 보완하고, 의외의 팁은 한 가지만 먼저 시도해보세요. 작은 변화만으로도 ${krText(t.plain)} 공간의 만족도가 훨씬 올라갑니다.</div>
         </div>
       </div></div>`;
       let c3a = makeContainer(p3Html);
@@ -4857,12 +4979,12 @@ async function downloadPDF(){
 
             <div class="pdf-psyche-section">
               <div class="pdf-psyche-section-label">공간 심리 포인트</div>
-              <div class="pdf-psyche-section-body">${psyData.science}</div>
+              <div class="pdf-psyche-section-body">${krText(psyData.science)}</div>
             </div>
 
             <div class="pdf-psyche-section">
               <div class="pdf-psyche-section-label">생활에서 느껴지는 이유</div>
-              <div class="pdf-psyche-section-body">${psyData.why}</div>
+              <div class="pdf-psyche-section-body">${krText(psyData.why)}</div>
             </div>
 
             <div class="pdf-psyche-quote">
@@ -4891,8 +5013,8 @@ async function downloadPDF(){
     const roomsHtml2 = Object.entries(pdfRoomsData).map(([name,desc])=>`
       <div class="pdf-room">
         <div class="pdf-room-icon">${roomIcons[name]||'🏠'}</div>
-        <div class="pdf-room-name">${name}</div>
-        <div class="pdf-room-desc">${desc}</div>
+        <div class="pdf-room-name">${krText(name)}</div>
+        <div class="pdf-room-desc">${krText(desc)}</div>
       </div>`).join('');
 
     // 추가 행동패턴 텍스트
@@ -4925,8 +5047,8 @@ async function downloadPDF(){
         <div class="pdf-timeline-item">
           <div class="pdf-timeline-dot">${p.day}</div>
           <span class="pdf-timeline-day">${p.day}일 안에</span>
-          <div class="pdf-timeline-title">${p.title}</div>
-          <div class="pdf-timeline-desc">${p.desc}</div>
+          <div class="pdf-timeline-title">${krText(p.title)}</div>
+          <div class="pdf-timeline-desc">${krText(p.desc)}</div>
         </div>
       `).join('');
 
@@ -4934,7 +5056,7 @@ async function downloadPDF(){
         ${innerHeader(6,10)}
         <div class="pdf-section-tag">SECTION 05</div>
         <div class="pdf-section-title">30 / 60 / 90일 액션 플랜</div>
-        <div class="pdf-section-sub">한 번에 바꾸려 하지 마세요. 작은 변화 → 중간 투자 → 큰 결정 순서로, 가장 적은 비용과 후회로 ${t.plain} 공간을 완성하는 방법이에요.</div>
+        <div class="pdf-section-sub">한 번에 바꾸려 하지 마세요. 작은 변화 → 중간 투자 → 큰 결정 순서로, 가장 적은 비용과 후회로 ${krText(t.plain)} 공간을 완성하는 방법이에요.</div>
         <div class="pdf-timeline">${timelineHtml}</div>
 
         <div class="pdf-insight" style="margin-top:24px">
@@ -4964,14 +5086,14 @@ async function downloadPDF(){
         const data = seasonalData[s.id];
         if(!data) return '';
         // shift 텍스트는 길어서 *...* 강조 제거하고 표시
-        const shiftClean = data.shift.replace(/\*([^*]+)\*/g,'$1');
+        const shiftClean = krText(data.shift).replace(/\*([^*]+)\*/g,'$1');
         const top2Actions = data.actions.slice(0,2); // PDF는 공간상 2개만
         return `
           <div class="pdf-season-card" style="--season-color:${s.color}">
             <div class="pdf-season-header">
               <span class="pdf-season-icon">${s.icon}</span>
               <div>
-                <div class="pdf-season-label">${s.label} · ${data.keyword}</div>
+                <div class="pdf-season-label">${s.label} · ${krText(data.keyword)}</div>
                 <div class="pdf-season-shift">${shiftClean}</div>
               </div>
             </div>
@@ -4980,8 +5102,8 @@ async function downloadPDF(){
                 <div class="pdf-season-action">
                   <span class="pdf-season-action-icon">${a.icon}</span>
                   <div>
-                    <div class="pdf-season-action-title">${a.title}</div>
-                    <div class="pdf-season-action-desc">${a.desc}</div>
+                    <div class="pdf-season-action-title">${krText(a.title)}</div>
+                    <div class="pdf-season-action-desc">${krText(a.desc)}</div>
                   </div>
                 </div>
               `).join('')}
@@ -4993,7 +5115,7 @@ async function downloadPDF(){
         ${innerHeader(7,10)}
         <div class="pdf-section-tag">SECTION 06</div>
         <div class="pdf-section-title">계절별 공간 변화 가이드</div>
-        <div class="pdf-section-sub">같은 ${t.plain} 공간도 계절마다 강조하는 부분이 달라야 해요. 1년 내내 이 페이지를 펼쳐보며 계절 전환을 준비하세요.</div>
+        <div class="pdf-section-sub">같은 ${krText(t.plain)} 공간도 계절마다 강조하는 부분이 달라야 해요. 1년 내내 이 페이지를 펼쳐보며 계절 전환을 준비하세요.</div>
         <div class="pdf-season-grid">${seasonsHtml}</div>
       </div></div>`;
       let c7 = makeContainer(p7Html);
@@ -5009,17 +5131,17 @@ async function downloadPDF(){
     const pdfKeyItems = (t.keys && t.keys.length) ? t.keys : ['내 취향에 맞는 가구 구성'];
     const goodItems = pdfKeyItems.map(k=>`
       <div class="pdf-match-item">
-        <div class="pdf-match-dot"></div><span>${k}</span>
+        <div class="pdf-match-dot"></div><span>${krText(k)}</span>
       </div>`).join('');
     const badItems = (pdfAvoidItems.length?pdfAvoidItems:['내 취향과 동떨어진 가구 구성']).map(a=>`
       <div class="pdf-match-item">
-        <div class="pdf-match-dot"></div><span>${a}</span>
+        <div class="pdf-match-dot"></div><span>${krText(a)}</span>
       </div>`).join('');
 
     const pdfBudgetData = getTypeField(t,'budget');
     const budgetHtml = Object.entries(pdfBudgetData).map(([name,pct],i)=>`
       <div class="pdf-budget-row">
-        <span class="pdf-budget-label">${name}</span>
+        <span class="pdf-budget-label">${krText(name)}</span>
         <div class="pdf-budget-track">
           <div class="pdf-budget-fill" style="width:${pct}%;background:${budgetColors[i%4]}"></div>
         </div>
@@ -5061,11 +5183,11 @@ async function downloadPDF(){
       const tiersHtml = shoppingData.map(g=>`
         <div class="pdf-shopping-card" style="--tier-color:${g.color}">
           <div class="pdf-shopping-head">
-            <span class="pdf-shopping-tier">${g.tier}</span>
+            <span class="pdf-shopping-tier">${krText(g.tier)}</span>
             <span class="pdf-shopping-price">${g.price}</span>
           </div>
           <ul class="pdf-shopping-items">
-            ${g.items.map(it=>`<li>${it}</li>`).join('')}
+            ${g.items.map(it=>`<li>${krText(it)}</li>`).join('')}
           </ul>
         </div>
       `).join('');
@@ -5074,7 +5196,7 @@ async function downloadPDF(){
         ${innerHeader(9,10)}
         <div class="pdf-section-tag">SECTION 09</div>
         <div class="pdf-section-title">예산별 시작 가이드</div>
-        <div class="pdf-section-sub">가격대별로 가장 효과적인 ${t.plain} 추천 아이템을 정리했어요. 1만 원부터 시작해 천천히 늘려가셔도 충분합니다.</div>
+        <div class="pdf-section-sub">가격대별로 가장 효과적인 ${krText(t.plain)} 추천 아이템을 정리했어요. 1만 원부터 시작해 천천히 늘려가셔도 충분합니다.</div>
         <div class="pdf-shopping-grid">${tiersHtml}</div>
 
         <div class="pdf-insight" style="margin-top:24px">
@@ -5101,7 +5223,7 @@ async function downloadPDF(){
     const pdfCompatData = getTypeField(t,'compat');
     const compatHtml = pdfCompatData.map(id=>{
       const ct = TYPE_MAP[id];
-      return ct ? `<div class="pdf-compat-chip">${ct.emoji} ${ct.plain}</div>` : '';
+      return ct ? `<div class="pdf-compat-chip">${ct.emoji} ${krText(ct.plain)}</div>` : '';
     }).join('') || '<div class="pdf-compat-chip">✨ 자신만의 고유한 길</div>';
 
     const p5Html = `<div class="pdf-page"><div class="pdf-inner">
@@ -5124,7 +5246,7 @@ async function downloadPDF(){
         <div class="pdf-behavior-box" style="margin-top:8px">
           <div class="pdf-behavior-text">사기 전에 한 번만 체크해보세요.
 
-1. 이 소품의 소재가 내 유형에 맞는가? (추천 소재: ${((t.keys&&t.keys.length)?t.keys:['우드','린넨','면']).slice(0,3).join(', ')})
+1. 이 소품의 소재가 내 유형에 맞는가? (추천 소재: ${((t.keys&&t.keys.length)?t.keys:['우드','린넨','면']).slice(0,3).map(krText).join(', ')})
 2. 이 색상이 내 팔레트(${pdfPaletteData.slice(0,2).join(', ')})와 어울리는가?
 3. 이 가구가 우리 집 동선과 수납에 잘 맞는가?
 4. 5년 후에도 좋아할 수 있는가?
@@ -5243,7 +5365,7 @@ function resumeRestart(){
     if(type){
       resultType = type;
       const scores={};
-      SECS.forEach(s=>{ scores[s.label]=type.bars?(type.bars[s.label]||55):55; });
+      SECS.forEach(s=>{ scores[s.label]=getSectionScore(type, {}, s, 55); });
       renderResult(type, scores);
       show('sr');
       setTimeout(async()=>{
@@ -5264,7 +5386,7 @@ function resumeRestart(){
       if(type){
         resultType = type;
         const scores = {};
-        SECS.forEach(s => { scores[s.label] = type.bars ? (type.bars[s.label]||55) : 55; });
+        SECS.forEach(s => { scores[s.label] = getSectionScore(type, {}, s, 55); });
         renderResult(type, scores);
         show('sr');
         setTimeout(()=>{
@@ -5280,3 +5402,4 @@ function resumeRestart(){
 </script>
 </body>
 </html>
+
