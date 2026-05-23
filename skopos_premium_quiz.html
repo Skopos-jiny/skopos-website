@@ -4723,10 +4723,10 @@ async function openInstaCard(){
     if(document.fonts && document.fonts.ready){
       try{ await document.fonts.ready; }catch(e){}
     }
-    // 추가 안정화 시간
-    await new Promise(r=>setTimeout(r, 300));
+    // 추가 안정화 시간 (iOS에서 더 길게)
+    await new Promise(r=>setTimeout(r, isIOS() ? 500 : 300));
 
-    // html2canvas로 캡처
+    // html2canvas로 캡처 (iOS 호환 옵션 적용)
     const canvas = await html2canvas(tmp.firstElementChild, {
       width: 1080,
       height: 1080,
@@ -4735,6 +4735,8 @@ async function openInstaCard(){
       allowTaint: false,
       backgroundColor: null,
       logging: false,
+      foreignObjectRendering: false, // iOS 호환
+      imageTimeout: 8000,
     });
     _instaCardDataUrl = canvas.toDataURL('image/png', 1.0);
 
@@ -4760,22 +4762,133 @@ async function openInstaCard(){
   }
 }
 
-// 다운로드 트리거
-function downloadInstaCard(){
+// ═══════════════════════════════════════════════════════════════
+// iOS / 모바일 다운로드 유틸 (iOS Safari는 download 속성 미지원)
+// ═══════════════════════════════════════════════════════════════
+function isIOS(){
+  // iOS Safari, iPad, 새 iPad Pro(데스크탑 모드 포함)까지 감지
+  const ua = navigator.userAgent || '';
+  return /iPad|iPhone|iPod/.test(ua) ||
+         (ua.includes('Mac') && 'ontouchend' in document);
+}
+
+function isMobile(){
+  return /Android|iPhone|iPad|iPod|webOS|BlackBerry/i.test(navigator.userAgent || '');
+}
+
+function canWebShare(){
+  return typeof navigator !== 'undefined' && typeof navigator.share === 'function';
+}
+
+function canWebShareFiles(files){
+  return canWebShare() &&
+         typeof navigator.canShare === 'function' &&
+         navigator.canShare({files});
+}
+
+// dataURL → Blob 변환 (Web Share API용)
+function dataUrlToBlob(dataUrl){
+  const parts = dataUrl.split(',');
+  const mime = parts[0].match(/:(.*?);/)[1];
+  const bstr = atob(parts[1]);
+  let n = bstr.length;
+  const u8 = new Uint8Array(n);
+  while(n--) u8[n] = bstr.charCodeAt(n);
+  return new Blob([u8], {type: mime});
+}
+
+// iOS Safari용 — 새 탭에 이미지 띄우고 "길게 눌러 저장" 안내
+function openImageInNewTab(dataUrl, filename){
+  const w = window.open();
+  if(!w){
+    // 팝업 차단된 경우
+    alert('이미지가 새 창에 열립니다. 팝업 차단을 해제하거나 이미지를 길게 눌러 사진 앱에 저장해주세요.');
+    return false;
+  }
+  // 사용자가 화면에서 바로 저장할 수 있는 가이드 페이지
+  w.document.write(`
+    <!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>${filename}</title>
+    <style>
+      body{margin:0;padding:16px;background:#0F0F1A;color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Noto Sans KR',sans-serif;text-align:center;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;-webkit-font-smoothing:antialiased}
+      .tip{background:linear-gradient(135deg,#E91E8C,#FF6B9D);padding:14px 20px;border-radius:14px;margin-bottom:18px;max-width:380px;width:100%;box-shadow:0 8px 24px rgba(233,30,140,.3)}
+      .tip-title{font-size:.95rem;font-weight:800;margin-bottom:6px;letter-spacing:-.01em}
+      .tip-body{font-size:.82rem;line-height:1.6;opacity:.95;font-weight:500}
+      img{max-width:100%;height:auto;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+      .footer{font-size:.72rem;opacity:.5;margin-top:18px;font-weight:500}
+    </style></head><body>
+      <div class="tip">
+        <div class="tip-title">📥 사진 앱에 저장하기</div>
+        <div class="tip-body">아래 이미지를 <strong>꾹 눌러서</strong><br>"사진에 추가" 또는 "이미지 저장"을 선택해주세요</div>
+      </div>
+      <img src="${dataUrl}" alt="${filename}">
+      <div class="footer">SKOPOS · skopos.kr</div>
+    </body></html>
+  `);
+  w.document.close();
+  return true;
+}
+
+
+// ═══════════════════════════════════════════════════════════════
+// 인스타 카드 저장/공유 — iOS·안드로이드·데스크탑 모두 지원
+// ═══════════════════════════════════════════════════════════════
+async function downloadInstaCard(){
   if(!_instaCardDataUrl){ toast('이미지가 아직 준비되지 않았어요.', 2500); return; }
 
-  const link = document.createElement('a');
   const typeName = resultType?.plain || 'SDTI';
-  // 한글 포함 파일명, 모바일 호환 위해 ASCII 안전 변환
   const safeName = typeName.replace(/[^a-zA-Z0-9가-힣\s_-]/g,'').trim().replace(/\s+/g,'_');
-  link.download = `SKOPOS_${safeName}_${new Date().toISOString().slice(0,10)}.png`;
-  link.href = _instaCardDataUrl;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+  const fileName = `SKOPOS_${safeName}_${new Date().toISOString().slice(0,10)}.png`;
 
-  toast('✨ 인스타 카드가 저장되었어요!', 3000);
-  trackEvent('insta_card_download', {result_type:resultType?.id});
+  // ── 1순위: Web Share API (iOS 15+, Android Chrome) ──
+  // 사용자가 인스타·카톡·앨범 어디로든 보낼 수 있음
+  try{
+    const blob = dataUrlToBlob(_instaCardDataUrl);
+    const file = new File([blob], fileName, {type: 'image/png'});
+
+    if(canWebShareFiles([file])){
+      await navigator.share({
+        files: [file],
+        title: 'SKOPOS 공간 욕구 유형',
+        text: `나의 공간 유형: ${typeName} · SKOPOS SDTI`,
+      });
+      toast('✨ 공유 완료!', 2500);
+      trackEvent('insta_card_share', {result_type:resultType?.id, method:'webshare'});
+      return;
+    }
+  }catch(err){
+    // 사용자 취소(AbortError)는 무시, 그 외는 fallback으로 계속
+    if(err && err.name === 'AbortError'){
+      return; // 사용자가 공유 취소
+    }
+    console.warn('Web Share 실패, fallback으로 진행:', err);
+  }
+
+  // ── 2순위: iOS Safari — 새 탭에 이미지 띄우고 "꾹 눌러 저장" ──
+  if(isIOS()){
+    const ok = openImageInNewTab(_instaCardDataUrl, fileName);
+    if(ok){
+      toast('새 창의 이미지를 꾹 눌러 저장해주세요', 4000);
+      trackEvent('insta_card_download', {result_type:resultType?.id, method:'ios_newtab'});
+    }
+    return;
+  }
+
+  // ── 3순위: 일반 브라우저 — download 속성 ──
+  try{
+    const link = document.createElement('a');
+    link.download = fileName;
+    link.href = _instaCardDataUrl;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    toast('✨ 인스타 카드가 저장되었어요!', 3000);
+    trackEvent('insta_card_download', {result_type:resultType?.id, method:'download'});
+  }catch(err){
+    console.error('다운로드 실패:', err);
+    toast('저장에 실패했어요. 이미지를 길게 눌러 저장해주세요.', 4000);
+  }
 }
 
 // 모달 닫기 + 자원 정리
@@ -4803,8 +4916,11 @@ function closeInstaCard(){
 async function downloadPDF(){
   const btn = document.getElementById('pdfBtn');
   btn.disabled = true;
-  btn.innerHTML = '⏳ PDF 생성 중... (60~90초)';
-  toast('PDF를 생성하고 있어요. 잠시 기다려주세요.', 5000);
+  const isMobileEnv = isMobile();
+  btn.innerHTML = isMobileEnv ? '⏳ PDF 생성 중... (1~2분)' : '⏳ PDF 생성 중... (60~90초)';
+  toast(isMobileEnv
+    ? 'PDF를 만들고 있어요. 화면을 끄지 말고 잠시 기다려주세요.'
+    : 'PDF를 생성하고 있어요. 잠시 기다려주세요.', 5000);
   // 이전 PDF 시도에서 남은 임시 컨테이너 청소
   document.querySelectorAll('#pdfContainer').forEach(el=>{ try{ el.remove(); }catch(e){} });
 
@@ -4826,17 +4942,32 @@ async function downloadPDF(){
       return div;
     }
 
+    // iOS는 메모리 ~250MB 제한 → scale 1.5로 낮춰 메모리 사용 절반으로
+    const captureScale = isIOS() ? 1.5 : 2;
+
     async function capturePage(el){
+      // 폰트 로딩 보장 (iOS 14+ 지원, 이하는 try로 안전 처리)
+      if(document.fonts && document.fonts.ready){
+        try{ await document.fonts.ready; }catch(e){}
+      }
+      // 추가 안정화 시간 (iOS에서 렌더링 완료 보장)
+      await new Promise(r=>setTimeout(r, isIOS() ? 250 : 100));
+
       const canvas = await html2canvas(el, {
-        scale: 2,
+        scale: captureScale,
         useCORS: true,
         allowTaint: false,
         backgroundColor: '#ffffff',
         width: 794,
         height: 1123,
         logging: false,
+        // iOS 호환: foreignObject 비활성화 (일부 iOS에서 깨짐)
+        foreignObjectRendering: false,
+        // 이미지 타임아웃 (iOS에서 멈춤 방지)
+        imageTimeout: 8000,
       });
-      return canvas.toDataURL('image/jpeg', 0.92);
+      // iOS는 PNG 대신 JPEG 0.88로 파일 크기 줄여 메모리 부담 감소
+      return canvas.toDataURL('image/jpeg', isIOS() ? 0.88 : 0.92);
     }
 
     async function addPage(imgData, pageNum, totalPages){
@@ -5267,11 +5398,79 @@ async function downloadPDF(){
     document.body.removeChild(c5);
     await addPage(img5, 10, 10);
 
-    // ── 저장 ────────────────────────────────────────────────
+    // ── 저장 (iOS·Android·Desktop 모두 호환) ────────────────
     const filename = `SKOPOS_${t.plain}_정밀진단리포트_${today.replace(/\. /g,'-').replace('.','')}.pdf`;
-    pdf.save(filename);
-    toast('✅ PDF 저장 완료! 10페이지 정밀 리포트', 3500);
-    if(typeof trackEvent !== 'undefined') trackEvent('pdf_download', {result_type: t.id});
+
+    // 1) Web Share API 시도 (iOS 15+, Android Chrome)
+    let shared = false;
+    try{
+      const pdfBlob = pdf.output('blob');
+      const file = new File([pdfBlob], filename, {type:'application/pdf'});
+      if(canWebShareFiles([file])){
+        await navigator.share({
+          files:[file],
+          title:'SKOPOS SDTI 정밀 진단 리포트',
+          text:`나의 공간 유형 정밀 분석: ${t.plain}`,
+        });
+        shared = true;
+        toast('✅ PDF 공유 완료!', 3000);
+        trackEvent('pdf_download', {result_type:t.id, method:'webshare'});
+      }
+    }catch(err){
+      if(err && err.name === 'AbortError'){
+        // 사용자가 공유 취소 — 그래도 PDF는 생성됐으니 그냥 종료
+        toast('취소되었어요. 다시 시도하려면 버튼을 눌러주세요.', 2500);
+        return;
+      }
+      console.warn('Web Share 실패, fallback으로 진행:', err);
+    }
+
+    // 2) iOS Safari — 새 탭에 PDF 띄우기 (Safari의 PDF 뷰어가 자동으로 저장 UI 제공)
+    if(!shared && isIOS()){
+      try{
+        const pdfBlob = pdf.output('blob');
+        const blobUrl = URL.createObjectURL(pdfBlob);
+        const w = window.open(blobUrl, '_blank');
+        if(w){
+          toast('새 창에서 공유 아이콘을 눌러 저장해주세요 📥', 5500);
+          trackEvent('pdf_download', {result_type:t.id, method:'ios_newtab'});
+          // 30초 후 Blob URL 해제 (메모리 정리)
+          setTimeout(()=>{ try{ URL.revokeObjectURL(blobUrl); }catch(_){} }, 30000);
+        } else {
+          // 팝업 차단 — dataURL 방식으로 fallback
+          toast('팝업이 차단됐어요. 잠시 후 다시 시도해주세요.', 3500);
+        }
+      }catch(err){
+        console.error('iOS PDF 표시 실패:', err);
+        toast('PDF를 표시할 수 없어요. 다른 브라우저로 시도해보세요.', 4000);
+      }
+    }
+
+    // 3) 일반 브라우저 — 기본 다운로드
+    if(!shared && !isIOS()){
+      try{
+        pdf.save(filename);
+        toast('✅ PDF 저장 완료! 10페이지 정밀 리포트', 3500);
+        trackEvent('pdf_download', {result_type:t.id, method:'download'});
+      }catch(err){
+        console.error('PDF 저장 실패:', err);
+        // 최후 fallback — Blob URL 직접 다운로드
+        try{
+          const pdfBlob = pdf.output('blob');
+          const blobUrl = URL.createObjectURL(pdfBlob);
+          const link = document.createElement('a');
+          link.href = blobUrl;
+          link.download = filename;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          setTimeout(()=>URL.revokeObjectURL(blobUrl), 5000);
+          toast('✅ PDF 저장 완료!', 3000);
+        }catch(e2){
+          toast('PDF 저장에 실패했어요. 잠시 후 다시 시도해주세요.', 3500);
+        }
+      }
+    }
 
   }catch(err){
     console.error('PDF 오류:', err);
@@ -5402,4 +5601,3 @@ function resumeRestart(){
 </script>
 </body>
 </html>
-
