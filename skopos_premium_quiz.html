@@ -153,6 +153,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:60px;display:flex;ali
 .radar-section{background:var(--white);border-radius:var(--radius);padding:28px;margin-bottom:20px;box-shadow:var(--sh)}
 .radar-title{font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--gray);margin-bottom:20px;text-align:center}
 .radar-chart-wrap{display:flex;justify-content:center;margin-bottom:20px}
+.radar-sub-desc{font-size:.78rem;color:var(--gray);line-height:1.65;margin-bottom:18px;font-weight:500;padding:0 4px}
 .radar-bars{display:flex;flex-direction:column;gap:10px}
 .r-bar-row{display:flex;align-items:center;gap:12px}
 .r-bar-icon{font-size:.9rem;width:20px;text-align:center;flex-shrink:0}
@@ -160,6 +161,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:60px;display:flex;ali
 .r-bar-track{flex:1;height:6px;background:rgba(0,0,0,.05);border-radius:3px;overflow:hidden}
 .r-bar-fill{height:6px;border-radius:3px;width:0;transition:width 1.4s var(--ez)}
 .r-bar-val{font-size:.68rem;font-weight:700;width:26px;text-align:right;flex-shrink:0}
+.r-bar-tier{font-size:.7rem;font-weight:800;text-align:right;flex-shrink:0;min-width:78px;letter-spacing:-.005em}
+@media(max-width:600px){
+  .r-bar-row{gap:8px}
+  .r-bar-label{width:74px;font-size:.7rem}
+  .r-bar-tier{min-width:64px;font-size:.66rem}
+}
 
 /* 분석 블록들 */
 .analysis-block{background:var(--white);border-radius:var(--radius);padding:26px;margin-bottom:16px;box-shadow:var(--sh)}
@@ -174,13 +181,15 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:60px;display:flex;ali
 .sdd-grid{display:flex;flex-direction:column;gap:14px}
 .sdd-card{background:linear-gradient(135deg,#FAFBFE 0%,#fff 100%);border-radius:12px;padding:20px 22px;transition:transform .2s var(--ez),box-shadow .2s var(--ez)}
 .sdd-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(15,15,26,.08)}
-.sdd-header{display:flex;align-items:center;gap:14px;margin-bottom:12px}
-.sdd-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+.sdd-header{display:flex;align-items:flex-start;gap:14px;margin-bottom:12px}
+.sdd-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;margin-top:2px}
 .sdd-meta{flex:1;min-width:0}
-.sdd-section-name{font-size:.78rem;font-weight:800;color:var(--dark);letter-spacing:.02em;margin-bottom:2px}
-.sdd-score-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sdd-section-name{font-size:.78rem;font-weight:800;color:var(--dark);letter-spacing:.02em;margin-bottom:4px}
+.sdd-score-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px}
 .sdd-score{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:600;line-height:1;letter-spacing:-.01em}
-.sdd-level{font-size:.65rem;font-weight:700;padding:3px 10px;border-radius:50px;letter-spacing:.02em}
+.sdd-dots{font-size:1.05rem;letter-spacing:.15em;line-height:1;font-weight:600;text-shadow:0 1px 2px rgba(0,0,0,.04)}
+.sdd-level{font-size:.65rem;font-weight:800;padding:3px 10px;border-radius:50px;letter-spacing:.01em}
+.sdd-tier-desc{font-size:.68rem;color:var(--gray);font-weight:600;line-height:1.4;margin-top:1px}
 .sdd-headline{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:600;line-height:1.3;margin:8px 0 10px;letter-spacing:-.01em}
 .sdd-body{font-size:.86rem;color:#4A4A5A;line-height:1.85;margin-bottom:14px;font-weight:500}
 .sdd-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
@@ -193,6 +202,50 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:60px;display:flex;ali
 .sdd-summary-title{font-size:.92rem;font-weight:800;color:var(--dark);margin-bottom:6px;letter-spacing:-.005em}
 .sdd-summary-text{font-size:.82rem;color:#4A4A5A;line-height:1.85;font-weight:500}
 .sdd-summary-text strong{color:var(--pink);font-weight:700}
+
+/* ── TOP 3 풍성한 카드 ── */
+.sdd-top-card{position:relative;padding-top:26px}
+.sdd-rank-badge{
+  position:absolute;top:-1px;left:22px;
+  font-size:.62rem;font-weight:800;letter-spacing:.06em;
+  color:#fff;padding:5px 12px 5px 12px;
+  border-radius:0 0 8px 8px;
+  box-shadow:0 4px 12px rgba(15,15,26,.15);
+}
+
+/* ── 나머지 5개 미니 카드 ── */
+.sdd-others-block{
+  margin-top:26px;padding-top:22px;
+  border-top:1px dashed rgba(0,0,0,.1);
+}
+.sdd-others-head{display:flex;align-items:baseline;gap:10px;margin-bottom:14px}
+.sdd-others-tag{font-size:.72rem;font-weight:800;color:var(--dark);letter-spacing:.02em}
+.sdd-others-sub{font-size:.72rem;color:var(--gray);font-weight:500}
+.sdd-others-grid{display:flex;flex-direction:column;gap:8px}
+
+.sdd-mini-row{
+  display:flex;align-items:center;gap:12px;
+  padding:11px 14px;background:#FAFBFE;
+  border-radius:10px;transition:all .2s var(--ez);
+}
+.sdd-mini-row:hover{background:#fff;box-shadow:0 4px 12px rgba(15,15,26,.05)}
+.sdd-mini-icon{
+  width:34px;height:34px;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;flex-shrink:0;
+}
+.sdd-mini-body{flex:1;min-width:0}
+.sdd-mini-head{display:flex;align-items:center;gap:8px;margin-bottom:2px}
+.sdd-mini-name{font-size:.78rem;font-weight:800;color:var(--dark);letter-spacing:-.005em}
+.sdd-mini-dots{font-size:.75rem;letter-spacing:.1em;line-height:1;font-weight:600}
+.sdd-mini-desc{font-size:.74rem;color:var(--gray);font-weight:600;line-height:1.45}
+
+@media(max-width:600px){
+  .sdd-mini-row{padding:10px 12px;gap:10px}
+  .sdd-mini-icon{width:30px;height:30px;font-size:.95rem}
+  .sdd-mini-name{font-size:.74rem}
+  .sdd-rank-badge{font-size:.6rem;left:18px;padding:4px 10px}
+}
 @media(max-width:600px){
   .sdd-detail-grid{grid-template-columns:1fr}
   .sdd-card{padding:18px 16px}
@@ -576,7 +629,7 @@ html{scroll-behavior:smooth}
 .pdf-radar-label{font-size:12px;font-weight:700;color:#0F0F1A;width:100px;flex-shrink:0;text-align:right}
 .pdf-radar-track{flex:1;height:8px;background:#F0F0F0;border-radius:4px;overflow:hidden}
 .pdf-radar-fill{height:8px;border-radius:4px}
-.pdf-radar-val{font-size:11px;font-weight:800;width:28px;text-align:right;flex-shrink:0}
+.pdf-radar-val{font-size:10px;font-weight:800;width:80px;text-align:right;flex-shrink:0;letter-spacing:-.005em}
 
 /* 공간 처방 */
 .pdf-rooms{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px}
@@ -628,6 +681,53 @@ html{scroll-behavior:smooth}
 /* ── PDF 신규: 3가지 인사이트 카드 ── */
 .pdf-insights-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:4px}
 .pdf-insight-card{padding:16px 14px;border-radius:10px;background:#F7F8FC;border-top:3px solid #ccc}
+
+/* ── PDF TOP 3 정밀 분석 페이지 ── */
+.pdf-top-rank{
+  display:inline-block;font-size:10px;font-weight:800;letter-spacing:.08em;
+  color:#fff;padding:5px 12px;border-radius:0 0 8px 8px;
+  margin:-32px 0 14px 0;box-shadow:0 4px 12px rgba(15,15,26,.15);
+}
+.pdf-top-card{
+  background:linear-gradient(135deg,#FAFBFE 0%,#fff 100%);
+  border-radius:14px;padding:24px 26px;margin-top:14px;
+  box-shadow:0 4px 16px rgba(15,15,26,.05);
+}
+.pdf-top-card-header{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px}
+.pdf-top-icon{
+  width:52px;height:52px;border-radius:13px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;flex-shrink:0;margin-top:2px;
+}
+.pdf-top-meta{flex:1;min-width:0}
+.pdf-top-section-name{font-size:13px;font-weight:800;color:#0F0F1A;margin-bottom:6px;letter-spacing:.02em}
+.pdf-top-score-row{display:flex;align-items:center;gap:10px;margin-bottom:5px;flex-wrap:wrap}
+.pdf-top-dots{font-size:18px;letter-spacing:.15em;line-height:1;font-weight:600}
+.pdf-top-level{font-size:10px;font-weight:800;padding:4px 11px;border-radius:50px;letter-spacing:.02em}
+.pdf-top-tier-desc{font-size:11px;color:#5A5A6F;font-weight:600;line-height:1.45}
+
+.pdf-top-headline{
+  font-family:'Cormorant Garamond',serif;
+  font-size:22px;font-weight:600;line-height:1.25;
+  margin:6px 0 14px;letter-spacing:-.01em;
+}
+.pdf-top-body{
+  font-size:12px;color:#3A3A4A;line-height:1.95;
+  margin-bottom:20px;font-weight:500;
+}
+.pdf-top-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
+.pdf-top-detail{background:rgba(15,15,26,.03);border-radius:10px;padding:14px 16px}
+.pdf-top-detail-label{font-size:11px;font-weight:800;color:#0F0F1A;margin-bottom:6px;letter-spacing:.02em}
+.pdf-top-detail-text{font-size:11px;color:#4A4A5A;line-height:1.75;font-weight:500}
+
+.pdf-top-tip{
+  margin-top:22px;padding:16px 18px;
+  background:linear-gradient(135deg,rgba(233,30,140,.04),rgba(201,169,110,.03));
+  border-radius:0 10px 10px 0;
+}
+.pdf-top-tip-label{font-size:11px;font-weight:800;letter-spacing:.05em;margin-bottom:6px}
+.pdf-top-tip-text{font-size:11.5px;color:#3A3A4A;line-height:1.85;font-weight:500}
+.pdf-top-tip-text strong{color:#0F0F1A;font-weight:700}
 .pdf-insight-card.strength{border-top-color:#7CB342;background:#F4F9EC}
 .pdf-insight-card.caution{border-top-color:#FF9800;background:#FDF6E8}
 .pdf-insight-card.surprise{border-top-color:#E91E8C;background:#FCEEF4}
@@ -1165,6 +1265,19 @@ function getSectionInsight(sectionKey, score){
   if(!sectionData) return null;
   const level = getScoreLevel(score);
   return sectionData[level] || sectionData['mid'] || null;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// 5단계 시각 척도 (점수 숫자 노출 최소화 + 직관적 표현)
+// 비교 욕구를 자극하지 않으면서 자기 이해에 집중하도록
+// ═══════════════════════════════════════════════════════════════
+function getScoreScale(score){
+  const v = Number(score) || 0;
+  if(v <= 20) return {tier:1, dots:'●○○○○', label:'잔잔한 편',     desc:'이 영역은 잔잔한 편이에요'};
+  if(v <= 40) return {tier:2, dots:'●●○○○', label:'은은한 정도',   desc:'은은하게 자리 잡은 정도예요'};
+  if(v <= 60) return {tier:3, dots:'●●●○○', label:'균형 잡힌',     desc:'균형 잡혀 있어요'};
+  if(v <= 80) return {tier:4, dots:'●●●●○', label:'뚜렷한 욕구',   desc:'뚜렷하게 드러나는 욕구예요'};
+  return         {tier:5, dots:'●●●●●', label:'매우 강한 욕구', desc:'당신의 핵심 영역이에요'};
 }
 
 const SECS=[
@@ -4124,14 +4237,16 @@ function renderResult(t,scores){
 
     <div class="radar-section" data-anchor id="sec-radar" data-toc-label="집 취향 점수표">
       <div class="radar-title">한눈에 보는 8가지 공간 성향</div>
+      <p class="radar-sub-desc">각 영역의 강도를 5단계로 보여드려요. 높고 낮음에 좋고 나쁨은 없어요 — 모두 당신의 고유한 색이에요.</p>
       <div class="radar-bars">
         ${SECS.map((sec,i)=>{
           const val=getSectionScore(t, scores, sec, 50);
-          return`<div class="r-bar-row">
+          const scale=getScoreScale(val);
+          return`<div class="r-bar-row" data-tier="${scale.tier}">
             <span class="r-bar-icon">${sec.icon}</span>
             <span class="r-bar-label">${sec.label}</span>
             <div class="r-bar-track"><div class="r-bar-fill" data-val="${val}" style="background:${secColors[i]}"></div></div>
-            <span class="r-bar-val" style="color:${secColors[i]}">${val}</span>
+            <span class="r-bar-tier" style="color:${secColors[i]}">${scale.label}</span>
           </div>`;
         }).join('')}
       </div>
@@ -4139,27 +4254,42 @@ function renderResult(t,scores){
 
     ${(()=>{
       // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      // 8개 영역 깊이 읽기 — 점수별 맞춤 해석 32개 풀에서 자동 매칭
-      // 메타인지 효과를 강화하는 핵심 콘텐츠 섹션
+      // 8개 영역 깊이 읽기 — TOP 3는 풍성한 카드, 나머지는 간단 요약
+      // 가독성을 높이면서 핵심 욕구에 집중하게 만드는 구조
       // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      const sectionDeepDive = SECS.map((sec,i)=>{
-        const val = getSectionScore(t, scores, sec, 50);
+
+      // 1) 8개 영역 모두 점수 계산 + 정렬
+      const allSections = SECS.map((sec,i)=>({
+        sec, originalIndex:i,
+        val: getSectionScore(t, scores, sec, 50),
+        color: secColors[i],
+      }));
+      const sorted = [...allSections].sort((a,b)=>b.val - a.val);
+      const top3 = sorted.slice(0, 3);
+      const others = sorted.slice(3);
+
+      // 2) TOP 3 — 풍성한 카드
+      const top3Html = top3.map((item, rank)=>{
+        const {sec, val, color} = item;
         const insight = getSectionInsight(sec.key, val);
         if(!insight) return '';
-        const levelLabel = val<=30?'매우 낮음':val<=60?'보통':val<=85?'높음':'매우 높음';
+        const scale = getScoreScale(val);
+        const rankBadge = ['#1','#2','#3'][rank];
         return `
-          <div class="sdd-card" style="border-left:4px solid ${secColors[i]}">
+          <div class="sdd-card sdd-top-card" style="border-left:5px solid ${color}">
+            <div class="sdd-rank-badge" style="background:${color}">${rankBadge} 핵심 욕구</div>
             <div class="sdd-header">
-              <div class="sdd-icon" style="background:${secColors[i]}22;color:${secColors[i]}">${sec.icon}</div>
+              <div class="sdd-icon" style="background:${color}22;color:${color}">${sec.icon}</div>
               <div class="sdd-meta">
                 <div class="sdd-section-name">${sec.label}</div>
                 <div class="sdd-score-row">
-                  <span class="sdd-score" style="color:${secColors[i]}">${val}점</span>
-                  <span class="sdd-level" style="background:${secColors[i]}15;color:${secColors[i]}">${levelLabel}</span>
+                  <span class="sdd-dots" style="color:${color}" aria-label="${scale.label}">${scale.dots}</span>
+                  <span class="sdd-level" style="background:${color}15;color:${color}">${scale.label}</span>
                 </div>
+                <div class="sdd-tier-desc">${scale.desc}</div>
               </div>
             </div>
-            <div class="sdd-headline" style="color:${secColors[i]}">${krText(insight.headline)}</div>
+            <div class="sdd-headline" style="color:${color}">${krText(insight.headline)}</div>
             <p class="sdd-body">${krText(insight.body)}</p>
             <div class="sdd-detail-grid">
               <div class="sdd-detail">
@@ -4174,16 +4304,45 @@ function renderResult(t,scores){
           </div>`;
       }).join('');
 
-      return `<div class="analysis-block" data-anchor id="sec-deep-dive" data-toc-label="내 점수 해석">
-        <div class="ab-tag">🔍 8개 영역 깊이 읽기</div>
-        <div class="ab-title">숫자로 읽는 내 집 취향</div>
-        <p style="font-size:.85rem;color:var(--gray);margin-bottom:22px;line-height:1.75">단순한 숫자가 아니에요. 각 영역의 점수는 내가 어떤 공간에서 편안한지, 무엇을 바꾸면 만족도가 올라가는지 알려주는 힌트입니다. 점수를 하나씩 함께 읽어볼게요.</p>
-        <div class="sdd-grid">${sectionDeepDive}</div>
+      // 3) 나머지 5개 — 간단 요약 (한 줄)
+      const othersHtml = others.map(item=>{
+        const {sec, val, color} = item;
+        const insight = getSectionInsight(sec.key, val);
+        const scale = getScoreScale(val);
+        const headline = insight ? krText(insight.headline) : scale.label;
+        return `
+          <div class="sdd-mini-row" style="border-left:3px solid ${color}">
+            <div class="sdd-mini-icon" style="background:${color}15;color:${color}">${sec.icon}</div>
+            <div class="sdd-mini-body">
+              <div class="sdd-mini-head">
+                <span class="sdd-mini-name">${sec.label}</span>
+                <span class="sdd-mini-dots" style="color:${color}" aria-label="${scale.label}">${scale.dots}</span>
+              </div>
+              <div class="sdd-mini-desc">${headline} · <span style="color:${color};font-weight:700">${scale.label}</span></div>
+            </div>
+          </div>`;
+      }).join('');
+
+      return `<div class="analysis-block" data-anchor id="sec-deep-dive" data-toc-label="내 핵심 욕구 TOP 3">
+        <div class="ab-tag">🔍 내 공간 욕구 깊이 읽기</div>
+        <div class="ab-title">가장 뚜렷한 욕구 TOP 3, 한 자리씩 깊이</div>
+        <p style="font-size:.85rem;color:var(--gray);margin-bottom:22px;line-height:1.75">8가지 영역 중 가장 강한 욕구 3가지를 골랐어요. 이 세 가지가 당신의 공간 의사결정에서 가장 큰 비중을 차지하는 핵심 코드예요. 한 영역씩 깊이 들여다볼게요.</p>
+
+        <div class="sdd-grid">${top3Html}</div>
+
+        <div class="sdd-others-block">
+          <div class="sdd-others-head">
+            <span class="sdd-others-tag">나머지 5개 영역</span>
+            <span class="sdd-others-sub">참고용으로 가볍게 살펴보세요</span>
+          </div>
+          <div class="sdd-others-grid">${othersHtml}</div>
+        </div>
+
         <div class="sdd-summary">
           <div class="sdd-summary-icon">💎</div>
           <div class="sdd-summary-body">
-            <div class="sdd-summary-title">이 8개 점수를 함께 읽는 법</div>
-            <div class="sdd-summary-text">단일 점수보다 <strong>점수 간의 조합</strong>이 더 중요합니다. 예를 들어 감각이 예민하면서 회복 욕구도 강하다면, 집은 조용히 긴장이 풀리는 회복 공간이 되어야 합니다. 반대로 관계 욕구가 강하다면, 사람이 모이고 대화가 이어지는 구조가 더 잘 맞아요. <strong>가장 높은 3개</strong>와 <strong>가장 낮은 2개</strong>를 함께 보면 공간 선택의 우선순위가 훨씬 분명해집니다.</div>
+            <div class="sdd-summary-title">TOP 3가 말해주는 것</div>
+            <div class="sdd-summary-text">이 <strong>3가지 핵심 욕구</strong>가 당신의 공간에서 가장 큰 만족과 회복을 가져다줍니다. 예산이 한정되어 있다면, 이 세 영역에 먼저 투자하세요. <strong>나머지 5개</strong>는 무리해서 채우려 하지 않아도, 핵심 3가지만 잘 챙기면 자연스럽게 따라옵니다.</div>
           </div>
         </div>
       </div>`;
@@ -5005,20 +5164,21 @@ async function downloadPDF(){
     let c1 = makeContainer(coverHtml);
     const img1 = await capturePage(c1.firstChild);
     document.body.removeChild(c1);
-    await addPage(img1, 1, 10);
+    await addPage(img1, 1, 13);
 
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     // PAGE 2 , 8영역 레이더 바 차트 + 행동패턴
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     const barsHtml = SECS.map((sec,i)=>{
       const val = getSectionScore(t, {}, sec, 55);
+      const scale = getScoreScale(val);
       return `<div class="pdf-radar-row">
         <span class="pdf-radar-icon">${sec.icon}</span>
         <span class="pdf-radar-label">${krText(sec.label)}</span>
         <div class="pdf-radar-track">
           <div class="pdf-radar-fill" style="width:${val}%;background:${secColors[i]}"></div>
         </div>
-        <span class="pdf-radar-val" style="color:${secColors[i]}">${val}</span>
+        <span class="pdf-radar-val" style="color:${secColors[i]}">${scale.label}</span>
       </div>`;
     }).join('');
 
@@ -5026,10 +5186,10 @@ async function downloadPDF(){
     const bpShort = bpText.split('\n\n').slice(0,3).join('\n\n');
 
     const p2Html = `<div class="pdf-page"><div class="pdf-inner">
-      ${innerHeader(2,10)}
+      ${innerHeader(2,13)}
       <div class="pdf-section-tag">SECTION 01</div>
       <div class="pdf-section-title">한눈에 보는 8가지 공간 성향</div>
-      <div class="pdf-section-sub">8가지 영역에서 측정된 나의 공간 성향 점수예요. 100점 기준으로 어느 쪽이 더 강하게 드러나는지 보여줍니다.</div>
+      <div class="pdf-section-sub">8가지 영역에서 어느 쪽이 더 뚜렷한 욕구인지 5단계로 보여드려요. 높고 낮음에 좋고 나쁨은 없어요 — 모두 당신의 고유한 색이에요.</div>
       <div style="margin-bottom:28px">${barsHtml}</div>
       <div class="pdf-section-tag">SECTION 02</div>
       <div class="pdf-section-title">나의 공간 취향 이야기</div>
@@ -5044,7 +5204,7 @@ async function downloadPDF(){
     let c2 = makeContainer(p2Html);
     const img2 = await capturePage(c2.firstChild);
     document.body.removeChild(c2);
-    await addPage(img2, 2, 10);
+    await addPage(img2, 2, 13);
 
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     // PAGE 3 , 🆕 나만 갖고 있는 3가지 인사이트
@@ -5072,7 +5232,7 @@ async function downloadPDF(){
         </div>`;
 
       const p3Html = `<div class="pdf-page"><div class="pdf-inner">
-        ${innerHeader(3,10)}
+        ${innerHeader(3,13)}
         <div class="pdf-section-tag">SECTION 03</div>
         <div class="pdf-section-title">나만의 공간 포인트 3가지</div>
         <div class="pdf-section-sub">${krText(t.plain)}에게 잘 맞는 점, 조금만 챙기면 더 편해지는 점, 그리고 의외로 잘 어울리는 팁을 정리했어요. 자기 이해와 인테리어 선택에 모두 적용할 수 있는 핵심 코드예요.</div>
@@ -5086,14 +5246,85 @@ async function downloadPDF(){
       let c3a = makeContainer(p3Html);
       const img3a = await capturePage(c3a.firstChild);
       document.body.removeChild(c3a);
-      await addPage(img3a, 3, 10);
+      await addPage(img3a, 3, 13);
     } else {
       // 그룹 매핑이 없는 경우 빈 페이지 방지를 위해 다음 페이지로 진행
       // (모든 12개 유형이 6개 그룹에 매핑되어 있으므로 실제로는 항상 들어옴)
     }
 
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    // PAGE 4 , 🆕 공간 심리로 읽기 (다크 페이지)
+    // PAGE 4-6 , 🆕 TOP 3 핵심 욕구 정밀 분석 (각 욕구당 1페이지)
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    const allSecsForPdf = SECS.map((sec,i)=>({
+      sec, originalIndex:i,
+      val: getSectionScore(t, {}, sec, 55),
+      color: secColors[i],
+    }));
+    const top3ForPdf = [...allSecsForPdf].sort((a,b)=>b.val - a.val).slice(0, 3);
+
+    for(let rankIdx = 0; rankIdx < top3ForPdf.length; rankIdx++){
+      const item = top3ForPdf[rankIdx];
+      const insight = getSectionInsight(item.sec.key, item.val);
+      if(!insight) continue;
+      const scale = getScoreScale(item.val);
+      const pageNum = 4 + rankIdx; // 4, 5, 6
+      const rankLabel = ['첫 번째','두 번째','세 번째'][rankIdx];
+      const rankBadge = ['#1','#2','#3'][rankIdx];
+
+      const topPageHtml = `<div class="pdf-page"><div class="pdf-inner">
+        ${innerHeader(pageNum, 13)}
+
+        <div class="pdf-top-rank" style="background:${item.color}">${rankBadge} 핵심 욕구</div>
+        <div class="pdf-section-tag" style="color:${item.color}">SECTION 0${3+rankIdx+1} · TOP ${rankIdx+1}</div>
+        <div class="pdf-section-title">${rankLabel}로 뚜렷한 욕구</div>
+        <div class="pdf-section-sub">8가지 영역 중 ${rankIdx===0?'가장':rankIdx===1?'두 번째로':'세 번째로'} 강하게 드러나는 욕구예요. 이 한 가지가 당신의 공간 의사결정에서 가장 큰 비중을 차지합니다.</div>
+
+        <div class="pdf-top-card" style="border-left:6px solid ${item.color}">
+          <div class="pdf-top-card-header">
+            <div class="pdf-top-icon" style="background:${item.color}22;color:${item.color}">${item.sec.icon}</div>
+            <div class="pdf-top-meta">
+              <div class="pdf-top-section-name">${item.sec.label}</div>
+              <div class="pdf-top-score-row">
+                <span class="pdf-top-dots" style="color:${item.color}">${scale.dots}</span>
+                <span class="pdf-top-level" style="background:${item.color}15;color:${item.color}">${scale.label}</span>
+              </div>
+              <div class="pdf-top-tier-desc">${scale.desc}</div>
+            </div>
+          </div>
+
+          <div class="pdf-top-headline" style="color:${item.color}">${krText(insight.headline)}</div>
+          <p class="pdf-top-body">${krText(insight.body)}</p>
+
+          <div class="pdf-top-detail-grid">
+            <div class="pdf-top-detail">
+              <div class="pdf-top-detail-label">📌 일상에서 이렇게 드러나요</div>
+              <div class="pdf-top-detail-text">${krText(insight.behavior)}</div>
+            </div>
+            <div class="pdf-top-detail">
+              <div class="pdf-top-detail-label">💡 공간에 어떻게 적용할까</div>
+              <div class="pdf-top-detail-text">${krText(insight.impl)}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pdf-top-tip" style="border-left:3px solid ${item.color}">
+          <div class="pdf-top-tip-label" style="color:${item.color}">💎 우선순위 한 가지</div>
+          <div class="pdf-top-tip-text">${rankIdx===0
+            ? `이 영역은 당신에게 <strong>가장 큰 영향력</strong>을 갖는 욕구예요. 예산이 한정되어 있다면, <strong>이 영역에 가장 먼저</strong> 투자하세요. 작은 변화도 만족도에 크게 작용합니다.`
+            : rankIdx===1
+            ? `두 번째로 강한 욕구는 <strong>첫 번째와 시너지를 이루는 영역</strong>일 가능성이 큽니다. 두 욕구를 동시에 만족시키는 방향을 우선 고려하세요.`
+            : `세 번째까지가 당신의 <strong>핵심 욕구 클러스터</strong>예요. 이 세 가지가 함께 작동하면 공간 만족도가 폭발적으로 올라갑니다.`}</div>
+        </div>
+      </div></div>`;
+
+      let cTop = makeContainer(topPageHtml);
+      const imgTop = await capturePage(cTop.firstChild);
+      document.body.removeChild(cTop);
+      await addPage(imgTop, pageNum, 13);
+    }
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // PAGE 7 , 🆕 공간 심리로 읽기 (다크 페이지) — 기존 PAGE 4
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     const psyData = (typeof GROUP_PSYCHOLOGY !== 'undefined') && GROUP_PSYCHOLOGY[t.group];
     if(psyData){
@@ -5102,7 +5333,7 @@ async function downloadPDF(){
           <div class="pdf-psyche-inner">
             <div class="pdf-psyche-header">
               <div class="pdf-psyche-brand">SKOPOS · SDTI 정밀 검사 리포트</div>
-              <div class="pdf-psyche-pagenum">04 / 08</div>
+              <div class="pdf-psyche-pagenum">07 / 13</div>
             </div>
             <div class="pdf-psyche-tag">🧬 SPACE PSYCHOLOGY</div>
             <div class="pdf-psyche-title">왜 이런 공간이<br><em>편하게 느껴질까요?</em></div>
@@ -5133,7 +5364,7 @@ async function downloadPDF(){
       let c4psy = makeContainer(p4PsyHtml);
       const img4psy = await capturePage(c4psy.firstChild);
       document.body.removeChild(c4psy);
-      await addPage(img4psy, 4, 10);
+      await addPage(img4psy, 7, 13);
     }
 
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -5152,7 +5383,7 @@ async function downloadPDF(){
     const bpRest = bpText.split('\n\n').slice(3,6).join('\n\n');
 
     const p3Html = `<div class="pdf-page"><div class="pdf-inner">
-      ${innerHeader(5,10)}
+      ${innerHeader(8,13)}
       <div class="pdf-section-tag">SECTION 04</div>
       <div class="pdf-section-title">공간별 소품 처방</div>
       <div class="pdf-section-sub">내 유형에 맞게 거실·침실·주방·서재를 꾸미는 구체적인 방법이에요.</div>
@@ -5167,7 +5398,7 @@ async function downloadPDF(){
     let c3 = makeContainer(p3Html);
     const img3 = await capturePage(c3.firstChild);
     document.body.removeChild(c3);
-    await addPage(img3, 5, 10);
+    await addPage(img3, 8, 13);
 
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     // PAGE 6 — 🆕 30 / 60 / 90일 액션 플랜
@@ -5184,7 +5415,7 @@ async function downloadPDF(){
       `).join('');
 
       const p6Html = `<div class="pdf-page"><div class="pdf-inner">
-        ${innerHeader(6,10)}
+        ${innerHeader(9,13)}
         <div class="pdf-section-tag">SECTION 05</div>
         <div class="pdf-section-title">30 / 60 / 90일 액션 플랜</div>
         <div class="pdf-section-sub">한 번에 바꾸려 하지 마세요. 작은 변화 → 중간 투자 → 큰 결정 순서로, 가장 적은 비용과 후회로 ${krText(t.plain)} 공간을 완성하는 방법이에요.</div>
@@ -5198,7 +5429,7 @@ async function downloadPDF(){
       let c6 = makeContainer(p6Html);
       const img6 = await capturePage(c6.firstChild);
       document.body.removeChild(c6);
-      await addPage(img6, 6, 10);
+      await addPage(img6, 9, 13);
     }
 
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -5243,7 +5474,7 @@ async function downloadPDF(){
       }).join('');
 
       const p7Html = `<div class="pdf-page"><div class="pdf-inner">
-        ${innerHeader(7,10)}
+        ${innerHeader(10,13)}
         <div class="pdf-section-tag">SECTION 06</div>
         <div class="pdf-section-title">계절별 공간 변화 가이드</div>
         <div class="pdf-section-sub">같은 ${krText(t.plain)} 공간도 계절마다 강조하는 부분이 달라야 해요. 1년 내내 이 페이지를 펼쳐보며 계절 전환을 준비하세요.</div>
@@ -5252,7 +5483,7 @@ async function downloadPDF(){
       let c7 = makeContainer(p7Html);
       const img7 = await capturePage(c7.firstChild);
       document.body.removeChild(c7);
-      await addPage(img7, 7, 10);
+      await addPage(img7, 10, 13);
     }
 
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -5280,7 +5511,7 @@ async function downloadPDF(){
       </div>`).join('');
 
     const p4Html = `<div class="pdf-page"><div class="pdf-inner">
-      ${innerHeader(8,10)}
+      ${innerHeader(11,13)}
       <div class="pdf-section-tag">SECTION 07</div>
       <div class="pdf-section-title">잘 맞는 요소 vs 덜 맞을 수 있는 요소</div>
       <div class="pdf-section-sub">구매 전 한 번 살펴보세요. 좋고 나쁨이 아니라 내 집에서 오래 봐도 편한지 확인하는 기준이에요.</div>
@@ -5304,7 +5535,7 @@ async function downloadPDF(){
     let c4 = makeContainer(p4Html);
     const img4 = await capturePage(c4.firstChild);
     document.body.removeChild(c4);
-    await addPage(img4, 8, 10);
+    await addPage(img4, 11, 13);
 
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     // PAGE 8 , 🆕 예산대별 쇼핑 가이드
@@ -5324,7 +5555,7 @@ async function downloadPDF(){
       `).join('');
 
       const p8Html = `<div class="pdf-page"><div class="pdf-inner">
-        ${innerHeader(9,10)}
+        ${innerHeader(12,13)}
         <div class="pdf-section-tag">SECTION 09</div>
         <div class="pdf-section-title">예산별 시작 가이드</div>
         <div class="pdf-section-sub">가격대별로 가장 효과적인 ${krText(t.plain)} 추천 아이템을 정리했어요. 1만 원부터 시작해 천천히 늘려가셔도 충분합니다.</div>
@@ -5338,7 +5569,7 @@ async function downloadPDF(){
       let c8 = makeContainer(p8Html);
       const img8 = await capturePage(c8.firstChild);
       document.body.removeChild(c8);
-      await addPage(img8, 9, 10);
+      await addPage(img8, 12, 13);
     }
 
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -5358,7 +5589,7 @@ async function downloadPDF(){
     }).join('') || '<div class="pdf-compat-chip">✨ 자신만의 고유한 길</div>';
 
     const p5Html = `<div class="pdf-page"><div class="pdf-inner">
-      ${innerHeader(10,10)}
+      ${innerHeader(13,13)}
       <div class="pdf-section-tag">SECTION 10</div>
       <div class="pdf-section-title">나의 공간 컬러 팔레트</div>
       <div class="pdf-section-sub">이 색들을 기준으로 고르면 실패 확률이 줄어듭니다. 가장 큰 면적(벽·소파)엔 첫 번째, 포인트(소품·쿠션)엔 세 번째 색을 추천해요.</div>
@@ -5396,7 +5627,7 @@ async function downloadPDF(){
     let c5 = makeContainer(p5Html);
     const img5 = await capturePage(c5.firstChild);
     document.body.removeChild(c5);
-    await addPage(img5, 10, 10);
+    await addPage(img5, 13, 13);
 
     // ── 저장 (iOS·Android·Desktop 모두 호환) ────────────────
     const filename = `SKOPOS_${t.plain}_정밀진단리포트_${today.replace(/\. /g,'-').replace('.','')}.pdf`;
