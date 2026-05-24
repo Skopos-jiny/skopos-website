@@ -157,15 +157,21 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:60px;display:flex;ali
 .radar-bars{display:flex;flex-direction:column;gap:10px}
 .r-bar-row{display:flex;align-items:center;gap:12px}
 .r-bar-icon{font-size:.9rem;width:20px;text-align:center;flex-shrink:0}
-.r-bar-label{font-size:.72rem;font-weight:700;color:var(--dark);width:90px;flex-shrink:0;text-align:right}
-.r-bar-track{flex:1;height:6px;background:rgba(0,0,0,.05);border-radius:3px;overflow:hidden}
+.r-bar-label{font-size:.72rem;font-weight:700;color:var(--dark);width:115px;flex-shrink:0;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.015em}
+.r-bar-track{flex:1;height:6px;background:rgba(0,0,0,.05);border-radius:3px;overflow:hidden;min-width:60px}
 .r-bar-fill{height:6px;border-radius:3px;width:0;transition:width 1.4s var(--ez)}
 .r-bar-val{font-size:.68rem;font-weight:700;width:26px;text-align:right;flex-shrink:0}
 .r-bar-tier{font-size:.7rem;font-weight:800;text-align:right;flex-shrink:0;min-width:78px;letter-spacing:-.005em}
 @media(max-width:600px){
   .r-bar-row{gap:8px}
-  .r-bar-label{width:74px;font-size:.7rem}
-  .r-bar-tier{min-width:64px;font-size:.66rem}
+  .r-bar-label{width:96px;font-size:.68rem;letter-spacing:-.02em}
+  .r-bar-tier{min-width:60px;font-size:.64rem}
+  .r-bar-track{min-width:40px}
+}
+@media(max-width:380px){
+  .r-bar-label{width:84px;font-size:.64rem}
+  .r-bar-icon{font-size:.85rem;width:18px}
+  .r-bar-tier{min-width:54px;font-size:.62rem}
 }
 
 /* 분석 블록들 */
@@ -626,6 +632,59 @@ html{scroll-behavior:smooth}
 .insta-preview-title em{color:var(--gold);font-style:normal}
 .insta-preview-sub{font-size:.82rem;color:rgba(255,255,255,.6);margin-bottom:18px}
 .insta-preview-img{width:100%;aspect-ratio:1/1;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.5);display:block;background:#0F0F1A;object-fit:cover}
+
+/* ── 이름 입력 영역 (카드 미리보기 위) ── */
+.insta-name-input-wrap{
+  background:linear-gradient(135deg,rgba(233,30,140,.08),rgba(201,169,110,.05));
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:14px;
+  padding:14px 16px;
+  margin-bottom:16px;
+}
+.insta-name-label{
+  display:block;font-size:.84rem;font-weight:800;color:#fff;
+  margin-bottom:10px;letter-spacing:-.005em;
+}
+.insta-name-opt{
+  font-size:.7rem;color:rgba(255,255,255,.5);font-weight:600;margin-left:4px;
+}
+.insta-name-row{display:flex;gap:8px;align-items:center}
+.insta-name-field{
+  flex:1;min-width:0;
+  padding:11px 14px;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:10px;
+  color:#fff;font-size:.86rem;font-weight:600;
+  font-family:'Nunito','Noto Sans KR',sans-serif;
+  outline:none;
+  transition:all .2s var(--ez);
+}
+.insta-name-field:focus{
+  border-color:var(--pink);
+  background:rgba(255,255,255,.12);
+  box-shadow:0 0 0 3px rgba(233,30,140,.15);
+}
+.insta-name-field::placeholder{color:rgba(255,255,255,.35);font-weight:500}
+.insta-name-btn{
+  padding:11px 18px;
+  background:linear-gradient(135deg,var(--pink),#FF6B9D);
+  color:#fff;border:none;border-radius:10px;
+  font-size:.82rem;font-weight:800;cursor:pointer;
+  white-space:nowrap;flex-shrink:0;
+  transition:all .25s var(--ez);
+  box-shadow:0 4px 12px rgba(233,30,140,.3);
+}
+.insta-name-btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(233,30,140,.4)}
+.insta-name-btn:disabled{opacity:.6;cursor:wait}
+.insta-name-hint{
+  font-size:.7rem;color:rgba(255,255,255,.4);
+  margin-top:8px;line-height:1.5;font-weight:500;
+}
+@media(max-width:480px){
+  .insta-name-row{flex-direction:column;align-items:stretch;gap:8px}
+  .insta-name-btn{width:100%}
+}
 .insta-preview-actions{display:flex;flex-direction:column;gap:10px;margin-top:20px}
 .insta-preview-actions .btn-insta{max-width:none}
 .btn-close-modal{width:100%;padding:13px 20px;background:transparent;color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.15);border-radius:50px;font-family:'Nunito',sans-serif;font-size:.84rem;font-weight:600;cursor:pointer;transition:all .25s}
@@ -668,7 +727,7 @@ html{scroll-behavior:smooth}
 /* 레이더 바 차트 */
 .pdf-radar-row{display:flex;align-items:center;gap:12px;margin-bottom:14px}
 .pdf-radar-icon{font-size:16px;width:22px;text-align:center;flex-shrink:0}
-.pdf-radar-label{font-size:12px;font-weight:700;color:#0F0F1A;width:100px;flex-shrink:0;text-align:right}
+.pdf-radar-label{font-size:12px;font-weight:700;color:#0F0F1A;width:125px;flex-shrink:0;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.015em}
 .pdf-radar-track{flex:1;height:8px;background:#F0F0F0;border-radius:4px;overflow:hidden}
 .pdf-radar-fill{height:8px;border-radius:4px}
 .pdf-radar-val{font-size:10px;font-weight:800;width:80px;text-align:right;flex-shrink:0;letter-spacing:-.005em}
@@ -4351,18 +4410,27 @@ function renderResult(t,scores){
 
     <div class="radar-section" data-anchor id="sec-radar" data-toc-label="집 취향 점수표">
       <div class="radar-title">한눈에 보는 8가지 공간 성향</div>
-      <p class="radar-sub-desc">각 영역의 강도를 5단계로 보여드려요. 높고 낮음에 좋고 나쁨은 없어요 — 모두 당신의 고유한 색이에요.</p>
+      <p class="radar-sub-desc">강한 욕구부터 순서대로 보여드려요. 높고 낮음에 좋고 나쁨은 없어요 — 모두 당신의 고유한 색이에요.</p>
       <div class="radar-bars">
-        ${SECS.map((sec,i)=>{
-          const val=getSectionScore(t, scores, sec, 50);
-          const scale=getScoreScale(val);
-          return`<div class="r-bar-row" data-tier="${scale.tier}">
-            <span class="r-bar-icon">${sec.icon}</span>
-            <span class="r-bar-label">${sec.label}</span>
-            <div class="r-bar-track"><div class="r-bar-fill" data-val="${val}" style="background:${secColors[i]}"></div></div>
-            <span class="r-bar-tier" style="color:${secColors[i]}">${scale.label}</span>
-          </div>`;
-        }).join('')}
+        ${(()=>{
+          // 점수 내림차순 정렬 — 가장 강한 욕구가 위로 (원래 인덱스 보존하여 색상 매핑 유지)
+          const radarSorted = SECS.map((sec,i)=>({
+            sec, originalIndex:i,
+            val: getSectionScore(t, scores, sec, 50),
+            color: secColors[i],
+          })).sort((a,b)=>b.val - a.val);
+
+          return radarSorted.map(item=>{
+            const {sec, val, color} = item;
+            const scale = getScoreScale(val);
+            return `<div class="r-bar-row" data-tier="${scale.tier}">
+              <span class="r-bar-icon">${sec.icon}</span>
+              <span class="r-bar-label">${sec.label}</span>
+              <div class="r-bar-track"><div class="r-bar-fill" data-val="${val}" style="background:${color}"></div></div>
+              <span class="r-bar-tier" style="color:${color}">${scale.label}</span>
+            </div>`;
+          }).join('');
+        })()}
       </div>
     </div>
 
@@ -4858,7 +4926,7 @@ let _instaCardDataUrl = null; // 캡처된 이미지 dataURL 저장
 
 // 카드 디자인 HTML 생성
 // , 1080×1080 컨테이너 안에 핵심 결과 요약만 압축적으로 표시
-function buildInstaCardHTML(t, scores){
+function buildInstaCardHTML(t, scores, userName){
   const secColors=['#E91E8C','#FF9800','#7CB342','#29B6F6','#AB47BC','#FF7043','#26A69A','#5C6BC0'];
   const cleanText = (s)=>String(s||'')
     .replace(/\[\[hl\]\]|\[\[\/hl\]\]|\[\[em\]\]|\[\[\/em\]\]/g,'')
@@ -4876,11 +4944,11 @@ function buildInstaCardHTML(t, scores){
 
   const igPaletteData = getTypeField(t,'palette');
   const palChips = igPaletteData.slice(0,5).map((c,i)=>
-    `<div style="width:58px;height:58px;border-radius:18px;background:${c};box-shadow:inset 0 0 0 1px rgba(255,255,255,.22),0 8px 18px rgba(0,0,0,.24);transform:translateY(${i%2===0?'0':'8'}px)"></div>`
+    `<div style="width:50px;height:50px;border-radius:15px;background:${c};box-shadow:inset 0 0 0 1px rgba(255,255,255,.22),0 6px 14px rgba(0,0,0,.24);transform:translateY(${i%2===0?'0':'6'}px)"></div>`
   ).join('');
 
   const keysChips = ((t.keys&&t.keys.length)?t.keys:['포근함','자연소재','회복']).slice(0,3).map(k=>
-    `<span style="display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 20px;border:1.5px solid rgba(201,169,110,.48);background:rgba(201,169,110,.07);border-radius:999px;font-size:20px;color:#F1D48B;font-weight:800;white-space:nowrap">${cleanText(k)}</span>`
+    `<span style="display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:0 18px;border:1.5px solid rgba(201,169,110,.48);background:rgba(201,169,110,.07);border-radius:999px;font-size:18px;color:#F1D48B;font-weight:800;white-space:nowrap">${cleanText(k)}</span>`
   ).join('');
 
   const groupCopy={
@@ -4895,72 +4963,76 @@ function buildInstaCardHTML(t, scores){
   const shortCopy = groupCopy[t.group] || '나에게 맞는 공간에는 이유가 있습니다';
   const heroEmoji = t.emoji || '✨';
 
+  // 이름 처리 — 입력값이 있으면 "OOO님의", 없으면 "나의"
+  const cleanName = cleanText(userName).slice(0, 12); // 최대 12자
+  const personLabel = cleanName ? `${cleanName}님의 SPACE TYPE` : 'MY SPACE TYPE';
+
   return `
-    <div style="width:1080px;height:1080px;background:linear-gradient(145deg,#0F0F1A 0%,#1B1140 58%,#2A0F43 100%);position:relative;overflow:hidden;font-family:'Noto Sans KR','Malgun Gothic','Nunito',sans-serif;color:#fff;box-sizing:border-box;padding:64px 70px 54px;display:flex;flex-direction:column">
+    <div style="width:1080px;height:1080px;background:linear-gradient(145deg,#0F0F1A 0%,#1B1140 58%,#2A0F43 100%);position:relative;overflow:hidden;font-family:'Noto Sans KR','Malgun Gothic','Nunito',sans-serif;color:#fff;box-sizing:border-box;padding:48px 56px 42px;display:flex;flex-direction:column">
 
       <!-- 백그라운드 글로우 -->
       <div style="position:absolute;top:-220px;right:-130px;width:620px;height:620px;border-radius:50%;background:radial-gradient(circle,rgba(233,30,140,.22),transparent 70%);pointer-events:none"></div>
       <div style="position:absolute;bottom:-190px;left:-130px;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(41,182,246,.12),transparent 72%);pointer-events:none"></div>
-      <div style="position:absolute;left:76px;right:76px;top:176px;height:1px;background:linear-gradient(90deg,transparent,rgba(201,169,110,.28),transparent);pointer-events:none"></div>
+      <div style="position:absolute;left:60px;right:60px;top:135px;height:1px;background:linear-gradient(90deg,transparent,rgba(201,169,110,.28),transparent);pointer-events:none"></div>
 
       <!-- 상단 브랜드 영역 -->
-      <div style="position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;margin-bottom:52px;flex:0 0 auto">
-        <div style="display:flex;align-items:center;gap:14px">
-          <div style="width:58px;height:58px;border-radius:50%;background:conic-gradient(#E91E8C 0 25%,#FF9800 0 50%,#7CB342 0 75%,#29B6F6 0 100%);display:flex;align-items:center;justify-content:center;box-shadow:0 10px 28px rgba(0,0,0,.24)">
-            <div style="width:30px;height:30px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;color:#0F0F1A;font-size:16px;font-weight:900">S</div>
+      <div style="position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;flex:0 0 auto">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="width:52px;height:52px;border-radius:50%;background:conic-gradient(#E91E8C 0 25%,#FF9800 0 50%,#7CB342 0 75%,#29B6F6 0 100%);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 22px rgba(0,0,0,.24)">
+            <div style="width:26px;height:26px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;color:#0F0F1A;font-size:14px;font-weight:900">S</div>
           </div>
           <div>
-            <div style="font-size:28px;font-weight:900;letter-spacing:.02em;line-height:1">SKO<span style="color:#E91E8C">POS</span></div>
-            <div style="font-size:14px;color:rgba(255,255,255,.55);letter-spacing:.14em;font-weight:800;margin-top:8px">SDTI 공간 욕구 정밀 검사</div>
+            <div style="font-size:24px;font-weight:900;letter-spacing:.02em;line-height:1">SKO<span style="color:#E91E8C">POS</span></div>
+            <div style="font-size:12px;color:rgba(255,255,255,.55);letter-spacing:.14em;font-weight:800;margin-top:6px">SDTI 공간 욕구 정밀 검사</div>
           </div>
         </div>
-        <div style="display:inline-flex;align-items:center;height:42px;padding:0 20px;border:1px solid rgba(201,169,110,.42);background:rgba(201,169,110,.08);border-radius:999px;font-size:14px;color:#EED18A;font-weight:900;letter-spacing:.12em;text-transform:uppercase">SHARE CARD</div>
+        <div style="display:inline-flex;align-items:center;height:36px;padding:0 18px;border:1px solid rgba(201,169,110,.42);background:rgba(201,169,110,.08);border-radius:999px;font-size:12px;color:#EED18A;font-weight:900;letter-spacing:.12em;text-transform:uppercase">SHARE CARD</div>
       </div>
 
       <!-- 메인 결과 영역 -->
-      <div style="position:relative;z-index:1;text-align:center;margin-bottom:30px;flex:0 0 auto">
-        <div style="display:inline-flex;align-items:center;justify-content:center;width:138px;height:138px;border-radius:42px;background:linear-gradient(145deg,rgba(255,255,255,.16),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.11);box-shadow:0 18px 42px rgba(0,0,0,.24);font-size:82px;line-height:1;margin-bottom:26px">${heroEmoji}</div>
-        <div style="font-size:17px;color:rgba(201,169,110,.86);letter-spacing:.22em;font-weight:900;text-transform:uppercase;margin-bottom:16px">MY SPACE TYPE</div>
-        <div style="font-size:70px;font-weight:900;line-height:1.1;letter-spacing:0;color:#fff;margin-bottom:18px;text-shadow:0 10px 34px rgba(0,0,0,.22)">${typeName}</div>
-        <div style="font-size:28px;color:#F1D48B;font-weight:800;letter-spacing:0;line-height:1.45">${shortCopy}</div>
+      <div style="position:relative;z-index:1;text-align:center;margin-bottom:22px;flex:0 0 auto">
+        <div style="display:inline-flex;align-items:center;justify-content:center;width:108px;height:108px;border-radius:32px;background:linear-gradient(145deg,rgba(255,255,255,.16),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.11);box-shadow:0 14px 32px rgba(0,0,0,.24);font-size:64px;line-height:1;margin-bottom:18px">${heroEmoji}</div>
+        <div style="font-size:15px;color:rgba(201,169,110,.86);letter-spacing:.22em;font-weight:900;text-transform:uppercase;margin-bottom:12px">${personLabel}</div>
+        <div style="font-size:60px;font-weight:900;line-height:1.1;letter-spacing:0;color:#fff;margin-bottom:14px;text-shadow:0 10px 34px rgba(0,0,0,.22)">${typeName}</div>
+        <div style="font-size:22px;color:#F1D48B;font-weight:800;letter-spacing:0;line-height:1.45">${shortCopy}</div>
       </div>
 
       <!-- 키워드 칩 -->
-      <div style="position:relative;z-index:1;text-align:center;margin-bottom:32px;display:flex;justify-content:center;gap:12px;flex-wrap:wrap;min-height:44px;flex:0 0 auto">
+      <div style="position:relative;z-index:1;text-align:center;margin-bottom:20px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap;min-height:38px;flex:0 0 auto">
         ${keysChips}
       </div>
 
       <!-- 컬러 팔레트 -->
-      <div style="position:relative;z-index:1;display:flex;justify-content:center;gap:12px;margin-bottom:34px;height:70px;flex:0 0 auto">
+      <div style="position:relative;z-index:1;display:flex;justify-content:center;gap:10px;margin-bottom:22px;height:56px;flex:0 0 auto">
         ${palChips}
       </div>
 
       <!-- 상위 3개 영역 미니바 -->
-      <div style="position:relative;z-index:1;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.08);border-radius:26px;padding:28px 34px 26px;margin-bottom:24px;box-shadow:0 18px 44px rgba(0,0,0,.2);flex:0 0 auto">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
-          <div style="font-size:16px;color:#F1D48B;letter-spacing:.16em;font-weight:900;text-transform:uppercase">TOP 3 욕구 프로파일</div>
-          <div style="font-size:15px;color:rgba(255,255,255,.46);font-weight:800">8개 영역 분석</div>
+      <div style="position:relative;z-index:1;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.08);border-radius:22px;padding:20px 26px 18px;margin-bottom:18px;box-shadow:0 14px 36px rgba(0,0,0,.2);flex:0 0 auto">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <div style="font-size:13px;color:#F1D48B;letter-spacing:.16em;font-weight:900;text-transform:uppercase">TOP 3 욕구 프로파일</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.46);font-weight:800">8개 영역 분석</div>
         </div>
         ${top3.map(b=>`
-          <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px">
-            <span style="font-size:26px;width:34px;line-height:1;text-align:center">${b.icon}</span>
-            <span style="font-size:21px;font-weight:900;color:#fff;width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${krText(b.label)}</span>
-            <div style="flex:1;height:10px;background:rgba(255,255,255,.09);border-radius:999px;overflow:hidden">
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:12px">
+            <span style="font-size:22px;width:28px;line-height:1;text-align:center">${b.icon}</span>
+            <span style="font-size:18px;font-weight:900;color:#fff;width:130px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${krText(b.label)}</span>
+            <div style="flex:1;height:9px;background:rgba(255,255,255,.09);border-radius:999px;overflow:hidden">
               <div style="height:100%;width:${b.val}%;background:${b.color};border-radius:4px"></div>
             </div>
-            <span style="font-size:24px;font-weight:900;color:${b.color};width:48px;text-align:right">${b.val}</span>
+            <span style="font-size:20px;font-weight:900;color:${b.color};width:42px;text-align:right">${b.val}</span>
           </div>
         `).join('')}
       </div>
 
       <!-- 하단 CTA + 해시태그 -->
-      <div style="position:relative;z-index:1;margin-top:auto;border-top:1px solid rgba(255,255,255,.11);padding-top:22px;flex:0 0 auto">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:22px">
+      <div style="position:relative;z-index:1;margin-top:auto;border-top:1px solid rgba(255,255,255,.11);padding-top:18px;flex:0 0 auto">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:18px">
           <div>
-            <div style="font-size:18px;color:rgba(255,255,255,.62);margin-bottom:8px;font-weight:800">내 공간 취향이 궁금하다면</div>
-            <div style="font-size:24px;color:#F1D48B;font-weight:900;letter-spacing:0">144문항 · 8개 영역 · 12가지 유형 · skopos.kr</div>
+            <div style="font-size:14px;color:rgba(255,255,255,.62);margin-bottom:6px;font-weight:800">내 공간 취향이 궁금하다면</div>
+            <div style="font-size:18px;color:#F1D48B;font-weight:900;letter-spacing:0">144문항 · 8개 영역 · 12가지 유형 · skopos.kr</div>
           </div>
-          <div style="text-align:right;font-size:18px;color:rgba(255,255,255,.48);font-weight:900;line-height:1.55;white-space:nowrap">
+          <div style="text-align:right;font-size:14px;color:rgba(255,255,255,.48);font-weight:900;line-height:1.55;white-space:nowrap">
             #스코포스<br>#SDTI<br>#공간취향검사
           </div>
         </div>
@@ -4986,57 +5058,101 @@ async function openInstaCard(){
   try{
     trackEvent('insta_card_open', {result_type:resultType.id});
 
-    // compute()로 점수 재계산 (renderResult에서 받은 scores를 메모이즈하지 않은 경우 대비)
-    const {scores} = compute();
+    // 저장된 이름 불러오기 (이전에 입력한 적 있으면 자동 채움)
+    let savedName = '';
+    try{ savedName = localStorage.getItem('skopos_user_name') || ''; }catch(_){}
 
-    // 1080×1080 임시 컨테이너 (화면 밖)
-    const tmp = document.createElement('div');
-    tmp.id = 'instaCardContainer';
-    tmp.style.cssText = 'position:fixed;left:-99999px;top:0;width:1080px;height:1080px;z-index:-1;pointer-events:none';
-    tmp.innerHTML = buildInstaCardHTML(resultType, scores);
-    document.body.appendChild(tmp);
+    // 카드 생성 (이름 포함)
+    await _generateInstaCard(savedName);
 
-    // 폰트 로딩 대기 (Cormorant Garamond 등이 적용되도록)
-    if(document.fonts && document.fonts.ready){
-      try{ await document.fonts.ready; }catch(e){}
-    }
-    // 추가 안정화 시간 (iOS에서 더 길게)
-    await new Promise(r=>setTimeout(r, isIOS() ? 500 : 300));
-
-    // html2canvas로 캡처 (iOS 호환 옵션 적용)
-    const canvas = await html2canvas(tmp.firstElementChild, {
-      width: 1080,
-      height: 1080,
-      scale: 1, // 이미 1080이므로 scale=1
-      useCORS: true,
-      allowTaint: false,
-      backgroundColor: null,
-      logging: false,
-      foreignObjectRendering: false, // iOS 호환
-      imageTimeout: 8000,
-    });
-    _instaCardDataUrl = canvas.toDataURL('image/png', 1.0);
-
-    // 임시 컨테이너 제거
-    tmp.remove();
-
-    // 미리보기 표시
-    body.innerHTML = `<img src="${_instaCardDataUrl}" alt="인스타그램 카드 미리보기" class="insta-preview-img">`;
+    // 미리보기 + 이름 입력 영역 표시
+    body.innerHTML = `
+      <div class="insta-name-input-wrap">
+        <label class="insta-name-label">✨ 카드에 이름을 넣어볼까요? <span class="insta-name-opt">(선택)</span></label>
+        <div class="insta-name-row">
+          <input type="text" id="instaNameInput" class="insta-name-field" placeholder="예: 지영, JH, 미정"
+                 maxlength="12" value="${savedName.replace(/"/g,'&quot;')}">
+          <button class="insta-name-btn" id="instaNameApplyBtn">카드에 적용</button>
+        </div>
+        <div class="insta-name-hint">이름을 비우고 적용하면 "MY SPACE TYPE"으로 표시됩니다.</div>
+      </div>
+      <img src="${_instaCardDataUrl}" alt="인스타그램 카드 미리보기" class="insta-preview-img" id="instaPreviewImg">
+    `;
     actions.style.display = 'flex';
 
+    // "카드에 적용" 버튼 핸들러
+    const applyBtn = document.getElementById('instaNameApplyBtn');
+    const nameInput = document.getElementById('instaNameInput');
+    if(applyBtn && nameInput){
+      const applyName = async ()=>{
+        const newName = nameInput.value.trim();
+        // 저장
+        try{ localStorage.setItem('skopos_user_name', newName); }catch(_){}
+        // 버튼 상태 — 재생성 중
+        applyBtn.disabled = true;
+        applyBtn.textContent = '만드는 중...';
+        try{
+          await _generateInstaCard(newName);
+          const imgEl = document.getElementById('instaPreviewImg');
+          if(imgEl) imgEl.src = _instaCardDataUrl;
+          toast(newName ? `${newName}님의 카드가 만들어졌어요 ✨` : '카드를 다시 만들었어요', 2500);
+        }catch(err){
+          console.error('카드 재생성 실패:', err);
+          toast('카드 재생성에 실패했어요. 다시 시도해주세요.', 3000);
+        }finally{
+          applyBtn.disabled = false;
+          applyBtn.textContent = '카드에 적용';
+        }
+      };
+      applyBtn.addEventListener('click', applyName);
+      // Enter 키로도 적용
+      nameInput.addEventListener('keydown', (e)=>{
+        if(e.key === 'Enter'){ e.preventDefault(); applyName(); }
+      });
+    }
   }catch(err){
     console.error('인스타 카드 생성 실패:', err);
-    body.innerHTML = `
-      <div class="insta-preview-loading" style="color:rgba(255,255,255,.7)">
-        <div style="font-size:2rem;margin-bottom:12px">⚠️</div>
-        <div style="margin-bottom:6px;font-weight:700">카드 생성에 실패했어요</div>
-        <div style="font-size:.78rem;color:rgba(255,255,255,.5)">잠시 후 다시 시도해주세요</div>
-      </div>`;
-    actions.innerHTML = `<button class="btn-close-modal" onclick="closeInstaCard()">닫기</button>`;
-    actions.style.display = 'flex';
-    // 잔류 컨테이너 정리
-    document.querySelectorAll('#instaCardContainer').forEach(el=>el.remove());
+    body.innerHTML = `<div class="insta-preview-loading"><div>카드 생성에 실패했어요.<br>잠시 후 다시 시도해주세요.</div></div>`;
   }
+}
+
+// 카드 생성 내부 헬퍼 (이름 받아서 캡처까지)
+async function _generateInstaCard(userName){
+  const {scores} = compute();
+
+  // 이전 임시 컨테이너 제거 (재생성 시)
+  document.querySelectorAll('#instaCardContainer').forEach(el=>{ try{ el.remove(); }catch(e){} });
+
+  // 1080×1080 임시 컨테이너 (화면 밖)
+  const tmp = document.createElement('div');
+  tmp.id = 'instaCardContainer';
+  tmp.style.cssText = 'position:fixed;left:-99999px;top:0;width:1080px;height:1080px;z-index:-1;pointer-events:none';
+  tmp.innerHTML = buildInstaCardHTML(resultType, scores, userName);
+  document.body.appendChild(tmp);
+
+  // 폰트 로딩 대기
+  if(document.fonts && document.fonts.ready){
+    try{ await document.fonts.ready; }catch(e){}
+  }
+  // 추가 안정화 시간 (iOS에서 더 길게)
+  await new Promise(r=>setTimeout(r, isIOS() ? 500 : 300));
+
+  // html2canvas로 캡처 (iOS 호환 옵션 적용)
+  const canvas = await html2canvas(tmp.firstElementChild, {
+    width: 1080,
+    height: 1080,
+    scale: 1,
+    useCORS: true,
+    allowTaint: false,
+    backgroundColor: null,
+    logging: false,
+    foreignObjectRendering: false,
+    imageTimeout: 8000,
+  });
+  _instaCardDataUrl = canvas.toDataURL('image/png', 1.0);
+
+  // 임시 컨테이너 제거
+  tmp.remove();
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -5287,16 +5403,23 @@ async function downloadPDF(){
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     // PAGE 2 , 8영역 레이더 바 차트 + 행동패턴
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    const barsHtml = SECS.map((sec,i)=>{
-      const val = getSectionScore(t, {}, sec, 55);
+    // 점수 내림차순 정렬 — 가장 강한 욕구가 위로 (웹 결과지와 일관)
+    const pdfRadarSorted = SECS.map((sec,i)=>({
+      sec, originalIndex:i,
+      val: getSectionScore(t, {}, sec, 55),
+      color: secColors[i],
+    })).sort((a,b)=>b.val - a.val);
+
+    const barsHtml = pdfRadarSorted.map(item=>{
+      const {sec, val, color} = item;
       const scale = getScoreScale(val);
       return `<div class="pdf-radar-row">
         <span class="pdf-radar-icon">${sec.icon}</span>
         <span class="pdf-radar-label">${krText(sec.label)}</span>
         <div class="pdf-radar-track">
-          <div class="pdf-radar-fill" style="width:${val}%;background:${secColors[i]}"></div>
+          <div class="pdf-radar-fill" style="width:${val}%;background:${color}"></div>
         </div>
-        <span class="pdf-radar-val" style="color:${secColors[i]}">${scale.label}</span>
+        <span class="pdf-radar-val" style="color:${color}">${scale.label}</span>
       </div>`;
     }).join('');
 
