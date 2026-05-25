@@ -144,6 +144,52 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:60px;display:flex;ali
 .r-hero-tag{font-size:.6rem;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
 .r-emoji{font-size:3.5rem;margin-bottom:10px;display:block}
 .r-type-name{font-family:'Cormorant Garamond',serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:300;color:#fff;line-height:1.2;margin-bottom:8px}
+
+/* 2줄 시각 위계 — 수식어(위, 작게) + 강조어+유형(아래, 크게) */
+.r-type-name-2lines{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+  margin-bottom:14px;
+  line-height:1.25;
+  padding:0 12px;
+}
+.r-type-name-2lines .r-type-prefix{
+  display:block;
+  font-family:'Noto Sans KR','Nunito',sans-serif;
+  font-size:clamp(.95rem, 2vw, 1.2rem);
+  font-weight:500;
+  color:rgba(255,255,255,.72);
+  letter-spacing:-.01em;
+  line-height:1.5;
+  word-break:keep-all;
+}
+.r-type-name-2lines .r-type-main{
+  display:block;
+  font-family:'Cormorant Garamond','Noto Sans KR',serif;
+  font-size:clamp(1.9rem, 4.2vw, 2.9rem);
+  font-weight:400;
+  color:#fff;
+  letter-spacing:-.02em;
+  line-height:1.25;
+  word-break:keep-all;
+}
+.r-type-name-2lines .r-type-main .hl{
+  color:var(--pink, #DC1478);
+  font-weight:500;
+}
+
+@media(max-width:600px){
+  .r-type-name-2lines{gap:6px;padding:0 8px}
+  .r-type-name-2lines .r-type-prefix{font-size:.92rem}
+  .r-type-name-2lines .r-type-main{font-size:1.7rem}
+}
+@media(max-width:380px){
+  .r-type-name-2lines .r-type-prefix{font-size:.86rem}
+  .r-type-name-2lines .r-type-main{font-size:1.5rem}
+}
+
 .r-type-plain{font-size:.78rem;font-weight:700;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px}
 .r-desc{font-size:.9rem;color:rgba(255,255,255,.65);line-height:1.85;max-width:520px;margin:0 auto 20px}
 .r-keys{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
@@ -707,6 +753,32 @@ html{scroll-behavior:smooth}
 .pdf-cover-emoji{font-size:72px;margin-bottom:24px;line-height:1}
 .pdf-cover-type{font-size:13px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:rgba(201,169,110,.9);margin-bottom:12px}
 .pdf-cover-name{font-size:44px;font-weight:900;color:#fff;line-height:1.2;margin-bottom:20px}
+
+/* PDF 표지 2줄 시각 위계 — 잡지 표지 느낌 */
+.pdf-cover-name-2lines{
+  margin-bottom:20px;
+}
+.pdf-cover-name-2lines .pdf-cover-prefix{
+  font-size:22px;
+  font-weight:500;
+  color:rgba(255,255,255,.72);
+  line-height:1.4;
+  margin-bottom:10px;
+  letter-spacing:-.01em;
+  word-break:keep-all;
+}
+.pdf-cover-name-2lines .pdf-cover-main{
+  font-size:46px;
+  font-weight:900;
+  color:#fff;
+  line-height:1.2;
+  letter-spacing:-.02em;
+  word-break:keep-all;
+}
+.pdf-cover-name-2lines .pdf-cover-main .hl-pdf{
+  color:#FF6B9D;
+  font-weight:900;
+}
 .pdf-cover-desc{font-size:14px;color:rgba(255,255,255,.6);line-height:1.9;max-width:520px;margin-bottom:40px}
 .pdf-cover-keys{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:48px}
 .pdf-cover-key{border:1px solid rgba(201,169,110,.35);padding:5px 14px;font-size:11px;color:rgba(201,169,110,.9);border-radius:4px;font-weight:600}
@@ -3562,6 +3634,22 @@ function dec(s){
     .split('[[/hl]]').join('</span>').split('[[/em]]').join('</span>');
 }
 
+// 유형명을 2줄로 분리 — "수식어 [[hl]]강조어[[/hl]] 유형" → {prefix:"수식어", emphasis:"강조어", suffix:"유형"}
+// 가독성 위해 위쪽엔 수식어(작게), 아래쪽엔 강조어+"유형"(크게+강조색)을 배치
+function splitTypeName(name){
+  if(!name) return {prefix:'', emphasis:'', suffix:'유형'};
+  const m = name.match(/^(.*?)\s*\[\[hl\]\](.+?)\[\[\/hl\]\]\s*(.*)$/);
+  if(m){
+    return {
+      prefix: (m[1] || '').trim(),
+      emphasis: (m[2] || '').trim(),
+      suffix: (m[3] || '유형').trim()
+    };
+  }
+  // [[hl]] 패턴이 없으면 전체를 emphasis로 (폴백)
+  return {prefix:'', emphasis:name.replace(/\[\[\/?hl\]\]/g,'').trim(), suffix:''};
+}
+
 function krText(s){
   if(s===undefined || s===null) return '';
   return String(s)
@@ -4398,7 +4486,17 @@ function renderResult(t,scores){
       <div class="r-hero-tag">✦ SDTI 정밀 검사 결과 · 내 집 취향 리포트</div>
       <span class="r-user-greeting" id="rUserGreeting"></span>
       <span class="r-emoji">${t.emoji||'✨'}</span>
-      <h1 class="r-type-name">${dec(krText(t.name))}</h1>
+      ${(()=>{
+        const parts = splitTypeName(t.name);
+        return `
+          <h1 class="r-type-name r-type-name-2lines">
+            ${parts.prefix ? `<span class="r-type-prefix">${krText(parts.prefix)}</span>` : ''}
+            <span class="r-type-main">
+              <span class="hl">${krText(parts.emphasis)}</span>${parts.suffix ? ` ${krText(parts.suffix)}` : ''}
+            </span>
+          </h1>
+        `;
+      })()}
       <div class="r-type-plain">${krText(t.plain)}</div>
       <p class="r-desc">${dec(krText(t.desc))}</p>
       <div class="r-keys">${(t.keys||[]).map(k=>`<span class="r-key">${krText(k)}</span>`).join('')}</div>
@@ -5386,7 +5484,18 @@ async function downloadPDF(){
         ${currentUserName ? `<div style="font-size:11px;color:rgba(201,169,110,.6);margin-bottom:20px;font-weight:600;letter-spacing:.05em">${currentUserName}님의 진단 리포트</div>` : ''}
         <div class="pdf-cover-emoji">${t.emoji||'✨'}</div>
         <div class="pdf-cover-type">${t.group||''} TYPE</div>
-        <div class="pdf-cover-name">${krText(t.name ? t.name.replace(/\[\[hl\]\]/g,'').replace(/\[\[\/hl\]\]/g,'') : t.plain)}</div>
+        ${(()=>{
+          const parts = splitTypeName(t.name);
+          if(parts.prefix){
+            return `
+              <div class="pdf-cover-name pdf-cover-name-2lines">
+                <div class="pdf-cover-prefix">${krText(parts.prefix)}</div>
+                <div class="pdf-cover-main"><span class="hl-pdf">${krText(parts.emphasis)}</span> ${krText(parts.suffix||'')}</div>
+              </div>
+            `;
+          }
+          return `<div class="pdf-cover-name">${krText(parts.emphasis)}</div>`;
+        })()}
         <div class="pdf-cover-desc">${krText(t.desc||'').substring(0,120)}...</div>
         <div class="pdf-cover-keys">${keysHtml}</div>
         <div class="pdf-cover-footer">
