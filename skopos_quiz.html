@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SKOPOS SDTI 기초 검사 | 스코포스 공간 욕구 유형 검사 (무료)</title>
-<meta name="description" content="나에게 맞는 가구·소품·조명·소재를 찾아드립니다. 공간심리학 기반 22문항 무료 진단 — 12가지 공간 욕구 유형, 8개 영역 분석. 소파를 고르기 전에, 조명을 바꾸기 전에 나를 먼저 알아보세요.">
+<meta name="description" content="나에게 맞는 가구·소품·조명·소재를 찾아드립니다. 공간심리학 기반 12가지 유형 무료 진단으로 12가지 공간 욕구 유형, 8개 영역 분석. 소파를 고르기 전에, 조명을 바꾸기 전에 나를 먼저 알아보세요.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://skopos.kr/skopos_quiz.html">
 <meta property="og:type" content="website">
@@ -167,6 +167,51 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:60px;display:flex;ali
 .rtag{font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;color:var(--pink);font-weight:800;margin-bottom:12px}
 .rtype{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,5vw,2.8rem);font-weight:500;line-height:1.2;color:var(--dark);margin-bottom:12px;letter-spacing:-.015em}
 .rtype em{color:var(--pink);font-style:normal}
+
+/* 2줄 시각 위계 — 라이트 테마 (무료 검사지) */
+.rtype-2lines{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:6px;
+  margin-bottom:14px;
+  line-height:1.25;
+  padding:0 8px;
+}
+.rtype-2lines .rtype-prefix{
+  display:block;
+  font-family:'Noto Sans KR','Nunito',sans-serif;
+  font-size:clamp(.95rem, 2vw, 1.15rem);
+  font-weight:500;
+  color:#6B7280;
+  letter-spacing:-.01em;
+  line-height:1.5;
+  word-break:keep-all;
+}
+.rtype-2lines .rtype-main{
+  display:block;
+  font-family:'Cormorant Garamond','Noto Sans KR',serif;
+  font-size:clamp(1.9rem, 4.2vw, 2.7rem);
+  font-weight:500;
+  color:var(--dark);
+  letter-spacing:-.02em;
+  line-height:1.25;
+  word-break:keep-all;
+}
+.rtype-2lines .rtype-main .hl{
+  color:var(--pink);
+  font-weight:600;
+}
+
+@media(max-width:600px){
+  .rtype-2lines{gap:5px;padding:0 6px}
+  .rtype-2lines .rtype-prefix{font-size:.92rem}
+  .rtype-2lines .rtype-main{font-size:1.7rem}
+}
+@media(max-width:380px){
+  .rtype-2lines .rtype-prefix{font-size:.86rem}
+  .rtype-2lines .rtype-main{font-size:1.5rem}
+}
 .rdesc{font-size:.9rem;color:#4A4A5A;line-height:1.85;max-width:520px;margin:0 auto 22px;font-weight:500}
 .rkws{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
 .kw{background:rgba(233,30,140,.06);border:1px solid rgba(233,30,140,.2);padding:5px 14px;font-size:.7rem;letter-spacing:.02em;color:var(--pink);font-weight:700;border-radius:50px}
@@ -407,7 +452,7 @@ em{font-style:normal;}
     <span style="width:6px;height:6px;border-radius:50%;background:#E91E8C;animation:blink 1.6s infinite"></span>
     <span style="font-size:.58rem;letter-spacing:.12em;color:#E91E8C;font-weight:700">공간심리학 기반 취향 욕구 진단</span>
   </div>
-  <p class="ie">SKOPOS — 스코포스 공간 욕구 유형 검사 (SDTI)</p>
+  <p class="ie">SKOPOS | 스코포스 공간 욕구 유형 검사 (SDTI)</p>
   <h1 class="it">당신의 <em>취향과 욕구</em>를<br>확인해드립니다</h1>
   <p class="is">어떤 가구·소품·조명·소재가 나에게 맞는지 아시나요?<br>공간심리학 기반으로 내 욕구 구조를 분석해<br>당신만의 공간 취향 언어를 찾아드립니다.</p>
   <div class="ibgs">
@@ -835,14 +880,14 @@ const QS=[
     {i:'🌟',l:'밝고 균일한 조명',d:'활기차고 선명한 공간',g:{energy:3,control:2,minimal:1}},
     {i:'🎭',l:'포인트 스포트',d:'강조하고 싶은 곳만 비추는',g:{artistic:3,luxe:2,identity:1}}]},
 
-{s:0,n:'색채 심리학 — 색온도는 감정과 직결됩니다',
+{s:0,n:'색채 심리학: 색온도는 감정과 직결됩니다',
  t:'가장 끌리는 [[em]]공간 컬러[[/em]]는?',
  o:[{i:'🤍',l:'화이트·아이보리',d:'깨끗하고 여백 있는',g:{minimal:3,control:2,calm:1}},
     {i:'🤎',l:'베이지·브라운·오트밀',d:'따뜻하고 자연스러운',g:{natural:3,cozy:2,warmth:2}},
     {i:'🖤',l:'딥 그린·네이비·차콜',d:'깊고 무게감 있는',g:{luxe:2,artistic:2,calm:1}},
     {i:'🎨',l:'포인트 컬러 하나',d:'강렬하게 개성을 드러내는',g:{artistic:3,identity:3}}]},
 
-{s:0,n:'감각 통합 이론 — 공간은 다감각 경험의 총체입니다',
+{s:0,n:'감각 통합 이론: 공간은 다감각 경험의 총체입니다',
  t:'소품을 고를 때 가장 먼저 보는 것은?',
  o:[{i:'👁️',l:'생김새·형태',d:'눈에 아름다운 디자인',g:{artistic:2,luxe:2,identity:1}},
     {i:'✋',l:'질감·촉감',d:'손으로 만졌을 때의 느낌',g:{natural:2,cozy:2,warmth:1}},
@@ -857,7 +902,7 @@ const QS=[
     {i:'🏛️',l:'모던 럭셔리',d:'마블·황동·절제된 고급',g:{luxe:3,esteem:2,control:1}},
     {i:'🎨',l:'에클레틱 믹스',d:'다양한 시대와 스타일의 충돌',g:{artistic:3,identity:3,flow:1}}]},
 
-{s:1,n:'신경미학 — 아름다움을 처리하는 뇌는 보상 회로와 연결됩니다',
+{s:1,n:'신경미학: 아름다움을 처리하는 뇌는 보상 회로와 연결됩니다',
  t:'가장 아름답다고 느끼는 [[em]]공간의 순간[[/em]]은?',
  o:[{i:'🌅',l:'빛이 소재에 닿을 때',d:'그림자와 빛의 레이어',g:{luxe:2,natural:1,calm:2}},
     {i:'🔲',l:'모든 게 정렬됐을 때',d:'완벽한 비례와 정돈',g:{minimal:3,control:3}},
@@ -871,7 +916,7 @@ const QS=[
     {i:'🏮',l:'조명·캔들·아로마',d:'분위기를 만드는 소품',g:{cozy:3,luxe:2,calm:1}},
     {i:'🍽️',l:'식기·주방 소품',d:'일상을 특별하게 만드는',g:{cozy:2,natural:1,warmth:2,identity:1}}]},
 
-{s:1,n:'공간 기억 이론 — 장소는 감정 기억과 함께 저장됩니다',
+{s:1,n:'공간 기억 이론: 장소는 감정 기억과 함께 저장됩니다',
  t:'가장 오래 머물고 싶은 [[em]]카페 스타일[[/em]]은?',
  o:[{i:'🌿',l:'식물 가득한 가드닝 카페',d:'자연 속에 있는 듯한',g:{natural:3,cozy:2,warmth:1}},
     {i:'⬛',l:'모던 미니멀 카페',d:'화이트·블랙·심플한 공간',g:{minimal:3,control:2}},
@@ -900,7 +945,7 @@ const QS=[
     {i:'🛋️',l:'편안한 소파·침대',d:'푹 쉴 수 있는 가구',g:{cozy:3,safety:2,warmth:1}},
     {i:'🎨',l:'내 취향이 담긴 오브제',d:'개성 없는 공간은 싫다',g:{identity:3,artistic:2}}]},
 
-{s:2,n:'바이오필리아 — 인간은 본능적으로 자연을 추구합니다',
+{s:2,n:'바이오필리아: 인간은 본능적으로 자연을 추구합니다',
  t:'공간 안 [[em]]자연[[/em]]은 어떤 방식이어야 하나요?',
  o:[{i:'🌳',l:'창밖의 자연뷰',d:'자연은 밖에서 보는 것',g:{open:3,energy:1,natural:1}},
     {i:'🪴',l:'실내 식물 가득',d:'자연이 공간 안으로',g:{natural:3,cozy:2,warmth:1}},
@@ -946,10 +991,10 @@ const QS=[
 
 {s:4,n:'인테리어 투자 우선순위는 진짜 욕구를 반영합니다',
  t:'지금 바로 바꿀 수 있다면 [[em]]가장 먼저[[/em]] 바꿀 것은?',
- o:[{i:'💡',l:'조명 — 분위기를 바꾸는 빛',d:'간접조명·팬던트·캔들',g:{cozy:2,artistic:2,luxe:1}},
-    {i:'🛋️',l:'소파 — 하루의 메인 가구',d:'나를 가장 많이 받쳐주는',g:{cozy:3,safety:2,warmth:1}},
-    {i:'🖼️',l:'벽 — 아트·컬러·포인트',d:'공간 전체의 분위기를 잡는',g:{artistic:3,identity:2,esteem:1}},
-    {i:'🪴',l:'식물·소품 — 생명 불어넣기',d:'작은 것들이 만드는 차이',g:{natural:3,cozy:1,warmth:1}}]},
+ o:[{i:'💡',l:'조명 · 분위기를 바꾸는 빛',d:'간접조명·팬던트·캔들',g:{cozy:2,artistic:2,luxe:1}},
+    {i:'🛋️',l:'소파 · 하루의 메인 가구',d:'나를 가장 많이 받쳐주는',g:{cozy:3,safety:2,warmth:1}},
+    {i:'🖼️',l:'벽 : 아트·컬러·포인트',d:'공간 전체의 분위기를 잡는',g:{artistic:3,identity:2,esteem:1}},
+    {i:'🪴',l:'식물·소품 : 생명 불어넣기',d:'작은 것들이 만드는 차이',g:{natural:3,cozy:1,warmth:1}}]},
 
 {s:4,n:'공간 변화의 동기는 깊은 욕구 구조를 드러냅니다',
  t:'인테리어를 바꾸고 싶어지는 가장 큰 이유는?',
@@ -959,7 +1004,7 @@ const QS=[
     {i:'🚀',l:'더 효율적으로 살고 싶어서',d:'동선과 기능을 개선하고 싶다',g:{control:3,minimal:2,energy:1}}]},
 
 // ── 가치·욕구 (3문항)
-{s:5,n:'자기 개념 일치 이론 — 공간은 자아상의 물리적 확장입니다',
+{s:5,n:'자기 개념 일치 이론: 공간은 자아상의 물리적 확장입니다',
  t:'나의 공간이 [[em]]나를 표현해주길 바라는[[/em]] 것은?',
  o:[{i:'🎭',l:'독특한 취향과 감각',d:'나만의 개성이 담긴 공간',g:{identity:3,artistic:2}},
     {i:'🏡',l:'따뜻하고 좋은 사람',d:'온기와 환대가 느껴지는',g:{warmth:3,cozy:2,family:1}},
@@ -973,7 +1018,7 @@ const QS=[
     {i:'🏺',l:'좋아하는 소품·오브제 여럿',d:'공간 곳곳을 채우는 것들',g:{cozy:2,natural:2,identity:1}},
     {i:'💡',l:'조명 시스템 전체 교체',d:'분위기를 완전히 바꾸는',g:{luxe:2,artistic:2,calm:1}}]},
 
-{s:5,n:'공간 정체성 이론 — 집은 자아 개념의 가장 사적인 물리적 증거입니다',
+{s:5,n:'공간 정체성 이론: 집은 자아 개념의 가장 사적인 물리적 증거입니다',
  t:'10년 후 내 집에서 [[em]]일어나길 바라는 일[[/em]]은?',
  o:[{i:'☕',l:'혼자만의 고요한 아침',d:'나만의 루틴이 있는 삶',g:{calm:3,solo:2,minimal:1}},
     {i:'🍽️',l:'사랑하는 사람들과 저녁',d:'함께하는 온기가 있는',g:{family:3,warmth:3,cozy:1}},
@@ -986,11 +1031,11 @@ const QS=[
 // ═══════════════════════════════════════════════════════
 const TYPES=[
   {id:'sanctuary_deep',
-   name:'집에 오면 [[hl]]완전히 꺼지고 싶은[[/hl]] 유형',
+   name:'집에 오면 [[hl]]조용히 긴장을 풀고 싶은[[/hl]] 유형',
    plain:'완전 차단형',
    emoji:'🌙',
    group:'sanctuary',groupName:'조용한 회복형',
-   desc:'하루 종일 시달린 감각이 집에서만큼은 완전히 쉬어야 합니다. 소음, 밝은 빛, 어수선한 물건 — 이것들이 있으면 집에 와도 쉬어지지 않는 타입이에요.',
+   desc:'하루 종일 시달린 감각이 집에서만큼은 완전히 쉬어야 합니다. 소음, 밝은 빛, 어수선한 물건, 이것들이 있으면 집에 와도 쉬어지지 않는 타입이에요.',
    keys:['어둑한 간접 조명','방음 커튼','린넨·양모 소재','히든 수납','딥 베이지·오트밀'],
    bars:{회복욕구:95,자아표현:25,감각민감도:92,공간통제:60},
    desire:'차단·고요 — 간접조명·방음·히든수납',
@@ -1006,7 +1051,7 @@ const TYPES=[
    keys:['화이트·그레이 팔레트','자연광만','완전 히든 수납','원목 포인트 하나','여백이 디자인'],
    bars:{회복욕구:85,자아표현:30,감각민감도:78,공간통제:90},
    desire:'여백·질서 — 히든수납·자연광·단일소재',
-   insight:'쌓이는 물건에 묘한 압박감을 느낀다면 — <strong>비우는 것이 취향이 아니라 생존 전략</strong>인 타입입니다.',
+   insight:'쌓이는 물건에 묘한 압박감을 느낀다면, <strong>비우는 것이 취향이 아니라 생존 전략</strong>인 타입입니다.',
    weight:{minimal:1,control:1,solo:1,calm:1}},
 
   {id:'nature_forest',
@@ -1014,7 +1059,7 @@ const TYPES=[
    plain:'초록 충전형',
    emoji:'🌿',
    group:'nature',groupName:'자연 친화형',
-   desc:'화분 하나를 들이면 그 다음, 또 그 다음 — 어느새 집이 작은 정원이 되는 타입이에요. 원목 가구, 라탄 소품, 드라이플라워가 자연스럽게 손에 들어옵니다.',
+   desc:'화분 하나를 들이면 그 다음, 또 그 다음. 어느새 집이 작은 정원이 되는 타입이에요. 원목 가구, 라탄 소품, 드라이플라워가 자연스럽게 손에 들어옵니다.',
    keys:['실내 식물 다수','원목 마루·가구','라탄·황마 소품','어스톤 팔레트','드라이플라워'],
    bars:{회복욕구:68,자아표현:70,감각민감도:60,공간통제:38},
    desire:'자연 소재 — 원목·식물·천연패브릭',
@@ -1026,11 +1071,11 @@ const TYPES=[
    plain:'핸드메이드 감성형',
    emoji:'🪴',
    group:'nature',groupName:'자연 친화형',
-   desc:'매끈하게 찍어낸 공산품보다 도예가의 손자국이 남은 그릇이 더 좋은 타입이에요. 테라코타, 황마, 약간 울퉁불퉁한 소재 — 불완전함이 오히려 살아있음처럼 느껴집니다.',
+   desc:'매끈하게 찍어낸 공산품보다 도예가의 손자국이 남은 그릇이 더 좋은 타입이에요. 테라코타, 황마, 약간 울퉁불퉁한 소재, 불완전함이 오히려 살아있음처럼 느껴집니다.',
    keys:['핸드메이드 도자기','테라코타·머드 컬러','황마·코르크 소재','어스 컬러 전체','유기적 형태 가구'],
    bars:{회복욕구:60,자아표현:78,감각민감도:55,공간통제:32},
    desire:'핸드메이드 소품 — 도자·황마·어스컬러',
-   insight:'손으로 만든 것을 좋아한다면 — 공간도 <strong>이야기가 담긴 소품들</strong>로 채워질 때 가장 나답습니다.',
+   insight:'손으로 만든 것을 좋아한다면, 공간도 <strong>이야기가 담긴 소품들</strong>로 채워질 때 가장 나답습니다.',
    weight:{natural:1,warmth:1,identity:1,cozy:1}},
 
   {id:'luxe_royal',
@@ -1038,7 +1083,7 @@ const TYPES=[
    plain:'품격 추구형',
    emoji:'✨',
    group:'luxe',groupName:'감각적 심미형',
-   desc:'소재 하나, 마감 하나에서 차이가 보이는 타입이에요. 많이 사는 것보다 좋은 것 하나 — 마블, 황동, 벨벳처럼 시간이 지나도 질리지 않는 소재를 선호합니다.',
+   desc:'소재 하나, 마감 하나에서 차이가 보이는 타입이에요. 많이 사는 것보다 좋은 것 하나. 마블, 황동, 벨벳처럼 시간이 지나도 질리지 않는 소재를 선호합니다.',
    keys:['마블·대리석 포인트','황동·골드 피팅','헤링본 마루','벨벳·실크 패브릭','갤러리 조명'],
    bars:{회복욕구:52,자아표현:88,감각민감도:75,공간통제:70},
    desire:'럭셔리 소재 — 대리석·황동·벨벳',
@@ -1054,7 +1099,7 @@ const TYPES=[
    keys:['갤러리 스포트라이트','아트 포스터·원화','블랙 스틸 프레임','대리석 소품 포인트','모노크롬 팔레트'],
    bars:{회복욕구:45,자아표현:92,감각민감도:80,공간통제:65},
    desire:'갤러리 스타일 — 스포트조명·아트오브제',
-   insight:'아름다운 것을 보는 순간 기분이 달라지는 타입 — <strong>매일 아침 갤러리에서 하루를 시작</strong>할 수 있습니다.',
+   insight:'아름다운 것을 보는 순간 기분이 달라지는 타입이에요. <strong>매일 아침 갤러리에서 하루를 시작</strong>할 수 있습니다.',
    weight:{luxe:1,artistic:1,esteem:1,identity:1}},
 
   {id:'artistic_wild',
@@ -1062,11 +1107,11 @@ const TYPES=[
    plain:'개성 폭발형',
    emoji:'🎨',
    group:'artistic',groupName:'나만의 스타일형',
-   desc:'트렌드보다 취향, 정답보다 이야기가 중요한 타입이에요. 빈티지 소파 옆에 현대 미술 포스터, 모로칸 러그 위에 북유럽 조명 — 남들이 이해 못해도 내 공간이 제일 좋습니다.',
+   desc:'트렌드보다 취향, 정답보다 이야기가 중요한 타입이에요. 빈티지 소파 옆에 현대 미술 포스터, 모로칸 러그 위에 북유럽 조명. 남들이 이해 못해도 내 공간이 제일 좋습니다.',
    keys:['갤러리 월 가득','빈티지+현대 소품 믹스','강렬한 포인트 컬러','핸드메이드 아트워크','패턴 레이어링'],
    bars:{회복욕구:35,자아표현:98,감각민감도:85,공간통제:22},
-   desire:'믹스앤매치 — 빈티지·갤러리월·패턴',
-   insight:'"취향이 독특하다"는 말이 칭찬으로 들리는 타입 — <strong>세상에 단 하나뿐인 공간</strong>을 만들 수 있습니다.',
+   desire:'믹스앤매치 : 빈티지·갤러리월·패턴',
+   insight:'"취향이 독특하다"는 말이 칭찬으로 들리는 타입이에요. <strong>세상에 단 하나뿐인 공간</strong>을 만들 수 있습니다.',
    weight:{artistic:1,identity:1,flow:1}},
 
   {id:'artistic_indie',
@@ -1074,11 +1119,11 @@ const TYPES=[
    plain:'빈티지 스토리형',
    emoji:'🕰️',
    group:'artistic',groupName:'나만의 스타일형',
-   desc:'새것보다 시간의 흔적이 담긴 것이 더 좋은 타입이에요. 벼룩시장의 설렘, 낡은 물건이 품은 이야기 — 공간에 내가 살아온 레이어가 쌓여야 진짜 내 집 같습니다.',
+   desc:'새것보다 시간의 흔적이 담긴 것이 더 좋은 타입이에요. 벼룩시장의 설렘, 낡은 물건이 품은 이야기. 공간에 내가 살아온 레이어가 쌓여야 진짜 내 집 같습니다.',
    keys:['빈티지 오리지널 소품','패티나 소재 가구','DIY·업사이클 아이템','개인 컬렉션 디스플레이','비정형 레이아웃'],
    bars:{회복욕구:42,자아표현:90,감각민감도:78,공간통제:20},
    desire:'스토리 소품 — 빈티지 오브제·컬렉션',
-   insight:'집이 일기장 같은 역할을 해줬으면 하는 타입 — <strong>살아갈수록 레이어가 쌓이는 공간</strong>이 어울립니다.',
+   insight:'집이 일기장 같은 역할을 해줬으면 하는 타입이에요. <strong>살아갈수록 레이어가 쌓이는 공간</strong>이 어울립니다.',
    weight:{artistic:1,identity:1,cozy:1,flow:1}},
 
   {id:'minimal_pure',
@@ -1086,11 +1131,11 @@ const TYPES=[
    plain:'극도 미니멀형',
    emoji:'◻️',
    group:'minimal',groupName:'깔끔 정돈형',
-   desc:'어지러운 공간에 있으면 이유 없이 지치고, 정리를 마치면 마음이 가벼워지는 타입이에요. 아무것도 없는 카운터, 텅 빈 선반 — 그 여백이 오히려 풍요로움으로 느껴집니다.',
+   desc:'어지러운 공간에 있으면 이유 없이 지치고, 정리를 마치면 마음이 가벼워지는 타입이에요. 아무것도 없는 카운터, 텅 빈 선반. 그 여백이 오히려 풍요로움으로 느껴집니다.',
    keys:['화이트 온 화이트','완전 히든 수납','최소한의 가구','군더더기 없는 라인','무오브제 원칙'],
    bars:{회복욕구:78,자아표현:28,감각민감도:82,공간통제:92},
-   desire:'미니멀 — 히든수납·흰벽·최소 가구',
-   insight:'시야에 들어오는 것이 줄어들수록 집중이 잘 되는 타입 — <strong>비움이 곧 에너지 충전</strong>입니다.',
+   desire:'미니멀 : 히든수납·흰벽·최소 가구',
+   insight:'시야에 들어오는 것이 줄어들수록 집중이 잘 되는 타입이에요. <strong>비움이 곧 에너지 충전</strong>입니다.',
    weight:{minimal:1,control:1,solo:1,calm:1}},
 
   {id:'minimal_grid',
@@ -1098,11 +1143,11 @@ const TYPES=[
    plain:'구조·정렬 추구형',
    emoji:'⬛',
    group:'minimal',groupName:'깔끔 정돈형',
-   desc:'가구가 그리드에서 살짝 어긋나 있으면 신경 쓰이고, 수납이 기능적이면서 동시에 예쁘기를 원하는 타입이에요. 블랙 스틸, 모듈 수납 — 설계된 공간에서 가장 능률이 오릅니다.',
+   desc:'가구가 그리드에서 살짝 어긋나 있으면 신경 쓰이고, 수납이 기능적이면서 동시에 예쁘기를 원하는 타입이에요. 블랙 스틸, 모듈 수납. 설계된 공간에서 가장 능률이 오릅니다.',
    keys:['블랙 스틸 프레임','모듈 수납 시스템','폴리싱 콘크리트','그리드 배치 가구','산업적 소품'],
    bars:{회복욕구:70,자아표현:55,감각민감도:65,공간통제:95},
-   desire:'인더스트리얼 — 블랙스틸·콘크리트·모듈',
-   insight:'공간이 시스템처럼 돌아갈 때 삶도 효율적으로 돌아가는 타입 — <strong>설계된 공간이 곧 삶의 태도</strong>입니다.',
+   desire:'인더스트리얼 : 블랙스틸·콘크리트·모듈',
+   insight:'공간이 시스템처럼 돌아갈 때 삶도 효율적으로 돌아가는 타입이에요. <strong>설계된 공간이 곧 삶의 태도</strong>입니다.',
    weight:{minimal:1,control:1,energy:1}},
 
   {id:'cozy_hearth',
@@ -1110,7 +1155,7 @@ const TYPES=[
    plain:'포근함 최우선형',
    emoji:'🛋️',
    group:'cozy',groupName:'따뜻한 안정형',
-   desc:'부클레 소파, 두꺼운 러그, 흔들리는 캔들 — 이것들이 있어야 진짜 쉬어지는 타입이에요. 차갑고 딱딱한 공간에 오래 있으면 왠지 피로가 안 풀리는 경험, 공감되시죠?',
+   desc:'부클레 소파, 두꺼운 러그, 흔들리는 캔들, 이것들이 있어야 진짜 쉬어지는 타입이에요. 차갑고 딱딱한 공간에 오래 있으면 왠지 피로가 안 풀리는 경험, 공감되시죠?',
    keys:['부클레·양털 소파','두꺼운 셰기 러그','앰버 간접 조명','캔들·아로마 소품','패브릭 레이어링'],
    bars:{회복욕구:90,자아표현:40,감각민감도:45,공간통제:32},
    desire:'코지 소품 — 부클레·러그·캔들·패브릭',
@@ -1126,7 +1171,7 @@ const TYPES=[
    keys:['대형 다이닝 테이블','오픈 키친 구조','패밀리 소파 배치','홈 카페 코너','추억 디스플레이 월'],
    bars:{회복욕구:72,자아표현:52,감각민감도:40,공간통제:38},
    desire:'패밀리 공간 — 대형다이닝·오픈키친',
-   insight:'집에서 쌓이는 기억과 대화가 가장 좋은 인테리어 — <strong>공간이 관계를 만들어주는 그릇</strong>이어야 합니다.',
+   insight:'집에서 쌓이는 기억과 대화가 가장 좋은 인테리어. <strong>공간이 관계를 만들어주는 그릇</strong>이어야 합니다.',
    weight:{cozy:1,family:1,warmth:1,social:1}},
 ];
 
@@ -1206,7 +1251,7 @@ const BEHAVIOR_PROFILES={
 
   artistic_wild:`"취향 독특하다"는 말이 칭찬으로 들리죠?
 
-트렌드보다 내 기분, 유행보다 내 이야기가 중요한 타입이에요. 빈티지 소파 옆에 현대 미술 포스터, 모로칸 러그 위에 북유럽 조명 — 남들이 이해 못해도 당신 공간이 제일 좋아요. 오히려 그 이해 못함이 제대로 가고 있다는 신호예요.
+트렌드보다 내 기분, 유행보다 내 이야기가 중요한 타입이에요. 빈티지 소파 옆에 현대 미술 포스터, 모로칸 러그 위에 북유럽 조명. 남들이 이해 못해도 당신 공간이 제일 좋아요. 오히려 그 이해 못함이 제대로 가고 있다는 신호예요.
 
 새 빈티지 아이템을 발견했을 때의 설렘, 예상치 못한 조합이 우연히 잘 맞았을 때의 희열 — 이게 당신이 공간에서 얻는 가장 큰 즐거움이에요. 공간에 정답을 따르는 것보다 나만의 서사를 만드는 것이 훨씬 중요하거든요.
 
@@ -1270,7 +1315,7 @@ const BEHAVIOR_PROFILES={
 const SPACE_IMAGES={
   sanctuary_deep:{
     title:'감각이 차단된 [[em]]공간들[[/em]]',
-    sub:'방음, 간접 조명, 딥 베이지 — 완전한 회복을 위한 인테리어',
+    sub:'방음, 간접 조명, 딥 베이지 : 완전한 회복을 위한 인테리어',
     rooms:[
       {name:'거실',kw:'린넨 · 간접조명 · 여백',url:'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80&auto=format&fit=crop'},
       {name:'휴게공간',kw:'독서 코너 · 방음 · 고요',url:'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&q=80&auto=format&fit=crop'},
@@ -1278,7 +1323,7 @@ const SPACE_IMAGES={
     ]},
   sanctuary_zen:{
     title:'여백이 말하는 [[em]]공간들[[/em]]',
-    sub:'화이트, 자연광, 선(禪) 미학 — 명상적 미니멀 인테리어',
+    sub:'화이트, 자연광, 선(禪) 미학 · 명상적 미니멀 인테리어',
     rooms:[
       {name:'거실',kw:'화이트 · 우드 포인트 · 선 미학',url:'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800&q=80&auto=format&fit=crop'},
       {name:'휴게공간',kw:'명상 · 스카이라이트 · 여백',url:'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80&auto=format&fit=crop'},
@@ -1286,7 +1331,7 @@ const SPACE_IMAGES={
     ]},
   nature_forest:{
     title:'자연이 스민 [[em]]공간들[[/em]]',
-    sub:'원목, 식물, 어스톤 — 신경계가 숨을 쉬는 바이오필릭 인테리어',
+    sub:'원목, 식물, 어스톤 : 신경계가 숨을 쉬는 바이오필릭 인테리어',
     rooms:[
       {name:'거실',kw:'원목 · 라탄 · 식물',url:'https://images.unsplash.com/photo-1600210492493-0946911123ea?w=800&q=80&auto=format&fit=crop'},
       {name:'휴게공간',kw:'선룸 · 그린 · 자연광',url:'https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=800&q=80&auto=format&fit=crop'},
@@ -1294,7 +1339,7 @@ const SPACE_IMAGES={
     ]},
   nature_earth:{
     title:'대지의 온기가 담긴 [[em]]공간들[[/em]]',
-    sub:'테라코타, 핸드메이드, 유기적 형태 — 손이 만든 공간의 따뜻함',
+    sub:'테라코타, 핸드메이드, 유기적 형태 : 손이 만든 공간의 따뜻함',
     rooms:[
       {name:'거실',kw:'테라코타 · 도자 · 어스 컬러',url:'https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?w=800&q=80&auto=format&fit=crop'},
       {name:'휴게공간',kw:'황마 · 핸드메이드 · 온기',url:'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&q=80&auto=format&fit=crop'},
@@ -1302,7 +1347,7 @@ const SPACE_IMAGES={
     ]},
   luxe_royal:{
     title:'품격이 머무는 [[em]]공간들[[/em]]',
-    sub:'마블, 황동, 헤링본 — 시대를 초월하는 럭셔리 인테리어',
+    sub:'마블, 황동, 헤링본 : 시대를 초월하는 럭셔리 인테리어',
     rooms:[
       {name:'거실',kw:'벨벳 · 마블 · 황동',url:'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800&q=80&auto=format&fit=crop'},
       {name:'휴게공간',kw:'가죽 · 서재 · 앤틱',url:'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=800&q=80&auto=format&fit=crop'},
@@ -1310,7 +1355,7 @@ const SPACE_IMAGES={
     ]},
   luxe_gallery:{
     title:'갤러리처럼 큐레이션된 [[em]]공간들[[/em]]',
-    sub:'아트, 스포트라이트, 모노크롬 — 삶이 곧 큐레이션',
+    sub:'아트, 스포트라이트, 모노크롬 : 삶이 곧 큐레이션',
     rooms:[
       {name:'거실',kw:'갤러리 조명 · 아트 · 모노크롬',url:'https://images.unsplash.com/photo-1600210492493-0946911123ea?w=800&q=80&auto=format&fit=crop'},
       {name:'휴게공간',kw:'스포트라이트 · 오브제 · 블랙',url:'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800&q=80&auto=format&fit=crop'},
@@ -1318,7 +1363,7 @@ const SPACE_IMAGES={
     ]},
   artistic_wild:{
     title:'나만의 언어로 쓰인 [[em]]공간들[[/em]]',
-    sub:'갤러리 월, 빈티지, 믹스 앤 매치 — 당신만의 세계관',
+    sub:'갤러리 월, 빈티지, 믹스 앤 매치 : 당신만의 세계관',
     rooms:[
       {name:'거실',kw:'갤러리월 · 빈티지 · 패턴',url:'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=800&q=80&auto=format&fit=crop'},
       {name:'휴게공간',kw:'스튜디오 · 오브제 · 창의',url:'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&q=80&auto=format&fit=crop'},
@@ -1326,7 +1371,7 @@ const SPACE_IMAGES={
     ]},
   artistic_indie:{
     title:'시간이 쌓인 [[em]]공간들[[/em]]',
-    sub:'빈티지, 패티나, 스토리 — 살아온 이야기가 켜켜이 쌓이는 공간',
+    sub:'빈티지, 패티나, 스토리 : 살아온 이야기가 켜켜이 쌓이는 공간',
     rooms:[
       {name:'거실',kw:'빈티지 믹스 · 스토리 · 패티나',url:'https://images.unsplash.com/photo-1600210492493-0946911123ea?w=800&q=80&auto=format&fit=crop'},
       {name:'휴게공간',kw:'컬렉션 · 책 · 레이어링',url:'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=800&q=80&auto=format&fit=crop'},
@@ -1334,7 +1379,7 @@ const SPACE_IMAGES={
     ]},
   minimal_pure:{
     title:'비움이 완성하는 [[em]]공간들[[/em]]',
-    sub:'화이트, 콘크리트, 히든 수납 — 인지 최적화 인테리어',
+    sub:'화이트, 콘크리트, 히든 수납 : 인지 최적화 인테리어',
     rooms:[
       {name:'거실',kw:'콘크리트 · 블랙 스틸 · 여백',url:'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80&auto=format&fit=crop'},
       {name:'휴게공간',kw:'화이트 · 스카이라이트 · 정적',url:'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800&q=80&auto=format&fit=crop'},
@@ -1342,7 +1387,7 @@ const SPACE_IMAGES={
     ]},
   minimal_grid:{
     title:'구조가 아름다운 [[em]]공간들[[/em]]',
-    sub:'직선, 비례, 산업적 미학 — 기하학이 공간을 완성',
+    sub:'직선, 비례, 산업적 미학 · 기하학이 공간을 완성',
     rooms:[
       {name:'거실',kw:'그리드 · 블랙 스틸 · 비례',url:'https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?w=800&q=80&auto=format&fit=crop'},
       {name:'휴게공간',kw:'모듈 수납 · 직선 · 산업적',url:'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&q=80&auto=format&fit=crop'},
@@ -1350,7 +1395,7 @@ const SPACE_IMAGES={
     ]},
   cozy_hearth:{
     title:'온기가 머무는 [[em]]공간들[[/em]]',
-    sub:'부클레, 간접 조명, 카펫 — 코르티솔이 내려가는 인테리어',
+    sub:'부클레, 간접 조명, 카펫 : 코르티솔이 내려가는 인테리어',
     rooms:[
       {name:'거실',kw:'부클레 · 벽난로 · 레이어링',url:'https://images.unsplash.com/photo-1600210492493-0946911123ea?w=800&q=80&auto=format&fit=crop'},
       {name:'휴게공간',kw:'창가 쿠션 · 담요 · 촛불',url:'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=800&q=80&auto=format&fit=crop'},
@@ -1358,7 +1403,7 @@ const SPACE_IMAGES={
     ]},
   cozy_family:{
     title:'함께가 완성하는 [[em]]공간들[[/em]]',
-    sub:'다이닝, 패밀리 키친, 소파 — 관계의 질을 높이는 공간',
+    sub:'다이닝, 패밀리 키친, 소파 : 관계의 질을 높이는 공간',
     rooms:[
       {name:'거실',kw:'패밀리 소파 · 다이닝 · 함께',url:'https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=800&q=80&auto=format&fit=crop'},
       {name:'휴게공간',kw:'홈 카페 · 온기 · 대화',url:'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&q=80&auto=format&fit=crop'},
@@ -1406,6 +1451,22 @@ function dec(s){
     .split('[[/strong]]').join('</strong>')
     .split('[[hl]]').join('<span class="hl">').split('[[em]]').join('<span class="hl">')
     .split('[[/hl]]').join('</span>').split('[[/em]]').join('</span>');
+}
+
+// 유형명을 2줄로 분리 — "수식어 [[hl]]강조어[[/hl]] 유형" → {prefix, emphasis, suffix}
+// 가독성 위해 위쪽엔 수식어(작게), 아래쪽엔 강조어+"유형"(크게+강조색)을 배치
+function splitTypeName(name){
+  if(!name) return {prefix:'', emphasis:'', suffix:'유형'};
+  const m = name.match(/^(.*?)\s*\[\[hl\]\](.+?)\[\[\/hl\]\]\s*(.*)$/);
+  if(m){
+    return {
+      prefix: (m[1] || '').trim(),
+      emphasis: (m[2] || '').trim(),
+      suffix: (m[3] || '유형').trim()
+    };
+  }
+  // [[hl]] 패턴이 없으면 전체를 emphasis로 (폴백)
+  return {prefix:'', emphasis:name.replace(/\[\[\/?hl\]\]/g,'').trim(), suffix:''};
 }
 function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
 function toast(msg,dur=2800){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),dur)}
@@ -1621,7 +1682,18 @@ function renderResult(t, sub, unlocked){
     <!-- 유형명 + 키워드 + 캐릭터 -->
     <div class="rh">
       <p class="rtag">✦ 스코포스 공간 욕구 유형 검사 (SDTI) 결과</p>
-      <h2 class="rtype">${dec(subName)}</h2>
+      ${(()=>{
+        const parts = splitTypeName(subName);
+        if(parts.prefix){
+          return `
+            <h2 class="rtype rtype-2lines">
+              <span class="rtype-prefix">${parts.prefix}</span>
+              <span class="rtype-main"><span class="hl">${parts.emphasis}</span>${parts.suffix ? ` ${parts.suffix}` : ''}</span>
+            </h2>
+          `;
+        }
+        return `<h2 class="rtype">${dec(subName)}</h2>`;
+      })()}
       <p style="font-size:.72rem;letter-spacing:.05em;color:var(--gray);font-weight:700;margin-bottom:10px;text-transform:uppercase">${dec(t.plain)}</p>
       <p class="rdesc">${dec(t.desc)}</p>
       <div class="rkws">${t.keys.map(k=>`<span class="kw">${k}</span>`).join('')}</div>
@@ -1730,7 +1802,7 @@ function shareKakao(){
       Kakao.Share.sendDefault({
         objectType: 'feed',
         content: {
-          title: '[SKOPOS] ' + plain + ' — SDTI 기초 검사 결과',
+          title: '[SKOPOS] ' + plain + ' · SDTI 기초 검사 결과',
           description: desc + '\n추천 소품: ' + keys,
           imageUrl: 'https://skopos.kr/og-image.jpg',
           link: {
