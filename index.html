@@ -10,7 +10,7 @@
 <title>SKOPOS 스코포스 | 스코포스 공간 욕구 유형 검사 (SDTI)</title>
 <meta name="description" content="스코포스 공간 욕구 유형 검사(SDTI) — 144문항 공간 욕구 심리 측정 도구. 나의 공간 욕구 유형을 알면 소품·가구·조명 선택이 달라집니다.">
 <meta name="keywords" content="공간심리검사,인테리어심리,SDTI,공간욕구유형검사,스코포스,공간취향,인테리어진단">
-<meta name="og:description" content="공간심리학 기반 취향 욕구 진단 플랫폼 스코포스. 나에게 맞는 가구·소품·조명·소재를 22문항 무료 진단으로 확인하세요. 24가지 정밀 유형, 8개 영역 분석.">
+<meta name="og:description" content="공간심리학 기반 취향 욕구 진단 플랫폼 스코포스. 나에게 맞는 가구·소품·조명·소재를 12가지 유형 정밀 진단으로 확인하세요. 12가지 정밀 유형, 8개 영역 분석.">
 <meta name="keywords" content="공간심리학, 인테리어 취향 테스트, 공간 욕구 진단, 소품 취향, 인테리어 심리검사, 가구 취향, 조명 추천, 소재 추천, 스코포스, SKOPOS, 취향저격, 공간 심리 유형, 셀프 인테리어">
 <meta name="author" content="SKOPOS 스코포스">
 <meta name="robots" content="index, follow">
@@ -22,7 +22,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="SKOPOS 스코포스">
 <meta property="og:title" content="SKOPOS | 스코포스 공간 욕구 유형 검사 (SDTI)">
-<meta property="og:description" content="나에게 맞는 가구·소품·조명·소재가 따로 있습니다. 공간심리학 기반 22문항 무료 진단으로 당신의 공간 욕구 유형을 확인하세요.">
+<meta property="og:description" content="나에게 맞는 가구·소품·조명·소재가 따로 있습니다. 공간심리학 기반 12가지 유형 정밀 진단으로 당신의 공간 욕구 유형을 확인하세요.">
 <meta property="og:image" content="https://skopos.kr/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -34,7 +34,7 @@
 ══════════════════════════════════════════ -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="SKOPOS | 스코포스 공간 욕구 유형 검사 (SDTI)">
-<meta name="twitter:description" content="나에게 맞는 가구·소품·조명이 따로 있습니다. 22문항 무료 진단으로 내 공간 욕구 유형을 확인하세요.">
+<meta name="twitter:description" content="나에게 맞는 가구·소품·조명이 따로 있습니다. 12가지 유형 정밀 진단으로 내 공간 욕구 유형을 확인하세요.">
 <meta name="twitter:image" content="https://skopos.kr/og-image.jpg">
 
 <!-- ══════════════════════════════════════════
@@ -58,14 +58,14 @@
       "name": "기본 진단 (무료)",
       "price": "0",
       "priceCurrency": "KRW",
-      "description": "22문항, 12가지 공간 욕구 유형 진단, 행동패턴 분석, 가구·소품 레퍼런스 이미지"
+      "description": "12가지 유형 무료, 12가지 공간 욕구 유형 진단, 행동패턴 분석, 가구·소품 레퍼런스 이미지"
     },
     {
       "@type": "Offer",
       "name": "정밀 진단 (프리미엄)",
       "price": "9900",
       "priceCurrency": "KRW",
-      "description": "144문항, 24가지 정밀 유형, 8개 영역 레이더 차트, 거실·침실·주방 소품·조명·소재 처방, PDF 리포트"
+      "description": "144문항, 12가지 정밀 유형, 8개 영역 레이더 차트, 거실·침실·주방 소품·조명·소재 처방, PDF 리포트"
     }
   ],
   "publisher": {
@@ -123,21 +123,54 @@
 </script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Cormorant+Garamond:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Cormorant+Garamond:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
-  --pink:#E91E8C;--pink-lt:#fce4f3;
-  --orange:#FF9800;--orange-lt:#fff3e0;
-  --green:#7CB342;--blue:#29B6F6;
-  --dark:#0F0F1A;--mid:#3D3D5C;--gray:#8890A4;
-  --bg:#F7F8FC;--white:#FFFFFF;
-  --radius:18px;--radius-sm:10px;
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     🎨 로고 컬러 시스템 (SKOPOS 4분할 원형 로고 기반)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  /* 메인 컬러 (로고 직접 추출) */
+  --pink:#DC1478;        /* 마젠타 — 메인 액션 */
+  --pink-lt:#FCE4F0;     /* 마젠타 라이트 */
+  --pink-soft:#FF6B9D;   /* 마젠타 소프트 */
+  --orange:#F0A014;      /* 오렌지 — 액센트 */
+  --orange-lt:#FFF3DC;
+  --green:#8CB450;       /* 그린 — 액센트 */
+  --green-lt:#EEF5DD;
+  --blue:#008CDC;        /* 블루 — 표적 중앙 */
+  --blue-lt:#D7EEFA;
+
+  /* 보조 컬러 (확장 팔레트) */
+  --purple:#7E57C2;
+  --teal:#26A69A;
+  --indigo:#5C6BC0;
+  --coral:#FF7043;
+
+  /* 그레이스케일 */
+  --dark:#0F0F1A;        /* SKO 텍스트 */
+  --mid:#3D3D5C;
+  --gray:#8890A4;
+  --line:rgba(15,15,26,.08);
+  --bg:#F7F8FC;
+  --cream:#FDF8F3;
+  --white:#FFFFFF;
+
+  /* 그라데이션 (로고 4색 → 가로 흐름) */
+  --skopos-gradient:linear-gradient(135deg, #DC1478 0%, #F0A014 33%, #8CB450 66%, #008CDC 100%);
+  --pink-gradient:linear-gradient(135deg, #DC1478, #FF6B9D);
+
+  /* 디자인 토큰 */
+  --radius:18px;
+  --radius-sm:10px;
+  --radius-lg:24px;
   --sh:0 4px 24px rgba(15,15,26,.07);
   --sh-lg:0 12px 48px rgba(15,15,26,.12);
+  --sh-pink:0 8px 28px rgba(220,20,120,.22);
+  --ez:cubic-bezier(.22,1,.36,1);
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dark);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body{font-family:'Nunito','Noto Sans KR',sans-serif;background:var(--bg);color:var(--dark);overflow-x:hidden;-webkit-font-smoothing:antialiased}
 
 /* ── NAV ── */
 nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 24px;transition:background .3s}
@@ -150,8 +183,8 @@ nav.scrolled{background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border-
 .nav-right{display:flex;align-items:center;gap:8px}
 .nav-ghost{padding:9px 20px;border-radius:50px;font-family:'Nunito',sans-serif;font-size:.83rem;font-weight:700;text-decoration:none;color:var(--mid);border:1.5px solid rgba(0,0,0,.1);transition:all .2s}
 .nav-ghost:hover{border-color:var(--pink);color:var(--pink)}
-.nav-pill{display:flex;flex-direction:column;align-items:center;padding:7px 18px;border-radius:12px;font-family:'Nunito',sans-serif;text-decoration:none;background:linear-gradient(135deg,var(--pink) 0%,#FF6B9D 100%);color:#fff;box-shadow:0 3px 12px rgba(233,30,140,.28);transition:all .22s;gap:0;line-height:1}
-.nav-pill:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(233,30,140,.38)}
+.nav-pill{display:flex;flex-direction:column;align-items:center;padding:7px 18px;border-radius:12px;font-family:'Nunito',sans-serif;text-decoration:none;background:linear-gradient(135deg,var(--pink) 0%,#FF6B9D 100%);color:#fff;box-shadow:0 3px 12px rgba(220,20,120,.28);transition:all .22s;gap:0;line-height:1}
+.nav-pill:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(220,20,120,.38)}
 .nav-pill-label{font-size:.72rem;font-weight:800;letter-spacing:-.01em;opacity:.92}
 .nav-pill-price{font-size:.82rem;font-weight:900;letter-spacing:-.02em;margin-top:2px}
 
@@ -171,8 +204,8 @@ nav.scrolled{background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border-
 
 .cta-group{display:flex;flex-direction:column;gap:12px;max-width:340px}
 .btn-hero{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:17px 36px;border-radius:50px;font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;text-decoration:none;cursor:pointer;border:none;transition:all .25s}
-.btn-hero.primary{background:linear-gradient(135deg,var(--pink),#FF6B9D);color:#fff;box-shadow:0 6px 24px rgba(233,30,140,.35)}
-.btn-hero.primary:hover{transform:translateY(-2px);box-shadow:0 10px 36px rgba(233,30,140,.45)}
+.btn-hero.primary{background:linear-gradient(135deg,var(--pink),#FF6B9D);color:#fff;box-shadow:0 6px 24px rgba(220,20,120,.35)}
+.btn-hero.primary:hover{transform:translateY(-2px);box-shadow:0 10px 36px rgba(220,20,120,.45)}
 .btn-hero.secondary{background:var(--white);color:var(--dark);border:1.5px solid rgba(0,0,0,.1)}
 .btn-hero.secondary:hover{border-color:var(--orange);color:var(--orange);transform:translateY(-1px)}
 .btn-arrow{transition:transform .2s}
@@ -188,11 +221,11 @@ nav.scrolled{background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border-
 .hero-visual{display:flex;align-items:center;justify-content:center;position:relative}
 .vis-ring-wrap{position:relative;width:380px;height:380px;display:flex;align-items:center;justify-content:center}
 .vis-ring{position:absolute;border-radius:50%;border:1.5px dashed}
-.vis-ring.r1{inset:-16px;border-color:rgba(233,30,140,.18);animation:rot 14s linear infinite}
-.vis-ring.r2{inset:-44px;border-color:rgba(255,152,0,.15);animation:rot 22s linear infinite reverse}
-.vis-ring.r3{inset:-76px;border-color:rgba(123,195,74,.12);animation:rot 34s linear infinite}
+.vis-ring.r1{inset:-16px;border-color:rgba(220,20,120,.18);animation:rot 14s linear infinite}
+.vis-ring.r2{inset:-44px;border-color:rgba(240,160,20,.15);animation:rot 22s linear infinite reverse}
+.vis-ring.r3{inset:-76px;border-color:rgba(140,180,80,.12);animation:rot 34s linear infinite}
 @keyframes rot{to{transform:rotate(360deg)}}
-.vis-logo{width:260px;height:260px;object-fit:contain;position:relative;z-index:2;animation:bob 5s ease-in-out infinite;filter:drop-shadow(0 8px 32px rgba(233,30,140,.2))}
+.vis-logo{width:260px;height:260px;object-fit:contain;position:relative;z-index:2;animation:bob 5s ease-in-out infinite;filter:drop-shadow(0 8px 32px rgba(220,20,120,.2))}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
 .vis-chip{position:absolute;background:var(--white);border-radius:12px;padding:8px 14px;box-shadow:var(--sh);font-size:.78rem;font-weight:700;display:flex;align-items:center;gap:6px;white-space:nowrap;z-index:3}
 .vis-chip.c1{top:24px;right:-8px;color:var(--pink);animation:chipbob 4s ease-in-out infinite}
@@ -232,7 +265,7 @@ nav.scrolled{background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border-
 .tier.premium::after{content:'';position:absolute;bottom:-50px;left:-50px;width:180px;height:180px;border-radius:50%;background:var(--orange);opacity:.08}
 .tier-tag{display:inline-block;font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:4px 12px;border-radius:50px;margin-bottom:14px}
 .tier.free .tier-tag{background:var(--pink-lt);color:var(--pink)}
-.tier.premium .tier-tag{background:rgba(255,152,0,.2);color:var(--orange)}
+.tier.premium .tier-tag{background:rgba(240,160,20,.2);color:var(--orange)}
 .tier-name{font-size:1.5rem;font-weight:900;color:var(--dark);margin-bottom:6px}
 .tier.premium .tier-name{color:#fff}
 .tier-price{font-size:2.6rem;font-weight:900;color:var(--dark);line-height:1}
@@ -246,24 +279,241 @@ nav.scrolled{background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border-
 .tier-feat{display:flex;align-items:flex-start;gap:10px;font-size:.88rem}
 .tier-feat-ic{width:22px;height:22px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;margin-top:1px}
 .tier.free .tier-feat-ic{background:var(--pink-lt);color:var(--pink)}
-.tier.premium .tier-feat-ic{background:rgba(255,152,0,.2);color:var(--orange)}
+.tier.premium .tier-feat-ic{background:rgba(240,160,20,.2);color:var(--orange)}
 .tier.free .tier-feat{color:var(--gray)}
 .tier.premium .tier-feat{color:rgba(255,255,255,.78)}
 .tier-btn{display:block;text-align:center;padding:15px;border-radius:50px;font-family:'Nunito',sans-serif;font-size:.93rem;font-weight:800;text-decoration:none;transition:all .25s;position:relative;z-index:1}
-.tier.free .tier-btn{background:linear-gradient(135deg,var(--pink),#FF6B9D);color:#fff;box-shadow:0 6px 20px rgba(233,30,140,.3)}
-.tier.free .tier-btn:hover{box-shadow:0 10px 32px rgba(233,30,140,.45);transform:translateY(-2px)}
-.tier.premium .tier-btn{background:linear-gradient(135deg,var(--orange),#FFB74D);color:var(--dark);box-shadow:0 6px 20px rgba(255,152,0,.35)}
-.tier.premium .tier-btn:hover{box-shadow:0 10px 32px rgba(255,152,0,.5);transform:translateY(-2px)}
+.tier.free .tier-btn{background:linear-gradient(135deg,var(--pink),#FF6B9D);color:#fff;box-shadow:0 6px 20px rgba(220,20,120,.3)}
+.tier.free .tier-btn:hover{box-shadow:0 10px 32px rgba(220,20,120,.45);transform:translateY(-2px)}
+.tier.premium .tier-btn{background:linear-gradient(135deg,var(--orange),#FFB74D);color:var(--dark);box-shadow:0 6px 20px rgba(240,160,20,.35)}
+.tier.premium .tier-btn:hover{box-shadow:0 10px 32px rgba(240,160,20,.5);transform:translateY(-2px)}
 .popular{position:absolute;top:20px;right:20px;background:var(--orange);color:var(--dark);font-size:.68rem;font-weight:800;padding:4px 12px;border-radius:50px;z-index:1}
 
 /* ── TYPES ── */
 .type-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-.type-card{background:var(--white);border-radius:16px;padding:24px 18px;text-decoration:none;color:var(--dark);transition:all .22s;border:1.5px solid transparent;box-shadow:0 2px 12px rgba(0,0,0,.05)}
+.type-card{background:var(--white);border-radius:16px;padding:24px 18px;text-decoration:none;color:var(--dark);transition:all .25s var(--ez);border:1.5px solid transparent;box-shadow:0 2px 12px rgba(0,0,0,.05);position:relative;overflow:hidden}
+.type-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--tc,var(--pink));opacity:0;transition:opacity .25s var(--ez)}
 .type-card:hover{transform:translateY(-4px);box-shadow:var(--sh-lg);border-color:var(--tc,var(--pink))}
-.type-emoji{font-size:1.9rem;margin-bottom:10px}
-.type-name{font-size:.92rem;font-weight:800;margin-bottom:5px}
-.type-desc{font-size:.77rem;color:var(--gray);line-height:1.5}
-.type-tag{display:inline-block;font-size:.67rem;font-weight:700;padding:2px 9px;border-radius:20px;margin-top:10px;background:var(--tc-bg,var(--pink-lt));color:var(--tc,var(--pink))}
+.type-card:hover::before{opacity:1}
+.type-emoji{font-size:1.9rem;margin-bottom:10px;line-height:1}
+.type-name{font-size:.92rem;font-weight:800;margin-bottom:5px;letter-spacing:-.01em}
+.type-desc{font-size:.77rem;color:var(--gray);line-height:1.5;min-height:2.3em}
+.type-tag{display:inline-block;font-size:.67rem;font-weight:700;padding:3px 10px;border-radius:20px;margin-top:10px;background:var(--tc-bg,var(--pink-lt));color:var(--tc,var(--pink));letter-spacing:-.005em}
+
+/* ── 12가지 유형 그룹 범례 ── */
+.type-group-legend{
+  display:flex;flex-wrap:wrap;justify-content:center;
+  gap:8px 14px;margin:8px 0 28px;
+  padding:14px 20px;
+  background:linear-gradient(135deg,rgba(220,20,120,.04),rgba(0,140,220,.04));
+  border-radius:14px;border:1px solid var(--line);
+}
+.tg-item{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:.76rem;font-weight:700;color:var(--mid);
+  letter-spacing:-.005em;
+}
+.tg-dot{
+  width:9px;height:9px;border-radius:50%;
+  background:var(--gc);
+  box-shadow:0 0 0 2px rgba(255,255,255,.8), 0 2px 6px rgba(0,0,0,.08);
+}
+
+/* ── 카드 아래 CTA ── */
+.type-grid-cta{
+  margin-top:32px;text-align:center;
+}
+.btn-type-cta{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:16px 32px;
+  background:var(--pink-gradient);
+  color:#fff;text-decoration:none;
+  font-size:1rem;font-weight:800;letter-spacing:-.005em;
+  border-radius:50px;
+  box-shadow:var(--sh-pink);
+  transition:all .25s var(--ez);
+}
+.btn-type-cta:hover{
+  transform:translateY(-2px);
+  box-shadow:0 12px 36px rgba(220,20,120,.32);
+}
+.btn-type-cta .btn-arrow{
+  display:inline-block;transition:transform .25s var(--ez);
+}
+.btn-type-cta:hover .btn-arrow{transform:translateX(4px)}
+.type-grid-note{
+  font-size:.78rem;color:var(--gray);
+  margin-top:14px;line-height:1.6;font-weight:600;
+}
+
+/* ═══════════════════════════════════════════════
+   정밀 검사 결과물 미리보기 섹션
+   ═══════════════════════════════════════════════ */
+.deliverables-grid{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:18px;
+  margin-bottom:40px;
+}
+.deliv-card{
+  position:relative;
+  background:var(--white);
+  border:1.5px solid var(--line);
+  border-radius:18px;
+  padding:32px 24px 26px;
+  transition:all .3s var(--ez);
+  overflow:hidden;
+}
+.deliv-card::before{
+  content:'';position:absolute;
+  top:0;left:0;right:0;height:4px;
+  background:var(--dc, var(--pink));
+  opacity:.85;
+}
+.deliv-card::after{
+  content:'';position:absolute;
+  top:-50px;right:-50px;
+  width:160px;height:160px;border-radius:50%;
+  background:radial-gradient(circle, var(--dc, var(--pink)), transparent 70%);
+  opacity:.06;pointer-events:none;
+}
+.deliv-card:hover{
+  transform:translateY(-3px);
+  border-color:var(--dc, var(--pink));
+  box-shadow:0 12px 32px rgba(15,15,26,.08);
+}
+.deliv-icon{
+  font-size:2.2rem;
+  margin-bottom:12px;
+  line-height:1;
+}
+.deliv-num{
+  position:absolute;
+  top:18px;right:22px;
+  font-family:'Cormorant Garamond', serif;
+  font-size:2rem;font-weight:600;
+  color:var(--dc, var(--pink));
+  opacity:.25;letter-spacing:-.02em;
+}
+.deliv-title{
+  font-size:1.05rem;font-weight:800;
+  color:var(--dark);margin-bottom:10px;
+  line-height:1.35;letter-spacing:-.015em;
+}
+.deliv-desc{
+  font-size:.84rem;color:var(--gray);
+  line-height:1.7;margin-bottom:14px;
+  font-weight:500;
+}
+.deliv-desc strong{
+  color:var(--dark);font-weight:700;
+}
+.deliv-tag{
+  display:inline-block;
+  font-size:.7rem;font-weight:800;
+  padding:4px 12px;border-radius:50px;
+  background:var(--dc, var(--pink));
+  color:#fff;letter-spacing:.02em;
+  opacity:.92;
+}
+
+/* 가치 비교 영역 */
+.value-compare{
+  max-width:520px;margin:0 auto 32px;
+  padding:24px 32px;
+  background:linear-gradient(135deg, rgba(220,20,120,.04), rgba(240,160,20,.04));
+  border:1.5px solid rgba(220,20,120,.15);
+  border-radius:20px;
+  text-align:center;
+}
+.vc-row{
+  display:flex;align-items:center;
+  justify-content:center;gap:14px;
+  padding:6px 0;
+}
+.vc-label{
+  font-size:.85rem;font-weight:700;
+  color:var(--gray);min-width:80px;
+}
+.vc-value{
+  font-family:'Cormorant Garamond', serif;
+  font-size:1.4rem;font-weight:600;
+  color:var(--mid);
+}
+.vc-strike{text-decoration:line-through;opacity:.5}
+.vc-divider{
+  height:1px;
+  background:linear-gradient(90deg, transparent, rgba(220,20,120,.2), transparent);
+  margin:8px 0;
+}
+.vc-now .vc-label-now{
+  color:var(--pink);font-weight:800;
+}
+.vc-now-value{
+  font-size:2.4rem;color:var(--pink);
+  font-weight:700;letter-spacing:-.02em;
+}
+.vc-badge{
+  display:inline-block;
+  font-size:.7rem;font-weight:900;
+  padding:4px 10px;border-radius:30px;
+  background:var(--pink);color:#fff;
+  letter-spacing:.05em;
+}
+.vc-note{
+  margin-top:14px;
+  font-size:.76rem;color:var(--gray);
+  line-height:1.6;font-weight:600;
+}
+
+/* CTA 영역 */
+.deliv-cta-wrap{
+  text-align:center;
+}
+.btn-deliv-cta{
+  display:inline-flex;align-items:center;gap:14px;
+  padding:18px 36px;
+  background:var(--pink-gradient);
+  color:#fff;text-decoration:none;
+  font-size:1.08rem;font-weight:800;
+  border-radius:50px;
+  box-shadow:var(--sh-pink);
+  transition:all .25s var(--ez);
+  letter-spacing:-.005em;
+}
+.btn-deliv-cta:hover{
+  transform:translateY(-2px);
+  box-shadow:0 14px 42px rgba(220,20,120,.36);
+}
+.btn-deliv-price{
+  font-family:'Cormorant Garamond', serif;
+  font-size:1.3rem;font-weight:600;
+  padding-left:14px;border-left:1px solid rgba(255,255,255,.3);
+}
+.btn-deliv-secondary{
+  display:inline-block;
+  margin-top:14px;
+  font-size:.86rem;font-weight:700;
+  color:var(--gray);text-decoration:none;
+  padding:10px 20px;
+  transition:color .2s var(--ez);
+}
+.btn-deliv-secondary:hover{color:var(--pink)}
+
+/* 모바일 반응형 */
+@media(max-width:900px){
+  .deliverables-grid{grid-template-columns:1fr 1fr;gap:14px}
+}
+@media(max-width:600px){
+  .deliverables-grid{grid-template-columns:1fr;gap:12px}
+  .deliv-card{padding:24px 20px 20px}
+  .deliv-title{font-size:.98rem}
+  .deliv-desc{font-size:.8rem}
+  .value-compare{padding:20px 22px}
+  .vc-now-value{font-size:2rem}
+  .btn-deliv-cta{padding:14px 24px;font-size:.96rem;gap:10px}
+  .btn-deliv-price{font-size:1.15rem;padding-left:10px}
+}
 
 /* ── SCIENCE ── */
 .sci-grid{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center}
@@ -271,13 +521,14 @@ nav.scrolled{background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border-
 .sci-quote strong{color:var(--pink);font-style:normal;font-weight:500}
 .sci-body{font-size:.92rem;color:var(--gray);line-height:1.9}
 .sci-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:36px}
-.sci-card{border-radius:14px;padding:20px;border:1.5px solid}
-.sci-card.c1{border-color:rgba(233,30,140,.2);background:rgba(233,30,140,.03)}
-.sci-card.c2{border-color:rgba(255,152,0,.2);background:rgba(255,152,0,.03)}
-.sci-card.c3{border-color:rgba(123,195,74,.2);background:rgba(123,195,74,.03)}
-.sci-card.c4{border-color:rgba(41,182,246,.2);background:rgba(41,182,246,.03)}
+.sci-card{border-radius:14px;padding:20px;border:1.5px solid;transition:all .25s var(--ez)}
+.sci-card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(15,15,26,.06)}
+.sci-card.c1{border-color:rgba(220,20,120,.22);background:rgba(220,20,120,.04)}
+.sci-card.c2{border-color:rgba(240,160,20,.22);background:rgba(240,160,20,.04)}
+.sci-card.c3{border-color:rgba(140,180,80,.25);background:rgba(140,180,80,.04)}
+.sci-card.c4{border-color:rgba(0,140,220,.22);background:rgba(0,140,220,.04)}
 .sci-icon{font-size:1.4rem;margin-bottom:8px}
-.sci-name{font-size:.88rem;font-weight:800;color:var(--dark);margin-bottom:4px}
+.sci-name{font-size:.88rem;font-weight:800;color:var(--dark);margin-bottom:4px;letter-spacing:-.01em}
 .sci-desc{font-size:.77rem;color:var(--gray);line-height:1.5}
 
 /* ── REVIEWS ── */
@@ -314,15 +565,15 @@ nav.scrolled{background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border-
 
 /* ── CTA ── */
 .cta-wrap{padding:96px 24px;text-align:center;position:relative;overflow:hidden}
-.cta-wrap::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(233,30,140,.07) 0%,transparent 60%),radial-gradient(ellipse at 70% 50%,rgba(255,152,0,.07) 0%,transparent 60%)}
+.cta-wrap::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(220,20,120,.07) 0%,transparent 60%),radial-gradient(ellipse at 70% 50%,rgba(240,160,20,.07) 0%,transparent 60%)}
 .cta-inner{position:relative;z-index:1;max-width:640px;margin:0 auto}
 .cta-title{font-size:clamp(2rem,4vw,3rem);font-weight:900;color:var(--dark);letter-spacing:-.04em;margin-bottom:14px}
 .cta-title em{font-style:normal;background:linear-gradient(120deg,var(--pink),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .cta-sub{font-size:1rem;color:var(--gray);margin-bottom:36px;line-height:1.7}
 .cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
 .btn-cta{display:inline-flex;align-items:center;gap:8px;padding:16px 36px;border-radius:50px;font-family:'Nunito',sans-serif;font-size:.96rem;font-weight:800;text-decoration:none;transition:all .25s}
-.btn-cta.a{background:linear-gradient(135deg,var(--pink),#FF6B9D);color:#fff;box-shadow:0 6px 24px rgba(233,30,140,.35)}
-.btn-cta.a:hover{transform:translateY(-2px);box-shadow:0 10px 36px rgba(233,30,140,.45)}
+.btn-cta.a{background:linear-gradient(135deg,var(--pink),#FF6B9D);color:#fff;box-shadow:0 6px 24px rgba(220,20,120,.35)}
+.btn-cta.a:hover{transform:translateY(-2px);box-shadow:0 10px 36px rgba(220,20,120,.45)}
 .btn-cta.b{background:var(--white);color:var(--dark);border:1.5px solid rgba(0,0,0,.1)}
 .btn-cta.b:hover{border-color:var(--orange);color:var(--orange);transform:translateY(-1px)}
 .cta-note{font-size:.8rem;color:var(--gray);margin-top:16px}
@@ -376,20 +627,33 @@ footer{background:var(--dark);color:rgba(255,255,255,.5);padding:52px 24px 36px}
   .hero-visual{display:none}
   .steps{grid-template-columns:1fr}
   .tier-wrap{grid-template-columns:1fr}
-  .type-grid{grid-template-columns:1fr 1fr}
+  .type-grid{grid-template-columns:1fr 1fr;gap:10px}
+  .type-card{padding:18px 14px}
+  .type-emoji{font-size:1.6rem}
+  .type-name{font-size:.85rem}
+  .type-desc{font-size:.72rem}
+  .type-group-legend{gap:6px 10px;padding:12px 14px}
+  .tg-item{font-size:.7rem}
+  .btn-type-cta{padding:14px 24px;font-size:.92rem}
   .sci-cards{grid-template-columns:1fr 1fr}
   .numbers-grid{grid-template-columns:1fr 1fr}
   .nav-ghost{display:none}
+  .footer-top{flex-direction:column;align-items:flex-start}
+  .footer-biz-grid{flex-direction:column;gap:4px}
+  .footer-legal{gap:12px}
+  .modal-sheet{max-height:90vh}
+}
 @media(max-width:480px){
   .nav-pill{padding:6px 14px;border-radius:10px}
   .nav-pill-label{font-size:.66rem}
   .nav-pill-price{font-size:.76rem}
   .nav-login-btn{padding:6px 12px;font-size:.7rem}
-}
-  .footer-top{flex-direction:column;align-items:flex-start}
-  .footer-biz-grid{flex-direction:column;gap:4px}
-  .footer-legal{gap:12px}
-  .modal-sheet{max-height:90vh}
+  .type-grid{grid-template-columns:1fr 1fr;gap:8px}
+  .type-card{padding:14px 12px}
+  .type-emoji{font-size:1.5rem;margin-bottom:6px}
+  .type-name{font-size:.8rem;margin-bottom:3px}
+  .type-desc{font-size:.68rem;min-height:auto}
+  .type-tag{font-size:.62rem;padding:2px 8px}
 }
 
 /* ── ANIMATION ── */
@@ -434,9 +698,9 @@ em{font-style:normal}
   <div class="hero-mesh">
     <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <radialGradient id="g1" cx="20%" cy="30%"><stop offset="0%" stop-color="#E91E8C" stop-opacity=".12"/><stop offset="100%" stop-color="transparent"/></radialGradient>
-        <radialGradient id="g2" cx="80%" cy="70%"><stop offset="0%" stop-color="#FF9800" stop-opacity=".1"/><stop offset="100%" stop-color="transparent"/></radialGradient>
-        <radialGradient id="g3" cx="60%" cy="20%"><stop offset="0%" stop-color="#7CB342" stop-opacity=".08"/><stop offset="100%" stop-color="transparent"/></radialGradient>
+        <radialGradient id="g1" cx="20%" cy="30%"><stop offset="0%" stop-color="#DC1478" stop-opacity=".12"/><stop offset="100%" stop-color="transparent"/></radialGradient>
+        <radialGradient id="g2" cx="80%" cy="70%"><stop offset="0%" stop-color="#F0A014" stop-opacity=".1"/><stop offset="100%" stop-color="transparent"/></radialGradient>
+        <radialGradient id="g3" cx="60%" cy="20%"><stop offset="0%" stop-color="#8CB450" stop-opacity=".08"/><stop offset="100%" stop-color="transparent"/></radialGradient>
       </defs>
       <rect width="100%" height="100%" fill="url(#g1)"/>
       <rect width="100%" height="100%" fill="url(#g2)"/>
@@ -456,13 +720,13 @@ em{font-style:normal}
       <div class="cta-group">
         <a class="btn-hero primary" href="skopos_quiz.html">무료 진단 시작하기 <span class="btn-arrow">→</span></a>
         <a class="btn-hero secondary" href="skopos_premium_quiz.html">정밀 진단 시작하기 — ₩9,900</a>
-        <span class="btn-price-note">1회 결제 · 영구 열람 · PDF 리포트 포함</span>
+        <span class="btn-price-note">1회 결제 · 영구 열람 · 13페이지 PDF 리포트 + 1년 계절 가이드 포함</span>
       </div>
       <div class="hero-stats">
-        <div class="hstat"><div class="hstat-n" style="color:var(--pink)">22</div><div class="hstat-l">무료 문항</div></div>
-        <div class="hstat"><div class="hstat-n" style="color:var(--orange)">144</div><div class="hstat-l">프리미엄 문항</div></div>
-        <div class="hstat"><div class="hstat-n" style="color:var(--green)">24</div><div class="hstat-l">공간 욕구 유형</div></div>
-        <div class="hstat"><div class="hstat-n" style="color:var(--blue)">8</div><div class="hstat-l">분석 영역</div></div>
+        <div class="hstat"><div class="hstat-n" style="color:var(--pink)">12</div><div class="hstat-l">공간 욕구 유형</div></div>
+        <div class="hstat"><div class="hstat-n" style="color:var(--orange)">144</div><div class="hstat-l">정밀 문항</div></div>
+        <div class="hstat"><div class="hstat-n" style="color:var(--green)">8</div><div class="hstat-l">분석 영역</div></div>
+        <div class="hstat"><div class="hstat-n" style="color:var(--blue)">13</div><div class="hstat-l">페이지 PDF</div></div>
       </div>
     </div>
     <div class="hero-visual fade-up" style="transition-delay:.15s">
@@ -491,7 +755,7 @@ em{font-style:normal}
       <div class="step-card s1">
         <div class="step-icon">🎯</div>
         <div class="step-title">22가지 질문에 답하기</div>
-        <p class="step-desc">공간·소품·소재에 대한 직관적인 22문항. 8초 타이머로 끌리는 대로 선택하세요. 정답은 없습니다.</p>
+        <p class="step-desc">공간·소품·소재에 대한 직관적인 12가지 유형 무료. 8초 타이머로 끌리는 대로 선택하세요. 정답은 없습니다.</p>
       </div>
       <div class="step-card s2">
         <div class="step-icon">📊</div>
@@ -522,7 +786,7 @@ em{font-style:normal}
         <div class="tier-note">지금 무료로 제공 중</div>
         <div class="tier-divider"></div>
         <div class="tier-feats">
-          <div class="tier-feat"><div class="tier-feat-ic">✓</div><span>22문항 · 약 3분 소요</span></div>
+          <div class="tier-feat"><div class="tier-feat-ic">✓</div><span>12가지 유형 무료 · 약 3분 소요</span></div>
           <div class="tier-feat"><div class="tier-feat-ic">✓</div><span>12가지 공간 심리 유형 진단</span></div>
           <div class="tier-feat"><div class="tier-feat-ic">✓</div><span>1,000자 행동패턴 분석</span></div>
           <div class="tier-feat"><div class="tier-feat-ic">✓</div><span>핵심 욕구 + 공간 처방 키워드</span></div>
@@ -539,7 +803,7 @@ em{font-style:normal}
         <div class="tier-divider"></div>
         <div class="tier-feats">
           <div class="tier-feat"><div class="tier-feat-ic">✦</div><span>144문항 · 약 15분 소요</span></div>
-          <div class="tier-feat"><div class="tier-feat-ic">✦</div><span>24가지 정밀 유형 · 6그룹 분류</span></div>
+          <div class="tier-feat"><div class="tier-feat-ic">✦</div><span>12가지 정밀 유형 · 6그룹 분류</span></div>
           <div class="tier-feat"><div class="tier-feat-ic">✦</div><span>8개 영역 레이더 차트 프로파일</span></div>
           <div class="tier-feat"><div class="tier-feat-ic">✦</div><span>취향저격 심층 분석 3분류</span></div>
           <div class="tier-feat"><div class="tier-feat-ic">✦</div><span>거실·침실·주방 소품·조명·소재 처방</span></div>
@@ -555,59 +819,125 @@ em{font-style:normal}
 <div class="section-wrap alt fade-up">
   <div class="inner">
     <div class="s-head">
-      <div class="s-eye">공간 욕구 유형</div>
+      <div class="s-eye">12가지 공간 욕구 유형</div>
       <h2 class="s-title">나는 어떤 공간 유형일까?</h2>
-      <p class="s-sub">12가지 유형 중 나는 어디에? 진단으로 내 유형을 확인해보세요</p>
+      <p class="s-sub">하나가 정답은 아니에요. 6개의 큰 그룹 × 각 2가지 결로 나뉘는 <strong>12가지 유형</strong> 중<br>내 결에 가장 가까운 것을 찾아보세요.</p>
     </div>
+
+    <!-- 그룹별 라벨 표시용 -->
+    <div class="type-group-legend">
+      <span class="tg-item" style="--gc:var(--indigo)"><span class="tg-dot"></span>조용한 회복형</span>
+      <span class="tg-item" style="--gc:var(--green)"><span class="tg-dot"></span>자연 친화형</span>
+      <span class="tg-item" style="--gc:var(--orange)"><span class="tg-dot"></span>감각적 심미형</span>
+      <span class="tg-item" style="--gc:#E53935"><span class="tg-dot"></span>나만의 스타일</span>
+      <span class="tg-item" style="--gc:var(--blue)"><span class="tg-dot"></span>깔끔 정돈형</span>
+      <span class="tg-item" style="--gc:var(--coral)"><span class="tg-dot"></span>따뜻한 안정형</span>
+    </div>
+
     <div class="type-grid">
-      <a class="type-card" href="skopos_quiz.html" style="--tc:var(--green);--tc-bg:rgba(123,195,74,.1)">
-        <div class="type-emoji">🌿</div>
-        <div class="type-name">초록 충전형</div>
-        <div class="type-desc">식물 없으면 뭔가 허전한 당신</div>
-        <div class="type-tag">식물 · 원목 · 라탄</div>
-      </a>
-      <a class="type-card" href="skopos_quiz.html" style="--tc:#7E57C2;--tc-bg:rgba(126,87,194,.1)">
-        <div class="type-emoji">🖼️</div>
-        <div class="type-name">갤러리 큐레이터형</div>
-        <div class="type-desc">집이 갤러리처럼 보여야 직성이 풀리는 당신</div>
-        <div class="type-tag">아트워크 · 스포트조명</div>
-      </a>
-      <a class="type-card" href="skopos_quiz.html" style="--tc:var(--orange);--tc-bg:rgba(255,152,0,.1)">
-        <div class="type-emoji">🛋️</div>
-        <div class="type-name">포근함 최우선형</div>
-        <div class="type-desc">따뜻하고 폭신한 게 없으면 못 쉬는 당신</div>
-        <div class="type-tag">부클레 · 러그 · 캔들</div>
-      </a>
-      <a class="type-card" href="skopos_quiz.html" style="--tc:var(--blue);--tc-bg:rgba(41,182,246,.1)">
-        <div class="type-emoji">⬛</div>
-        <div class="type-name">구조·정렬 추구형</div>
-        <div class="type-desc">모든 게 딱 맞아 떨어져야 하는 당신</div>
-        <div class="type-tag">블랙스틸 · 모듈수납</div>
-      </a>
-      <a class="type-card" href="skopos_quiz.html" style="--tc:var(--pink);--tc-bg:var(--pink-lt)">
+      <!-- 1. sanctuary_deep — 고요한 회복형 -->
+      <a class="type-card" href="skopos_quiz.html" style="--tc:var(--indigo);--tc-bg:rgba(92,107,192,.1)">
         <div class="type-emoji">🌙</div>
-        <div class="type-name">완전 차단형</div>
-        <div class="type-desc">집에 오면 완전히 꺼지고 싶은 당신</div>
+        <div class="type-name">고요한 회복형</div>
+        <div class="type-desc">하루 동안 쌓인 자극을 집에서 천천히 내려놓고 싶은 당신</div>
         <div class="type-tag">간접조명 · 방음 · 히든수납</div>
       </a>
-      <a class="type-card" href="skopos_quiz.html" style="--tc:#E53935;--tc-bg:rgba(229,57,53,.1)">
-        <div class="type-emoji">🎨</div>
-        <div class="type-name">개성 폭발형</div>
-        <div class="type-desc">내 집은 내 세계관이어야 하는 당신</div>
-        <div class="type-tag">갤러리월 · 빈티지 믹스</div>
+
+      <!-- 2. sanctuary_zen — 비움 추구형 -->
+      <a class="type-card" href="skopos_quiz.html" style="--tc:var(--indigo);--tc-bg:rgba(92,107,192,.1)">
+        <div class="type-emoji">🤍</div>
+        <div class="type-name">비움 추구형</div>
+        <div class="type-desc">물건을 하나 덜어낼 때마다 마음이 홀가분해지는 당신</div>
+        <div class="type-tag">미니멀 · 여백 · 자연광</div>
       </a>
-      <a class="type-card" href="skopos_quiz.html" style="--tc:var(--green);--tc-bg:rgba(123,195,74,.1)">
-        <div class="type-emoji">🏡</div>
-        <div class="type-name">함께하는 공간형</div>
-        <div class="type-desc">집에 사람이 모여야 비로소 완성되는 당신</div>
-        <div class="type-tag">다이닝 · 오픈키친</div>
+
+      <!-- 3. nature_forest — 초록 충전형 -->
+      <a class="type-card" href="skopos_quiz.html" style="--tc:var(--green);--tc-bg:rgba(140,180,80,.1)">
+        <div class="type-emoji">🌿</div>
+        <div class="type-name">초록 충전형</div>
+        <div class="type-desc">화분 하나로 집의 공기가 달라지는 걸 느끼는 당신</div>
+        <div class="type-tag">식물 · 원목 · 라탄</div>
       </a>
-      <a class="type-card" href="skopos_quiz.html" style="--tc:var(--orange);--tc-bg:rgba(255,152,0,.1)">
+
+      <!-- 4. nature_earth — 핸드메이드 감성형 -->
+      <a class="type-card" href="skopos_quiz.html" style="--tc:var(--green);--tc-bg:rgba(140,180,80,.1)">
+        <div class="type-emoji">🪴</div>
+        <div class="type-name">핸드메이드 감성형</div>
+        <div class="type-desc">손자국이 남은 그릇과 자연 소재에 마음이 가는 당신</div>
+        <div class="type-tag">테라코타 · 황마 · 도자</div>
+      </a>
+
+      <!-- 5. luxe_royal — 품격 감각형 -->
+      <a class="type-card" href="skopos_quiz.html" style="--tc:var(--orange);--tc-bg:rgba(240,160,20,.1)">
         <div class="type-emoji">✨</div>
-        <div class="type-name">품격 추구형</div>
-        <div class="type-desc">싸구려 소재는 눈에 바로 보이는 당신</div>
+        <div class="type-name">품격 감각형</div>
+        <div class="type-desc">소재 하나, 마감 하나의 차이를 알아보는 당신</div>
         <div class="type-tag">마블 · 황동 · 벨벳</div>
       </a>
+
+      <!-- 6. luxe_gallery — 갤러리 큐레이터형 -->
+      <a class="type-card" href="skopos_quiz.html" style="--tc:var(--orange);--tc-bg:rgba(240,160,20,.1)">
+        <div class="type-emoji">🖼️</div>
+        <div class="type-name">갤러리 큐레이터형</div>
+        <div class="type-desc">집이 한 장면처럼 큐레이션되어야 하는 당신</div>
+        <div class="type-tag">아트워크 · 스포트조명</div>
+      </a>
+
+      <!-- 7. artistic_wild — 개성 표현형 -->
+      <a class="type-card" href="skopos_quiz.html" style="--tc:#E53935;--tc-bg:rgba(229,57,53,.1)">
+        <div class="type-emoji">🎨</div>
+        <div class="type-name">개성 표현형</div>
+        <div class="type-desc">트렌드보다 내 취향과 이야기가 중요한 당신</div>
+        <div class="type-tag">갤러리월 · 빈티지 믹스</div>
+      </a>
+
+      <!-- 8. artistic_indie — 빈티지 스토리형 -->
+      <a class="type-card" href="skopos_quiz.html" style="--tc:#E53935;--tc-bg:rgba(229,57,53,.1)">
+        <div class="type-emoji">🕰️</div>
+        <div class="type-name">빈티지 스토리형</div>
+        <div class="type-desc">시간의 흔적이 담긴 물건에 마음이 가는 당신</div>
+        <div class="type-tag">빈티지 · 레이어드</div>
+      </a>
+
+      <!-- 9. minimal_pure — 순수 미니멀형 -->
+      <a class="type-card" href="skopos_quiz.html" style="--tc:var(--blue);--tc-bg:rgba(0,140,220,.1)">
+        <div class="type-emoji">◻️</div>
+        <div class="type-name">순수 미니멀형</div>
+        <div class="type-desc">비어 있는 카운터와 단정한 선반이 편안한 당신</div>
+        <div class="type-tag">올화이트 · 완벽 정돈</div>
+      </a>
+
+      <!-- 10. minimal_grid — 구조·정렬 추구형 -->
+      <a class="type-card" href="skopos_quiz.html" style="--tc:var(--blue);--tc-bg:rgba(0,140,220,.1)">
+        <div class="type-emoji">⬛</div>
+        <div class="type-name">구조·정렬 추구형</div>
+        <div class="type-desc">가구가 살짝 어긋나 있어도 신경 쓰이는 당신</div>
+        <div class="type-tag">블랙스틸 · 모듈수납</div>
+      </a>
+
+      <!-- 11. cozy_hearth — 포근한 회복형 -->
+      <a class="type-card" href="skopos_quiz.html" style="--tc:var(--coral);--tc-bg:rgba(255,112,67,.1)">
+        <div class="type-emoji">🛋️</div>
+        <div class="type-name">포근한 회복형</div>
+        <div class="type-desc">부드럽게 감싸주는 따뜻한 공간이 어울리는 당신</div>
+        <div class="type-tag">부클레 · 러그 · 캔들</div>
+      </a>
+
+      <!-- 12. cozy_family — 함께하는 공간형 -->
+      <a class="type-card" href="skopos_quiz.html" style="--tc:var(--coral);--tc-bg:rgba(255,112,67,.1)">
+        <div class="type-emoji">🏡</div>
+        <div class="type-name">함께하는 공간형</div>
+        <div class="type-desc">집에 사람이 모일 때 가장 따뜻해지는 당신</div>
+        <div class="type-tag">다이닝 · 오픈키친</div>
+      </a>
+    </div>
+
+    <div class="type-grid-cta">
+      <a class="btn-type-cta" href="skopos_quiz.html">
+        <span>3분 무료 진단으로 내 유형 알아보기</span>
+        <span class="btn-arrow">→</span>
+      </a>
+      <p class="type-grid-note">정밀 검사(9,900원)로는 8가지 영역 점수와 TOP 3 핵심 욕구까지 받을 수 있어요</p>
     </div>
   </div>
 </div>
@@ -635,6 +965,98 @@ em{font-style:normal}
   </div>
 </div>
 
+<!-- ═══════════════════════════════════════════════
+     정밀 검사 결과물 미리보기 (신규 섹션)
+     ═══════════════════════════════════════════════ -->
+<div class="section-wrap fade-up">
+  <div class="inner">
+    <div class="s-head">
+      <div class="s-eye">정밀 검사 9,900원에 받는 것</div>
+      <h2 class="s-title">검사 결과로 무엇을 받나요?</h2>
+      <p class="s-sub">단순한 결과지가 아니에요. <strong>13페이지 PDF 리포트 + 1년 계절 가이드 구독 + 인스타 공유 카드</strong>까지<br>당신의 공간을 진짜 바꿀 수 있는 도구를 한꺼번에 받습니다.</p>
+    </div>
+
+    <div class="deliverables-grid">
+      <!-- 1. TOP 3 핵심 욕구 분석 -->
+      <div class="deliv-card" style="--dc:var(--pink)">
+        <div class="deliv-icon" aria-hidden="true">🎯</div>
+        <div class="deliv-num">01</div>
+        <h3 class="deliv-title">TOP 3 핵심 욕구 정밀 분석</h3>
+        <p class="deliv-desc">8가지 영역 중 당신의 핵심 욕구 3가지를 골라 한 영역씩 깊이 들여다봐요. <strong>일상 행동 패턴과 인테리어 시사점</strong>까지 한 자리씩 정밀하게 풀어드립니다.</p>
+        <div class="deliv-tag">3 페이지 분량</div>
+      </div>
+
+      <!-- 2. 13페이지 PDF 리포트 -->
+      <div class="deliv-card" style="--dc:var(--orange)">
+        <div class="deliv-icon" aria-hidden="true">📄</div>
+        <div class="deliv-num">02</div>
+        <h3 class="deliv-title">13페이지 PDF 정밀 리포트</h3>
+        <p class="deliv-desc">평생 다시 꺼내볼 수 있는 <strong>고품질 PDF 리포트</strong>. 표지부터 마무리까지 잡지처럼 디자인된 13페이지에 당신의 공간 언어가 정밀하게 담깁니다.</p>
+        <div class="deliv-tag">A4 13페이지</div>
+      </div>
+
+      <!-- 3. 1년 계절 가이드 -->
+      <div class="deliv-card" style="--dc:var(--green)">
+        <div class="deliv-icon" aria-hidden="true">🍃</div>
+        <div class="deliv-num">03</div>
+        <h3 class="deliv-title">계절별 가이드 1년 구독</h3>
+        <p class="deliv-desc">봄·여름·가을·겨울 4번. 계절이 바뀔 때마다 <strong>당신의 유형에 맞춘 공간 변화 가이드</strong>를 이메일로 받습니다. 1년간 함께하는 공간 동반자.</p>
+        <div class="deliv-tag">연 4회 발송</div>
+      </div>
+
+      <!-- 4. 인스타 공유 카드 -->
+      <div class="deliv-card" style="--dc:var(--blue)">
+        <div class="deliv-icon" aria-hidden="true">✨</div>
+        <div class="deliv-num">04</div>
+        <h3 class="deliv-title">인스타 공유 카드 (이름 개인화)</h3>
+        <p class="deliv-desc"><strong>1080×1080 정사각 디자인</strong>으로 인스타 피드·스토리에 그대로. 카드에 본인 이름을 넣어 <strong>"○○○님의 SPACE TYPE"</strong>으로 공유할 수 있어요.</p>
+        <div class="deliv-tag">PNG 다운로드</div>
+      </div>
+
+      <!-- 5. 8개 영역 5단계 시각 척도 -->
+      <div class="deliv-card" style="--dc:var(--purple)">
+        <div class="deliv-icon" aria-hidden="true">📊</div>
+        <div class="deliv-num">05</div>
+        <h3 class="deliv-title">8개 영역 5단계 시각 척도</h3>
+        <p class="deliv-desc">단순한 점수가 아니에요. <strong>"매우 강한 욕구"부터 "잔잔한 편"</strong>까지 5단계로 시각화해서, 비교 욕구 없이 자기 이해에 집중할 수 있습니다.</p>
+        <div class="deliv-tag">강한 순으로 정렬</div>
+      </div>
+
+      <!-- 6. 공간별 추천 + 컬러 팔레트 -->
+      <div class="deliv-card" style="--dc:var(--coral)">
+        <div class="deliv-icon" aria-hidden="true">🎨</div>
+        <div class="deliv-num">06</div>
+        <h3 class="deliv-title">공간·소품·컬러 처방</h3>
+        <p class="deliv-desc">거실·침실·주방 <strong>공간별 인테리어 추천 이미지</strong>(사람 없는 인테리어 큐레이션) + 당신 유형에 맞는 <strong>5색 팔레트</strong> + 살 것/피할 것까지.</p>
+        <div class="deliv-tag">큐레이션 이미지</div>
+      </div>
+    </div>
+
+    <!-- 가치 비교 -->
+    <div class="value-compare">
+      <div class="vc-row">
+        <span class="vc-label">정상가</span>
+        <span class="vc-value vc-strike">39,000원</span>
+      </div>
+      <div class="vc-divider"></div>
+      <div class="vc-row vc-now">
+        <span class="vc-label vc-label-now">지금 가격</span>
+        <span class="vc-value vc-now-value">9,900원</span>
+        <span class="vc-badge">75% OFF</span>
+      </div>
+      <p class="vc-note">한 번 구매로 평생 다시 꺼내볼 수 있는 PDF + 1년 계절 가이드까지 포함</p>
+    </div>
+
+    <div class="deliv-cta-wrap">
+      <a class="btn-deliv-cta" href="skopos_premium_quiz.html">
+        정밀 검사 시작하기
+        <span class="btn-deliv-price">9,900원</span>
+      </a>
+      <a class="btn-deliv-secondary" href="skopos_quiz.html">먼저 무료 진단 해보기 →</a>
+    </div>
+  </div>
+</div>
+
 <!-- REVIEWS -->
 <div class="section-wrap alt fade-up">
   <div class="inner">
@@ -653,7 +1075,7 @@ em{font-style:normal}
         <div class="rv-stars">★★★★★</div>
         <p class="rv-text"><span>인테리어 바꿀 때마다 왜 항상 어색했는지 이제야 알겠어요. 예쁜 걸 따라 했던 게 아니라 나한테 맞는 걸 몰랐던 거더라고요.</span></p>
         <div class="rv-foot">
-          <div class="rv-av" style="background:linear-gradient(135deg,#7CB342,#4CAF50)">김</div>
+          <div class="rv-av" style="background:linear-gradient(135deg,#8CB450,#689F38)">김</div>
           <div>
             <div class="rv-name">김○○님</div>
             <div class="rv-info">30대 · 신혼집 인테리어 준비 중</div>
@@ -661,11 +1083,11 @@ em{font-style:normal}
         </div>
       </div>
       <div class="rv">
-        <div class="rv-type">🌙 완전 차단형</div>
+        <div class="rv-type">🌙 고요한 회복형</div>
         <div class="rv-stars">★★★★★</div>
         <p class="rv-text"><span>집에 오면 더 피곤한 게 이상하다 생각했는데, 공간이 내 신경계를 자극하고 있었다는 게 충격이었어요. 조명부터 바꿨더니 진짜로 달라졌어요.</span></p>
         <div class="rv-foot">
-          <div class="rv-av" style="background:linear-gradient(135deg,#29B6F6,#0277BD)">이</div>
+          <div class="rv-av" style="background:linear-gradient(135deg,#008CDC,#01579B)">이</div>
           <div>
             <div class="rv-name">이○○님</div>
             <div class="rv-info">20대 · 1인 가구</div>
@@ -677,7 +1099,7 @@ em{font-style:normal}
         <div class="rv-stars">★★★★★</div>
         <p class="rv-text"><span>3분짜리 테스트인데 결과가 이렇게 정확할 줄 몰랐어요. 남편이랑 유형이 달라서 왜 의견 충돌이 났는지도 이해됐어요.</span></p>
         <div class="rv-foot">
-          <div class="rv-av" style="background:linear-gradient(135deg,#E91E8C,#C0177A)">박</div>
+          <div class="rv-av" style="background:linear-gradient(135deg,#DC1478,#AD0F5E)">박</div>
           <div>
             <div class="rv-name">박○○님</div>
             <div class="rv-info">40대 · 부부 인테리어 의견 조율 중</div>
@@ -689,7 +1111,7 @@ em{font-style:normal}
         <div class="rv-stars">★★★★★</div>
         <p class="rv-text"><span>단순 MBTI류 테스트랑 다르게 느껴졌어요. 점수 분포 보면서 왜 집에서는 집중이 안 됐는지 설명이 됐습니다.</span></p>
         <div class="rv-foot">
-          <div class="rv-av" style="background:linear-gradient(135deg,#FF9800,#E65100)">최</div>
+          <div class="rv-av" style="background:linear-gradient(135deg,#F0A014,#C77A00)">최</div>
           <div>
             <div class="rv-name">최○○님</div>
             <div class="rv-info">30대 · 재택근무 홈오피스 구성 중</div>
@@ -697,7 +1119,7 @@ em{font-style:normal}
         </div>
       </div>
       <div class="rv">
-        <div class="rv-type">🛋️ 포근함 최우선형</div>
+        <div class="rv-type">🛋️ 포근한 회복형</div>
         <div class="rv-stars">★★★★★</div>
         <p class="rv-text"><span>유형 설명에 "따뜻한 소재 없이는 쉬어지지 않는다"는 문장이 정말 제 얘기였어요. 소파 고르는 기준이 완전히 달라졌어요.</span></p>
         <div class="rv-foot">
@@ -709,7 +1131,7 @@ em{font-style:normal}
         </div>
       </div>
       <div class="rv">
-        <div class="rv-type">🎨 개성 폭발형</div>
+        <div class="rv-type">🎨 개성 표현형</div>
         <div class="rv-stars">★★★★★</div>
         <p class="rv-text"><span>주변에서 인테리어 취향이 이상하다는 말 들었는데, 제 유형 읽고 처음으로 "이게 나야" 했어요. 이상한 게 아니라 나한테 맞는 공간이 따로 있는 거였더라고요.</span></p>
         <div class="rv-foot">
@@ -725,7 +1147,7 @@ em{font-style:normal}
         <div class="rv-stars">★★★★★</div>
         <p class="rv-text"><span>인테리어 바꿀 때마다 왜 항상 어색했는지 이제야 알겠어요. 예쁜 걸 따라 했던 게 아니라 나한테 맞는 걸 몰랐던 거더라고요.</span></p>
         <div class="rv-foot">
-          <div class="rv-av" style="background:linear-gradient(135deg,#7CB342,#4CAF50)">김</div>
+          <div class="rv-av" style="background:linear-gradient(135deg,#8CB450,#689F38)">김</div>
           <div>
             <div class="rv-name">김○○님</div>
             <div class="rv-info">30대 · 신혼집 인테리어 준비 중</div>
@@ -733,11 +1155,11 @@ em{font-style:normal}
         </div>
       </div>
       <div class="rv">
-        <div class="rv-type">🌙 완전 차단형</div>
+        <div class="rv-type">🌙 고요한 회복형</div>
         <div class="rv-stars">★★★★★</div>
         <p class="rv-text"><span>집에 오면 더 피곤한 게 이상하다 생각했는데, 공간이 내 신경계를 자극하고 있었다는 게 충격이었어요. 조명부터 바꿨더니 진짜로 달라졌어요.</span></p>
         <div class="rv-foot">
-          <div class="rv-av" style="background:linear-gradient(135deg,#29B6F6,#0277BD)">이</div>
+          <div class="rv-av" style="background:linear-gradient(135deg,#008CDC,#01579B)">이</div>
           <div>
             <div class="rv-name">이○○님</div>
             <div class="rv-info">20대 · 1인 가구</div>
@@ -749,7 +1171,7 @@ em{font-style:normal}
         <div class="rv-stars">★★★★★</div>
         <p class="rv-text"><span>3분짜리 테스트인데 결과가 이렇게 정확할 줄 몰랐어요. 남편이랑 유형이 달라서 왜 의견 충돌이 났는지도 이해됐어요.</span></p>
         <div class="rv-foot">
-          <div class="rv-av" style="background:linear-gradient(135deg,#E91E8C,#C0177A)">박</div>
+          <div class="rv-av" style="background:linear-gradient(135deg,#DC1478,#AD0F5E)">박</div>
           <div>
             <div class="rv-name">박○○님</div>
             <div class="rv-info">40대 · 부부 인테리어 의견 조율 중</div>
@@ -761,7 +1183,7 @@ em{font-style:normal}
         <div class="rv-stars">★★★★★</div>
         <p class="rv-text"><span>단순 MBTI류 테스트랑 다르게 느껴졌어요. 점수 분포 보면서 왜 집에서는 집중이 안 됐는지 설명이 됐습니다.</span></p>
         <div class="rv-foot">
-          <div class="rv-av" style="background:linear-gradient(135deg,#FF9800,#E65100)">최</div>
+          <div class="rv-av" style="background:linear-gradient(135deg,#F0A014,#C77A00)">최</div>
           <div>
             <div class="rv-name">최○○님</div>
             <div class="rv-info">30대 · 재택근무 홈오피스 구성 중</div>
@@ -769,7 +1191,7 @@ em{font-style:normal}
         </div>
       </div>
       <div class="rv">
-        <div class="rv-type">🛋️ 포근함 최우선형</div>
+        <div class="rv-type">🛋️ 포근한 회복형</div>
         <div class="rv-stars">★★★★★</div>
         <p class="rv-text"><span>유형 설명에 "따뜻한 소재 없이는 쉬어지지 않는다"는 문장이 정말 제 얘기였어요. 소파 고르는 기준이 완전히 달라졌어요.</span></p>
         <div class="rv-foot">
@@ -781,7 +1203,7 @@ em{font-style:normal}
         </div>
       </div>
       <div class="rv">
-        <div class="rv-type">🎨 개성 폭발형</div>
+        <div class="rv-type">🎨 개성 표현형</div>
         <div class="rv-stars">★★★★★</div>
         <p class="rv-text"><span>주변에서 인테리어 취향이 이상하다는 말 들었는데, 제 유형 읽고 처음으로 "이게 나야" 했어요. 이상한 게 아니라 나한테 맞는 공간이 따로 있는 거였더라고요.</span></p>
         <div class="rv-foot">
@@ -889,8 +1311,8 @@ em{font-style:normal}
       <p>본 약관은 스코포스(이하 "회사")가 제공하는 스코포스 공간 욕구 유형 검사 (SDTI) 서비스의 이용에 관한 조건 및 절차, 권리·의무를 규정합니다.</p>
       <h3>제2조 (서비스 내용)</h3>
       <ul>
-        <li>무료 SDTI 공간 욕구 유형 검사 (22문항, 12가지 유형)</li>
-        <li>정밀 SDTI 공간 욕구 유형 검사 (144문항, 24가지 유형) — 유료 ₩9,900</li>
+        <li>무료 SDTI 공간 욕구 유형 검사 (12가지 유형 무료, 12가지 유형)</li>
+        <li>정밀 SDTI 공간 욕구 유형 검사 (144문항, 12가지 유형) — 유료 ₩9,900</li>
         <li>진단 결과 리포트 및 PDF 제공</li>
       </ul>
       <h3>제3조 (유료 서비스 및 결제)</h3>
