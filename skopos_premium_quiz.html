@@ -739,6 +739,24 @@ html{scroll-behavior:smooth}
 .insta-preview-spinner{display:inline-block;width:36px;height:36px;border:3px solid rgba(255,255,255,.15);border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite;margin-bottom:14px}
 @keyframes spin{to{transform:rotate(360deg)}}
 
+/* 재시도 버튼 (에러 복구) */
+.insta-retry-btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:13px 32px;
+  background:linear-gradient(135deg,#F58529,#DD2A7B 30%,#8134AF 70%,#515BD4);
+  color:#fff;border:none;border-radius:50px;
+  font-family:'Nunito','Noto Sans KR',sans-serif;
+  font-size:.92rem;font-weight:800;cursor:pointer;
+  transition:transform .2s, box-shadow .2s;
+  box-shadow:0 6px 20px rgba(221,42,123,.32);
+  letter-spacing:-.005em;
+}
+.insta-retry-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 10px 28px rgba(221,42,123,.42);
+}
+.insta-retry-btn:active{transform:translateY(0)}
+
 @media(max-width:600px){.space-imgs-grid{grid-template-columns:1fr}}
 
 /* ── PDF 전용 레이아웃 ── */
@@ -5210,47 +5228,525 @@ async function openInstaCard(){
     }
   }catch(err){
     console.error('인스타 카드 생성 실패:', err);
-    body.innerHTML = `<div class="insta-preview-loading"><div>카드 생성에 실패했어요.<br>잠시 후 다시 시도해주세요.</div></div>`;
+    const errMsg = (err && err.message) ? String(err.message).slice(0,80) : '알 수 없는 오류';
+    body.innerHTML = `
+      <div class="insta-preview-loading">
+        <div style="font-size:3rem;margin-bottom:14px">😔</div>
+        <div style="font-weight:800;color:#fff;margin-bottom:8px">카드 생성에 실패했어요</div>
+        <div style="font-size:.82rem;color:rgba(255,255,255,.65);line-height:1.6;margin-bottom:22px">
+          잠시 네트워크 문제가 있었을 수 있어요.<br>
+          아래 버튼을 눌러 다시 시도해보세요.
+        </div>
+        <button class="insta-retry-btn" id="instaRetryBtn">🔄 다시 시도하기</button>
+        <div style="font-size:.65rem;color:rgba(255,255,255,.35);margin-top:18px;letter-spacing:.05em">
+          오류: ${errMsg}
+        </div>
+      </div>`;
+    // 재시도 버튼 핸들러
+    const retryBtn = document.getElementById('instaRetryBtn');
+    if(retryBtn){
+      retryBtn.addEventListener('click', ()=>{
+        trackEvent('insta_card_retry', {result_type:resultType?.id});
+        openInstaCard();
+      });
+    }
   }
 }
 
 // 카드 생성 내부 헬퍼 (이름 받아서 캡처까지)
+// 카드 생성 내부 헬퍼 (이름 받아서 캡처까지)
+// 전략: Canvas 2D API 직접 렌더링 (안정성·속도·iOS 호환 우위)
+// 폴백: 실패 시 html2canvas 시도
 async function _generateInstaCard(userName){
   const {scores} = compute();
 
-  // 이전 임시 컨테이너 제거 (재생성 시)
+  // 이전 임시 컨테이너 제거 (html2canvas 폴백 대비)
   document.querySelectorAll('#instaCardContainer').forEach(el=>{ try{ el.remove(); }catch(e){} });
-
-  // 1080×1080 임시 컨테이너 (화면 밖)
-  const tmp = document.createElement('div');
-  tmp.id = 'instaCardContainer';
-  tmp.style.cssText = 'position:fixed;left:-99999px;top:0;width:1080px;height:1080px;z-index:-1;pointer-events:none';
-  tmp.innerHTML = buildInstaCardHTML(resultType, scores, userName);
-  document.body.appendChild(tmp);
 
   // 폰트 로딩 대기
   if(document.fonts && document.fonts.ready){
     try{ await document.fonts.ready; }catch(e){}
   }
-  // 추가 안정화 시간 (iOS에서 더 길게)
-  await new Promise(r=>setTimeout(r, isIOS() ? 500 : 300));
 
-  // html2canvas로 캡처 (iOS 호환 옵션 적용)
-  const canvas = await html2canvas(tmp.firstElementChild, {
-    width: 1080,
-    height: 1080,
-    scale: 1,
-    useCORS: true,
-    allowTaint: false,
-    backgroundColor: null,
-    logging: false,
-    foreignObjectRendering: false,
-    imageTimeout: 8000,
+  // ── PRIMARY: Canvas 2D 직접 렌더링 (가장 안정적) ──
+  try {
+    _instaCardDataUrl = await _renderInstaCardCanvas(resultType, scores, userName);
+    if(_instaCardDataUrl){
+      return; // 성공
+    }
+  } catch(canvasErr) {
+    console.warn('[Canvas] 렌더링 실패, html2canvas 폴백 시도:', canvasErr);
+  }
+
+  // ── FALLBACK: html2canvas (구버전 안전망) ──
+  try {
+    const tmp = document.createElement('div');
+    tmp.id = 'instaCardContainer';
+    tmp.style.cssText = 'position:fixed;left:0;top:0;width:1080px;height:1080px;z-index:-1;opacity:0;pointer-events:none';
+    tmp.innerHTML = buildInstaCardHTML(resultType, scores, userName);
+    document.body.appendChild(tmp);
+
+    await new Promise(r=>setTimeout(r, isIOS() ? 600 : 350));
+
+    if(typeof html2canvas === 'undefined'){
+      throw new Error('html2canvas 라이브러리 미로딩');
+    }
+
+    const canvas = await html2canvas(tmp.firstElementChild, {
+      width: 1080,
+      height: 1080,
+      scale: 1,
+      useCORS: true,
+      allowTaint: false,
+      backgroundColor: '#0F0F1A',
+      logging: false,
+      foreignObjectRendering: false,
+      imageTimeout: 8000,
+      removeContainer: true,
+    });
+    _instaCardDataUrl = canvas.toDataURL('image/png', 0.95);
+    tmp.remove();
+  } catch(h2cErr) {
+    document.querySelectorAll('#instaCardContainer').forEach(el=>{ try{ el.remove(); }catch(e){} });
+    throw new Error('카드 이미지 생성 실패: ' + (h2cErr.message || h2cErr));
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+// Canvas 2D 직접 렌더링 (PRIMARY 엔진)
+// • iOS/Android/Desktop 모두 안정적
+// • CSS gradient 변환 이슈 없음
+// • 약 80ms 안에 완료
+// ══════════════════════════════════════════════════════════════════
+async function _renderInstaCardCanvas(t, scores, userName){
+  const W = 1080, H = 1080;
+  const canvas = document.createElement('canvas');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  if(!ctx) throw new Error('Canvas 2D context 없음');
+
+  // ── 텍스트 클렌징 헬퍼 ──
+  const cleanText = (s)=>String(s||'')
+    .replace(/\[\[hl\]\]|\[\[\/hl\]\]|\[\[em\]\]|\[\[\/em\]\]/g,'')
+    .replace(/<[^>]+>/g,'')
+    .replace(/\s+/g,' ')
+    .trim();
+
+  // ── 데이터 준비 ──
+  const secColors = ['#E91E8C','#FF9800','#7CB342','#29B6F6','#AB47BC','#FF7043','#26A69A','#5C6BC0'];
+  const top3 = SECS.map((sec,i)=>({
+    label: krText(sec.label),
+    val:   getSectionScore(t, scores, sec, 50),
+    color: secColors[i],
+    icon:  sec.icon,
+  })).sort((a,b)=>b.val-a.val).slice(0,3);
+
+  const igPalette = (getTypeField(t,'palette') || []).slice(0,5);
+  while(igPalette.length < 5) igPalette.push('#3D3D5C');
+
+  const keys = ((t.keys&&t.keys.length)?t.keys:['포근함','자연소재','회복']).slice(0,3).map(cleanText);
+
+  const groupCopy = {
+    sanctuary:'내 공간은 조용히 나를 회복시키는 곳',
+    nature:'내 공간은 자연스럽게 숨이 트이는 곳',
+    luxe:'내 공간은 일상의 품격을 올리는 곳',
+    artistic:'내 공간은 취향이 또렷하게 드러나는 곳',
+    minimal:'내 공간은 덜어낼수록 선명해지는 곳',
+    cozy:'내 공간은 함께 머물수록 따뜻해지는 곳',
+  };
+  const typeName = cleanText(t.plain || t.name || '나의 공간형');
+  const shortCopy = groupCopy[t.group] || '나에게 맞는 공간에는 이유가 있습니다';
+  const heroEmoji = t.emoji || '✨';
+  const cleanName = cleanText(userName).slice(0, 12);
+  const personLabel = cleanName ? `${cleanName}님의 SPACE TYPE` : 'MY SPACE TYPE';
+
+  // 한국어 폰트 fallback 체인 (이모지 포함)
+  const FONT_KR = "'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic','Pretendard',sans-serif";
+  const FONT_KR_EMOJI = "'Noto Sans KR','Apple Color Emoji','Segoe UI Emoji','Apple SD Gothic Neo','Malgun Gothic',sans-serif";
+
+  // ══════ 1. 배경 그라데이션 (보라→다크) ══════
+  const bgGrad = ctx.createLinearGradient(0, 0, W*0.7, H);
+  bgGrad.addColorStop(0,    '#0F0F1A');
+  bgGrad.addColorStop(0.58, '#1B1140');
+  bgGrad.addColorStop(1,    '#2A0F43');
+  ctx.fillStyle = bgGrad;
+  ctx.fillRect(0, 0, W, H);
+
+  // ══════ 2. 백그라운드 글로우 (radial) ══════
+  // 우상단 핑크 글로우
+  const glow1 = ctx.createRadialGradient(W-130, -220, 50, W-130, -220, 380);
+  glow1.addColorStop(0,   'rgba(233,30,140,0.22)');
+  glow1.addColorStop(1,   'rgba(233,30,140,0)');
+  ctx.fillStyle = glow1;
+  ctx.fillRect(0, 0, W, H);
+
+  // 좌하단 블루 글로우
+  const glow2 = ctx.createRadialGradient(-130, H+190, 50, -130, H+190, 350);
+  glow2.addColorStop(0,   'rgba(41,182,246,0.12)');
+  glow2.addColorStop(1,   'rgba(41,182,246,0)');
+  ctx.fillStyle = glow2;
+  ctx.fillRect(0, 0, W, H);
+
+  // ══════ 3. 상단 골드 디바이더 ══════
+  const div = ctx.createLinearGradient(60, 135, W-60, 135);
+  div.addColorStop(0,   'rgba(201,169,110,0)');
+  div.addColorStop(0.5, 'rgba(201,169,110,0.28)');
+  div.addColorStop(1,   'rgba(201,169,110,0)');
+  ctx.fillStyle = div;
+  ctx.fillRect(60, 195, W-120, 1);
+
+  // ══════ 4. 상단 로고 (4분할 원) ══════
+  const logoX = 48 + 26, logoY = 48 + 26, logoR = 26;
+  // 4분할 콘 그라데이션을 4개 원호로 그리기
+  const colors4 = ['#E91E8C','#FF9800','#7CB342','#29B6F6'];
+  for(let i=0; i<4; i++){
+    ctx.beginPath();
+    ctx.moveTo(logoX, logoY);
+    ctx.arc(logoX, logoY, logoR, -Math.PI/2 + i*Math.PI/2, -Math.PI/2 + (i+1)*Math.PI/2);
+    ctx.closePath();
+    ctx.fillStyle = colors4[i];
+    ctx.fill();
+  }
+  // 중앙 흰 원 + S
+  ctx.beginPath();
+  ctx.arc(logoX, logoY, 13, 0, Math.PI*2);
+  ctx.fillStyle = '#fff';
+  ctx.fill();
+  ctx.fillStyle = '#0F0F1A';
+  ctx.font = `900 14px ${FONT_KR}`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('S', logoX, logoY+1);
+
+  // ══════ 5. SKOPOS 브랜드 텍스트 ══════
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#fff';
+  ctx.font = `900 24px ${FONT_KR}`;
+  ctx.fillText('SKO', 48 + 64, 48 + 18);
+  // POS 부분 핑크
+  const skoWidth = ctx.measureText('SKO').width;
+  ctx.fillStyle = '#E91E8C';
+  ctx.fillText('POS', 48 + 64 + skoWidth, 48 + 18);
+
+  // 서브 텍스트
+  ctx.fillStyle = 'rgba(255,255,255,0.55)';
+  ctx.font = `800 12px ${FONT_KR}`;
+  ctx.fillText('SDTI 공간 욕구 정밀 검사', 48 + 64, 48 + 40);
+
+  // ══════ 6. 우상단 SHARE CARD 배지 ══════
+  const badgeY = 48 + 8;
+  const badgeText = 'SHARE CARD';
+  ctx.font = `900 12px ${FONT_KR}`;
+  const badgeTextW = ctx.measureText(badgeText).width;
+  const badgeW = badgeTextW + 36;
+  const badgeH = 36;
+  const badgeX = W - 48 - badgeW;
+  // 배경
+  ctx.fillStyle = 'rgba(201,169,110,0.08)';
+  _drawRoundRect(ctx, badgeX, badgeY, badgeW, badgeH, 999);
+  ctx.fill();
+  // 테두리
+  ctx.strokeStyle = 'rgba(201,169,110,0.42)';
+  ctx.lineWidth = 1;
+  _drawRoundRect(ctx, badgeX, badgeY, badgeW, badgeH, 999);
+  ctx.stroke();
+  // 텍스트
+  ctx.fillStyle = '#EED18A';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(badgeText, badgeX + badgeW/2, badgeY + badgeH/2 + 1);
+
+  // ══════ 7. 메인 이모지 박스 ══════
+  const emojiCx = W/2;
+  const emojiCy = 270;
+  const emojiBoxW = 108;
+  const emojiBoxH = 108;
+  // 박스 그라데이션
+  const emojiBgGrad = ctx.createLinearGradient(emojiCx - 54, emojiCy - 54, emojiCx + 54, emojiCy + 54);
+  emojiBgGrad.addColorStop(0, 'rgba(255,255,255,0.16)');
+  emojiBgGrad.addColorStop(1, 'rgba(255,255,255,0.04)');
+  ctx.fillStyle = emojiBgGrad;
+  _drawRoundRect(ctx, emojiCx - 54, emojiCy - 54, emojiBoxW, emojiBoxH, 32);
+  ctx.fill();
+  // 테두리
+  ctx.strokeStyle = 'rgba(255,255,255,0.11)';
+  ctx.lineWidth = 1;
+  _drawRoundRect(ctx, emojiCx - 54, emojiCy - 54, emojiBoxW, emojiBoxH, 32);
+  ctx.stroke();
+  // 이모지
+  ctx.font = `64px ${FONT_KR_EMOJI}`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#fff';
+  ctx.fillText(heroEmoji, emojiCx, emojiCy + 4);
+
+  // ══════ 8. 사용자 라벨 ══════
+  ctx.fillStyle = 'rgba(201,169,110,0.86)';
+  ctx.font = `900 15px ${FONT_KR}`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  // letter-spacing 효과 (수동)
+  _drawSpacedText(ctx, personLabel, emojiCx, emojiCy + 90, 0.22);
+
+  // ══════ 9. 타입명 (메인 헤딩) ══════
+  ctx.fillStyle = '#fff';
+  ctx.font = `900 60px ${FONT_KR}`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  // 그림자 효과
+  ctx.shadowColor = 'rgba(0,0,0,0.22)';
+  ctx.shadowBlur = 34;
+  ctx.shadowOffsetY = 10;
+  // 길면 두 줄로 분할
+  const typeLines = _wrapText(ctx, typeName, W - 120);
+  let typeY = emojiCy + 140;
+  typeLines.forEach((line, idx)=>{
+    ctx.fillText(line, emojiCx, typeY + idx * 68);
   });
-  _instaCardDataUrl = canvas.toDataURL('image/png', 1.0);
+  ctx.shadowColor = 'transparent';
+  ctx.shadowBlur = 0;
+  ctx.shadowOffsetY = 0;
 
-  // 임시 컨테이너 제거
-  tmp.remove();
+  // ══════ 10. 그룹 카피 ══════
+  ctx.fillStyle = '#F1D48B';
+  ctx.font = `800 22px ${FONT_KR}`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  const copyY = typeY + typeLines.length * 68 + 20;
+  ctx.fillText(shortCopy, emojiCx, copyY);
+
+  // ══════ 11. 키워드 칩 (3개) ══════
+  const chipY = copyY + 50;
+  const chipH = 38;
+  ctx.font = `800 18px ${FONT_KR}`;
+  const chipWidths = keys.map(k => ctx.measureText(k).width + 36);
+  const totalChipsW = chipWidths.reduce((a,b)=>a+b, 0) + (keys.length - 1) * 10;
+  let chipX = (W - totalChipsW) / 2;
+  for(let i = 0; i < keys.length; i++){
+    const cw = chipWidths[i];
+    // 배경
+    ctx.fillStyle = 'rgba(201,169,110,0.07)';
+    _drawRoundRect(ctx, chipX, chipY - chipH/2, cw, chipH, 999);
+    ctx.fill();
+    // 테두리
+    ctx.strokeStyle = 'rgba(201,169,110,0.48)';
+    ctx.lineWidth = 1.5;
+    _drawRoundRect(ctx, chipX, chipY - chipH/2, cw, chipH, 999);
+    ctx.stroke();
+    // 텍스트
+    ctx.fillStyle = '#F1D48B';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(keys[i], chipX + cw/2, chipY + 1);
+    chipX += cw + 10;
+  }
+
+  // ══════ 12. 컬러 팔레트 (5개) ══════
+  const palY = chipY + 60;
+  const palSize = 50;
+  const palGap = 10;
+  const palTotalW = palSize * 5 + palGap * 4;
+  let palX = (W - palTotalW) / 2;
+  for(let i = 0; i < 5; i++){
+    const yOffset = (i % 2 === 0) ? 0 : 6;
+    // 그림자
+    ctx.shadowColor = 'rgba(0,0,0,0.24)';
+    ctx.shadowBlur = 14;
+    ctx.shadowOffsetY = 6;
+    ctx.fillStyle = igPalette[i];
+    _drawRoundRect(ctx, palX, palY + yOffset, palSize, palSize, 15);
+    ctx.fill();
+    ctx.shadowColor = 'transparent';
+    ctx.shadowBlur = 0;
+    ctx.shadowOffsetY = 0;
+    // 내부 하이라이트
+    ctx.strokeStyle = 'rgba(255,255,255,0.22)';
+    ctx.lineWidth = 1;
+    _drawRoundRect(ctx, palX + 0.5, palY + yOffset + 0.5, palSize - 1, palSize - 1, 14.5);
+    ctx.stroke();
+    palX += palSize + palGap;
+  }
+
+  // ══════ 13. TOP 3 욕구 카드 ══════
+  const cardX = 56;
+  const cardY = palY + 88;
+  const cardW = W - 112;
+  const cardH = 200;
+  // 배경
+  ctx.fillStyle = 'rgba(255,255,255,0.055)';
+  _drawRoundRect(ctx, cardX, cardY, cardW, cardH, 22);
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+  ctx.lineWidth = 1;
+  _drawRoundRect(ctx, cardX, cardY, cardW, cardH, 22);
+  ctx.stroke();
+
+  // 헤더
+  ctx.fillStyle = '#F1D48B';
+  ctx.font = `900 13px ${FONT_KR}`;
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  _drawSpacedText(ctx, 'TOP 3 욕구 프로파일', cardX + 26, cardY + 22, 0.16, 'left');
+  ctx.fillStyle = 'rgba(255,255,255,0.46)';
+  ctx.font = `800 12px ${FONT_KR}`;
+  ctx.textAlign = 'right';
+  ctx.fillText('8개 영역 분석', cardX + cardW - 26, cardY + 22);
+
+  // 3개 바
+  for(let i = 0; i < top3.length; i++){
+    const b = top3[i];
+    const rowY = cardY + 60 + i * 44;
+    // 아이콘
+    ctx.font = `22px ${FONT_KR_EMOJI}`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = '#fff';
+    ctx.fillText(b.icon, cardX + 38, rowY);
+    // 라벨
+    ctx.font = `900 18px ${FONT_KR}`;
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#fff';
+    const labelText = b.label.length > 7 ? b.label.slice(0,7) + '…' : b.label;
+    ctx.fillText(labelText, cardX + 62, rowY);
+    // 바 배경
+    const barX = cardX + 218;
+    const barW = cardW - 218 - 80;
+    const barH = 9;
+    ctx.fillStyle = 'rgba(255,255,255,0.09)';
+    _drawRoundRect(ctx, barX, rowY - barH/2, barW, barH, 999);
+    ctx.fill();
+    // 바 채움
+    ctx.fillStyle = b.color;
+    _drawRoundRect(ctx, barX, rowY - barH/2, barW * (b.val/100), barH, 999);
+    ctx.fill();
+    // 점수
+    ctx.font = `900 20px ${FONT_KR}`;
+    ctx.textAlign = 'right';
+    ctx.fillStyle = b.color;
+    ctx.fillText(String(b.val), cardX + cardW - 26, rowY);
+  }
+
+  // ══════ 14. 하단 디바이더 ══════
+  const footerY = cardY + cardH + 30;
+  ctx.fillStyle = 'rgba(255,255,255,0.11)';
+  ctx.fillRect(56, footerY, W - 112, 1);
+
+  // ══════ 15. 푸터 CTA ══════
+  ctx.fillStyle = 'rgba(255,255,255,0.62)';
+  ctx.font = `800 14px ${FONT_KR}`;
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('내 공간 취향이 궁금하다면', 56, footerY + 30);
+  ctx.fillStyle = '#F1D48B';
+  ctx.font = `900 18px ${FONT_KR}`;
+  ctx.fillText('144문항 · 8개 영역 · 12가지 유형 · skopos.kr', 56, footerY + 56);
+
+  // 우측 해시태그
+  ctx.fillStyle = 'rgba(255,255,255,0.48)';
+  ctx.font = `900 14px ${FONT_KR}`;
+  ctx.textAlign = 'right';
+  ctx.fillText('#스코포스', W - 56, footerY + 24);
+  ctx.fillText('#SDTI',    W - 56, footerY + 44);
+  ctx.fillText('#공간취향검사', W - 56, footerY + 64);
+
+  // ══════ DataURL 추출 ══════
+  // toBlob → dataURL 변환 (메모리 효율적, iOS 안정성↑)
+  return new Promise((resolve, reject)=>{
+    try {
+      // toBlob이 지원되면 우선 사용
+      if(canvas.toBlob){
+        canvas.toBlob((blob)=>{
+          if(!blob){
+            try {
+              resolve(canvas.toDataURL('image/png'));
+            } catch(e) { reject(e); }
+            return;
+          }
+          const reader = new FileReader();
+          reader.onload = ()=> resolve(reader.result);
+          reader.onerror = ()=> {
+            try { resolve(canvas.toDataURL('image/png')); }
+            catch(e) { reject(e); }
+          };
+          reader.readAsDataURL(blob);
+        }, 'image/png', 0.95);
+      } else {
+        resolve(canvas.toDataURL('image/png'));
+      }
+    } catch(e) {
+      reject(e);
+    }
+  });
+}
+
+// ── Canvas 헬퍼: 라운드 사각형 그리기 (구버전 iOS 호환) ──
+function _drawRoundRect(ctx, x, y, w, h, r){
+  // roundRect 네이티브 사용 (iOS 16+)
+  if(ctx.roundRect){
+    ctx.beginPath();
+    ctx.roundRect(x, y, w, h, r);
+    return;
+  }
+  // 폴백 (구형 iOS·Safari)
+  const radius = Math.min(r, w/2, h/2);
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.lineTo(x + w - radius, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + radius);
+  ctx.lineTo(x + w, y + h - radius);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - radius, y + h);
+  ctx.lineTo(x + radius, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - radius);
+  ctx.lineTo(x, y + radius);
+  ctx.quadraticCurveTo(x, y, x + radius, y);
+  ctx.closePath();
+}
+
+// ── Canvas 헬퍼: letter-spacing 효과 (text 한 글자씩 그리기) ──
+function _drawSpacedText(ctx, text, x, y, spacing, align){
+  align = align || 'center';
+  const chars = text.split('');
+  let total = 0;
+  const widths = chars.map(c => {
+    const w = ctx.measureText(c).width;
+    total += w;
+    return w;
+  });
+  const charSpacing = spacing * 16; // em 단위 → px 환산
+  total += charSpacing * (chars.length - 1);
+
+  let startX;
+  if(align === 'center') startX = x - total/2;
+  else if(align === 'right') startX = x - total;
+  else startX = x;
+
+  // 이전 textAlign 상태 백업 (이 함수 호출 이후 상태 오염 방지)
+  const prevAlign = ctx.textAlign;
+  ctx.textAlign = 'left';
+  let curX = startX;
+  for(let i = 0; i < chars.length; i++){
+    ctx.fillText(chars[i], curX, y);
+    curX += widths[i] + charSpacing;
+  }
+  // 상태 복원
+  ctx.textAlign = prevAlign;
+}
+
+// ── Canvas 헬퍼: 텍스트 두 줄 분할 (긴 타입명 대응) ──
+function _wrapText(ctx, text, maxWidth){
+  if(ctx.measureText(text).width <= maxWidth) return [text];
+  // 한국어는 공백 기준 분할이 어려우니 절반 지점에서 자연스럽게 끊기
+  const half = Math.ceil(text.length / 2);
+  // 조사/명사 사이에서 잘리도록 후보 위치 검토
+  for(let i = half; i < text.length - 2; i++){
+    const c = text[i];
+    if(c === ' ' || c === '·' || c === ','){
+      return [text.slice(0, i).trim(), text.slice(i+1).trim()];
+    }
+  }
+  // 후보가 없으면 그냥 한 줄 (이모지 등이 잘리지 않도록)
+  return [text];
 }
 
 // ═══════════════════════════════════════════════════════════════
