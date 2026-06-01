@@ -2076,6 +2076,19 @@ function renderResult(t, sub, unlocked){
       <p class="upg-trust">💳 카카오페이 · 토스 · 카드 결제 · 14분 평균 소요</p>
     </div>
 
+    <!-- ═══════════════════════════════════════════════
+         셀인하자 시공 안내 (진단 → 실제 공간 연결)
+         ═══════════════════════════════════════════════ -->
+    <a href="/selinhaja?from=free" onclick="trackEvent('selinhaja_cta_click',{from:'free',from_type:'${t.id}'})" style="display:block;text-decoration:none;margin:24px 0 4px;background:linear-gradient(145deg,#FFFAFC,#F8F0F5);border:1px solid rgba(220,20,120,.15);border-radius:16px;padding:26px 24px;text-align:center;box-shadow:0 4px 24px rgba(220,20,120,.08);position:relative;overflow:hidden">
+      <span style="position:absolute;top:-40px;right:-40px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(220,20,120,.1),transparent 70%);pointer-events:none"></span>
+      <span style="display:block;font-size:2.2rem;margin-bottom:12px;position:relative;z-index:1">🏠</span>
+      <span style="display:inline-block;font-size:.68rem;font-weight:800;letter-spacing:.08em;color:#DC1478;margin-bottom:8px;position:relative;z-index:1">✦ 진단 결과를 실제 공간으로</span>
+      <span style="display:block;font-size:1.25rem;font-weight:900;color:#0F0F1A;line-height:1.35;margin-bottom:8px;position:relative;z-index:1">내 유형, 이제 <span style="color:#DC1478">실제 집</span>에 적용할 차례</span>
+      <span style="display:block;font-size:.88rem;font-weight:600;color:#3D3D5C;line-height:1.7;margin-bottom:18px;position:relative;z-index:1">진단 결과를 그대로 이어받아 인테리어 시공까지.<br>심리에 맞는 공간을 투명한 정찰제로 만들어드려요.</span>
+      <span style="display:inline-flex;align-items:center;gap:8px;background:#DC1478;color:#fff;font-size:.92rem;font-weight:800;padding:15px 32px;border-radius:50px;box-shadow:0 8px 24px rgba(220,20,120,.3);position:relative;z-index:1">셀인하자에서 시공 알아보기 →</span>
+      <span style="display:block;font-size:.74rem;color:#8890A4;font-weight:600;margin-top:12px;position:relative;z-index:1">런칭 기념 50% 할인 · 현장점검 200만원부터</span>
+    </a>
+
     <!-- 카카오톡 공유 버튼 -->
     <div style="margin-top:36px;padding-top:28px;border-top:1px solid rgba(0,0,0,.06);display:flex;flex-direction:column;align-items:center;gap:14px">
       <p style="font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gray);font-weight:700">✦ 결과 공유하기</p>
