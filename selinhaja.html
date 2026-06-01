@@ -140,14 +140,14 @@ nav{
 
 /* PRICING */
 .pricing-section{background:var(--bg)}
-.pricing-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:20px; max-width:1100px; margin:0 auto; align-items:start}
+.pricing-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:20px; max-width:1100px; margin:0 auto; align-items:stretch}
 .pcard{
-  background:#fff; border-radius:var(--radius); padding:32px 26px 26px;
+  background:#fff; border-radius:var(--radius); padding:40px 26px 26px;
   border:2px solid #eef0f5; position:relative; display:flex; flex-direction:column;
   transition:all .3s;
 }
 .pcard:hover{transform:translateY(-5px); box-shadow:var(--sh)}
-.pcard.best{border-color:var(--pink); box-shadow:var(--sh-lg); padding-top:40px}
+.pcard.best{border-color:var(--pink); box-shadow:var(--sh-lg)}
 .pcard-best-tag{
   position:absolute; top:-15px; left:50%; transform:translateX(-50%);
   background:var(--pink); color:#fff; font-size:.74rem; font-weight:800;
@@ -189,11 +189,20 @@ nav{
 .plist.ex .pli{color:var(--gray)}
 .plist.ex .d{color:#c4c8d4}
 .pcard .pbtn{margin-top:auto}
+.pcard .pbtn + .pbtn{margin-top:8px}
 .pbtn{display:flex; align-items:center; justify-content:center; gap:7px; padding:15px; border-radius:var(--radius-sm); font-size:.9rem; font-weight:800; text-decoration:none; transition:all .25s}
 .pbtn-line{border:1.5px solid #e3e6ee; color:var(--dark); background:#fff}
 .pbtn-line:hover{border-color:var(--pink); color:var(--pink)}
 .pbtn-fill{background:var(--pink); color:#fff; box-shadow:0 8px 20px rgba(233,30,140,.3)}
 .pbtn-fill:hover{background:var(--pink-dk)}
+/* 카카오톡 상담 버튼 (메인) */
+.pbtn-kakao{background:#FEE500; color:#191919; box-shadow:0 6px 18px rgba(254,229,0,.4)}
+.pbtn-kakao:hover{background:#f5dd00; transform:translateY(-1px); box-shadow:0 10px 24px rgba(254,229,0,.5)}
+.pbtn-kakao .kakao-ic{width:auto;height:auto;background:none;border-radius:0}
+/* 채널 추가 버튼 (보조) */
+.pbtn-channel{background:#fff; border:1.5px solid #e3e6ee; color:var(--mid); font-size:.82rem; font-weight:700; padding:12px}
+.pbtn-channel:hover{border-color:#FEE500; color:#191919; background:#fffdf0}
+.ch-plus{display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:50%; background:#FEE500; color:#191919; font-size:.85rem; font-weight:900; line-height:1}
 .kakao-ic{width:18px; height:18px; background:#FEE500; border-radius:5px; display:inline-flex; align-items:center; justify-content:center; font-size:.6rem}
 .pricing-foot{text-align:center; margin-top:34px; font-size:.85rem; font-weight:600; color:var(--mid); line-height:1.8}
 .pricing-foot strong{color:var(--pink)}
@@ -263,6 +272,24 @@ footer{background:var(--dark); padding:56px 40px 36px; color:rgba(255,255,255,.5
   .foot-top{grid-template-columns:1fr 1fr; gap:28px}
 }
 </style>
+
+<!-- ════════ 카카오 JavaScript SDK ════════
+     ⚠️ 아래 SDK 버전(2.7.5)과 integrity 값은 예시입니다.
+     정확한 최신 버전·integrity 값은 https://developers.kakao.com/docs/ko/javascript/download 에서
+     복사해 교체하세요. (integrity가 실제 값과 다르면 SDK가 로드되지 않습니다) -->
+<script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.5/kakao.min.js" crossorigin="anonymous"></script>
+<script>
+  /* ⚠️ 'YOUR_JAVASCRIPT_KEY'를 카카오 디벨로퍼스에서 발급받은 JavaScript 키로 교체하세요.
+     발급: https://developers.kakao.com → 내 애플리케이션 → 앱 키 → JavaScript 키
+     필수: 같은 콘솔의 [앱 > 플랫폼 키 > JavaScript 키 > JavaScript SDK 도메인]에 https://skopos.kr 등록 */
+  var KAKAO_JS_KEY = 'YOUR_JAVASCRIPT_KEY';
+  var KAKAO_CHANNEL_ID = '_dtGjX'; // 카카오톡 채널 프로필 ID
+  try {
+    if (window.Kakao && KAKAO_JS_KEY && KAKAO_JS_KEY !== 'YOUR_JAVASCRIPT_KEY' && !Kakao.isInitialized()) {
+      Kakao.init(KAKAO_JS_KEY);
+    }
+  } catch (e) { /* SDK 미초기화 시 버튼은 일반 링크로 동작 */ }
+</script>
 </head>
 <body>
 
@@ -406,7 +433,8 @@ footer{background:var(--dark); padding:56px 40px 36px; color:rgba(255,255,255,.5
         <div class="pli"><span class="d">●</span>AS 대응 · 하자 중재</div>
         <div class="pli"><span class="d">●</span>추가 공사 비용</div>
       </div>
-      <a href="#start" class="pbtn pbtn-line"><span class="kakao-ic">💬</span>카카오로 상담하기</a>
+      <a href="http://pf.kakao.com/_dtGjX/chat" target="_blank" rel="noopener" class="pbtn pbtn-kakao" data-kakao-chat><span class="kakao-ic"><svg viewBox="0 0 24 24" width="13" height="13" fill="#191919"><path d="M12 3C6.48 3 2 6.58 2 11c0 2.79 1.86 5.23 4.65 6.64-.2.72-.74 2.67-.85 3.09-.13.52.19.51.4.37.17-.11 2.64-1.79 3.71-2.52.68.1 1.38.15 2.09.15 5.52 0 10-3.58 10-8S17.52 3 12 3z"/></svg></span>카카오톡 상담하기</a>
+      <a href="http://pf.kakao.com/_dtGjX" target="_blank" rel="noopener" class="pbtn pbtn-channel" data-kakao-addchannel><span class="ch-plus">+</span>채널 추가하고 혜택받기</a>
     </div>
 
     <!-- 반셀프 도움 -->
@@ -443,7 +471,8 @@ footer{background:var(--dark); padding:56px 40px 36px; color:rgba(255,255,255,.5
         <div class="pli"><span class="d">●</span>인테리어 전체 총괄</div>
         <div class="pli"><span class="d">●</span>추가 공사 비용</div>
       </div>
-      <a href="#start" class="pbtn pbtn-fill"><span class="kakao-ic">💬</span>카카오로 상담하기</a>
+      <a href="http://pf.kakao.com/_dtGjX/chat" target="_blank" rel="noopener" class="pbtn pbtn-kakao" data-kakao-chat><span class="kakao-ic"><svg viewBox="0 0 24 24" width="13" height="13" fill="#191919"><path d="M12 3C6.48 3 2 6.58 2 11c0 2.79 1.86 5.23 4.65 6.64-.2.72-.74 2.67-.85 3.09-.13.52.19.51.4.37.17-.11 2.64-1.79 3.71-2.52.68.1 1.38.15 2.09.15 5.52 0 10-3.58 10-8S17.52 3 12 3z"/></svg></span>카카오톡 상담하기</a>
+      <a href="http://pf.kakao.com/_dtGjX" target="_blank" rel="noopener" class="pbtn pbtn-channel" data-kakao-addchannel><span class="ch-plus">+</span>채널 추가하고 혜택받기</a>
     </div>
 
     <!-- 턴키 -->
@@ -477,7 +506,8 @@ footer{background:var(--dark); padding:56px 40px 36px; color:rgba(255,255,255,.5
       <div class="plist ex">
         <div class="pli"><span class="d">●</span>추가 공사 비용</div>
       </div>
-      <a href="#start" class="pbtn pbtn-line"><span class="kakao-ic">💬</span>카카오로 상담하기</a>
+      <a href="http://pf.kakao.com/_dtGjX/chat" target="_blank" rel="noopener" class="pbtn pbtn-kakao" data-kakao-chat><span class="kakao-ic"><svg viewBox="0 0 24 24" width="13" height="13" fill="#191919"><path d="M12 3C6.48 3 2 6.58 2 11c0 2.79 1.86 5.23 4.65 6.64-.2.72-.74 2.67-.85 3.09-.13.52.19.51.4.37.17-.11 2.64-1.79 3.71-2.52.68.1 1.38.15 2.09.15 5.52 0 10-3.58 10-8S17.52 3 12 3z"/></svg></span>카카오톡 상담하기</a>
+      <a href="http://pf.kakao.com/_dtGjX" target="_blank" rel="noopener" class="pbtn pbtn-channel" data-kakao-addchannel><span class="ch-plus">+</span>채널 추가하고 혜택받기</a>
     </div>
 
   </div>
@@ -494,7 +524,7 @@ footer{background:var(--dark); padding:56px 40px 36px; color:rgba(255,255,255,.5
       <div class="cafe-tag">✦ 아파트 · 주거 공간 전문</div>
       <div class="cafe-h">매일 머무는 집,<br>심리에 맞게 바꿔드려요</div>
       <p class="cafe-p">아파트·빌라·오피스텔 등 주거 공간만 전문으로 다룹니다. 거실·침실·주방·서재까지, 가족 구성원의 공간 욕구를 진단해 매일의 일상이 편안해지는 집을 설계합니다.</p>
-      <a href="#start" class="cafe-btn"><span class="kakao-ic">💬</span>우리 집 상담 신청하기</a>
+      <a href="http://pf.kakao.com/_dtGjX/chat" target="_blank" rel="noopener" class="cafe-btn" data-kakao-chat><span class="kakao-ic"><svg viewBox="0 0 24 24" width="13" height="13" fill="#191919"><path d="M12 3C6.48 3 2 6.58 2 11c0 2.79 1.86 5.23 4.65 6.64-.2.72-.74 2.67-.85 3.09-.13.52.19.51.4.37.17-.11 2.64-1.79 3.71-2.52.68.1 1.38.15 2.09.15 5.52 0 10-3.58 10-8S17.52 3 12 3z"/></svg></span>우리 집 상담 신청하기</a>
     </div>
     <div class="cafe-r">
       <div class="cafe-item"><span class="cafe-item-ic">🛋️</span><span class="cafe-item-tx">아파트 전체 리모델링</span></div>
@@ -511,7 +541,7 @@ footer{background:var(--dark); padding:56px 40px 36px; color:rgba(255,255,255,.5
   <p class="cta-p">무료 SDTI 진단이 셀인하자의 시작점입니다. 진단 결과가 그대로 시공 설계로 이어집니다.</p>
   <div class="cta-btns">
     <a href="https://skopos.kr/skopos_quiz.html" class="cta-white">무료 진단 시작 22문항</a>
-    <a href="mailto:contact@skopos.kr" class="cta-ghost">바로 견적 상담하기</a>
+    <a href="http://pf.kakao.com/_dtGjX/chat" target="_blank" rel="noopener" class="cta-ghost" data-kakao-chat>카카오톡으로 바로 상담하기</a>
   </div>
 </section>
 
@@ -573,6 +603,31 @@ document.querySelectorAll('.why-card,.pcard,.cafe-item,.connect-rail').forEach(e
   } else if(from === 'free'){
     bar.textContent = '진단 결과를 그대로 이어받아 시공까지 — 셀인하자';
   }
+})();
+
+// 카카오 채널 SDK 연동 — SDK 사용 가능하면 팝업 호출, 아니면 일반 링크(href)로 폴백
+(function(){
+  function kakaoReady(){
+    try { return !!(window.Kakao && Kakao.Channel && typeof KAKAO_JS_KEY !== 'undefined'
+      && KAKAO_JS_KEY !== 'YOUR_JAVASCRIPT_KEY' && Kakao.isInitialized()); }
+    catch(e){ return false; }
+  }
+  // 1:1 채팅 버튼
+  document.querySelectorAll('[data-kakao-chat]').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      if(!kakaoReady()) return; // SDK 없으면 href 그대로 동작
+      e.preventDefault();
+      Kakao.Channel.chat({ channelPublicId: KAKAO_CHANNEL_ID });
+    });
+  });
+  // 채널 추가 버튼
+  document.querySelectorAll('[data-kakao-addchannel]').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      if(!kakaoReady()) return;
+      e.preventDefault();
+      Kakao.Channel.addChannel({ channelPublicId: KAKAO_CHANNEL_ID });
+    });
+  });
 })();
 </script>
 </body>
