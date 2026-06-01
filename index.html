@@ -332,6 +332,17 @@ nav.scrolled{background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border-
 .nav-logo-txt{font-size:1.25rem;font-weight:900;letter-spacing:-.03em;color:var(--dark)}
 .nav-logo-txt span{color:var(--pink)}
 .nav-right{display:flex;align-items:center;gap:8px}
+/* ── 셀인하자 연결 배너 버튼 ── */
+.nav-selin{display:flex;align-items:center;gap:9px;text-decoration:none;background:linear-gradient(135deg,#0F0F1A 0%,#2a2440 100%);border-radius:12px;padding:7px 14px 7px 12px;position:relative;overflow:hidden;transition:all .22s;border:1px solid rgba(220,20,120,.25)}
+.nav-selin::before{content:'';position:absolute;top:-30px;right:-20px;width:90px;height:90px;border-radius:50%;background:radial-gradient(circle,rgba(220,20,120,.35),transparent 70%);pointer-events:none}
+.nav-selin:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(220,20,120,.3);border-color:rgba(220,20,120,.5)}
+.nav-selin-ic{font-size:1.25rem;line-height:1;position:relative;z-index:1}
+.nav-selin-text{display:flex;flex-direction:column;line-height:1.1;position:relative;z-index:1}
+.nav-selin-label{font-size:.78rem;font-weight:900;color:#fff;letter-spacing:-.01em;white-space:nowrap}
+.nav-selin-sub{font-size:.62rem;font-weight:700;color:var(--pink-soft);margin-top:2px;letter-spacing:.01em;white-space:nowrap}
+.nav-selin-dot{position:absolute;top:8px;right:8px;width:6px;height:6px;border-radius:50%;background:var(--pink);z-index:1}
+.nav-selin-dot::after{content:'';position:absolute;inset:-3px;border-radius:50%;background:var(--pink);opacity:.4;animation:navSelinPulse 1.8s ease-out infinite}
+@keyframes navSelinPulse{0%{transform:scale(1);opacity:.4}100%{transform:scale(2.6);opacity:0}}
 .nav-ghost{padding:9px 20px;border-radius:50px;font-family:'Nunito',sans-serif;font-size:.83rem;font-weight:700;text-decoration:none;color:var(--mid);border:1.5px solid rgba(0,0,0,.1);transition:all .2s}
 .nav-ghost:hover{border-color:var(--pink);color:var(--pink)}
 .nav-pill{display:flex;flex-direction:column;align-items:center;padding:7px 18px;border-radius:12px;font-family:'Nunito',sans-serif;text-decoration:none;background:linear-gradient(135deg,var(--pink) 0%,#FF6B9D 100%);color:#fff;box-shadow:0 3px 12px rgba(220,20,120,.28);transition:all .22s;gap:0;line-height:1}
@@ -882,6 +893,8 @@ footer{background:var(--dark);color:rgba(255,255,255,.5);padding:52px 24px 36px}
   .sci-cards{grid-template-columns:1fr 1fr}
   .numbers-grid{grid-template-columns:1fr 1fr}
   .nav-ghost{display:none}
+  .nav-selin-sub{display:none}
+  .nav-selin{padding:7px 12px}
   .btn-premium-launch{padding:12px 16px !important;gap:10px}
   .bpl-title{font-size:.88rem}
   .bpl-badge{font-size:.58rem;padding:2px 8px}
@@ -894,6 +907,11 @@ footer{background:var(--dark);color:rgba(255,255,255,.5);padding:52px 24px 36px}
 }
 @media(max-width:480px){
   .nav-pill{padding:6px 14px;border-radius:10px}
+  .nav-selin-label{font-size:.7rem}
+  .nav-selin-ic{font-size:1.15rem}
+  .nav-selin{padding:7px 9px;gap:0}
+  .nav-selin-text{display:none}
+  .nav-selin-dot{top:5px;right:5px}
   .nav-pill-label{font-size:.66rem}
   .nav-pill-price{font-size:.76rem}
   .nav-login-btn{padding:6px 12px;font-size:.7rem}
@@ -936,6 +954,14 @@ em{font-style:normal}
       <span class="nav-logo-txt">SKO<span>POS</span></span>
     </a>
     <div class="nav-right">
+      <a class="nav-selin" href="/selinhaja">
+        <span class="nav-selin-ic">🏠</span>
+        <span class="nav-selin-text">
+          <span class="nav-selin-label">셀인하자 인테리어</span>
+          <span class="nav-selin-sub">진단 → 시공까지</span>
+        </span>
+        <span class="nav-selin-dot"></span>
+      </a>
       <a class="nav-ghost" href="skopos_quiz.html">무료 진단</a>
       <a class="nav-pill" href="payment.html">
         <span class="nav-pill-label">SDTI 정밀 검사</span>
