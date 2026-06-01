@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>검증된 기술자 찾기 | 셀인하자 — 공정별 반셀프 작업자</title>
+<meta name="description" content="반셀프 인테리어 공정별 검증된 기술자를 찾으세요. 실사용 후기 기반으로 선별된 목수·도배·타일·전기 등 전문가와 카카오톡으로 빠르게 상담하세요.">
+<meta name="keywords" content="반셀프인테리어,인테리어기술자,공정별작업자,목수,도배,타일,전기,셀인하자,검증된작업자">
+<link rel="canonical" href="https://skopos.kr/selinhaja/findworkers">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="셀인하자 · SKOPOS">
+<meta property="og:title" content="검증된 기술자 찾기 | 셀인하자">
+<meta property="og:description" content="공정별 검증된 인테리어 기술자를 후기 기반으로 선별. 카카오톡으로 바로 상담하세요.">
+<meta property="og:url" content="https://skopos.kr/selinhaja/findworkers">
+<meta property="og:locale" content="ko_KR">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
+<!-- ════════ 카카오 JavaScript SDK ════════
+     ⚠️ SDK 버전·integrity는 https://developers.kakao.com/docs/ko/javascript/download 에서 최신값으로 교체 권장 -->
+<script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.5/kakao.min.js" crossorigin="anonymous"></script>
+<script>
+  /* ⚠️ 'YOUR_JAVASCRIPT_KEY'를 카카오 디벨로퍼스 JavaScript 키로 교체. [플랫폼>Web]에 https://skopos.kr 등록 필수 */
+  var KAKAO_JS_KEY = 'YOUR_JAVASCRIPT_KEY';
+  var KAKAO_CHANNEL_ID = '_dtGjX';
+  try {
+    if (window.Kakao && KAKAO_JS_KEY && KAKAO_JS_KEY !== 'YOUR_JAVASCRIPT_KEY' && !Kakao.isInitialized()) {
+      Kakao.init(KAKAO_JS_KEY);
+    }
+  } catch (e) {}
+</script>
+
+<style>
+:root{
+  --pink:#E91E8C; --pink-dk:#c4156f; --pink-lt:#fce4f3;
+  --orange:#FF9800; --orange-lt:#fff3e0;
+  --green:#7CB342; --green-lt:#eef6e6;
+  --blue:#29B6F6; --blue-lt:#e3f5fe;
+  --purple:#AB47BC; --purple-lt:#f4e6f7;
+  --dark:#0F0F1A; --mid:#3D3D5C; --gray:#8890A4;
+  --bg:#F7F8FC; --white:#FFFFFF;
+  --radius:22px; --radius-sm:14px;
+  --sh:0 4px 24px rgba(15,15,26,.07);
+  --sh-lg:0 16px 56px rgba(233,30,140,.13);
+  --ez:cubic-bezier(.22,1,.36,1);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dark);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+/* SISTER BAR */
+.sister-bar{background:var(--dark);color:#fff;display:flex;align-items:center;justify-content:center;gap:10px;padding:9px 20px;font-size:.78rem;font-weight:600}
+.sister-bar a{color:var(--pink);text-decoration:none;font-weight:800}
+.sister-bar a:hover{text-decoration:underline}
+.sister-bar .chip{background:rgba(255,255,255,.1);border-radius:50px;padding:2px 10px;font-size:.68rem;font-weight:700}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 40px;background:rgba(247,248,252,.9);backdrop-filter:blur(12px);border-bottom:1px solid rgba(233,30,140,.08)}
+.nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-skopos{font-weight:900;font-size:1rem;color:var(--gray);letter-spacing:.04em}
+.nav-sep{color:var(--gray);opacity:.4}
+.nav-logo{font-weight:900;font-size:1.35rem;color:var(--dark)}
+.nav-logo b{color:var(--pink)}
+.nav-links{display:flex;gap:26px;align-items:center}
+.nav-links a{font-size:.85rem;font-weight:700;color:var(--mid);text-decoration:none;transition:color .2s}
+.nav-links a:hover{color:var(--pink)}
+.nav-cta{background:var(--pink) !important;color:#fff !important;padding:10px 22px;border-radius:50px;font-size:.82rem !important;box-shadow:0 6px 18px rgba(233,30,140,.3)}
+
+/* HERO */
+.hero{padding:64px 40px 40px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-150px;left:50%;transform:translateX(-50%);width:900px;height:500px;background:radial-gradient(ellipse,rgba(233,30,140,.1) 0%,transparent 60%);pointer-events:none}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--pink-lt);color:var(--pink);font-size:.8rem;font-weight:800;padding:8px 18px;border-radius:50px;margin-bottom:24px;box-shadow:var(--sh);position:relative}
+.hero h1{font-size:clamp(2rem,4.5vw,3.2rem);font-weight:900;line-height:1.2;letter-spacing:-.02em;margin-bottom:18px;position:relative}
+.hero h1 .hl{color:var(--pink)}
+.hero-sub{font-size:1.05rem;font-weight:600;color:var(--mid);line-height:1.7;max-width:600px;margin:0 auto 30px;position:relative}
+.hero-trust{display:flex;gap:28px;justify-content:center;flex-wrap:wrap;position:relative;margin-top:8px}
+.ht-item{display:flex;flex-direction:column;align-items:center}
+.ht-num{font-size:1.8rem;font-weight:900;color:var(--pink);line-height:1}
+.ht-lbl{font-size:.78rem;font-weight:700;color:var(--gray);margin-top:5px}
+
+/* VERIFY STRIP */
+.verify-strip{max-width:880px;margin:8px auto 0;padding:0 20px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.vs-item{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #eef0f5;border-radius:50px;padding:9px 18px;font-size:.82rem;font-weight:700;color:var(--mid);box-shadow:var(--sh)}
+.vs-item .vs-ic{width:22px;height:22px;border-radius:50%;background:var(--green-lt);display:flex;align-items:center;justify-content:center;font-size:.8rem}
+
+/* FILTER */
+.filter-section{padding:40px 40px 0}
+.filter-wrap{max-width:1100px;margin:0 auto}
+.filter-title{font-size:.85rem;font-weight:800;color:var(--gray);letter-spacing:.06em;margin-bottom:14px;text-align:center}
+.filter-chips{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.fchip{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1.5px solid #e8eaf0;border-radius:50px;padding:10px 18px;font-size:.88rem;font-weight:800;color:var(--mid);cursor:pointer;transition:all .2s var(--ez);user-select:none}
+.fchip:hover{border-color:var(--pink);color:var(--pink);transform:translateY(-1px)}
+.fchip.active{background:var(--pink);border-color:var(--pink);color:#fff;box-shadow:0 6px 16px rgba(233,30,140,.3)}
+.fchip-ic{font-size:1.05rem}
+
+/* WORKERS GRID */
+.workers-section{padding:34px 40px 70px}
+.workers-wrap{max-width:1100px;margin:0 auto}
+.workers-count{font-size:.88rem;font-weight:700;color:var(--gray);margin-bottom:20px;text-align:center}
+.workers-count b{color:var(--pink)}
+.workers-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.wcard{background:#fff;border-radius:var(--radius);border:1.5px solid #eef0f5;overflow:hidden;transition:all .28s var(--ez);display:flex;flex-direction:column}
+.wcard:hover{transform:translateY(-5px);box-shadow:var(--sh-lg);border-color:var(--pink-lt)}
+.wcard-top{padding:22px 22px 16px;display:flex;gap:14px;align-items:flex-start;position:relative}
+.wcard-avatar{width:58px;height:58px;border-radius:16px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.7rem;background:var(--pink-lt)}
+.wcard.cat-목공 .wcard-avatar{background:var(--orange-lt)}
+.wcard.cat-도배 .wcard-avatar{background:var(--blue-lt)}
+.wcard.cat-타일 .wcard-avatar{background:var(--green-lt)}
+.wcard.cat-전기 .wcard-avatar{background:var(--purple-lt)}
+.wcard.cat-페인트 .wcard-avatar{background:var(--pink-lt)}
+.wcard.cat-마루 .wcard-avatar{background:var(--orange-lt)}
+.wcard.cat-욕실 .wcard-avatar{background:var(--blue-lt)}
+.wcard.cat-철거 .wcard-avatar{background:var(--green-lt)}
+.wcard-headinfo{flex:1;min-width:0}
+.wcard-name{font-size:1.1rem;font-weight:900;color:var(--dark);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.verify-badge{display:inline-flex;align-items:center;gap:3px;background:var(--green-lt);color:#5a8a20;font-size:.64rem;font-weight:800;padding:2px 8px;border-radius:50px}
+.wcard-cat{font-size:.82rem;font-weight:800;color:var(--pink);margin-top:3px}
+.wcard-region{font-size:.76rem;font-weight:600;color:var(--gray);margin-top:2px}
+.wcard-rating{position:absolute;top:22px;right:22px;text-align:right}
+.wr-stars{color:var(--orange);font-size:.82rem;letter-spacing:1px}
+.wr-score{font-size:.74rem;font-weight:700;color:var(--mid);margin-top:1px}
+.wcard-body{padding:0 22px 18px}
+.wcard-desc{font-size:.86rem;font-weight:600;color:var(--mid);line-height:1.6;margin-bottom:14px}
+.wcard-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.wtag{font-size:.72rem;font-weight:700;color:var(--mid);background:var(--bg);border:1px solid #eef0f5;border-radius:50px;padding:4px 11px}
+.wcard-meta{display:flex;gap:0;border-top:1px solid #f0f1f5;border-bottom:1px solid #f0f1f5;margin-bottom:16px}
+.wm-item{flex:1;text-align:center;padding:12px 6px;position:relative}
+.wm-item:not(:last-child)::after{content:'';position:absolute;right:0;top:20%;height:60%;width:1px;background:#f0f1f5}
+.wm-num{font-size:1.05rem;font-weight:900;color:var(--dark)}
+.wm-lbl{font-size:.68rem;font-weight:700;color:var(--gray);margin-top:2px}
+.wcard-quote{background:var(--bg);border-radius:10px;padding:12px 14px;font-size:.78rem;font-weight:600;color:var(--mid);line-height:1.55;margin-bottom:16px;position:relative}
+.wcard-quote::before{content:'"';position:absolute;top:2px;left:8px;font-size:1.4rem;color:var(--pink);opacity:.3;font-family:Georgia,serif}
+.wcard-quote .qauthor{display:block;font-size:.7rem;color:var(--gray);font-weight:700;margin-top:5px}
+.wcard-foot{padding:0 22px 22px;margin-top:auto}
+.wbtn{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;padding:14px;border-radius:var(--radius-sm);font-size:.9rem;font-weight:800;text-decoration:none;transition:all .25s var(--ez);background:#FEE500;color:#191919;box-shadow:0 6px 18px rgba(254,229,0,.4)}
+.wbtn:hover{background:#f5dd00;transform:translateY(-1px)}
+.wbtn-ic{display:inline-flex}
+
+/* HOW IT WORKS */
+.how-section{background:#fff;padding:70px 40px}
+.how-wrap{max-width:1000px;margin:0 auto;text-align:center}
+.how-tag{font-size:.78rem;font-weight:800;letter-spacing:.1em;color:var(--pink);margin-bottom:12px}
+.how-h2{font-size:clamp(1.7rem,3vw,2.4rem);font-weight:900;line-height:1.25;margin-bottom:44px}
+.how-h2 .hl{color:var(--pink)}
+.how-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.hstep{position:relative;padding:0 8px}
+.hstep-num{width:46px;height:46px;border-radius:50%;background:var(--pink-lt);color:var(--pink);font-size:1.2rem;font-weight:900;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.hstep-title{font-size:1rem;font-weight:800;margin-bottom:8px}
+.hstep-desc{font-size:.84rem;font-weight:600;color:var(--mid);line-height:1.65}
+.hstep::after{content:'→';position:absolute;top:14px;right:-12px;color:var(--pink);opacity:.3;font-size:1.1rem;font-weight:900}
+.hstep:last-child::after{display:none}
+
+/* VERIFY EXPLAIN */
+.vexplain{max-width:1000px;margin:0 auto;padding:50px 40px}
+.vexplain-card{background:linear-gradient(135deg,#0F0F1A 0%,#27243a 100%);border-radius:var(--radius);padding:44px 40px;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;position:relative;overflow:hidden}
+.vexplain-card::before{content:'';position:absolute;top:-60px;right:-40px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(124,179,66,.25),transparent 70%)}
+.vex-l{position:relative;z-index:1}
+.vex-tag{font-size:.76rem;font-weight:800;letter-spacing:.08em;color:var(--green);margin-bottom:12px}
+.vex-h{font-size:1.7rem;font-weight:900;color:#fff;line-height:1.3;margin-bottom:12px}
+.vex-p{font-size:.9rem;font-weight:600;color:rgba(255,255,255,.6);line-height:1.7}
+.vex-r{position:relative;z-index:1;display:flex;flex-direction:column;gap:12px}
+.vex-item{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:16px 18px;display:flex;gap:13px;align-items:center}
+.vex-ic{width:38px;height:38px;border-radius:10px;background:rgba(124,179,66,.2);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.vex-tx{font-size:.86rem;font-weight:700;color:rgba(255,255,255,.85)}
+.vex-tx span{display:block;font-size:.74rem;font-weight:600;color:rgba(255,255,255,.5);margin-top:2px}
+
+/* APPLY CTA (기술자 등록) */
+.apply-section{padding:60px 40px}
+.apply-card{max-width:760px;margin:0 auto;background:linear-gradient(145deg,#FFFAFC,#F8F0F5);border:1px solid rgba(233,30,140,.15);border-radius:var(--radius);padding:40px 34px;text-align:center;position:relative;overflow:hidden}
+.apply-card::before{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(233,30,140,.1),transparent 70%)}
+.apply-ic{font-size:2.2rem;margin-bottom:12px;position:relative;z-index:1}
+.apply-h{font-size:1.4rem;font-weight:900;line-height:1.3;margin-bottom:10px;position:relative;z-index:1}
+.apply-h .hl{color:var(--pink)}
+.apply-p{font-size:.9rem;font-weight:600;color:var(--mid);line-height:1.7;margin-bottom:22px;position:relative;z-index:1}
+.apply-btn{display:inline-flex;align-items:center;gap:8px;background:var(--dark);color:#fff;font-size:.92rem;font-weight:800;padding:15px 32px;border-radius:50px;text-decoration:none;transition:all .25s var(--ez);position:relative;z-index:1}
+.apply-btn:hover{background:#27243a;transform:translateY(-2px)}
+
+/* FINAL CTA */
+.fcta{background:linear-gradient(135deg,var(--pink) 0%,#ff5fb0 100%);padding:70px 40px;text-align:center;position:relative;overflow:hidden}
+.fcta::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(255,255,255,.12) 0%,transparent 60%)}
+.fcta-h{font-size:clamp(1.7rem,3.5vw,2.6rem);font-weight:900;color:#fff;line-height:1.25;margin-bottom:14px;position:relative}
+.fcta-p{font-size:.98rem;font-weight:600;color:rgba(255,255,255,.9);line-height:1.7;max-width:480px;margin:0 auto 32px;position:relative}
+.fcta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;position:relative}
+.fcta-white{background:#fff;color:var(--pink);padding:16px 34px;border-radius:50px;font-size:.95rem;font-weight:800;text-decoration:none;box-shadow:0 10px 28px rgba(15,15,26,.18);transition:all .25s var(--ez)}
+.fcta-white:hover{transform:translateY(-2px)}
+.fcta-ghost{background:rgba(255,255,255,.15);color:#fff;padding:15px 30px;border-radius:50px;font-size:.95rem;font-weight:800;text-decoration:none;border:1.5px solid rgba(255,255,255,.4);transition:all .25s var(--ez)}
+.fcta-ghost:hover{background:rgba(255,255,255,.25)}
+
+/* FOOTER */
+footer{background:var(--dark);padding:48px 40px 32px;color:rgba(255,255,255,.5)}
+.foot-top{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;flex-wrap:wrap;gap:24px;padding-bottom:28px;border-bottom:1px solid rgba(255,255,255,.08)}
+.foot-logo{font-weight:900;font-size:1.3rem;color:#fff}
+.foot-logo b{color:var(--pink)}
+.foot-links{display:flex;gap:20px;flex-wrap:wrap}
+.foot-links a{font-size:.82rem;font-weight:700;color:rgba(255,255,255,.5);text-decoration:none}
+.foot-links a:hover{color:var(--pink)}
+.foot-biz{max-width:1100px;margin:22px auto 0;font-size:.72rem;font-weight:500;color:rgba(255,255,255,.3);line-height:1.9}
+.foot-disclaimer{max-width:1100px;margin:14px auto 0;font-size:.72rem;font-weight:600;color:rgba(255,255,255,.35);line-height:1.7}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.hero>*{animation:fadeUp .6s ease both}
+
+@media(max-width:980px){
+  nav{padding:14px 20px}
+  .nav-links{display:none}
+  .hero{padding:48px 20px 30px}
+  .workers-grid{grid-template-columns:1fr 1fr}
+  .how-steps{grid-template-columns:1fr 1fr;gap:32px 18px}
+  .hstep:nth-child(2)::after{display:none}
+  .vexplain-card{grid-template-columns:1fr;gap:28px;padding:34px 26px}
+  .filter-section,.workers-section,.how-section,.apply-section,.vexplain,.fcta{padding-left:20px;padding-right:20px}
+}
+@media(max-width:620px){
+  .workers-grid{grid-template-columns:1fr;max-width:420px;margin:0 auto}
+  .how-steps{grid-template-columns:1fr;gap:28px}
+  .hstep::after{display:none}
+  .hero-trust{gap:20px}
+  .foot-top{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<!-- SISTER BAR -->
+<div class="sister-bar">
+  <span class="chip">반셀프 도움</span>
+  <span>공정별 검증된 기술자를 직접 연결해 드려요</span>
+  <a href="/selinhaja">← 셀인하자 메인</a>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="/selinhaja" class="nav-brand">
+    <span class="nav-skopos">SKOPOS</span>
+    <span class="nav-sep">/</span>
+    <span class="nav-logo">셀인<b>하자</b></span>
+  </a>
+  <div class="nav-links">
+    <a href="/selinhaja#pricing">견적·가격</a>
+    <a href="#workers">기술자 찾기</a>
+    <a href="#how">이용 방법</a>
+    <a href="#verify">검증 기준</a>
+    <a href="#apply" class="nav-cta">기술자 등록</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">✦ 후기로 검증된 공정별 전문가</div>
+  <h1>반셀프 인테리어,<br><span class="hl">믿을 수 있는 기술자</span>부터 찾으세요</h1>
+  <p class="hero-sub">목수·도배·타일·전기까지. 실사용 후기로 검증된 공정별 기술자를 셀인하자가 직접 선별했습니다. 마음에 드는 분과 카카오톡으로 바로 상담하세요.</p>
+  <div class="hero-trust">
+    <div class="ht-item"><span class="ht-num">120+</span><span class="ht-lbl">검증된 기술자</span></div>
+    <div class="ht-item"><span class="ht-num">8개</span><span class="ht-lbl">공정 분야</span></div>
+    <div class="ht-item"><span class="ht-num">4.8</span><span class="ht-lbl">평균 만족도</span></div>
+  </div>
+</section>
+
+<!-- VERIFY STRIP -->
+<div class="verify-strip">
+  <div class="vs-item"><span class="vs-ic">✓</span>사업자·경력 확인</div>
+  <div class="vs-item"><span class="vs-ic">✓</span>실사용 후기 검증</div>
+  <div class="vs-item"><span class="vs-ic">✓</span>현장 품질 점검</div>
+  <div class="vs-item"><span class="vs-ic">✓</span>중개 수수료 없음</div>
+</div>
+
+<!-- FILTER -->
+<section class="filter-section">
+  <div class="filter-wrap">
+    <div class="filter-title">공정별로 필요한 기술자를 찾아보세요</div>
+    <div class="filter-chips" id="filterChips">
+      <span class="fchip active" data-cat="전체"><span class="fchip-ic">🔧</span>전체</span>
+      <span class="fchip" data-cat="목공"><span class="fchip-ic">🪵</span>목공·가구</span>
+      <span class="fchip" data-cat="도배"><span class="fchip-ic">🎨</span>도배·필름</span>
+      <span class="fchip" data-cat="타일"><span class="fchip-ic">🧱</span>타일</span>
+      <span class="fchip" data-cat="전기"><span class="fchip-ic">💡</span>전기·조명</span>
+      <span class="fchip" data-cat="페인트"><span class="fchip-ic">🖌️</span>페인트·도장</span>
+      <span class="fchip" data-cat="마루"><span class="fchip-ic">🪟</span>마루·바닥</span>
+      <span class="fchip" data-cat="욕실"><span class="fchip-ic">🚿</span>욕실·설비</span>
+      <span class="fchip" data-cat="철거"><span class="fchip-ic">🔨</span>철거</span>
+    </div>
+  </div>
+</section>
+
+<!-- WORKERS -->
+<section class="workers-section" id="workers">
+  <div class="workers-wrap">
+    <div class="workers-count">총 <b id="wcount">9</b>명의 검증된 기술자</div>
+    <div class="workers-grid" id="workersGrid"><!-- JS로 렌더링 --></div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section" id="how">
+  <div class="how-wrap">
+    <div class="how-tag">✦ 이용 방법</div>
+    <h2 class="how-h2">기술자 찾기,<br><span class="hl">3분이면 충분합니다</span></h2>
+    <div class="how-steps">
+      <div class="hstep">
+        <div class="hstep-num">1</div>
+        <div class="hstep-title">공정 선택</div>
+        <div class="hstep-desc">목공·도배·타일 등 필요한 공정을 골라요</div>
+      </div>
+      <div class="hstep">
+        <div class="hstep-num">2</div>
+        <div class="hstep-title">기술자 비교</div>
+        <div class="hstep-desc">경력·후기·전문 분야를 보고 비교해요</div>
+      </div>
+      <div class="hstep">
+        <div class="hstep-num">3</div>
+        <div class="hstep-title">카톡 상담</div>
+        <div class="hstep-desc">마음에 드는 분과 바로 채팅 상담해요</div>
+      </div>
+      <div class="hstep">
+        <div class="hstep-num">4</div>
+        <div class="hstep-title">시공 진행</div>
+        <div class="hstep-desc">셀인하자가 일정·품질을 함께 챙겨요</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VERIFY EXPLAIN -->
+<section class="vexplain" id="verify">
+  <div class="vexplain-card">
+    <div class="vex-l">
+      <div class="vex-tag">✦ 셀인하자 검증 기준</div>
+      <div class="vex-h">아무나 등록할 수<br>없습니다</div>
+      <div class="vex-p">반셀프 인테리어에서 가장 무서운 건 '잘못 만난 기술자'입니다. 셀인하자는 4단계 검증을 통과한 분만 소개합니다. 한 번의 실패가 얼마나 큰 손해인지 알기 때문입니다.</div>
+    </div>
+    <div class="vex-r">
+      <div class="vex-item"><div class="vex-ic">📋</div><div class="vex-tx">사업자·자격 확인<span>등록증·경력 증빙 검토</span></div></div>
+      <div class="vex-item"><div class="vex-ic">⭐</div><div class="vex-tx">실사용 후기 검증<span>실제 시공 고객의 평가만 반영</span></div></div>
+      <div class="vex-item"><div class="vex-ic">🔍</div><div class="vex-tx">현장 품질 점검<span>시공 결과물 직접 확인</span></div></div>
+      <div class="vex-item"><div class="vex-ic">🔄</div><div class="vex-tx">지속 모니터링<span>평점 하락 시 소개 중단</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- APPLY (기술자 등록) -->
+<section class="apply-section" id="apply">
+  <div class="apply-card">
+    <div class="apply-ic">🛠️</div>
+    <div class="apply-h">실력 있는 기술자이신가요?<br><span class="hl">셀인하자와 함께하세요</span></div>
+    <div class="apply-p">검증된 기술자로 등록되면 중개 수수료 없이 고객과 직접 연결됩니다. 후기가 쌓일수록 더 많은 의뢰가 들어옵니다.</div>
+    <a href="http://pf.kakao.com/_dtGjX/chat" target="_blank" rel="noopener" class="apply-btn" data-kakao-chat>
+      <span class="wbtn-ic"><svg viewBox="0 0 24 24" width="15" height="15" fill="#fff"><path d="M12 3C6.48 3 2 6.58 2 11c0 2.79 1.86 5.23 4.65 6.64-.2.72-.74 2.67-.85 3.09-.13.52.19.51.4.37.17-.11 2.64-1.79 3.71-2.52.68.1 1.38.15 2.09.15 5.52 0 10-3.58 10-8S17.52 3 12 3z"/></svg></span>
+      기술자 등록 문의하기
+    </a>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="fcta">
+  <h2 class="fcta-h">어떤 기술자가 맞을지<br>모르겠다면?</h2>
+  <p class="fcta-p">먼저 공간 욕구 진단으로 방향을 잡고, 셀인하자가 그에 맞는 기술자를 추천해 드립니다.</p>
+  <div class="fcta-btns">
+    <a href="https://skopos.kr/skopos_quiz.html" class="fcta-white">무료 진단부터 시작하기</a>
+    <a href="http://pf.kakao.com/_dtGjX/chat" target="_blank" rel="noopener" class="fcta-ghost" data-kakao-chat>카카오톡으로 상담하기</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-top">
+    <div class="foot-logo">셀인<b>하자</b></div>
+    <div class="foot-links">
+      <a href="/selinhaja">셀인하자 메인</a>
+      <a href="/selinhaja#pricing">견적·가격</a>
+      <a href="#workers">기술자 찾기</a>
+      <a href="https://skopos.kr">SKOPOS 진단</a>
+      <a href="mailto:contact@skopos.kr">contact@skopos.kr</a>
+    </div>
+  </div>
+  <div class="foot-biz">
+    <strong style="color:rgba(255,255,255,.5)">사업자 정보</strong><br>
+    상호: 스코포스(Skopos) · 대표: 최지훈 · 사업자등록번호: 310-13-82312 · 통신판매업: 제2026-고양덕양구-1108호<br>
+    주소: 경기도 고양시 덕양구 능곡로13번길 16, 207동 1203호 · contact@skopos.kr
+  </div>
+  <div class="foot-disclaimer">
+    ※ 셀인하자는 검증된 기술자와 고객을 연결하는 중개 서비스를 제공합니다. 실제 시공 계약은 고객과 기술자 간에 체결되며, 셀인하자는 품질 검증과 분쟁 조정을 지원합니다.
+  </div>
+</footer>
+
+<script>
+// ═══════════════ 기술자 데이터 (운영 시 서버/DB로 대체) ═══════════════
+const WORKERS = [
+  {name:'김도현', cat:'목공', icon:'🪵', region:'서울·경기 전역', rating:4.9, reviews:87, career:'18년',
+    desc:'붙박이장·중문·아트월 전문. 도면 없이도 현장 상황에 맞춰 정밀 시공합니다.',
+    tags:['붙박이장','중문','몰딩','아트월'], projects:340,
+    quote:'마감이 정말 깔끔해요. 줄눈 하나까지 신경 써주셔서 만족했습니다.', qauthor:'반셀프 고객 이○○'},
+  {name:'박성훈', cat:'도배', icon:'🎨', region:'서울·인천', rating:4.8, reviews:112, career:'15년',
+    desc:'실크·합지·뮤럴 전 종류 시공. 곰팡이·들뜸 없는 바탕 처리가 강점입니다.',
+    tags:['실크벽지','뮤럴','친환경풀','천장도배'], projects:520,
+    quote:'벽지 이음새가 안 보일 정도예요. 다음에도 꼭 부탁드릴 거예요.', qauthor:'반셀프 고객 정○○'},
+  {name:'이정민', cat:'타일', icon:'🧱', region:'경기 남부', rating:4.9, reviews:64, career:'12년',
+    desc:'욕실·주방·현관 타일 시공. 대형 포세린·헤링본 패턴 시공 경험 풍부.',
+    tags:['포세린','헤링본','줄눈시공','방수'], projects:280,
+    quote:'헤링본 패턴을 완벽하게 맞춰주셨어요. 욕실이 호텔 같아졌습니다.', qauthor:'반셀프 고객 김○○'},
+  {name:'최영재', cat:'전기', icon:'💡', region:'서울 전역', rating:4.7, reviews:73, career:'20년',
+    desc:'조명·콘센트 증설·스마트홈 배선. 전기안전 자격 보유, 누전 걱정 없이.',
+    tags:['간접조명','콘센트증설','스마트홈','분전반'], projects:410,
+    quote:'간접조명 위치를 같이 고민해주셔서 분위기가 확 살았어요.', qauthor:'반셀프 고객 한○○'},
+  {name:'정우성', cat:'페인트', icon:'🖌️', region:'서울·경기', rating:4.8, reviews:55, career:'10년',
+    desc:'친환경 도장·포인트 컬러 전문. 붓자국 없는 롤러·뿜칠 마감.',
+    tags:['친환경페인트','포인트벽','문틀도장','외부도장'], projects:230,
+    quote:'색 추천을 너무 잘해주셔서 고민이 한 번에 해결됐어요.', qauthor:'반셀프 고객 윤○○'},
+  {name:'강민호', cat:'마루', icon:'🪟', region:'경기·인천', rating:4.9, reviews:91, career:'16년',
+    desc:'강마루·강화마루·SPC 시공. 단차·소음 없는 바닥 평탄화가 특기.',
+    tags:['강마루','SPC','평탄화','걸레받이'], projects:380,
+    quote:'바닥이 평평하고 밟을 때 소리도 안 나요. 시공이 꼼꼼합니다.', qauthor:'반셀프 고객 오○○'},
+  {name:'서지훈', cat:'욕실', icon:'🚿', region:'서울 전역', rating:4.8, reviews:68, career:'14년',
+    desc:'욕실 전체 리모델링·방수·설비. 누수 없는 방수 2회 시공 원칙.',
+    tags:['욕실리모델링','방수','양변기','수전설치'], projects:300,
+    quote:'오래된 욕실이 새것처럼 됐어요. 방수도 꼼꼼히 해주셨습니다.', qauthor:'반셀프 고객 배○○'},
+  {name:'임재현', cat:'철거', icon:'🔨', region:'서울·경기 전역', rating:4.7, reviews:49, career:'11년',
+    desc:'안전 철거·폐기물 처리 일괄. 소음·분진 최소화 양생 작업 철저.',
+    tags:['안전철거','폐기물처리','양생','분진관리'], projects:260,
+    quote:'주변 양생을 꼼꼼히 해주셔서 이웃 민원 없이 끝났어요.', qauthor:'반셀프 고객 신○○'},
+  {name:'홍석우', cat:'목공', icon:'🪵', region:'인천·경기', rating:4.8, reviews:58, career:'13년',
+    desc:'가벽·파티션·우물천장 시공. 공간 분할 설계 상담도 함께 진행합니다.',
+    tags:['가벽','우물천장','파티션','단열보강'], projects:290,
+    quote:'좁은 집을 가벽으로 잘 나눠주셔서 공간이 넓어 보여요.', qauthor:'반셀프 고객 류○○'},
+];
+
+const KAKAO_CHAT_URL = 'http://pf.kakao.com/_dtGjX/chat';
+
+function star(n){
+  const full = Math.round(n);
+  return '★★★★★'.slice(0, full) + '☆☆☆☆☆'.slice(0, 5-full);
+}
+
+function workerCard(w){
+  return `
+  <div class="wcard cat-${w.cat}" data-cat="${w.cat}">
+    <div class="wcard-top">
+      <div class="wcard-avatar">${w.icon}</div>
+      <div class="wcard-headinfo">
+        <div class="wcard-name">${w.name} <span class="verify-badge">✓ 검증</span></div>
+        <div class="wcard-cat">${w.cat} 전문 · 경력 ${w.career}</div>
+        <div class="wcard-region">📍 ${w.region}</div>
+      </div>
+      <div class="wcard-rating">
+        <div class="wr-stars">${star(w.rating)}</div>
+        <div class="wr-score">${w.rating} (${w.reviews})</div>
+      </div>
+    </div>
+    <div class="wcard-body">
+      <div class="wcard-desc">${w.desc}</div>
+      <div class="wcard-tags">${w.tags.map(t=>`<span class="wtag">#${t}</span>`).join('')}</div>
+      <div class="wcard-meta">
+        <div class="wm-item"><div class="wm-num">${w.career}</div><div class="wm-lbl">경력</div></div>
+        <div class="wm-item"><div class="wm-num">${w.projects}건</div><div class="wm-lbl">누적 시공</div></div>
+        <div class="wm-item"><div class="wm-num">${w.reviews}</div><div class="wm-lbl">후기 수</div></div>
+      </div>
+      <div class="wcard-quote">${w.quote}<span class="qauthor">— ${w.qauthor}</span></div>
+    </div>
+    <div class="wcard-foot">
+      <a href="${KAKAO_CHAT_URL}" target="_blank" rel="noopener" class="wbtn" data-kakao-chat data-worker="${w.name}">
+        <span class="wbtn-ic"><svg viewBox="0 0 24 24" width="15" height="15" fill="#191919"><path d="M12 3C6.48 3 2 6.58 2 11c0 2.79 1.86 5.23 4.65 6.64-.2.72-.74 2.67-.85 3.09-.13.52.19.51.4.37.17-.11 2.64-1.79 3.71-2.52.68.1 1.38.15 2.09.15 5.52 0 10-3.58 10-8S17.52 3 12 3z"/></svg></span>
+        ${w.name} 기술자 카톡 상담
+      </a>
+    </div>
+  </div>`;
+}
+
+const grid = document.getElementById('workersGrid');
+const wcount = document.getElementById('wcount');
+let currentCat = '전체';
+
+function render(){
+  const list = currentCat==='전체' ? WORKERS : WORKERS.filter(w=>w.cat===currentCat);
+  grid.innerHTML = list.map(workerCard).join('');
+  wcount.textContent = list.length;
+  attachKakao();
+}
+
+// 필터 칩
+document.querySelectorAll('.fchip').forEach(chip=>{
+  chip.addEventListener('click', ()=>{
+    document.querySelectorAll('.fchip').forEach(c=>c.classList.remove('active'));
+    chip.classList.add('active');
+    currentCat = chip.dataset.cat;
+    render();
+  });
+});
+
+// 카카오 채널 SDK — 사용 가능하면 팝업, 아니면 링크 폴백
+function kakaoReady(){
+  try{ return !!(window.Kakao && Kakao.Channel && typeof KAKAO_JS_KEY!=='undefined'
+    && KAKAO_JS_KEY!=='YOUR_JAVASCRIPT_KEY' && Kakao.isInitialized()); }catch(e){ return false; }
+}
+function attachKakao(){
+  document.querySelectorAll('[data-kakao-chat]').forEach(btn=>{
+    if(btn._kk) return; btn._kk = true;
+    btn.addEventListener('click', e=>{
+      if(!kakaoReady()) return; // 링크 폴백
+      e.preventDefault();
+      Kakao.Channel.chat({ channelPublicId: KAKAO_CHANNEL_ID });
+    });
+  });
+}
+
+render();
+</script>
+</body>
+</html>
