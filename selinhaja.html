@@ -269,7 +269,7 @@ footer{background:var(--dark); padding:56px 40px 36px; color:rgba(255,255,255,.5
 <!-- SISTER BRAND BAR -->
 <div class="sister-bar">
   <span class="chip">자매 서비스</span>
-  <span>스코포스 공간 욕구 진단의 시공 파트너, 셀인하자</span>
+  <span id="sisterBarMsg">스코포스 공간 욕구 진단의 시공 파트너, 셀인하자</span>
   <a href="https://skopos.kr">← SKOPOS 진단 바로가기</a>
 </div>
 
@@ -563,6 +563,17 @@ const io=new IntersectionObserver(es=>{es.forEach(x=>{if(x.isIntersecting){x.tar
 document.querySelectorAll('.why-card,.pcard,.cafe-item,.connect-rail').forEach(el=>{
   el.style.opacity='0'; el.style.transform='translateY(20px)'; el.style.transition='opacity .5s ease, transform .5s ease'; io.observe(el);
 });
+// SKOPOS 검사 유입 출처(from)에 따라 상단 안내 문구 변경
+(function(){
+  var from = new URLSearchParams(location.search).get('from');
+  var bar = document.getElementById('sisterBarMsg');
+  if(!from || !bar) return;
+  if(from === 'premium'){
+    bar.textContent = '정밀 진단 완료 고객님, 결과 기반 맞춤 시공을 안내해드려요';
+  } else if(from === 'free'){
+    bar.textContent = '진단 결과를 그대로 이어받아 시공까지 — 셀인하자';
+  }
+})();
 </script>
 </body>
 </html>
