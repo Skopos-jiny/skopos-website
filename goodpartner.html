@@ -7,21 +7,34 @@
 <title>굿파트너 | 셀인하자 : 검증된 기술자와 업체를 한 곳에서</title>
 <meta name="description" content="셀인하자가 검증한 공정별 기술자와 수도권 인테리어 업체를 한 페이지에서. 후기로 검증된 목수·도배·타일·전기 기술자, 권역별 자재상·쇼룸을 카카오톡으로 바로 상담하세요.">
 <meta name="keywords" content="굿파트너,검증된기술자,검증된업체,반셀프,인테리어기술자,인테리어업체,셀인하자,수도권인테리어">
-<link rel="canonical" href="https://skopos.kr/selinhaja_goodpartner">
+<link rel="canonical" href="https://skopos.kr/goodpartner">
 
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="셀인하자 · SKOPOS">
 <meta property="og:title" content="굿파트너 | 셀인하자 : 검증된 기술자와 업체">
 <meta property="og:description" content="후기로 검증된 공정별 기술자와 권역별 인테리어 업체를 한 곳에서. 카카오톡으로 바로 상담.">
-<meta property="og:url" content="https://skopos.kr/selinhaja_goodpartner">
+<meta property="og:url" content="https://skopos.kr/goodpartner">
 <meta property="og:locale" content="ko_KR">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 
-<!-- Leaflet (오픈소스 지도, API 키 불필요) -->
+<!-- 지도: 네이버 지도(키 설정 시) 또는 OpenStreetMap(폴백) -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  /* ⚠️ 네이버 지도를 쓰려면 아래 NAVER_MAP_KEY 에 클라이언트 ID(ncpKeyId)를 입력하세요.
+     발급: NAVER CLOUD PLATFORM Console > Service > Application Services > Maps > Application
+     - Application 등록 시 "Dynamic Map" 체크 (안 하면 429 오류)
+     - Web 서비스 URL 에 https://skopos.kr 등록
+     키가 없으면 자동으로 OpenStreetMap(Leaflet)으로 표시됩니다. */
+  var NAVER_MAP_KEY = 'YOUR_NAVER_MAP_KEY';
+  if (NAVER_MAP_KEY && NAVER_MAP_KEY !== 'YOUR_NAVER_MAP_KEY') {
+    var nv = document.createElement('script');
+    nv.src = 'https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=' + NAVER_MAP_KEY;
+    document.head.appendChild(nv);
+  }
+</script>
 
 <!-- 카카오 SDK -->
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.5/kakao.min.js" crossorigin="anonymous"></script>
@@ -142,6 +155,17 @@ nav{position:sticky;top:0;z-index:1000;display:flex;align-items:center;justify-c
 .wcard-body{padding:0 22px 18px}
 .wcard-desc{font-size:.86rem;font-weight:600;color:var(--mid);line-height:1.6;margin-bottom:14px}
 .wcard-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.wcard-links{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}
+.wlink{font-size:.74rem;font-weight:800;text-decoration:none;padding:7px 13px;border-radius:8px;transition:all .2s var(--ez);border:1px solid transparent}
+.wlink:hover{transform:translateY(-1px)}
+.lk-cafe{background:#eaf6e9;color:#2e7d32}
+.lk-cafe:hover{background:#03c75a;color:#fff}
+.lk-blog{background:#e8f5e9;color:#1b9e4b}
+.lk-blog:hover{background:#2db400;color:#fff}
+.lk-insta{background:#fce4ec;color:#c2185b}
+.lk-insta:hover{background:linear-gradient(45deg,#f09433,#dc2743,#bc1888);color:#fff}
+.lk-site{background:var(--bg);color:var(--mid);border-color:#eef0f5}
+.lk-site:hover{background:var(--dark);color:#fff}
 .wtag{font-size:.72rem;font-weight:700;color:var(--mid);background:var(--bg);border:1px solid #eef0f5;border-radius:50px;padding:4px 11px}
 .wcard-meta{display:flex;border-top:1px solid #f0f1f5;border-bottom:1px solid #f0f1f5;margin-bottom:16px}
 .wm-item{flex:1;text-align:center;padding:12px 6px;position:relative}
@@ -427,15 +451,15 @@ const REGIONS = {
 
 // ── 폴백 데이터 (Supabase 미설정 시) ──
 const FALLBACK_WORKERS = [
-  {name:'김도현',cat:'목공',icon:'🪵',region:'서울·경기 전역',rating:4.9,reviews:87,career:'18년',desc:'붙박이장·중문·아트월 전문. 도면 없이도 현장 상황에 맞춰 정밀 시공합니다.',tags:['붙박이장','중문','몰딩','아트월'],projects:340,quote:'마감이 정말 깔끔해요. 줄눈 하나까지 신경 써주셔서 만족했습니다.',qauthor:'반셀프 고객 이○○'},
-  {name:'박성훈',cat:'도배',icon:'🎨',region:'서울·인천',rating:4.8,reviews:112,career:'15년',desc:'실크·합지·뮤럴 전 종류 시공. 곰팡이·들뜸 없는 바탕 처리가 강점입니다.',tags:['실크벽지','뮤럴','친환경풀','천장도배'],projects:520,quote:'벽지 이음새가 안 보일 정도예요. 다음에도 꼭 부탁드릴 거예요.',qauthor:'반셀프 고객 정○○'},
-  {name:'이정민',cat:'타일',icon:'🧱',region:'경기 남부',rating:4.9,reviews:64,career:'12년',desc:'욕실·주방·현관 타일 시공. 대형 포세린·헤링본 패턴 시공 경험 풍부.',tags:['포세린','헤링본','줄눈시공','방수'],projects:280,quote:'헤링본 패턴을 완벽하게 맞춰주셨어요. 욕실이 호텔 같아졌습니다.',qauthor:'반셀프 고객 김○○'},
-  {name:'최영재',cat:'전기',icon:'💡',region:'서울 전역',rating:4.7,reviews:73,career:'20년',desc:'조명·콘센트 증설·스마트홈 배선. 전기안전 자격 보유, 누전 걱정 없이.',tags:['간접조명','콘센트증설','스마트홈','분전반'],projects:410,quote:'간접조명 위치를 같이 고민해주셔서 분위기가 확 살았어요.',qauthor:'반셀프 고객 한○○'},
-  {name:'정우성',cat:'페인트',icon:'🖌️',region:'서울·경기',rating:4.8,reviews:55,career:'10년',desc:'친환경 도장·포인트 컬러 전문. 붓자국 없는 롤러·뿜칠 마감.',tags:['친환경페인트','포인트벽','문틀도장','외부도장'],projects:230,quote:'색 추천을 너무 잘해주셔서 고민이 한 번에 해결됐어요.',qauthor:'반셀프 고객 윤○○'},
-  {name:'강민호',cat:'마루',icon:'🪟',region:'경기·인천',rating:4.9,reviews:91,career:'16년',desc:'강마루·강화마루·SPC 시공. 단차·소음 없는 바닥 평탄화가 특기.',tags:['강마루','SPC','평탄화','걸레받이'],projects:380,quote:'바닥이 평평하고 밟을 때 소리도 안 나요. 시공이 꼼꼼합니다.',qauthor:'반셀프 고객 오○○'},
-  {name:'서지훈',cat:'욕실',icon:'🚿',region:'서울 전역',rating:4.8,reviews:68,career:'14년',desc:'욕실 전체 리모델링·방수·설비. 누수 없는 방수 2회 시공 원칙.',tags:['욕실리모델링','방수','양변기','수전설치'],projects:300,quote:'오래된 욕실이 새것처럼 됐어요. 방수도 꼼꼼히 해주셨습니다.',qauthor:'반셀프 고객 배○○'},
-  {name:'임재현',cat:'철거',icon:'🔨',region:'서울·경기 전역',rating:4.7,reviews:49,career:'11년',desc:'안전 철거·폐기물 처리 일괄. 소음·분진 최소화 양생 작업 철저.',tags:['안전철거','폐기물처리','양생','분진관리'],projects:260,quote:'주변 양생을 꼼꼼히 해주셔서 이웃 민원 없이 끝났어요.',qauthor:'반셀프 고객 신○○'},
-  {name:'홍석우',cat:'목공',icon:'🪵',region:'인천·경기',rating:4.8,reviews:58,career:'13년',desc:'가벽·파티션·우물천장 시공. 공간 분할 설계 상담도 함께 진행합니다.',tags:['가벽','우물천장','파티션','단열보강'],projects:290,quote:'좁은 집을 가벽으로 잘 나눠주셔서 공간이 넓어 보여요.',qauthor:'반셀프 고객 류○○'},
+  {name:'김도현',cat:'목공',icon:'🪵',region:'서울·경기 전역',phone:'010-1234-5678',career:'18년',desc:'붙박이장·중문·아트월 전문. 도면 없이도 현장 상황에 맞춰 정밀 시공합니다.',tags:['붙박이장','중문','몰딩','아트월'],link_cafe:'https://cafe.naver.com/',link_blog:'https://blog.naver.com/',link_insta:'https://instagram.com/'},
+  {name:'박성훈',cat:'도배',icon:'🎨',region:'서울·인천',phone:'',career:'15년',desc:'실크·합지·뮤럴 전 종류 시공. 곰팡이·들뜸 없는 바탕 처리가 강점입니다.',tags:['실크벽지','뮤럴','친환경풀','천장도배'],link_blog:'https://blog.naver.com/',link_insta:'https://instagram.com/'},
+  {name:'이정민',cat:'타일',icon:'🧱',region:'경기 남부',phone:'',career:'12년',desc:'욕실·주방·현관 타일 시공. 대형 포세린·헤링본 패턴 시공 경험 풍부.',tags:['포세린','헤링본','줄눈시공','방수'],link_cafe:'https://cafe.naver.com/',link_insta:'https://instagram.com/'},
+  {name:'최영재',cat:'전기',icon:'💡',region:'서울 전역',phone:'',career:'20년',desc:'조명·콘센트 증설·스마트홈 배선. 전기안전 자격 보유, 누전 걱정 없이.',tags:['간접조명','콘센트증설','스마트홈','분전반'],link_blog:'https://blog.naver.com/'},
+  {name:'정우성',cat:'페인트',icon:'🖌️',region:'서울·경기',phone:'',career:'10년',desc:'친환경 도장·포인트 컬러 전문. 붓자국 없는 롤러·뿜칠 마감.',tags:['친환경페인트','포인트벽','문틀도장','외부도장'],link_insta:'https://instagram.com/'},
+  {name:'강민호',cat:'마루',icon:'🪟',region:'경기·인천',phone:'',career:'16년',desc:'강마루·강화마루·SPC 시공. 단차·소음 없는 바닥 평탄화가 특기.',tags:['강마루','SPC','평탄화','걸레받이'],link_cafe:'https://cafe.naver.com/',link_blog:'https://blog.naver.com/'},
+  {name:'서지훈',cat:'욕실',icon:'🚿',region:'서울 전역',phone:'',career:'14년',desc:'욕실 전체 리모델링·방수·설비. 누수 없는 방수 2회 시공 원칙.',tags:['욕실리모델링','방수','양변기','수전설치'],link_insta:'https://instagram.com/'},
+  {name:'임재현',cat:'철거',icon:'🔨',region:'서울·경기 전역',phone:'',career:'11년',desc:'안전 철거·폐기물 처리 일괄. 소음·분진 최소화 양생 작업 철저.',tags:['안전철거','폐기물처리','양생','분진관리'],link_blog:'https://blog.naver.com/'},
+  {name:'홍석우',cat:'목공',icon:'🪵',region:'인천·경기',phone:'',career:'13년',desc:'가벽·파티션·우물천장 시공. 공간 분할 설계 상담도 함께 진행합니다.',tags:['가벽','우물천장','파티션','단열보강'],link_cafe:'https://cafe.naver.com/',link_site:'https://example.com/'},
 ];
 const FALLBACK_SHOPS = [
   {name:'을지로 조명거리',region:'서울동부',cat:'조명',lat:37.566,lng:126.991,addr:'서울 중구 을지로3가 일대',desc:'국내 최대 조명 도매 거리. 펜던트·간접조명 현장 구매처로 검증.'},
@@ -472,31 +496,33 @@ function switchTab(tab){
   document.querySelectorAll('.mtab').forEach(t=>t.classList.toggle('active', t.dataset.tab===tab));
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.getElementById('sec-'+tab).classList.add('active');
-  if(tab==='shops'){ ensureMap(); setTimeout(()=>{ if(map) map.invalidateSize(); renderShops(); },120); }
+  if(tab==='shops'){ ensureMap(); setTimeout(()=>{ invalidateMap(); renderShops(); },120); }
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
 // ════ 기술자 ════
 function workerCard(w){
+  const links = [
+    w.link_cafe  && {u:w.link_cafe,  t:'네이버 카페', c:'lk-cafe'},
+    w.link_blog  && {u:w.link_blog,  t:'블로그',      c:'lk-blog'},
+    w.link_insta && {u:w.link_insta, t:'인스타',      c:'lk-insta'},
+    w.link_site  && {u:w.link_site,  t:'홈페이지',    c:'lk-site'},
+  ].filter(Boolean);
+  const linkHTML = links.length ? `<div class="wcard-links">${links.map(l=>
+    `<a href="${l.u}" target="_blank" rel="noopener" class="wlink ${l.c}" onclick="event.stopPropagation()">${l.t}</a>`).join('')}</div>` : '';
   return `<div class="wcard cat-${w.cat}">
     <div class="wcard-top">
       <div class="wcard-avatar">${w.icon||'🔧'}</div>
       <div class="wcard-headinfo">
         <div class="wcard-name">${w.name} <span class="verify-badge">✓ 검증</span></div>
-        <div class="wcard-cat">${w.cat} 전문 · 경력 ${w.career||'-'}</div>
+        <div class="wcard-cat">${w.cat} 전문${w.career?` · 경력 ${w.career}`:''}</div>
         <div class="wcard-region">📍 ${w.region||''}${w.phone?` · 📞 ${w.phone}`:''}</div>
       </div>
-      <div class="wcard-rating"><div class="wr-stars">${star(w.rating)}</div><div class="wr-score">${w.rating} (${w.reviews})</div></div>
     </div>
     <div class="wcard-body">
       <div class="wcard-desc">${w.desc||''}</div>
       <div class="wcard-tags">${(w.tags||[]).map(t=>`<span class="wtag">#${t}</span>`).join('')}</div>
-      <div class="wcard-meta">
-        <div class="wm-item"><div class="wm-num">${w.career||'-'}</div><div class="wm-lbl">경력</div></div>
-        <div class="wm-item"><div class="wm-num">${w.projects||0}건</div><div class="wm-lbl">누적 시공</div></div>
-        <div class="wm-item"><div class="wm-num">${w.reviews||0}</div><div class="wm-lbl">후기 수</div></div>
-      </div>
-      ${w.quote?`<div class="wcard-quote">${w.quote}<span class="qauthor">— ${w.qauthor||''}</span></div>`:''}
+      ${linkHTML}
     </div>
     <div class="wcard-foot">
       <a href="${KAKAO_CHAT_URL}" target="_blank" rel="noopener" class="wbtn" data-kakao-chat>
@@ -513,29 +539,73 @@ function renderWorkers(){
   attachKakao();
 }
 
-// ════ 업체(지도) ════
+// ════ 업체(지도) ════ — 네이버 지도(키 설정 시) 또는 Leaflet/OSM(폴백)
+function naverReady(){ return typeof NAVER_MAP_KEY!=='undefined' && NAVER_MAP_KEY!=='YOUR_NAVER_MAP_KEY' && window.naver && naver.maps; }
+let useNaver = false;
+let nvInfo = null; // 네이버용 인포윈도우
+
 function ensureMap(){
   if(mapInit) return;
-  map = L.map('map',{scrollWheelZoom:true}).setView([37.55,127.0],11);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);
+  useNaver = naverReady();
+  if(useNaver){
+    map = new naver.maps.Map('map', {
+      center: new naver.maps.LatLng(37.55,127.0), zoom: 11,
+      scaleControl:false, mapDataControl:false,
+      zoomControl:true, zoomControlOptions:{position: naver.maps.Position.TOP_RIGHT}
+    });
+    nvInfo = new naver.maps.InfoWindow({ borderWidth:0, backgroundColor:'transparent', disableAnchor:false, pixelOffset:new naver.maps.Point(0,-6) });
+  } else {
+    map = L.map('map',{scrollWheelZoom:true}).setView([37.55,127.0],11);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);
+  }
   mapInit=true;
 }
-function makeIcon(cat,color){return L.divIcon({className:'',iconSize:[30,30],iconAnchor:[15,30],popupAnchor:[0,-30],html:`<div class="mk" style="background:${color}"><span>${CAT_ICON[cat]||'📍'}</span></div>`});}
-function filteredShops(){return PLACES.filter(p=>(curRegion==='전체'||p.region===curRegion)&&(curSCat==='전체'||p.cat===curSCat));}
-function renderShops(){
-  if(!mapInit) return;
-  const list = filteredShops();
-  markers.forEach(m=>map.removeLayer(m)); markers=[];
-  list.forEach((p,i)=>{
-    const color=REGIONS[p.region]?REGIONS[p.region].color:'#E91E8C';
-    const mk=L.marker([p.lat,p.lng],{icon:makeIcon(p.cat,color)}).addTo(map);
-    mk.bindPopup(`<div style="font-weight:900;font-size:.95rem;margin-bottom:3px">${p.name} <span style="background:#eef6e6;color:#5a8a20;font-size:.6rem;font-weight:800;padding:1px 7px;border-radius:50px;vertical-align:middle">✓ 검증</span></div>
+function invalidateMap(){ if(!useNaver && map && map.invalidateSize) map.invalidateSize(); }
+
+function makeIcon(cat,color){
+  return L.divIcon({className:'',iconSize:[30,30],iconAnchor:[15,30],popupAnchor:[0,-30],html:`<div class="mk" style="background:${color}"><span>${CAT_ICON[cat]||'📍'}</span></div>`});
+}
+function nvMarkerHtml(cat,color){
+  return `<div style="transform:translate(-50%,-100%)"><div class="mk" style="background:${color}"><span>${CAT_ICON[cat]||'📍'}</span></div></div>`;
+}
+function popupHTML(p){
+  return `<div style="background:#fff;border-radius:12px;padding:14px 16px;box-shadow:0 6px 24px rgba(0,0,0,.18);max-width:240px;font-family:'Nunito',sans-serif">
+      <div style="font-weight:900;font-size:.95rem;margin-bottom:3px">${p.name} <span style="background:#eef6e6;color:#5a8a20;font-size:.6rem;font-weight:800;padding:1px 7px;border-radius:50px;vertical-align:middle">✓ 검증</span></div>
       <div style="font-size:.76rem;color:#8890A4;font-weight:700;margin-bottom:6px">${p.region} · ${p.cat}</div>
       <div style="font-size:.8rem;color:#3D3D5C;line-height:1.5;margin-bottom:8px">${p.desc||''}</div>
       <div style="font-size:.74rem;color:#8890A4;margin-bottom:8px">📍 ${p.addr||''}${p.hours?`<br>🕘 ${p.hours}`:''}${p.phone?`<br>📞 ${p.phone}`:''}</div>
-      <a href="https://map.kakao.com/?q=${encodeURIComponent(p.name+' '+(p.addr||''))}" target="_blank" style="display:inline-block;background:#FEE500;color:#191919;font-weight:800;font-size:.76rem;padding:7px 14px;border-radius:8px;text-decoration:none">카카오맵 길찾기</a>`);
-    markers.push(mk);
+      <a href="https://map.naver.com/p/search/${encodeURIComponent(p.name+' '+(p.addr||''))}" target="_blank" style="display:inline-block;background:#03c75a;color:#fff;font-weight:800;font-size:.76rem;padding:7px 14px;border-radius:8px;text-decoration:none">네이버 지도에서 보기</a>
+    </div>`;
+}
+function filteredShops(){return PLACES.filter(p=>(curRegion==='전체'||p.region===curRegion)&&(curSCat==='전체'||p.cat===curSCat));}
+
+function clearMarkers(){
+  if(useNaver){ markers.forEach(m=>m.setMap(null)); }
+  else { markers.forEach(m=>map.removeLayer(m)); }
+  markers=[];
+}
+
+function renderShops(){
+  if(!mapInit) return;
+  const list = filteredShops();
+  clearMarkers();
+
+  list.forEach((p,i)=>{
+    const color=REGIONS[p.region]?REGIONS[p.region].color:'#E91E8C';
+    if(useNaver){
+      const mk = new naver.maps.Marker({
+        position: new naver.maps.LatLng(p.lat,p.lng), map: map,
+        icon:{ content: nvMarkerHtml(p.cat,color), anchor: new naver.maps.Point(15,30) }
+      });
+      naver.maps.Event.addListener(mk,'click',()=>{ nvInfo.setContent(popupHTML(p)); nvInfo.open(map,mk); });
+      markers.push(mk);
+    } else {
+      const mk=L.marker([p.lat,p.lng],{icon:makeIcon(p.cat,color)}).addTo(map);
+      mk.bindPopup(popupHTML(p));
+      markers.push(mk);
+    }
   });
+
   const cards = list.map((p,i)=>{
     const color=REGIONS[p.region]?REGIONS[p.region].color:'#E91E8C';
     return `<div class="pcard" data-idx="${i}">
@@ -549,7 +619,7 @@ function renderShops(){
       <div class="pcard-addr">📍 ${p.addr||''}${p.hours?` · 🕘 ${p.hours}`:''}</div>
       <div class="pcard-foot">
         <a href="javascript:void(0)" class="pcard-btn pcard-btn-map" data-focus="${i}">지도에서 보기</a>
-        <a href="https://map.kakao.com/?q=${encodeURIComponent(p.name+' '+(p.addr||''))}" target="_blank" rel="noopener" class="pcard-btn pcard-btn-kakao">길찾기</a>
+        <a href="https://map.naver.com/p/search/${encodeURIComponent(p.name+' '+(p.addr||''))}" target="_blank" rel="noopener" class="pcard-btn pcard-btn-kakao">길찾기</a>
       </div></div>`;
   }).join('');
   const panel=document.getElementById('listPanel');
@@ -557,14 +627,34 @@ function renderShops(){
   document.getElementById('scount').textContent=list.length;
   panel.querySelectorAll('.pcard').forEach(c=>{const i=+c.dataset.idx;c.addEventListener('click',()=>focusShop(i,c));});
   panel.querySelectorAll('[data-focus]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();focusShop(+b.dataset.focus);}));
+
   if(list.length){
-    if(curRegion==='전체'){ map.fitBounds(L.featureGroup(markers).getBounds().pad(0.15)); }
-    else{ map.setView(REGIONS[curRegion].center,12); }
+    if(useNaver){
+      if(curRegion==='전체'){
+        const bounds = new naver.maps.LatLngBounds(
+          new naver.maps.LatLng(list[0].lat,list[0].lng),
+          new naver.maps.LatLng(list[0].lat,list[0].lng));
+        list.forEach(p=>bounds.extend(new naver.maps.LatLng(p.lat,p.lng)));
+        map.fitBounds(bounds);
+      } else {
+        const c=REGIONS[curRegion].center; map.setCenter(new naver.maps.LatLng(c[0],c[1])); map.setZoom(12);
+      }
+    } else {
+      if(curRegion==='전체'){ map.fitBounds(L.featureGroup(markers).getBounds().pad(0.15)); }
+      else{ map.setView(REGIONS[curRegion].center,12); }
+    }
   }
 }
+
 function focusShop(idx,cardEl){
   const mk=markers[idx]; if(!mk)return;
-  map.setView(mk.getLatLng(),14,{animate:true}); mk.openPopup();
+  const p=filteredShops()[idx];
+  if(useNaver){
+    map.setCenter(new naver.maps.LatLng(p.lat,p.lng)); map.setZoom(14);
+    nvInfo.setContent(popupHTML(p)); nvInfo.open(map,mk);
+  } else {
+    map.setView(mk.getLatLng(),14,{animate:true}); mk.openPopup();
+  }
   document.querySelectorAll('.pcard').forEach(c=>c.classList.remove('sel'));
   const card=cardEl||document.querySelector(`.pcard[data-idx="${idx}"]`);
   if(card){card.classList.add('sel');card.scrollIntoView({behavior:'smooth',block:'nearest'});}
@@ -587,7 +677,7 @@ async function loadData(){
         c.from('workers').select('*').eq('is_active',true).order('sort_order',{ascending:false}).order('created_at',{ascending:false}),
         c.from('shops').select('*').eq('is_active',true).order('sort_order',{ascending:false}).order('created_at',{ascending:false})
       ]);
-      WORKERS=(w||[]).map(r=>({name:r.name,cat:r.cat,icon:r.icon||'🔧',region:r.region||'',phone:r.phone||'',rating:Number(r.rating)||5,reviews:r.reviews||0,career:r.career||'',desc:r.description||'',tags:r.tags||[],projects:r.projects||0,quote:r.quote||'',qauthor:r.quote_author||''}));
+      WORKERS=(w||[]).map(r=>({name:r.name,cat:r.cat,icon:r.icon||'🔧',region:r.region||'',phone:r.phone||'',career:r.career||'',desc:r.description||'',tags:r.tags||[],link_cafe:r.link_cafe||'',link_blog:r.link_blog||'',link_insta:r.link_insta||'',link_site:r.link_site||''}));
       PLACES=(s||[]).map(r=>({name:r.name,region:r.region,cat:r.cat,lat:Number(r.lat),lng:Number(r.lng),addr:r.addr||'',phone:r.phone||'',hours:r.hours||'',desc:r.description||''}));
     }catch(e){ console.warn('Supabase 로드 실패, 폴백 사용:',e.message); WORKERS=FALLBACK_WORKERS; PLACES=FALLBACK_SHOPS; }
   }else{ WORKERS=FALLBACK_WORKERS; PLACES=FALLBACK_SHOPS; }
