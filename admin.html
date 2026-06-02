@@ -59,6 +59,13 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dark);-web
 .panel{display:none}
 .panel.active{display:block}
 .panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.toolbar{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.toolbar input,.toolbar select{padding:9px 13px;border:1.5px solid var(--line);border-radius:9px;font-family:inherit;font-size:.84rem;font-weight:600;color:var(--dark);background:#fff}
+.toolbar input:focus,.toolbar select:focus{outline:none;border-color:var(--pink)}
+.toolbar .tb-search{flex:1;min-width:160px}
+.th-sort{cursor:pointer;user-select:none}
+.th-sort:hover{color:var(--pink)}
+.th-sort .arrow{font-size:.7rem;opacity:.5;margin-left:2px}
 .panel-title{font-size:1.15rem;font-weight:900}
 .panel-title span{font-size:.84rem;color:var(--gray);font-weight:700;margin-left:8px}
 
@@ -122,8 +129,23 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dark);-web
       <div class="panel-title">기술자 목록 <span id="wCount">0명</span></div>
       <button class="btn btn-pink" onclick="openWorker()">+ 기술자 등록</button>
     </div>
+    <div class="toolbar">
+      <input class="tb-search" id="wSearch" placeholder="🔍 이름·지역·소개 검색" oninput="loadWorkers()">
+      <select id="wCatFilter" onchange="loadWorkers()">
+        <option value="">전체 공정</option>
+        <option>목공</option><option>도배</option><option>타일</option><option>전기</option>
+        <option>페인트</option><option>마루</option><option>욕실</option><option>철거</option>
+      </select>
+      <select id="wSort" onchange="loadWorkers()">
+        <option value="sort_order">정렬: 우선순위</option>
+        <option value="rating">정렬: 평점 높은순</option>
+        <option value="reviews">정렬: 후기 많은순</option>
+        <option value="name">정렬: 이름순</option>
+        <option value="created_at">정렬: 최신 등록순</option>
+      </select>
+    </div>
     <table class="tbl">
-      <thead><tr><th>이름</th><th>공정</th><th class="hide-m">지역</th><th class="hide-m">경력</th><th>평점</th><th>노출</th><th></th></tr></thead>
+      <thead><tr><th>이름</th><th>공정</th><th class="hide-m">지역</th><th class="hide-m">연락처</th><th>평점</th><th>노출</th><th></th></tr></thead>
       <tbody id="wBody"></tbody>
     </table>
   </div>
@@ -134,8 +156,27 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dark);-web
       <div class="panel-title">검증된 업체 목록 <span id="sCount">0곳</span></div>
       <button class="btn btn-pink" onclick="openShop()">+ 업체 등록</button>
     </div>
+    <div class="toolbar">
+      <input class="tb-search" id="sSearch" placeholder="🔍 업체명·주소·소개 검색" oninput="loadShops()">
+      <select id="sRegionFilter" onchange="loadShops()">
+        <option value="">전체 권역</option>
+        <option>서울북부</option><option>서울남부</option><option>서울서부</option>
+        <option>서울동부</option><option>경기북부</option><option>경기남부</option>
+      </select>
+      <select id="sCatFilter" onchange="loadShops()">
+        <option value="">전체 유형</option>
+        <option>자재상</option><option>쇼룸</option><option>조명</option>
+        <option>타일</option><option>가구</option><option>종합시장</option>
+      </select>
+      <select id="sSort" onchange="loadShops()">
+        <option value="sort_order">정렬: 우선순위</option>
+        <option value="name">정렬: 이름순</option>
+        <option value="region">정렬: 권역순</option>
+        <option value="created_at">정렬: 최신 등록순</option>
+      </select>
+    </div>
     <table class="tbl">
-      <thead><tr><th>업체명</th><th>권역</th><th>유형</th><th class="hide-m">좌표</th><th>노출</th><th></th></tr></thead>
+      <thead><tr><th>업체명</th><th>권역</th><th>유형</th><th class="hide-m">영업시간</th><th>노출</th><th></th></tr></thead>
       <tbody id="sBody"></tbody>
     </table>
   </div>
@@ -156,6 +197,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dark);-web
       </div>
       <div class="field"><label>아이콘(이모지)</label><input id="w_icon" placeholder="🪵"></div>
       <div class="field"><label>활동 지역</label><input id="w_region" placeholder="서울·경기 전역"></div>
+      <div class="field"><label>전화번호</label><input id="w_phone" placeholder="010-1234-5678"></div>
       <div class="field"><label>경력</label><input id="w_career" placeholder="18년"></div>
       <div class="field"><label>평점 (0~5)</label><input id="w_rating" type="number" step="0.1" min="0" max="5" value="5.0"></div>
       <div class="field"><label>후기 수</label><input id="w_reviews" type="number" value="0"></div>
@@ -196,6 +238,8 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dark);-web
       <div class="field"><label>위도(lat) *</label><input id="s_lat" placeholder="37.566"></div>
       <div class="field"><label>경도(lng) *</label><input id="s_lng" placeholder="126.991"></div>
       <div class="field full"><label>주소</label><input id="s_addr"></div>
+      <div class="field"><label>전화번호</label><input id="s_phone" placeholder="02-1234-5678"></div>
+      <div class="field"><label>영업시간</label><input id="s_hours" placeholder="평일 09:00-18:00"></div>
       <div class="field full"><label>소개</label><textarea id="s_desc"></textarea></div>
       <div class="field"><label>정렬 우선(클수록 위)</label><input id="s_sort" type="number" value="0"></div>
       <div class="field"><label><input type="checkbox" id="s_active" checked style="width:auto;margin-right:6px">사이트에 노출</label></div>
@@ -269,29 +313,46 @@ document.querySelectorAll('.tab').forEach(t=>{
 // ════════ WORKERS CRUD ════════
 async function loadWorkers(){
   if(!client) return;
-  const { data, error } = await client.from('workers').select('*')
-    .order('sort_order',{ascending:false}).order('created_at',{ascending:false});
+  const sortKey = $('wSort') ? $('wSort').value : 'sort_order';
+  const asc = (sortKey==='name'); // 이름만 오름차순, 나머지 내림차순
+  let query = client.from('workers').select('*');
+  const catF = $('wCatFilter') ? $('wCatFilter').value : '';
+  if(catF) query = query.eq('cat', catF);
+  query = query.order(sortKey,{ascending:asc});
+  const { data, error } = await query;
   if(error){ console.error(error); return; }
-  $('wCount').textContent = (data?.length||0)+'명';
-  $('wBody').innerHTML = (data||[]).map(w=>`
+  // 검색어 필터 (이름·지역·소개·태그)
+  const kw = ($('wSearch')?.value||'').trim().toLowerCase();
+  let list = data||[];
+  if(kw){
+    list = list.filter(w =>
+      (w.name||'').toLowerCase().includes(kw) ||
+      (w.region||'').toLowerCase().includes(kw) ||
+      (w.description||'').toLowerCase().includes(kw) ||
+      (w.phone||'').toLowerCase().includes(kw) ||
+      (w.tags||[]).join(' ').toLowerCase().includes(kw));
+  }
+  $('wCount').textContent = list.length+'명';
+  $('wBody').innerHTML = list.map(w=>`
     <tr>
       <td class="tname">${w.name}</td>
       <td>${w.cat}</td>
       <td class="hide-m">${w.region||'-'}</td>
-      <td class="hide-m">${w.career||'-'}</td>
+      <td class="hide-m">${w.phone||'-'}</td>
       <td>⭐ ${w.rating||'-'}</td>
       <td>${w.is_active?'<span class="badge">노출</span>':'<span class="badge off">숨김</span>'}</td>
       <td><div class="row-actions">
         <button class="btn btn-edit btn-sm" onclick='openWorker(${JSON.stringify(w)})'>수정</button>
         <button class="btn btn-del btn-sm" onclick="delWorker(${w.id},'${(w.name||'').replace(/'/g,"")}')">삭제</button>
       </div></td>
-    </tr>`).join('') || '<tr><td colspan="7" class="empty">등록된 기술자가 없습니다. + 기술자 등록을 눌러 추가하세요.</td></tr>';
+    </tr>`).join('') || '<tr><td colspan="7" class="empty">조건에 맞는 기술자가 없습니다.</td></tr>';
 }
 
 function openWorker(w){
   $('workerModalTitle').textContent = w&&w.id ? '기술자 수정' : '기술자 등록';
   $('w_id').value=w?.id||''; $('w_name').value=w?.name||''; $('w_cat').value=w?.cat||'목공';
   $('w_icon').value=w?.icon||''; $('w_region').value=w?.region||''; $('w_career').value=w?.career||'';
+  $('w_phone').value=w?.phone||'';
   $('w_rating').value=w?.rating??5.0; $('w_reviews').value=w?.reviews??0; $('w_projects').value=w?.projects??0;
   $('w_desc').value=w?.description||''; $('w_tags').value=(w?.tags||[]).join(', ');
   $('w_quote').value=w?.quote||''; $('w_qauthor').value=w?.quote_author||'';
@@ -304,6 +365,7 @@ async function saveWorker(){
   const payload = {
     name:$('w_name').value.trim(), cat:$('w_cat').value, icon:$('w_icon').value.trim()||'🔧',
     region:$('w_region').value.trim(), career:$('w_career').value.trim(),
+    phone:$('w_phone').value.trim(),
     rating:parseFloat($('w_rating').value)||5, reviews:parseInt($('w_reviews').value)||0,
     projects:parseInt($('w_projects').value)||0, description:$('w_desc').value.trim(),
     tags:$('w_tags').value.split(',').map(s=>s.trim()).filter(Boolean),
@@ -329,22 +391,38 @@ async function delWorker(id, name){
 // ════════ SHOPS CRUD ════════
 async function loadShops(){
   if(!client) return;
-  const { data, error } = await client.from('shops').select('*')
-    .order('sort_order',{ascending:false}).order('created_at',{ascending:false});
+  const sortKey = $('sSort') ? $('sSort').value : 'sort_order';
+  const asc = (sortKey==='name'||sortKey==='region');
+  let query = client.from('shops').select('*');
+  const regF = $('sRegionFilter') ? $('sRegionFilter').value : '';
+  const catF = $('sCatFilter') ? $('sCatFilter').value : '';
+  if(regF) query = query.eq('region', regF);
+  if(catF) query = query.eq('cat', catF);
+  query = query.order(sortKey,{ascending:asc});
+  const { data, error } = await query;
   if(error){ console.error(error); return; }
-  $('sCount').textContent = (data?.length||0)+'곳';
-  $('sBody').innerHTML = (data||[]).map(s=>`
+  const kw = ($('sSearch')?.value||'').trim().toLowerCase();
+  let list = data||[];
+  if(kw){
+    list = list.filter(s =>
+      (s.name||'').toLowerCase().includes(kw) ||
+      (s.addr||'').toLowerCase().includes(kw) ||
+      (s.description||'').toLowerCase().includes(kw) ||
+      (s.phone||'').toLowerCase().includes(kw));
+  }
+  $('sCount').textContent = list.length+'곳';
+  $('sBody').innerHTML = list.map(s=>`
     <tr>
       <td class="tname">${s.name}</td>
       <td>${s.region}</td>
       <td>${s.cat}</td>
-      <td class="hide-m">${s.lat}, ${s.lng}</td>
+      <td class="hide-m">${s.hours||'-'}</td>
       <td>${s.is_active?'<span class="badge">노출</span>':'<span class="badge off">숨김</span>'}</td>
       <td><div class="row-actions">
         <button class="btn btn-edit btn-sm" onclick='openShop(${JSON.stringify(s)})'>수정</button>
         <button class="btn btn-del btn-sm" onclick="delShop(${s.id},'${(s.name||'').replace(/'/g,"")}')">삭제</button>
       </div></td>
-    </tr>`).join('') || '<tr><td colspan="6" class="empty">등록된 업체가 없습니다. + 업체 등록을 눌러 추가하세요.</td></tr>';
+    </tr>`).join('') || '<tr><td colspan="6" class="empty">조건에 맞는 업체가 없습니다.</td></tr>';
 }
 
 function openShop(s){
@@ -352,6 +430,7 @@ function openShop(s){
   $('s_id').value=s?.id||''; $('s_name').value=s?.name||''; $('s_region').value=s?.region||'서울북부';
   $('s_cat').value=s?.cat||'자재상'; $('s_lat').value=s?.lat||''; $('s_lng').value=s?.lng||'';
   $('s_addr').value=s?.addr||''; $('s_desc').value=s?.description||'';
+  $('s_phone').value=s?.phone||''; $('s_hours').value=s?.hours||'';
   $('s_sort').value=s?.sort_order??0; $('s_active').checked = s? s.is_active : true;
   $('shopModal').classList.add('show');
 }
@@ -362,6 +441,7 @@ async function saveShop(){
     name:$('s_name').value.trim(), region:$('s_region').value, cat:$('s_cat').value,
     lat:parseFloat($('s_lat').value), lng:parseFloat($('s_lng').value),
     addr:$('s_addr').value.trim(), description:$('s_desc').value.trim(),
+    phone:$('s_phone').value.trim(), hours:$('s_hours').value.trim(),
     sort_order:parseInt($('s_sort').value)||0, is_active:$('s_active').checked
   };
   if(!payload.name){ alert('업체명을 입력하세요'); return; }
