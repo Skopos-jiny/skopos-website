@@ -484,7 +484,7 @@ function workerCard(w){
       <div class="wcard-headinfo">
         <div class="wcard-name">${w.name} <span class="verify-badge">✓ 검증</span></div>
         <div class="wcard-cat">${w.cat} 전문 · 경력 ${w.career||'-'}</div>
-        <div class="wcard-region">📍 ${w.region||''}</div>
+        <div class="wcard-region">📍 ${w.region||''}${w.phone?` · 📞 ${w.phone}`:''}</div>
       </div>
       <div class="wcard-rating"><div class="wr-stars">${star(w.rating)}</div><div class="wr-score">${w.rating} (${w.reviews})</div></div>
     </div>
@@ -532,7 +532,7 @@ function renderShops(){
     mk.bindPopup(`<div style="font-weight:900;font-size:.95rem;margin-bottom:3px">${p.name} <span style="background:#eef6e6;color:#5a8a20;font-size:.6rem;font-weight:800;padding:1px 7px;border-radius:50px;vertical-align:middle">✓ 검증</span></div>
       <div style="font-size:.76rem;color:#8890A4;font-weight:700;margin-bottom:6px">${p.region} · ${p.cat}</div>
       <div style="font-size:.8rem;color:#3D3D5C;line-height:1.5;margin-bottom:8px">${p.desc||''}</div>
-      <div style="font-size:.74rem;color:#8890A4;margin-bottom:8px">📍 ${p.addr||''}</div>
+      <div style="font-size:.74rem;color:#8890A4;margin-bottom:8px">📍 ${p.addr||''}${p.hours?`<br>🕘 ${p.hours}`:''}${p.phone?`<br>📞 ${p.phone}`:''}</div>
       <a href="https://map.kakao.com/?q=${encodeURIComponent(p.name+' '+(p.addr||''))}" target="_blank" style="display:inline-block;background:#FEE500;color:#191919;font-weight:800;font-size:.76rem;padding:7px 14px;border-radius:8px;text-decoration:none">카카오맵 길찾기</a>`);
     markers.push(mk);
   });
@@ -546,7 +546,7 @@ function renderShops(){
         <div class="pcard-cat">${p.cat}</div>
       </div>
       <div class="pcard-desc">${p.desc||''}</div>
-      <div class="pcard-addr">📍 ${p.addr||''}</div>
+      <div class="pcard-addr">📍 ${p.addr||''}${p.hours?` · 🕘 ${p.hours}`:''}</div>
       <div class="pcard-foot">
         <a href="javascript:void(0)" class="pcard-btn pcard-btn-map" data-focus="${i}">지도에서 보기</a>
         <a href="https://map.kakao.com/?q=${encodeURIComponent(p.name+' '+(p.addr||''))}" target="_blank" rel="noopener" class="pcard-btn pcard-btn-kakao">길찾기</a>
@@ -587,8 +587,8 @@ async function loadData(){
         c.from('workers').select('*').eq('is_active',true).order('sort_order',{ascending:false}).order('created_at',{ascending:false}),
         c.from('shops').select('*').eq('is_active',true).order('sort_order',{ascending:false}).order('created_at',{ascending:false})
       ]);
-      WORKERS=(w||[]).map(r=>({name:r.name,cat:r.cat,icon:r.icon||'🔧',region:r.region||'',rating:Number(r.rating)||5,reviews:r.reviews||0,career:r.career||'',desc:r.description||'',tags:r.tags||[],projects:r.projects||0,quote:r.quote||'',qauthor:r.quote_author||''}));
-      PLACES=(s||[]).map(r=>({name:r.name,region:r.region,cat:r.cat,lat:Number(r.lat),lng:Number(r.lng),addr:r.addr||'',desc:r.description||''}));
+      WORKERS=(w||[]).map(r=>({name:r.name,cat:r.cat,icon:r.icon||'🔧',region:r.region||'',phone:r.phone||'',rating:Number(r.rating)||5,reviews:r.reviews||0,career:r.career||'',desc:r.description||'',tags:r.tags||[],projects:r.projects||0,quote:r.quote||'',qauthor:r.quote_author||''}));
+      PLACES=(s||[]).map(r=>({name:r.name,region:r.region,cat:r.cat,lat:Number(r.lat),lng:Number(r.lng),addr:r.addr||'',phone:r.phone||'',hours:r.hours||'',desc:r.description||''}));
     }catch(e){ console.warn('Supabase 로드 실패, 폴백 사용:',e.message); WORKERS=FALLBACK_WORKERS; PLACES=FALLBACK_SHOPS; }
   }else{ WORKERS=FALLBACK_WORKERS; PLACES=FALLBACK_SHOPS; }
   document.getElementById('tabCountW').textContent=WORKERS.length;
