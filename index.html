@@ -87,7 +87,7 @@
       "price": "9900",
       "priceCurrency": "KRW",
       "availability": "https://schema.org/InStock",
-      "description": "144문항 SDTI 정밀 검사. 12가지 정밀 유형 분류, 8개 영역 레이더 분석, TOP 3 핵심 욕구 심층 분석, 13페이지 PDF 리포트, 계절별 가이드 1년 구독, 인스타 공유 카드 제공. (정상가 29,900원 → 런칭 이벤트가 9,900원, 5월 말일까지)",
+      "description": "144문항 SDTI 정밀 검사. 12가지 정밀 유형 분류, 8개 영역 레이더 분석, TOP 3 핵심 욕구 심층 분석, 13페이지 PDF 리포트, 계절별 가이드 1년 구독, 인스타 공유 카드 제공. (정상가 29,900원 → 감사 이벤트가 9,900원, 6월 말일까지)",
       "url": "https://skopos.kr/skopos_premium_quiz.html",
       "priceSpecification": {
         "@type": "UnitPriceSpecification",
@@ -365,56 +365,59 @@ nav.scrolled{background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border-
 .hero-title em{font-style:normal;background:linear-gradient(120deg,var(--pink),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .hero-sub{font-size:1.05rem;color:var(--gray);line-height:1.85;margin-bottom:36px;font-weight:500}
 
-.cta-group{display:flex;flex-direction:column;gap:12px;max-width:340px}
+.cta-group{display:flex;flex-direction:column;gap:14px;max-width:440px}
 .btn-hero{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:17px 36px;border-radius:50px;font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;text-decoration:none;cursor:pointer;border:none;transition:all .25s}
 .btn-hero.primary{background:linear-gradient(135deg,var(--pink),#FF6B9D);color:#fff;box-shadow:0 6px 24px rgba(220,20,120,.35)}
 .btn-hero.primary:hover{transform:translateY(-2px);box-shadow:0 10px 36px rgba(220,20,120,.45)}
 .btn-hero.secondary{background:var(--white);color:var(--dark);border:1.5px solid rgba(0,0,0,.1)}
 .btn-hero.secondary:hover{border-color:var(--orange);color:var(--orange);transform:translateY(-1px)}
 
-/* ── 정밀 진단 + 런칭 이벤트 가격 박스 ── */
+/* ── 정밀 진단 + 감사 이벤트 가격 박스 ── */
 .btn-premium-launch{
   display:flex !important;
   align-items:center;justify-content:space-between;
-  gap:14px;padding:14px 22px !important;
+  gap:14px;padding:18px 26px !important;
   position:relative;overflow:hidden;
-  border:1.5px solid rgba(220,20,120,.18) !important;
-  background:linear-gradient(135deg, rgba(220,20,120,.04), rgba(240,160,20,.03)) !important;
+  border:none !important;
+  background:linear-gradient(135deg, var(--pink), #FF6B9D) !important;
+  box-shadow:0 8px 28px rgba(220,20,120,.38);
   transition:all .25s var(--ez);
 }
+.btn-premium-launch::after{
+  content:'';position:absolute;top:-50%;right:-20%;width:200px;height:200px;
+  background:radial-gradient(circle, rgba(255,255,255,.18), transparent 70%);
+  pointer-events:none;
+}
 .btn-premium-launch:hover{
-  border-color:var(--pink) !important;
-  color:var(--dark) !important;
-  background:linear-gradient(135deg, rgba(220,20,120,.08), rgba(240,160,20,.05)) !important;
-  transform:translateY(-1px);
-  box-shadow:0 8px 24px rgba(220,20,120,.15);
+  transform:translateY(-2px);
+  box-shadow:0 14px 40px rgba(220,20,120,.5);
 }
 .bpl-left{
-  display:flex;flex-direction:column;align-items:flex-start;gap:4px;flex:1;min-width:0;
+  display:flex;flex-direction:column;align-items:flex-start;gap:5px;flex:1;min-width:0;position:relative;z-index:1;
 }
 .bpl-badge{
   display:inline-block;
   font-size:.62rem;font-weight:900;letter-spacing:.05em;
-  padding:3px 9px;
-  background:var(--pink);color:#fff;
+  padding:3px 10px;
+  background:rgba(255,255,255,.22);color:#fff;
   border-radius:50px;line-height:1.4;
 }
 .bpl-title{
-  font-size:.95rem;font-weight:800;color:var(--dark);
+  font-size:1.08rem;font-weight:900;color:#fff;
   letter-spacing:-.01em;line-height:1.3;
 }
 .bpl-right{
-  display:flex;flex-direction:column;align-items:flex-end;gap:1px;flex-shrink:0;
+  display:flex;flex-direction:column;align-items:flex-end;gap:1px;flex-shrink:0;position:relative;z-index:1;
 }
 .bpl-price-old{
   font-family:'Cormorant Garamond',serif;
-  font-size:.82rem;color:var(--gray);
+  font-size:.85rem;color:rgba(255,255,255,.7);
   text-decoration:line-through;
-  font-weight:500;line-height:1;opacity:.7;
+  font-weight:500;line-height:1;
 }
 .bpl-price-now{
   font-family:'Cormorant Garamond',serif;
-  font-size:1.35rem;font-weight:700;color:var(--pink);
+  font-size:1.5rem;font-weight:700;color:#fff;
   letter-spacing:-.01em;line-height:1.15;
 }
 
@@ -962,7 +965,6 @@ em{font-style:normal}
         </span>
         <span class="nav-selin-dot"></span>
       </a>
-      <a class="nav-ghost" href="skopos_quiz.html">무료 진단</a>
       <a class="nav-pill" href="payment.html">
         <span class="nav-pill-label">SDTI 정밀 검사</span>
         <span class="nav-pill-price"><span class="nav-pill-old">29,900원</span> ₩9,900</span>
@@ -997,20 +999,18 @@ em{font-style:normal}
       <h1 class="hero-title">집에 오면 왜<br><em>쉬어지지 않을까요?</em></h1>
       <p class="hero-sub">어떤 가구, 소품, 인테리어가 나에게 맞는지 아시나요?<br>공간심리학 기반으로 당신의 취향과 욕구에 꼭 맞는 공간 언어를 찾아드립니다.</p>
       <div class="cta-group">
-        <a class="btn-hero primary" href="skopos_quiz.html">무료 진단 시작하기 <span class="btn-arrow">→</span></a>
-
-        <!-- 정밀 진단 + 런칭 이벤트 가격 박스 -->
-        <a class="btn-hero secondary btn-premium-launch" href="skopos_premium_quiz.html">
+        <!-- 정밀 진단 (메인 CTA) -->
+        <a class="btn-hero primary btn-premium-launch" href="skopos_premium_quiz.html">
           <div class="bpl-left">
-            <span class="bpl-badge">🎉 런칭 이벤트</span>
-            <span class="bpl-title">정밀 진단 시작하기</span>
+            <span class="bpl-badge">🎉 감사 이벤트 · 6월 말일까지</span>
+            <span class="bpl-title">SDTI 정밀 진단 시작하기</span>
           </div>
           <div class="bpl-right">
             <span class="bpl-price-old">29,900원</span>
             <span class="bpl-price-now">9,900원</span>
           </div>
         </a>
-        <span class="btn-price-note">5월 말일까지 · 1회 결제 · 영구 열람 · 13페이지 PDF + 1년 계절 가이드 포함</span>
+        <span class="btn-price-note">1회 결제 · 영구 열람 · 144문항 · 13페이지 PDF + 1년 계절 가이드 포함</span>
 
         <!-- 샘플 결과지 미리보기 링크 -->
         <a class="btn-sample-preview" href="skopos_sample_result.html" onclick="if(window.gtag)gtag('event','sample_preview_click',{location:'hero'})">
@@ -1049,7 +1049,7 @@ em{font-style:normal}
     <div class="s-head">
       <div class="s-eye">How it works</div>
       <h2 class="s-title">단 3분이면 알 수 있어요</h2>
-      <p class="s-sub">공간이 말해주는 나의 이야기 — 결과를 읽으면 달라 보일 거예요</p>
+      <p class="s-sub">공간이 말해주는 나의 이야기, 결과를 읽으면 달라 보일 거예요</p>
     </div>
     <div class="steps">
       <div class="step-card s1">
@@ -1095,7 +1095,7 @@ em{font-style:normal}
         <a class="tier-btn" href="skopos_quiz.html">무료로 시작하기 →</a>
       </div>
       <div class="tier premium">
-        <div class="popular">🎉 런칭 이벤트 · 5월 말일까지</div>
+        <div class="popular">🎉 감사 이벤트 · 6월 말일까지</div>
         <div class="tier-tag">프리미엄</div>
         <div class="tier-name">정밀 진단</div>
         <div class="tier-price-old">29,900원</div>
@@ -1259,8 +1259,8 @@ em{font-style:normal}
         </div>
       </div>
       <div>
-        <p class="sci-quote">"소파를 고르기 전에,<br>조명을 바꾸기 전에 —<br><strong>나의 욕구를 먼저 아는 것</strong>이 시작입니다."</p>
-        <p class="sci-body">1955년, 소아마비 백신을 개발한 조나스 솔크 박사는 연구실에서 풀리지 않던 문제의 실마리를 이탈리아 수도원 안뜰에서 발견했습니다. 공간이 달랐기 때문입니다.<br><br>가구 배치, 소품 선택, 조명 색온도, 소재의 질감 — 이 모든 결정이 실패하는 이유는 취향을 모르기 때문이 아닙니다. 나의 공간 욕구 구조를 모르기 때문입니다. 스코포스는 그 질문에서 시작합니다.</p>
+        <p class="sci-quote">"소파를 고르기 전에,<br>조명을 바꾸기 전에,<br><strong>나의 욕구를 먼저 아는 것</strong>이 시작입니다."</p>
+        <p class="sci-body">1955년, 소아마비 백신을 개발한 조나스 솔크 박사는 연구실에서 풀리지 않던 문제의 실마리를 이탈리아 수도원 안뜰에서 발견했습니다. 공간이 달랐기 때문입니다.<br><br>가구 배치, 소품 선택, 조명 색온도, 소재의 질감, 이 모든 결정이 실패하는 이유는 취향을 모르기 때문이 아닙니다. 나의 공간 욕구 구조를 모르기 때문입니다. 스코포스는 그 질문에서 시작합니다.</p>
       </div>
     </div>
   </div>
@@ -1272,9 +1272,9 @@ em{font-style:normal}
 <div class="section-wrap fade-up">
   <div class="inner">
     <div class="s-head">
-      <div class="s-eye">🎉 런칭 이벤트 · 정밀 검사로 받는 것</div>
+      <div class="s-eye">🎉 감사 이벤트 · 정밀 검사로 받는 것</div>
       <h2 class="s-title">검사 결과로 무엇을 받나요?</h2>
-      <p class="s-sub">단순한 결과지가 아니에요. <strong>13페이지 PDF 리포트 + 1년 계절 가이드 구독 + 인스타 공유 카드</strong>까지<br>당신의 공간을 진짜 바꿀 수 있는 도구를 한꺼번에 받습니다. <strong style="color:var(--pink)">5월 말일까지 런칭 이벤트가 9,900원으로 만나보세요.</strong></p>
+      <p class="s-sub">단순한 결과지가 아니에요. <strong>13페이지 PDF 리포트 + 1년 계절 가이드 구독 + 인스타 공유 카드</strong>까지<br>당신의 공간을 진짜 바꿀 수 있는 도구를 한꺼번에 받습니다. <strong style="color:var(--pink)">6월 말일까지 감사 이벤트가 9,900원으로 만나보세요.</strong></p>
     </div>
 
     <div class="deliverables-grid">
@@ -1341,11 +1341,11 @@ em{font-style:normal}
       </div>
       <div class="vc-divider"></div>
       <div class="vc-row vc-now">
-        <span class="vc-label vc-label-now">런칭 이벤트가</span>
+        <span class="vc-label vc-label-now">감사 이벤트가</span>
         <span class="vc-value vc-now-value">9,900원</span>
         <span class="vc-badge">67% OFF</span>
       </div>
-      <p class="vc-note">🎉 5월 말일까지 한정 · 한 번 구매로 평생 다시 꺼내볼 수 있는 PDF + 1년 계절 가이드까지 포함</p>
+      <p class="vc-note">🎉 6월 말일까지 한정 · 한 번 구매로 평생 다시 꺼내볼 수 있는 PDF + 1년 계절 가이드까지 포함</p>
     </div>
 
     <div class="deliv-cta-wrap">
@@ -1545,6 +1545,22 @@ em{font-style:normal}
   </div>
 </div>
 
+<!-- ════════ 셀인하자 굿파트너 배너 ════════ -->
+<div style="max-width:1080px;margin:40px auto;padding:0 24px">
+  <a href="/selinhaja_goodpartner" style="display:block;text-decoration:none;background:linear-gradient(135deg,#0F0F1A 0%,#2a2440 100%);border-radius:20px;padding:38px 36px;position:relative;overflow:hidden">
+    <span style="position:absolute;top:-70px;right:-50px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(220,20,120,.28),transparent 70%);pointer-events:none"></span>
+    <div style="position:relative;z-index:1;display:flex;align-items:center;gap:28px;flex-wrap:wrap">
+      <div style="font-size:2.8rem;flex-shrink:0">🤝</div>
+      <div style="flex:1;min-width:240px">
+        <div style="display:inline-block;font-size:.72rem;font-weight:800;letter-spacing:.06em;color:#FF6B9D;background:rgba(220,20,120,.18);padding:5px 14px;border-radius:50px;margin-bottom:10px">✦ 셀인하자 굿파트너</div>
+        <div style="font-size:1.45rem;font-weight:900;color:#fff;line-height:1.3;margin-bottom:8px;letter-spacing:-.01em">검증된 인테리어 기술자·업체를 <span style="color:#FF6B9D">한 곳에서</span></div>
+        <div style="font-size:.9rem;font-weight:600;color:rgba(255,255,255,.6);line-height:1.6">진단으로 방향을 잡았다면, 시공은 검증된 파트너에게. 후기로 검증된 기술자와 업체를 카카오톡으로 바로 상담하세요.</div>
+      </div>
+      <span style="flex-shrink:0;display:inline-flex;align-items:center;gap:7px;background:#DC1478;color:#fff;font-size:.9rem;font-weight:800;padding:14px 26px;border-radius:50px;white-space:nowrap">굿파트너 보러가기 →</span>
+    </div>
+  </a>
+</div>
+
 <!-- FOOTER -->
 <footer>
   <div class="footer-inner">
@@ -1613,7 +1629,7 @@ em{font-style:normal}
       <h3>제2조 (서비스 내용)</h3>
       <ul>
         <li>무료 SDTI 공간 욕구 유형 검사 (12가지 유형 무료, 12가지 유형)</li>
-        <li>정밀 SDTI 공간 욕구 유형 검사 (144문항, 12가지 유형) · 유료 ₩9,900 (런칭 이벤트가, 정가 ₩29,900)</li>
+        <li>정밀 SDTI 공간 욕구 유형 검사 (144문항, 12가지 유형) · 유료 ₩9,900 (감사 이벤트가, 정가 ₩29,900)</li>
         <li>진단 결과 리포트 및 PDF 제공</li>
       </ul>
       <h3>제3조 (유료 서비스 및 결제)</h3>
@@ -1658,8 +1674,8 @@ em{font-style:normal}
       </ul>
       <h3>4. 개인정보 처리 위탁</h3>
       <ul>
-        <li>Airtable Inc. — 진단 데이터 저장 및 관리</li>
-        <li>Google LLC — 이용 통계 분석 (Google Analytics)</li>
+        <li>Airtable Inc. (진단 데이터 저장 및 관리)</li>
+        <li>Google LLC (이용 통계 분석, Google Analytics)</li>
       </ul>
       <h3>5. 이용자의 권리</h3>
       <p>개인정보 열람·수정·삭제·처리 정지를 언제든지 요청할 수 있습니다. → contact@skopos.kr</p>
