@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>셀인하자 관리자 : 기술자·업체 관리</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="selinhaja_supabase_config.js"></script>
+<style>
+:root{
+  --pink:#E91E8C; --pink-dk:#c4156f; --pink-lt:#fce4f3;
+  --green:#7CB342; --green-lt:#eef6e6; --red:#EF5350; --red-lt:#ffebee;
+  --dark:#0F0F1A; --mid:#3D3D5C; --gray:#8890A4;
+  --bg:#F7F8FC; --line:#e8eaf0; --radius:14px;
+  --sh:0 4px 24px rgba(15,15,26,.07);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dark);-webkit-font-smoothing:antialiased}
+.top{background:var(--dark);color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between}
+.top-logo{font-weight:900;font-size:1.1rem}
+.top-logo b{color:var(--pink)}
+.top-logo span{font-size:.78rem;font-weight:700;color:var(--gray);margin-left:8px}
+.top-user{display:flex;align-items:center;gap:12px;font-size:.82rem;font-weight:700}
+.btn{border:none;cursor:pointer;font-family:inherit;font-weight:800;border-radius:10px;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.btn-pink{background:var(--pink);color:#fff;padding:11px 20px;font-size:.9rem}
+.btn-pink:hover{background:var(--pink-dk)}
+.btn-ghost{background:rgba(255,255,255,.12);color:#fff;padding:8px 16px;font-size:.8rem}
+.btn-ghost:hover{background:rgba(255,255,255,.2)}
+.btn-sm{padding:7px 13px;font-size:.78rem;border-radius:8px}
+.btn-edit{background:var(--bg);color:var(--mid);border:1px solid var(--line)}
+.btn-edit:hover{border-color:var(--pink);color:var(--pink)}
+.btn-del{background:var(--red-lt);color:var(--red)}
+.btn-del:hover{background:var(--red);color:#fff}
+
+/* LOGIN */
+.login-wrap{max-width:380px;margin:80px auto;background:#fff;border-radius:var(--radius);box-shadow:var(--sh);padding:40px 32px}
+.login-wrap h1{font-size:1.4rem;font-weight:900;margin-bottom:6px;text-align:center}
+.login-wrap h1 b{color:var(--pink)}
+.login-wrap .sub{font-size:.84rem;color:var(--gray);font-weight:700;text-align:center;margin-bottom:28px}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:.8rem;font-weight:800;color:var(--mid);margin-bottom:6px}
+.field input,.field select,.field textarea{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;font-family:inherit;font-size:.9rem;font-weight:600;color:var(--dark);transition:border .2s}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--pink)}
+.field textarea{resize:vertical;min-height:64px}
+.login-err{background:var(--red-lt);color:var(--red);font-size:.8rem;font-weight:700;padding:10px 14px;border-radius:8px;margin-bottom:14px;display:none}
+.login-err.show{display:block}
+
+/* APP */
+.app{display:none;max-width:1100px;margin:0 auto;padding:28px 24px 80px}
+.app.show{display:block}
+.cfg-warn{background:#fff3e0;color:#c47800;font-size:.84rem;font-weight:700;padding:14px 18px;border-radius:12px;margin-bottom:20px;line-height:1.6;display:none}
+.cfg-warn.show{display:block}
+.tabs{display:flex;gap:8px;margin-bottom:22px}
+.tab{padding:11px 22px;border-radius:50px;font-size:.9rem;font-weight:800;cursor:pointer;background:#fff;border:1.5px solid var(--line);color:var(--mid);transition:all .2s}
+.tab.active{background:var(--pink);border-color:var(--pink);color:#fff}
+.panel{display:none}
+.panel.active{display:block}
+.panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.panel-title{font-size:1.15rem;font-weight:900}
+.panel-title span{font-size:.84rem;color:var(--gray);font-weight:700;margin-left:8px}
+
+/* TABLE */
+.tbl{width:100%;background:#fff;border-radius:var(--radius);overflow:hidden;box-shadow:var(--sh);border-collapse:collapse}
+.tbl th{background:var(--bg);font-size:.74rem;font-weight:800;color:var(--gray);text-align:left;padding:12px 14px;letter-spacing:.02em}
+.tbl td{padding:12px 14px;font-size:.84rem;font-weight:600;border-top:1px solid var(--line);vertical-align:middle}
+.tbl tr:hover td{background:#fafbfd}
+.tbl .tname{font-weight:800;color:var(--dark)}
+.badge{display:inline-block;font-size:.7rem;font-weight:800;padding:3px 10px;border-radius:50px;background:var(--pink-lt);color:var(--pink-dk)}
+.badge.off{background:#f0f1f5;color:var(--gray)}
+.row-actions{display:flex;gap:6px;justify-content:flex-end}
+.empty{text-align:center;color:var(--gray);font-weight:700;padding:40px;font-size:.9rem}
+
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(15,15,26,.5);z-index:100;align-items:flex-start;justify-content:center;padding:40px 20px;overflow-y:auto}
+.modal-bg.show{display:flex}
+.modal{background:#fff;border-radius:var(--radius);width:100%;max-width:540px;padding:28px;box-shadow:0 24px 60px rgba(0,0,0,.3)}
+.modal h2{font-size:1.2rem;font-weight:900;margin-bottom:20px}
+.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.modal-grid .full{grid-column:1 / 3}
+.modal-foot{display:flex;gap:10px;justify-content:flex-end;margin-top:24px}
+.hint{font-size:.72rem;color:var(--gray);font-weight:600;margin-top:4px}
+@media(max-width:600px){
+  .modal-grid{grid-template-columns:1fr}
+  .modal-grid .full{grid-column:1}
+  .tbl .hide-m{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="loginWrap">
+  <h1>셀인<b>하자</b> 관리자</h1>
+  <div class="sub">기술자·업체 등록 관리</div>
+  <div class="login-err" id="loginErr"></div>
+  <div class="field">
+    <label>이메일</label>
+    <input type="email" id="email" placeholder="admin@skopos.kr" autocomplete="username">
+  </div>
+  <div class="field">
+    <label>비밀번호</label>
+    <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
+  </div>
+  <button class="btn btn-pink" style="width:100%" id="loginBtn">로그인</button>
+  <p class="hint" style="text-align:center;margin-top:14px">계정은 Supabase 대시보드 &gt; Authentication &gt; Users 에서 생성합니다.</p>
+</div>
+
+<!-- APP -->
+<div class="app" id="app">
+  <div class="cfg-warn" id="cfgWarn">⚠️ Supabase 키가 설정되지 않았습니다. <b>selinhaja_supabase_config.js</b> 에 Project URL과 publishable 키를 입력하세요.</div>
+  <div class="tabs">
+    <div class="tab active" data-tab="workers">🛠️ 기술자</div>
+    <div class="tab" data-tab="shops">📍 검증된 업체</div>
+  </div>
+
+  <!-- WORKERS PANEL -->
+  <div class="panel active" id="panel-workers">
+    <div class="panel-head">
+      <div class="panel-title">기술자 목록 <span id="wCount">0명</span></div>
+      <button class="btn btn-pink" onclick="openWorker()">+ 기술자 등록</button>
+    </div>
+    <table class="tbl">
+      <thead><tr><th>이름</th><th>공정</th><th class="hide-m">지역</th><th class="hide-m">경력</th><th>평점</th><th>노출</th><th></th></tr></thead>
+      <tbody id="wBody"></tbody>
+    </table>
+  </div>
+
+  <!-- SHOPS PANEL -->
+  <div class="panel" id="panel-shops">
+    <div class="panel-head">
+      <div class="panel-title">검증된 업체 목록 <span id="sCount">0곳</span></div>
+      <button class="btn btn-pink" onclick="openShop()">+ 업체 등록</button>
+    </div>
+    <table class="tbl">
+      <thead><tr><th>업체명</th><th>권역</th><th>유형</th><th class="hide-m">좌표</th><th>노출</th><th></th></tr></thead>
+      <tbody id="sBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- WORKER MODAL -->
+<div class="modal-bg" id="workerModal">
+  <div class="modal">
+    <h2 id="workerModalTitle">기술자 등록</h2>
+    <input type="hidden" id="w_id">
+    <div class="modal-grid">
+      <div class="field"><label>이름/상호 *</label><input id="w_name"></div>
+      <div class="field"><label>공정 *</label>
+        <select id="w_cat">
+          <option>목공</option><option>도배</option><option>타일</option><option>전기</option>
+          <option>페인트</option><option>마루</option><option>욕실</option><option>철거</option>
+        </select>
+      </div>
+      <div class="field"><label>아이콘(이모지)</label><input id="w_icon" placeholder="🪵"></div>
+      <div class="field"><label>활동 지역</label><input id="w_region" placeholder="서울·경기 전역"></div>
+      <div class="field"><label>경력</label><input id="w_career" placeholder="18년"></div>
+      <div class="field"><label>평점 (0~5)</label><input id="w_rating" type="number" step="0.1" min="0" max="5" value="5.0"></div>
+      <div class="field"><label>후기 수</label><input id="w_reviews" type="number" value="0"></div>
+      <div class="field"><label>누적 시공(건)</label><input id="w_projects" type="number" value="0"></div>
+      <div class="field full"><label>소개</label><textarea id="w_desc"></textarea></div>
+      <div class="field full"><label>해시태그 (쉼표로 구분)</label><input id="w_tags" placeholder="붙박이장, 중문, 몰딩"></div>
+      <div class="field full"><label>대표 후기</label><textarea id="w_quote"></textarea></div>
+      <div class="field"><label>후기 작성자</label><input id="w_qauthor" placeholder="반셀프 고객 이○○"></div>
+      <div class="field"><label>정렬 우선(클수록 위)</label><input id="w_sort" type="number" value="0"></div>
+      <div class="field full"><label><input type="checkbox" id="w_active" checked style="width:auto;margin-right:6px">사이트에 노출</label></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-edit btn-sm" onclick="closeModal('workerModal')">취소</button>
+      <button class="btn btn-pink btn-sm" onclick="saveWorker()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- SHOP MODAL -->
+<div class="modal-bg" id="shopModal">
+  <div class="modal">
+    <h2 id="shopModalTitle">업체 등록</h2>
+    <input type="hidden" id="s_id">
+    <div class="modal-grid">
+      <div class="field full"><label>업체명 *</label><input id="s_name"></div>
+      <div class="field"><label>권역 *</label>
+        <select id="s_region">
+          <option>서울북부</option><option>서울남부</option><option>서울서부</option>
+          <option>서울동부</option><option>경기북부</option><option>경기남부</option>
+        </select>
+      </div>
+      <div class="field"><label>유형 *</label>
+        <select id="s_cat">
+          <option>자재상</option><option>쇼룸</option><option>조명</option>
+          <option>타일</option><option>가구</option><option>종합시장</option>
+        </select>
+      </div>
+      <div class="field"><label>위도(lat) *</label><input id="s_lat" placeholder="37.566"></div>
+      <div class="field"><label>경도(lng) *</label><input id="s_lng" placeholder="126.991"></div>
+      <div class="field full"><label>주소</label><input id="s_addr"></div>
+      <div class="field full"><label>소개</label><textarea id="s_desc"></textarea></div>
+      <div class="field"><label>정렬 우선(클수록 위)</label><input id="s_sort" type="number" value="0"></div>
+      <div class="field"><label><input type="checkbox" id="s_active" checked style="width:auto;margin-right:6px">사이트에 노출</label></div>
+      <div class="field full"><p class="hint">좌표는 카카오맵/구글맵에서 위치 우클릭 → 좌표 복사로 확인하세요.</p></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-edit btn-sm" onclick="closeModal('shopModal')">취소</button>
+      <button class="btn btn-pink btn-sm" onclick="saveShop()">저장</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+let client = null;
+
+// ── 로그인 처리 ──
+async function init(){
+  if (!isSupabaseReady()) {
+    // 키 미설정 시 앱은 보이되 경고 표시 (UI 미리보기용)
+    $('loginWrap').style.display='none';
+    $('app').classList.add('show');
+    $('cfgWarn').classList.add('show');
+    return;
+  }
+  client = getSupabase();
+  const { data:{ session } } = await client.auth.getSession();
+  if (session) showApp();
+}
+
+$('loginBtn').addEventListener('click', login);
+$('password').addEventListener('keydown', e=>{ if(e.key==='Enter') login(); });
+
+async function login(){
+  const err = $('loginErr'); err.classList.remove('show');
+  if (!isSupabaseReady()) { err.textContent='Supabase 키가 설정되지 않았습니다.'; err.classList.add('show'); return; }
+  client = getSupabase();
+  const { error } = await client.auth.signInWithPassword({
+    email: $('email').value.trim(), password: $('password').value
+  });
+  if (error) { err.textContent = '로그인 실패: '+error.message; err.classList.add('show'); return; }
+  showApp();
+}
+
+async function logout(){ if(client) await client.auth.signOut(); location.reload(); }
+
+function showApp(){
+  $('loginWrap').style.display='none';
+  $('app').classList.add('show');
+  // 상단 사용자 영역 추가
+  if(!document.querySelector('.top')){
+    const top = document.createElement('div');
+    top.className='top';
+    top.innerHTML = `<div class="top-logo">셀인<b>하자</b><span>관리자</span></div>
+      <div class="top-user"><span id="userEmail"></span><button class="btn btn-ghost" onclick="logout()">로그아웃</button></div>`;
+    document.body.insertBefore(top, document.body.firstChild);
+  }
+  loadWorkers(); loadShops();
+}
+
+// ── 탭 전환 ──
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    $('panel-'+t.dataset.tab).classList.add('active');
+  });
+});
+
+// ════════ WORKERS CRUD ════════
+async function loadWorkers(){
+  if(!client) return;
+  const { data, error } = await client.from('workers').select('*')
+    .order('sort_order',{ascending:false}).order('created_at',{ascending:false});
+  if(error){ console.error(error); return; }
+  $('wCount').textContent = (data?.length||0)+'명';
+  $('wBody').innerHTML = (data||[]).map(w=>`
+    <tr>
+      <td class="tname">${w.name}</td>
+      <td>${w.cat}</td>
+      <td class="hide-m">${w.region||'-'}</td>
+      <td class="hide-m">${w.career||'-'}</td>
+      <td>⭐ ${w.rating||'-'}</td>
+      <td>${w.is_active?'<span class="badge">노출</span>':'<span class="badge off">숨김</span>'}</td>
+      <td><div class="row-actions">
+        <button class="btn btn-edit btn-sm" onclick='openWorker(${JSON.stringify(w)})'>수정</button>
+        <button class="btn btn-del btn-sm" onclick="delWorker(${w.id},'${(w.name||'').replace(/'/g,"")}')">삭제</button>
+      </div></td>
+    </tr>`).join('') || '<tr><td colspan="7" class="empty">등록된 기술자가 없습니다. + 기술자 등록을 눌러 추가하세요.</td></tr>';
+}
+
+function openWorker(w){
+  $('workerModalTitle').textContent = w&&w.id ? '기술자 수정' : '기술자 등록';
+  $('w_id').value=w?.id||''; $('w_name').value=w?.name||''; $('w_cat').value=w?.cat||'목공';
+  $('w_icon').value=w?.icon||''; $('w_region').value=w?.region||''; $('w_career').value=w?.career||'';
+  $('w_rating').value=w?.rating??5.0; $('w_reviews').value=w?.reviews??0; $('w_projects').value=w?.projects??0;
+  $('w_desc').value=w?.description||''; $('w_tags').value=(w?.tags||[]).join(', ');
+  $('w_quote').value=w?.quote||''; $('w_qauthor').value=w?.quote_author||'';
+  $('w_sort').value=w?.sort_order??0; $('w_active').checked = w? w.is_active : true;
+  $('workerModal').classList.add('show');
+}
+
+async function saveWorker(){
+  if(!client){ alert('Supabase 미설정'); return; }
+  const payload = {
+    name:$('w_name').value.trim(), cat:$('w_cat').value, icon:$('w_icon').value.trim()||'🔧',
+    region:$('w_region').value.trim(), career:$('w_career').value.trim(),
+    rating:parseFloat($('w_rating').value)||5, reviews:parseInt($('w_reviews').value)||0,
+    projects:parseInt($('w_projects').value)||0, description:$('w_desc').value.trim(),
+    tags:$('w_tags').value.split(',').map(s=>s.trim()).filter(Boolean),
+    quote:$('w_quote').value.trim(), quote_author:$('w_qauthor').value.trim(),
+    sort_order:parseInt($('w_sort').value)||0, is_active:$('w_active').checked
+  };
+  if(!payload.name){ alert('이름을 입력하세요'); return; }
+  const id = $('w_id').value;
+  const res = id
+    ? await client.from('workers').update(payload).eq('id', id)
+    : await client.from('workers').insert(payload);
+  if(res.error){ alert('저장 실패: '+res.error.message); return; }
+  closeModal('workerModal'); loadWorkers();
+}
+
+async function delWorker(id, name){
+  if(!confirm(`'${name}' 기술자를 삭제할까요?`)) return;
+  const { error } = await client.from('workers').delete().eq('id', id);
+  if(error){ alert('삭제 실패: '+error.message); return; }
+  loadWorkers();
+}
+
+// ════════ SHOPS CRUD ════════
+async function loadShops(){
+  if(!client) return;
+  const { data, error } = await client.from('shops').select('*')
+    .order('sort_order',{ascending:false}).order('created_at',{ascending:false});
+  if(error){ console.error(error); return; }
+  $('sCount').textContent = (data?.length||0)+'곳';
+  $('sBody').innerHTML = (data||[]).map(s=>`
+    <tr>
+      <td class="tname">${s.name}</td>
+      <td>${s.region}</td>
+      <td>${s.cat}</td>
+      <td class="hide-m">${s.lat}, ${s.lng}</td>
+      <td>${s.is_active?'<span class="badge">노출</span>':'<span class="badge off">숨김</span>'}</td>
+      <td><div class="row-actions">
+        <button class="btn btn-edit btn-sm" onclick='openShop(${JSON.stringify(s)})'>수정</button>
+        <button class="btn btn-del btn-sm" onclick="delShop(${s.id},'${(s.name||'').replace(/'/g,"")}')">삭제</button>
+      </div></td>
+    </tr>`).join('') || '<tr><td colspan="6" class="empty">등록된 업체가 없습니다. + 업체 등록을 눌러 추가하세요.</td></tr>';
+}
+
+function openShop(s){
+  $('shopModalTitle').textContent = s&&s.id ? '업체 수정' : '업체 등록';
+  $('s_id').value=s?.id||''; $('s_name').value=s?.name||''; $('s_region').value=s?.region||'서울북부';
+  $('s_cat').value=s?.cat||'자재상'; $('s_lat').value=s?.lat||''; $('s_lng').value=s?.lng||'';
+  $('s_addr').value=s?.addr||''; $('s_desc').value=s?.description||'';
+  $('s_sort').value=s?.sort_order??0; $('s_active').checked = s? s.is_active : true;
+  $('shopModal').classList.add('show');
+}
+
+async function saveShop(){
+  if(!client){ alert('Supabase 미설정'); return; }
+  const payload = {
+    name:$('s_name').value.trim(), region:$('s_region').value, cat:$('s_cat').value,
+    lat:parseFloat($('s_lat').value), lng:parseFloat($('s_lng').value),
+    addr:$('s_addr').value.trim(), description:$('s_desc').value.trim(),
+    sort_order:parseInt($('s_sort').value)||0, is_active:$('s_active').checked
+  };
+  if(!payload.name){ alert('업체명을 입력하세요'); return; }
+  if(isNaN(payload.lat)||isNaN(payload.lng)){ alert('좌표(위도/경도)를 정확히 입력하세요'); return; }
+  const id = $('s_id').value;
+  const res = id
+    ? await client.from('shops').update(payload).eq('id', id)
+    : await client.from('shops').insert(payload);
+  if(res.error){ alert('저장 실패: '+res.error.message); return; }
+  closeModal('shopModal'); loadShops();
+}
+
+async function delShop(id, name){
+  if(!confirm(`'${name}' 업체를 삭제할까요?`)) return;
+  const { error } = await client.from('shops').delete().eq('id', id);
+  if(error){ alert('삭제 실패: '+error.message); return; }
+  loadShops();
+}
+
+function closeModal(id){ $(id).classList.remove('show'); }
+// 모달 바깥 클릭 시 닫기
+document.querySelectorAll('.modal-bg').forEach(m=>{
+  m.addEventListener('click', e=>{ if(e.target===m) m.classList.remove('show'); });
+});
+
+init();
+</script>
+</body>
+</html>
