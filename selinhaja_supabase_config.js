@@ -9,8 +9,8 @@
    ※ secret(service_role) 키는 절대 여기에 넣지 마세요. 공개됩니다.
    ════════════════════════════════════════════════════════════ */
 
-const SUPABASE_URL      = 'YOUR_SUPABASE_URL';        // 예: https://xxxxxxxx.supabase.co
-const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';   // 예: sb_publishable_xxx... (또는 레거시 anon 키)
+const SUPABASE_URL      = 'https://rgbukqphcqptnfeqipfn.supabase.co';        // 예: https://xxxxxxxx.supabase.co
+const SUPABASE_ANON_KEY = 'sb_publishable_xlgB6ljvPFZ-W_yW8TOGQA_yVs6vPce';   // 예: sb_publishable_xxx... (또는 레거시 anon 키)
 
 /* ──────────────────────────────────────────────
    아래는 수정하지 않아도 됩니다.
