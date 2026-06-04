@@ -14,7 +14,15 @@
 <meta property="og:title" content="굿파트너 | 셀인하자 : 검증된 기술자와 업체">
 <meta property="og:description" content="후기로 검증된 공정별 기술자와 권역별 인테리어 업체를 한 곳에서. 카카오톡으로 바로 상담.">
 <meta property="og:url" content="https://skopos.kr/goodpartner">
+<meta property="og:image" content="https://skopos.kr/goodpartner_og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="셀인하자 굿파트너 : 검증된 파트너 매칭 플랫폼">
 <meta property="og:locale" content="ko_KR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="굿파트너 | 셀인하자 : 검증된 기술자와 업체">
+<meta name="twitter:description" content="후기로 검증된 공정별 기술자와 권역별 인테리어 업체를 한 곳에서. 카카오톡으로 바로 상담.">
+<meta name="twitter:image" content="https://skopos.kr/goodpartner_og.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
@@ -190,6 +198,7 @@ nav{position:sticky;top:0;z-index:1000;display:flex;align-items:center;justify-c
 .pcard-cat{font-size:.72rem;font-weight:700;color:var(--gray);background:var(--bg);border-radius:50px;padding:3px 10px;white-space:nowrap}
 .pcard-desc{font-size:.82rem;font-weight:600;color:var(--mid);line-height:1.55;margin-bottom:8px}
 .pcard-addr{font-size:.76rem;font-weight:600;color:var(--gray);display:flex;align-items:flex-start;gap:5px;margin-bottom:10px}
+.pcard-links{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
 .pcard-foot{display:flex;gap:8px}
 .pcard-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;padding:9px;border-radius:9px;font-size:.78rem;font-weight:800;text-decoration:none;transition:all .2s}
 .pcard-btn-map{background:var(--bg);color:var(--mid);border:1px solid #eef0f5}
@@ -454,19 +463,19 @@ const FALLBACK_WORKERS = [
   {name:'장태근',cat:'샷시',icon:'🪟',region:'서울·경기 전역',phone:'',career:'17년',desc:'발코니·이중창 샷시 교체 전문. 단열·결로·소음 차단 시공으로 겨울철 만족도 높음.',tags:['이중창','발코니확장','단열샷시','방음창'],link_cafe:'https://cafe.naver.com/',link_blog:'https://blog.naver.com/'},
 ];
 const FALLBACK_SHOPS = [
-  {name:'을지로 조명거리',region:'서울동부',cat:'조명',lat:37.566,lng:126.991,addr:'서울 중구 을지로3가 일대',desc:'국내 최대 조명 도매 거리. 펜던트·간접조명 현장 구매처로 검증.'},
-  {name:'방산시장',region:'서울동부',cat:'종합시장',lat:37.569,lng:126.998,addr:'서울 중구 방산시장',desc:'시트지·필름·벽지·부자재의 본진. 반셀프 필수 코스.'},
-  {name:'논현동 가구거리',region:'서울남부',cat:'가구',lat:37.511,lng:127.022,addr:'서울 강남구 논현로 일대',desc:'고급 가구·수입 가구 쇼룸 밀집. 안목 키우기 좋은 곳.'},
+  {name:'을지로 조명거리',region:'서울동부',cat:'조명',lat:37.566,lng:126.991,addr:'서울 중구 을지로3가 일대',desc:'국내 최대 조명 도매 거리. 펜던트·간접조명 현장 구매처로 검증.',link_cafe:'https://cafe.naver.com/',link_blog:'https://blog.naver.com/'},
+  {name:'방산시장',region:'서울동부',cat:'종합시장',lat:37.569,lng:126.998,addr:'서울 중구 방산시장',desc:'시트지·필름·벽지·부자재의 본진. 반셀프 필수 코스.',link_insta:'https://instagram.com/'},
+  {name:'논현동 가구거리',region:'서울남부',cat:'가구',lat:37.511,lng:127.022,addr:'서울 강남구 논현로 일대',desc:'고급 가구·수입 가구 쇼룸 밀집. 안목 키우기 좋은 곳.',link_blog:'https://blog.naver.com/',link_insta:'https://instagram.com/',link_site:'https://example.com/'},
   {name:'논현 조명상가',region:'서울남부',cat:'조명',lat:37.504,lng:127.025,addr:'서울 강남구 학동로',desc:'디자인 조명 쇼룸 집결지. 무드등부터 샹들리에까지.'},
-  {name:'한샘 디자인파크 잠실',region:'서울동부',cat:'쇼룸',lat:37.513,lng:127.103,addr:'서울 송파구 올림픽로',desc:'대형 종합 인테리어 쇼룸. 주방·붙박이 실물 비교에 최적.'},
-  {name:'고양 삼송 가구단지',region:'경기북부',cat:'가구',lat:37.648,lng:126.895,addr:'경기 고양시 덕양구 삼송로',desc:'수도권 북부 가구 쇼룸 단지. 합리적 가격대 강점.'},
+  {name:'한샘 디자인파크 잠실',region:'서울동부',cat:'쇼룸',lat:37.513,lng:127.103,addr:'서울 송파구 올림픽로',desc:'대형 종합 인테리어 쇼룸. 주방·붙박이 실물 비교에 최적.',link_site:'https://example.com/'},
+  {name:'고양 삼송 가구단지',region:'경기북부',cat:'가구',lat:37.648,lng:126.895,addr:'경기 고양시 덕양구 삼송로',desc:'수도권 북부 가구 쇼룸 단지. 합리적 가격대 강점.',link_cafe:'https://cafe.naver.com/'},
   {name:'일산 라페스타 자재',region:'경기북부',cat:'자재상',lat:37.658,lng:126.770,addr:'경기 고양시 일산동구',desc:'경기 북부 자재·도배·바닥재 취급점 밀집 지역.'},
-  {name:'논현 타일 수입상',region:'서울남부',cat:'타일',lat:37.507,lng:127.031,addr:'서울 강남구 논현동',desc:'포세린·수입 타일 쇼룸. 헤링본·대형 타일 실물 확인.'},
+  {name:'논현 타일 수입상',region:'서울남부',cat:'타일',lat:37.507,lng:127.031,addr:'서울 강남구 논현동',desc:'포세린·수입 타일 쇼룸. 헤링본·대형 타일 실물 확인.',link_insta:'https://instagram.com/'},
   {name:'마포 자재상가',region:'서울서부',cat:'자재상',lat:37.549,lng:126.905,addr:'서울 마포구 월드컵로',desc:'서부권 종합 자재상. 목재·합판·부자재 원스톱.'},
-  {name:'영등포 조명도매',region:'서울서부',cat:'조명',lat:37.521,lng:126.907,addr:'서울 영등포구 영중로',desc:'서부권 조명 도매 밀집. 가성비 LED·레일조명 강점.'},
-  {name:'수원 인테리어 거리',region:'경기남부',cat:'종합시장',lat:37.265,lng:127.001,addr:'경기 수원시 팔달구',desc:'경기 남부 최대 인테리어 상권. 자재·시공 원스톱.'},
+  {name:'영등포 조명도매',region:'서울서부',cat:'조명',lat:37.521,lng:126.907,addr:'서울 영등포구 영중로',desc:'서부권 조명 도매 밀집. 가성비 LED·레일조명 강점.',link_blog:'https://blog.naver.com/'},
+  {name:'수원 인테리어 거리',region:'경기남부',cat:'종합시장',lat:37.265,lng:127.001,addr:'경기 수원시 팔달구',desc:'경기 남부 최대 인테리어 상권. 자재·시공 원스톱.',link_cafe:'https://cafe.naver.com/',link_insta:'https://instagram.com/'},
   {name:'분당 가구 쇼룸',region:'경기남부',cat:'쇼룸',lat:37.382,lng:127.119,addr:'경기 성남시 분당구',desc:'프리미엄 가구·주방 쇼룸 집결. 신도시 트렌드 반영.'},
-  {name:'노원 자재마트',region:'서울북부',cat:'자재상',lat:37.654,lng:127.056,addr:'서울 노원구 동일로',desc:'북부권 셀프 인테리어 자재마트. 페인트·공구 다양.'},
+  {name:'노원 자재마트',region:'서울북부',cat:'자재상',lat:37.654,lng:127.056,addr:'서울 노원구 동일로',desc:'북부권 셀프 인테리어 자재마트. 페인트·공구 다양.',link_cafe:'https://cafe.naver.com/'},
   {name:'수유 도배자재',region:'서울북부',cat:'자재상',lat:37.638,lng:127.025,addr:'서울 강북구 도봉로',desc:'벽지·바닥재 소매 강점. 소량 구매에 유리한 곳.'},
 ];
 
@@ -560,11 +569,20 @@ function nvMarkerHtml(cat,color){
   return `<div style="transform:translate(-50%,-100%)"><div class="mk" style="background:${color}"><span>${CAT_ICON[cat]||'📍'}</span></div></div>`;
 }
 function popupHTML(p){
+  const links = [
+    p.link_cafe  && {u:p.link_cafe,  t:'카페',  c:'#03c75a'},
+    p.link_blog  && {u:p.link_blog,  t:'블로그', c:'#2db400'},
+    p.link_insta && {u:p.link_insta, t:'인스타', c:'#c2185b'},
+    p.link_site  && {u:p.link_site,  t:'홈피',   c:'#3D3D5C'},
+  ].filter(Boolean);
+  const linkHTML = links.length ? `<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px">${links.map(l=>
+    `<a href="${l.u}" target="_blank" rel="noopener" style="font-size:.68rem;font-weight:800;color:#fff;background:${l.c};padding:4px 9px;border-radius:6px;text-decoration:none">${l.t}</a>`).join('')}</div>` : '';
   return `<div style="background:#fff;border-radius:12px;padding:14px 16px;box-shadow:0 6px 24px rgba(0,0,0,.18);max-width:240px;font-family:'Nunito',sans-serif">
       <div style="font-weight:900;font-size:.95rem;margin-bottom:3px">${p.name} <span style="background:#eef6e6;color:#5a8a20;font-size:.6rem;font-weight:800;padding:1px 7px;border-radius:50px;vertical-align:middle">✓ 검증</span></div>
       <div style="font-size:.76rem;color:#8890A4;font-weight:700;margin-bottom:6px">${p.region} · ${p.cat}</div>
       <div style="font-size:.8rem;color:#3D3D5C;line-height:1.5;margin-bottom:8px">${p.desc||''}</div>
       <div style="font-size:.74rem;color:#8890A4;margin-bottom:8px">📍 ${p.addr||''}${p.hours?`<br>🕘 ${p.hours}`:''}${p.phone?`<br>📞 ${p.phone}`:''}</div>
+      ${linkHTML}
       <a href="https://map.naver.com/p/search/${encodeURIComponent(p.name+' '+(p.addr||''))}" target="_blank" style="display:inline-block;background:#03c75a;color:#fff;font-weight:800;font-size:.76rem;padding:7px 14px;border-radius:8px;text-decoration:none">네이버 지도에서 보기</a>
     </div>`;
 }
@@ -608,6 +626,7 @@ function renderShops(){
       </div>
       <div class="pcard-desc">${p.desc||''}</div>
       <div class="pcard-addr">📍 ${p.addr||''}${p.hours?` · 🕘 ${p.hours}`:''}</div>
+      ${(()=>{const ls=[p.link_cafe&&{u:p.link_cafe,t:'네이버 카페',c:'lk-cafe'},p.link_blog&&{u:p.link_blog,t:'블로그',c:'lk-blog'},p.link_insta&&{u:p.link_insta,t:'인스타',c:'lk-insta'},p.link_site&&{u:p.link_site,t:'홈페이지',c:'lk-site'}].filter(Boolean);return ls.length?`<div class="pcard-links">${ls.map(l=>`<a href="${l.u}" target="_blank" rel="noopener" class="wlink ${l.c}" onclick="event.stopPropagation()">${l.t}</a>`).join('')}</div>`:'';})()}
       <div class="pcard-foot">
         <a href="javascript:void(0)" class="pcard-btn pcard-btn-map" data-focus="${i}">지도에서 보기</a>
         <a href="https://map.naver.com/p/search/${encodeURIComponent(p.name+' '+(p.addr||''))}" target="_blank" rel="noopener" class="pcard-btn pcard-btn-kakao">길찾기</a>
@@ -669,7 +688,7 @@ async function loadData(){
         c.from('shops').select('*').eq('is_active',true).order('sort_order',{ascending:false}).order('created_at',{ascending:false})
       ]);
       WORKERS=(w||[]).map(r=>({name:r.name,cat:r.cat,icon:r.icon||'🔧',region:r.region||'',phone:r.phone||'',career:r.career||'',desc:r.description||'',tags:r.tags||[],link_cafe:r.link_cafe||'',link_blog:r.link_blog||'',link_insta:r.link_insta||'',link_site:r.link_site||''}));
-      PLACES=(s||[]).map(r=>({name:r.name,region:r.region,cat:r.cat,lat:Number(r.lat),lng:Number(r.lng),addr:r.addr||'',phone:r.phone||'',hours:r.hours||'',desc:r.description||''}));
+      PLACES=(s||[]).map(r=>({name:r.name,region:r.region,cat:r.cat,lat:Number(r.lat),lng:Number(r.lng),addr:r.addr||'',phone:r.phone||'',hours:r.hours||'',desc:r.description||'',link_cafe:r.link_cafe||'',link_blog:r.link_blog||'',link_insta:r.link_insta||'',link_site:r.link_site||''}));
     }catch(e){ console.warn('Supabase 로드 실패, 폴백 사용:',e.message); WORKERS=FALLBACK_WORKERS; PLACES=FALLBACK_SHOPS; }
   }else{ WORKERS=FALLBACK_WORKERS; PLACES=FALLBACK_SHOPS; }
   document.getElementById('tabCountW').textContent=WORKERS.length;
