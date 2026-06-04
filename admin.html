@@ -174,7 +174,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dark);-web
       </select>
     </div>
     <table class="tbl">
-      <thead><tr><th>업체명</th><th>권역</th><th>유형</th><th class="hide-m">영업시간</th><th>노출</th><th></th></tr></thead>
+      <thead><tr><th>업체명</th><th>권역</th><th>유형</th><th class="hide-m">영업시간</th><th>링크</th><th>노출</th><th></th></tr></thead>
       <tbody id="sBody"></tbody>
     </table>
   </div>
@@ -238,6 +238,10 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dark);-web
       <div class="field"><label>전화번호</label><input id="s_phone" placeholder="02-1234-5678"></div>
       <div class="field"><label>영업시간</label><input id="s_hours" placeholder="평일 09:00-18:00"></div>
       <div class="field full"><label>소개</label><textarea id="s_desc"></textarea></div>
+      <div class="field"><label>네이버 카페 URL</label><input id="s_cafe" placeholder="https://cafe.naver.com/..."></div>
+      <div class="field"><label>블로그 URL</label><input id="s_blog" placeholder="https://blog.naver.com/..."></div>
+      <div class="field"><label>인스타그램 URL</label><input id="s_insta" placeholder="https://instagram.com/..."></div>
+      <div class="field"><label>기타 홈페이지 URL</label><input id="s_site" placeholder="https://..."></div>
       <div class="field"><label>정렬 우선(클수록 위)</label><input id="s_sort" type="number" value="0"></div>
       <div class="field"><label><input type="checkbox" id="s_active" checked style="width:auto;margin-right:6px">사이트에 노출</label></div>
       <div class="field full"><p class="hint">좌표는 카카오맵/구글맵에서 위치 우클릭 → 좌표 복사로 확인하세요.</p></div>
@@ -414,12 +418,13 @@ async function loadShops(){
       <td>${s.region}</td>
       <td>${s.cat}</td>
       <td class="hide-m">${s.hours||'-'}</td>
+      <td>${[s.link_cafe&&'카페',s.link_blog&&'블로그',s.link_insta&&'인스타',s.link_site&&'홈피'].filter(Boolean).join(', ')||'-'}</td>
       <td>${s.is_active?'<span class="badge">노출</span>':'<span class="badge off">숨김</span>'}</td>
       <td><div class="row-actions">
         <button class="btn btn-edit btn-sm" onclick='openShop(${JSON.stringify(s)})'>수정</button>
         <button class="btn btn-del btn-sm" onclick="delShop(${s.id},'${(s.name||'').replace(/'/g,"")}')">삭제</button>
       </div></td>
-    </tr>`).join('') || '<tr><td colspan="6" class="empty">조건에 맞는 업체가 없습니다.</td></tr>';
+    </tr>`).join('') || '<tr><td colspan="7" class="empty">조건에 맞는 업체가 없습니다.</td></tr>';
 }
 
 function openShop(s){
@@ -428,6 +433,8 @@ function openShop(s){
   $('s_cat').value=s?.cat||'자재상'; $('s_lat').value=s?.lat||''; $('s_lng').value=s?.lng||'';
   $('s_addr').value=s?.addr||''; $('s_desc').value=s?.description||'';
   $('s_phone').value=s?.phone||''; $('s_hours').value=s?.hours||'';
+  $('s_cafe').value=s?.link_cafe||''; $('s_blog').value=s?.link_blog||'';
+  $('s_insta').value=s?.link_insta||''; $('s_site').value=s?.link_site||'';
   $('s_sort').value=s?.sort_order??0; $('s_active').checked = s? s.is_active : true;
   $('shopModal').classList.add('show');
 }
@@ -439,6 +446,8 @@ async function saveShop(){
     lat:parseFloat($('s_lat').value), lng:parseFloat($('s_lng').value),
     addr:$('s_addr').value.trim(), description:$('s_desc').value.trim(),
     phone:$('s_phone').value.trim(), hours:$('s_hours').value.trim(),
+    link_cafe:$('s_cafe').value.trim(), link_blog:$('s_blog').value.trim(),
+    link_insta:$('s_insta').value.trim(), link_site:$('s_site').value.trim(),
     sort_order:parseInt($('s_sort').value)||0, is_active:$('s_active').checked
   };
   if(!payload.name){ alert('업체명을 입력하세요'); return; }
