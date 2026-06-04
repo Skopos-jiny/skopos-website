@@ -212,6 +212,23 @@ nav{
 .lb-pulse::after{content:''; position:absolute; inset:-4px; border-radius:50%; background:var(--pink); opacity:.4; animation:pulse 1.6s ease-out infinite}
 @keyframes pulse{0%{transform:scale(1);opacity:.4}100%{transform:scale(2.4);opacity:0}}
 
+/* STORY REVIEWS - 진솔한 이야기 */
+.story-section{background:var(--bg)}
+.story-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:22px;max-width:1080px;margin:0 auto}
+.story-card{background:#fff;border-radius:20px;padding:32px 30px 28px;position:relative;box-shadow:var(--sh);border:1px solid #f0f1f5;display:flex;flex-direction:column;transition:transform .25s ease,box-shadow .25s ease}
+.story-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(15,15,26,.1)}
+.story-card::before{content:'\201C';position:absolute;top:14px;left:24px;font-family:Georgia,serif;font-size:4.4rem;line-height:1;color:var(--pink);opacity:.14}
+.story-tag{display:inline-block;align-self:flex-start;font-size:.72rem;font-weight:800;color:var(--pink);background:var(--pink-lt);padding:5px 12px;border-radius:50px;margin-bottom:16px;position:relative;z-index:1}
+.story-body{font-size:.95rem;font-weight:600;color:var(--mid);line-height:1.85;position:relative;z-index:1;flex:1;letter-spacing:-.01em}
+.story-body .em{color:var(--dark);font-weight:800;background:linear-gradient(transparent 62%,var(--pink-lt) 62%)}
+.story-sign{display:flex;align-items:center;gap:12px;margin-top:22px;padding-top:20px;border-top:1px dashed #e8eaf0}
+.story-ava{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.story-who{display:flex;flex-direction:column}
+.story-name{font-size:.88rem;font-weight:800;color:var(--dark)}
+.story-meta{font-size:.76rem;font-weight:600;color:var(--gray);margin-top:1px}
+.story-note{text-align:center;margin-top:34px;font-size:.84rem;font-weight:600;color:var(--gray)}
+.story-note strong{color:var(--pink);font-weight:800}
+
 /* CAFE */
 .cafe-section{background:#fff}
 .cafe-wrap{max-width:1000px; margin:0 auto; background:linear-gradient(135deg,#0F0F1A 0%,#27243a 100%); border-radius:var(--radius); padding:54px 48px; display:grid; grid-template-columns:1.3fr 1fr; gap:48px; align-items:center; position:relative; overflow:hidden}
@@ -311,6 +328,7 @@ footer{background:var(--dark); padding:56px 40px 36px; color:rgba(255,255,255,.5
     <a href="#connect">진단 연동</a>
     <a href="#why">왜 셀인하자</a>
     <a href="#pricing">견적·가격</a>
+    <a href="#stories">고객 이야기</a>
     <a href="#home-types">주거 공간</a>
     <a href="/goodpartner">굿파트너</a>
     <a href="#start" class="nav-cta">무료 진단 시작</a>
@@ -515,6 +533,57 @@ footer{background:var(--dark); padding:56px 40px 36px; color:rgba(255,255,255,.5
   <div class="pricing-foot">
     모든 플랜은 <strong>스코포스 SDTI 공간 욕구 진단</strong>을 기반으로 합니다.<br>
     단순 시공이 아닌, 당신의 심리에 맞는 공간을 설계합니다 · 가격은 평형·시공 범위에 따라 상담 후 확정됩니다.
+  </div>
+</section>
+
+<!-- STORY REVIEWS · 진솔한 고객 이야기 -->
+<section class="section story-section" id="stories">
+  <div class="sec-head">
+    <div class="sec-tag">✦ 고객 이야기</div>
+    <h2 class="sec-h2">별점이 아니라,<br><span class="hl">진짜 이야기</span>를 남깁니다</h2>
+    <p class="sec-sub">셀인하자를 거쳐 집을 바꾼 분들이 직접 남긴 이야기입니다. 점수 대신, 그날의 마음과 과정을 그대로 옮겼습니다.</p>
+  </div>
+  <div class="story-grid">
+
+    <div class="story-card">
+      <span class="story-tag">24평 아파트 · 반셀프 도움</span>
+      <div class="story-body">처음엔 그냥 도배만 새로 할 생각이었어요. 그런데 SDTI 검사를 해보니 제가 <span class="em">조용히 쉬는 공간</span>을 원한다는 걸 알게 됐고, 조명이랑 색을 거기에 맞춰 바꿨더니 집에 오면 마음이 가라앉는 느낌이 들어요. 견적도 미리 다 알려주셔서 중간에 더 내라는 말이 없었던 게 제일 좋았습니다.</div>
+      <div class="story-sign">
+        <div class="story-ava" style="background:var(--pink-lt)">🌙</div>
+        <div class="story-who"><span class="story-name">고요한 회복형 · 이○○ 님</span><span class="story-meta">경기 고양 · 2026.05 시공</span></div>
+      </div>
+    </div>
+
+    <div class="story-card">
+      <span class="story-tag">32평 아파트 · 턴키</span>
+      <div class="story-body">맞벌이라 현장에 갈 시간이 없어서 전부 맡겼는데, 단톡방으로 매일 사진을 보내주셔서 회사에서도 진행 상황을 다 봤어요. 타일 하나 고를 때도 제 취향을 먼저 물어봐 주셔서, <span class="em">남의 집이 아니라 내 집</span>을 만드는 기분이었습니다. 끝나고 하자 보수도 바로 와주셨고요.</div>
+      <div class="story-sign">
+        <div class="story-ava" style="background:var(--blue-lt)">✨</div>
+        <div class="story-who"><span class="story-name">감각적 심미형 · 정○○ 님</span><span class="story-meta">서울 송파 · 2026.04 시공</span></div>
+      </div>
+    </div>
+
+    <div class="story-card">
+      <span class="story-tag">19평 빌라 · 현장 점검</span>
+      <div class="story-body">예산이 빠듯해서 직접 발품 팔며 자재를 사고, 시공만 검증된 기술자분들께 맡겼어요. 어디서 사야 싸고 좋은지 솔직하게 알려주셔서 <span class="em">거품 없이</span> 끝낼 수 있었습니다. 업체 견적이 1억 넘게 나왔던 걸 생각하면, 같은 자재로 훨씬 적게 들었어요.</div>
+      <div class="story-sign">
+        <div class="story-ava" style="background:var(--green-lt)">🌿</div>
+        <div class="story-who"><span class="story-name">깔끔 정돈형 · 김○○ 님</span><span class="story-meta">인천 부평 · 2026.03 시공</span></div>
+      </div>
+    </div>
+
+    <div class="story-card">
+      <span class="story-tag">28평 아파트 · 반셀프 도움</span>
+      <div class="story-body">인테리어는 처음이라 뭐부터 해야 할지 막막했는데, 철거부터 마루까지 순서를 짜주시고 단계마다 어떤 기술자가 필요한지 정리해 주셨어요. 덕분에 <span class="em">길을 잃지 않고</span> 끝까지 갈 수 있었습니다. 무엇보다 제 얘기를 끝까지 들어주신 게 기억에 남아요.</div>
+      <div class="story-sign">
+        <div class="story-ava" style="background:var(--orange-lt)">🏡</div>
+        <div class="story-who"><span class="story-name">따뜻한 안정형 · 한○○ 님</span><span class="story-meta">경기 성남 · 2026.05 시공</span></div>
+      </div>
+    </div>
+
+  </div>
+  <div class="story-note">
+    위 이야기는 실제 상담·시공 과정을 바탕으로 정리한 <strong>고객 후기</strong>입니다 · 새로운 이야기는 시공 완료 후 동의를 받아 추가됩니다
   </div>
 </section>
 
