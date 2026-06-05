@@ -216,6 +216,11 @@ nav{position:sticky;top:0;z-index:1000;display:flex;align-items:center;justify-c
 
 /* ════ MAP + LIST ════ */
 .explore-wrap{display:grid;grid-template-columns:1fr 380px;gap:20px}
+/* 온라인 입점 업체 섹션 */
+.online-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.pcard-online{cursor:default}
+@media(max-width:900px){.online-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.online-grid{grid-template-columns:1fr}}
 #map{height:600px;border-radius:var(--radius);box-shadow:var(--sh);z-index:1}
 .leaflet-container{font-family:'Nunito',sans-serif}
 .list-panel{height:600px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;padding-right:4px}
@@ -349,6 +354,9 @@ footer{background:var(--dark);padding:48px 40px 32px;color:rgba(255,255,255,.5)}
     <div class="mtab" data-tab="shops" onclick="switchTab('shops')">
       <span class="mt-ic">📍</span>검증된 업체 <span class="mt-count" id="tabCountS">0</span>
     </div>
+    <div class="mtab" data-tab="online" onclick="switchTab('online')">
+      <span class="mt-ic">🛒</span>온라인 채널 <span class="mt-count" id="tabCountO">0</span>
+    </div>
   </div>
 </section>
 
@@ -434,6 +442,34 @@ footer{background:var(--dark);padding:48px 40px 32px;color:rgba(255,255,255,.5)}
         <div class="add-p">직접 거래해보고 만족한 자재상·쇼룸·시공업체를 제보해 주세요. 셀인하자 검증을 거쳐 지도에 등록합니다.</div>
       </div>
       <a href="http://pf.kakao.com/_dtGjX/chat" target="_blank" rel="noopener" class="add-btn" data-kakao-chat>업체 제보하기</a>
+    </div>
+  </div>
+</section>
+
+<!-- ════ ONLINE CHANNEL SECTION ════ -->
+<section class="section" id="sec-online">
+  <div class="wrap">
+    <div class="filter-title">전국 배송·온라인 전문몰입니다. 유형을 선택해 둘러보세요</div>
+    <div class="chips chips-grid2" id="onlineCatChips">
+      <span class="chip active" data-cat="전체" style="padding:7px 15px;font-size:.8rem">전체 유형</span>
+      <span class="chip" data-cat="자재상" style="padding:7px 15px;font-size:.8rem">🧱 자재상</span>
+      <span class="chip" data-cat="쇼룸" style="padding:7px 15px;font-size:.8rem">🛋️ 쇼룸</span>
+      <span class="chip" data-cat="조명" style="padding:7px 15px;font-size:.8rem">💡 조명</span>
+      <span class="chip" data-cat="타일" style="padding:7px 15px;font-size:.8rem">🟫 타일</span>
+      <span class="chip" data-cat="가구" style="padding:7px 15px;font-size:.8rem">🪑 가구</span>
+      <span class="chip" data-cat="종합시장" style="padding:7px 15px;font-size:.8rem">🏬 종합시장</span>
+    </div>
+    <div class="count-line">총 <b id="ocount">0</b>곳의 온라인 채널</div>
+    <div class="online-grid" id="onlineGrid"></div>
+
+    <!-- 채널 제보 -->
+    <div class="add-card">
+      <div class="add-ic">🛒</div>
+      <div class="add-body">
+        <div class="add-h">믿을 만한 <span class="hl">온라인 채널</span>을 알고 계신가요?</div>
+        <div class="add-p">반셀프에 도움 되는 자재·조명·가구 온라인몰을 제보해 주세요. 셀인하자 검증을 거쳐 등록합니다.</div>
+      </div>
+      <a href="http://pf.kakao.com/_dtGjX/chat" target="_blank" rel="noopener" class="add-btn" data-kakao-chat>채널 제보하기</a>
     </div>
   </div>
 </section>
@@ -525,7 +561,7 @@ const FALLBACK_SHOPS = [
 ];
 
 let WORKERS = [], PLACES = [];
-let curWCat='전체', curRegion='전체', curSCat='전체';
+let curWCat='전체', curRegion='전체', curSCat='전체', curOCat='전체';
 let map=null, markers=[], mapInit=false;
 
 function kakaoReady(){try{return !!(window.Kakao&&Kakao.Channel&&KAKAO_JS_KEY!=='YOUR_JAVASCRIPT_KEY'&&Kakao.isInitialized());}catch(e){return false;}}
@@ -542,6 +578,7 @@ function switchTab(tab){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.getElementById('sec-'+tab).classList.add('active');
   if(tab==='shops'){ ensureMap(); setTimeout(()=>{ invalidateMap(); renderShops(); },120); }
+  if(tab==='online'){ renderOnlineShops(); }
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -641,7 +678,13 @@ function popupHTML(p){
       <a href="https://map.naver.com/p/search/${encodeURIComponent(p.name+' '+(p.addr||''))}" target="_blank" style="display:inline-block;background:#03c75a;color:#fff;font-weight:800;font-size:.76rem;padding:7px 14px;border-radius:8px;text-decoration:none">네이버 지도에서 보기</a>
     </div>`;
 }
-function filteredShops(){return PLACES.filter(p=>(curRegion==='전체'||p.region===curRegion)&&(curSCat==='전체'||p.cat===curSCat));}
+// 좌표 유무로 온라인/오프라인 판별 (region이 '온라인'이거나 좌표 없으면 온라인몰)
+function isOnlineShop(p){
+  const noCoord = p.lat===null||p.lng===null||p.lat===undefined||p.lng===undefined||p.lat===''||p.lng===''||isNaN(parseFloat(p.lat))||isNaN(parseFloat(p.lng));
+  return p.region==='온라인' || noCoord;
+}
+function filteredShops(){return PLACES.filter(p=>!isOnlineShop(p)&&(curRegion==='전체'||p.region===curRegion)&&(curSCat==='전체'||p.cat===curSCat));}
+function filteredOnlineShops(){return PLACES.filter(p=>isOnlineShop(p)&&(curOCat==='전체'||p.cat===curOCat));}
 
 function clearMarkers(){
   if(useNaver){ markers.forEach(m=>m.setMap(null)); }
@@ -725,6 +768,33 @@ function focusShop(idx,cardEl){
   if(card){card.classList.add('sel');card.scrollIntoView({behavior:'smooth',block:'nearest'});}
 }
 
+// 온라인 채널 카드 렌더 (전용 탭, 지도 없이 카드만)
+function renderOnlineShops(){
+  const grid=document.getElementById('onlineGrid');
+  if(!grid) return;
+  const list=filteredOnlineShops();
+  const oc=document.getElementById('ocount'); if(oc) oc.textContent=list.length;
+  const tc=document.getElementById('tabCountO'); if(tc) tc.textContent=PLACES.filter(isOnlineShop).length;
+  if(!list.length){ grid.innerHTML='<p style="grid-column:1/-1;text-align:center;color:#8890A4;font-weight:700;padding:30px">해당 유형의 온라인 채널이 곧 등록됩니다.</p>'; return; }
+  grid.innerHTML=list.map(p=>{
+    const color=REGIONS[p.region]?REGIONS[p.region].color:'#E91E8C';
+    const ls=[p.link_cafe&&{u:p.link_cafe,t:'네이버 카페',c:'lk-cafe'},p.link_blog&&{u:p.link_blog,t:'블로그',c:'lk-blog'},p.link_insta&&{u:p.link_insta,t:'인스타',c:'lk-insta'},p.link_site&&{u:p.link_site,t:'홈페이지',c:'lk-site'}].filter(Boolean);
+    const visit=p.link_site||p.link_cafe||p.link_blog||p.link_insta;
+    return `<div class="pcard pcard-online">
+      <div class="pcard-head">
+        <div class="pcard-pin" style="background:${color}">${CAT_ICON[p.cat]||'🛒'}</div>
+        <div class="pcard-titlewrap"><div class="pcard-name">${p.name} <span class="vbadge">✓ 검증</span></div>
+        <div class="pcard-region" style="color:${color}"><span class="pcard-rdot" style="background:${color}"></span>온라인 · 전국배송</div></div>
+        <div class="pcard-cat">${p.cat}</div>
+      </div>
+      <div class="pcard-desc">${p.desc||''}</div>
+      ${ls.length?`<div class="pcard-links">${ls.map(l=>`<a href="${l.u}" target="_blank" rel="noopener" class="wlink ${l.c}" onclick="event.stopPropagation()">${l.t}</a>`).join('')}</div>`:''}
+      <div class="pcard-foot">
+        ${visit?`<a href="${visit}" target="_blank" rel="noopener" class="pcard-btn pcard-btn-kakao" style="width:100%">사이트 바로가기 →</a>`:''}
+      </div></div>`;
+  }).join('');
+}
+
 // ════ 필터 이벤트 ════
 document.querySelectorAll('#catChips .chip').forEach(c=>c.addEventListener('click',()=>{
   document.querySelectorAll('#catChips .chip').forEach(x=>x.classList.remove('active'));c.classList.add('active');curWCat=c.dataset.cat;renderWorkers();}));
@@ -732,6 +802,8 @@ document.querySelectorAll('#regionChips .chip').forEach(c=>c.addEventListener('c
   document.querySelectorAll('#regionChips .chip').forEach(x=>x.classList.remove('active'));c.classList.add('active');curRegion=c.dataset.region;renderShops();}));
 document.querySelectorAll('#shopCatChips .chip').forEach(c=>c.addEventListener('click',()=>{
   document.querySelectorAll('#shopCatChips .chip').forEach(x=>x.classList.remove('active'));c.classList.add('active');curSCat=c.dataset.cat;renderShops();}));
+document.querySelectorAll('#onlineCatChips .chip').forEach(c=>c.addEventListener('click',()=>{
+  document.querySelectorAll('#onlineCatChips .chip').forEach(x=>x.classList.remove('active'));c.classList.add('active');curOCat=c.dataset.cat;renderOnlineShops();}));
 
 // ════ 데이터 로드 ════
 async function loadData(){
@@ -747,7 +819,8 @@ async function loadData(){
     }catch(e){ console.warn('Supabase 로드 실패, 폴백 사용:',e.message); WORKERS=FALLBACK_WORKERS; PLACES=FALLBACK_SHOPS; }
   }else{ WORKERS=FALLBACK_WORKERS; PLACES=FALLBACK_SHOPS; }
   document.getElementById('tabCountW').textContent=WORKERS.length;
-  document.getElementById('tabCountS').textContent=PLACES.length;
+  document.getElementById('tabCountS').textContent=PLACES.filter(p=>!isOnlineShop(p)).length;
+  document.getElementById('tabCountO').textContent=PLACES.filter(isOnlineShop).length;
   renderWorkers();
 }
 loadData();
