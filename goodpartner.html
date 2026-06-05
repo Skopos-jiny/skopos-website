@@ -27,13 +27,21 @@
 <meta name="twitter:title" content="굿파트너 | 셀인하자 : 검증된 기술자와 업체">
 <meta name="twitter:description" content="후기로 검증된 공정별 기술자와 권역별 인테리어 업체를 한 곳에서. 카카오톡으로 바로 상담.">
 <meta name="twitter:image" content="https://skopos.kr/goodpartner_og.png">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#E91E8C">
+
+<!-- 구조화 데이터 (JSON-LD) -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"CollectionPage","name":"셀인하자 굿파트너 | 검증된 기술자와 업체","url":"https://skopos.kr/goodpartner","inLanguage":"ko","isPartOf":{"@type":"WebSite","name":"SKOPOS","url":"https://skopos.kr"},"about":{"@type":"Organization","name":"스코포스(Skopos)","email":"contact@skopos.kr"},"description":"후기로 검증된 공정별 기술자와 권역별 인테리어 업체를 한 곳에서"}
+</script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 
 <!-- 지도: 네이버 지도(키 설정 시) 또는 OpenStreetMap(폴백) -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
   /* ⚠️ 네이버 지도를 쓰려면 아래 NAVER_MAP_KEY 에 클라이언트 ID(ncpKeyId)를 입력하세요.
      발급: NAVER CLOUD PLATFORM Console > Service > Application Services > Maps > Application
@@ -49,14 +57,17 @@
 </script>
 
 <!-- 카카오 SDK -->
-<script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.5/kakao.min.js" crossorigin="anonymous"></script>
+<script defer src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.5/kakao.min.js" crossorigin="anonymous"></script>
 <!-- Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="selinhaja_supabase_config.js"></script>
 <script>
   var KAKAO_JS_KEY = 'YOUR_JAVASCRIPT_KEY';
   var KAKAO_CHANNEL_ID = '_dtGjX';
-  try { if (window.Kakao && KAKAO_JS_KEY!=='YOUR_JAVASCRIPT_KEY' && !Kakao.isInitialized()) Kakao.init(KAKAO_JS_KEY); } catch(e){}
+  // 카카오 SDK는 defer 로드 → DOM 준비 후 안전하게 초기화
+  window.addEventListener('DOMContentLoaded', function(){
+    try { if (window.Kakao && KAKAO_JS_KEY!=='YOUR_JAVASCRIPT_KEY' && !Kakao.isInitialized()) Kakao.init(KAKAO_JS_KEY); } catch(e){}
+  });
 </script>
 
 <style>
@@ -67,7 +78,7 @@
   --blue:#29B6F6; --blue-lt:#e3f5fe;
   --purple:#AB47BC; --purple-lt:#f4e6f7;
   --teal:#26A69A; --teal-lt:#e0f2f1;
-  --dark:#0F0F1A; --mid:#3D3D5C; --gray:#8890A4;
+  --dark:#0F0F1A; --mid:#3D3D5C; --gray:#6B7280; --gray-soft:#8890A4;
   --bg:#F7F8FC; --white:#FFFFFF;
   --radius:22px; --radius-sm:14px;
   --sh:0 4px 24px rgba(15,15,26,.07);
@@ -79,6 +90,9 @@
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dark);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
 
 /* SISTER BAR */
 .sister-bar{background:var(--dark);color:#fff;display:flex;align-items:center;justify-content:center;gap:10px;padding:9px 20px;font-size:.78rem;font-weight:600}
