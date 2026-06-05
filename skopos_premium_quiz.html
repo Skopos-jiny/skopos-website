@@ -670,16 +670,6 @@ html{scroll-behavior:smooth}
 }
 
 /* ── 공간 레퍼런스 ── */
-.space-refs-section{background:var(--white);border-radius:var(--radius);padding:28px;margin-bottom:16px;box-shadow:var(--sh)}
-.space-tab-btns{display:flex;gap:8px;margin-bottom:20px;border-bottom:2px solid rgba(0,0,0,.06);padding-bottom:12px;flex-wrap:wrap}
-.space-tab-btn{padding:7px 18px;border-radius:50px;border:1.5px solid rgba(0,0,0,.08);background:none;font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:700;color:var(--gray);cursor:pointer;transition:all .2s}
-.space-tab-btn.active{background:var(--dark);color:#fff;border-color:var(--dark)}
-.space-imgs-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.space-img-card{position:relative;border-radius:14px;overflow:hidden;aspect-ratio:4/3;cursor:pointer;group}
-.space-img-card img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease;filter:brightness(.92)}
-.space-img-card:hover img{transform:scale(1.04);filter:brightness(1)}
-.space-img-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.65) 0%,transparent 55%);display:flex;align-items:flex-end;padding:14px}
-.space-img-caption{font-size:.72rem;color:#fff;font-weight:600;letter-spacing:.02em;line-height:1.4}
 .space-ref-label{font-size:.72rem;color:var(--gray);font-style:normal;margin-bottom:14px;line-height:1.5;padding:8px 12px;background:var(--bg);border-radius:8px;border-left:3px solid var(--pink)}
 
 /* ── PDF 다운로드 ── */
@@ -784,7 +774,6 @@ html{scroll-behavior:smooth}
 }
 .insta-retry-btn:active{transform:translateY(0)}
 
-@media(max-width:600px){.space-imgs-grid{grid-template-columns:1fr}}
 
 /* ── PDF 전용 레이아웃 ── */
 #pdfContainer{position:fixed;left:-9999px;top:0;width:794px;background:#fff;z-index:-1;pointer-events:none}
@@ -4714,19 +4703,6 @@ function renderResult(t,scores){
       <div class="compat-row">${compatChips}</div>
     </div>
 
-    <!-- 공간 레퍼런스 이미지 -->
-    <div class="space-refs-section" id="spaceRefsSection" data-anchor data-toc-label="참고 공간">
-      <div class="ab-tag">📸 내 유형에 맞는 참고 공간</div>
-      <div class="ab-title">이런 공간에서 가장 나답게 존재할 수 있어요</div>
-      <div class="space-tab-btns">
-        <button class="space-tab-btn active" onclick="switchSpaceTab('living',this)">🛋️ 거실</button>
-        <button class="space-tab-btn" onclick="switchSpaceTab('bedroom',this)">🛏️ 침실</button>
-        <button class="space-tab-btn" onclick="switchSpaceTab('kitchen',this)">🍳 부엌</button>
-      </div>
-      <div class="space-ref-label" id="spaceRefLabel"></div>
-      <div class="space-imgs-grid" id="spaceImgsGrid"></div>
-    </div>
-
     <!-- PDF 다운로드 & 인스타 카드 -->
     <div class="analysis-block pdf-download-wrap" id="pdfSection" data-anchor data-toc-label="공유 & 다운로드">
       <div class="ab-tag">📄 결과 저장 & 공유</div>
@@ -4860,11 +4836,14 @@ function getSpaceRefsForType(type){
 }
 
 function renderSpaceRefs(type){
+  // 참고 공간 섹션은 보고서에서 제외됨 — 컨테이너가 없으면 아무 작업도 하지 않음
+  if(!document.getElementById('spaceImgsGrid')) return;
   const refs=getSpaceRefsForType(type);
   if(!refs) return;
   renderSpaceImgs(refs,'living');
 }
 function switchSpaceTab(tab,btn){
+  if(!document.getElementById('spaceImgsGrid')) return;
   if(!resultType) return;
   currentSpaceTab=tab;
   document.querySelectorAll('.space-tab-btn').forEach(b=>b.classList.remove('active'));
@@ -4878,11 +4857,14 @@ function getKitchenRefs(refs){
   return groupFallback.slice(0,2);
 }
 function renderSpaceImgs(refs,tab){
+  const grid=document.getElementById('spaceImgsGrid');
+  const labelEl=document.getElementById('spaceRefLabel');
+  if(!grid||!labelEl) return; // 참고 공간 섹션 제외됨
   const imgs=tab==='living'?refs.living:(tab==='bedroom'?refs.bedroom:getKitchenRefs(refs));
   const tabNames={living:'거실',bedroom:'침실',kitchen:'부엌'};
   const label=tabNames[tab]+' 참고 공간 · '+krText(resultType.plain)+'에 어울리는 '+tabNames[tab]+' 분위기';
-  document.getElementById('spaceRefLabel').textContent=label;
-  document.getElementById('spaceImgsGrid').innerHTML=(imgs||[]).map(img=>`
+  labelEl.textContent=label;
+  grid.innerHTML=(imgs||[]).map(img=>`
     <div class="space-img-card">
       <img src="${img.url}" alt="${img.caption}" loading="lazy" decoding="async"
         onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=900&q=85&auto=format&fit=crop'">
