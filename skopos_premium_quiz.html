@@ -2412,7 +2412,7 @@ const TYPES=[
    bars:{'회복·안정 욕구':95,'자아표현·정체성':25,'감각·자극 처리':92,'공간·구조 욕구':60},
    desire:'차단·고요 (간접조명·방음·히든수납)',
    insight:'자극에 민감한 편이라 <strong>시각·청각 노이즈를 줄이는 것</strong>만으로 집에 들어왔을 때의 편안함이 크게 달라집니다.',
-   weight:{cozy:1,safety:1,calm:1,minimal:1}},
+   weight:{sensory_low:1, restore:1, light:1}},
 
   {id:'sanctuary_zen',
    name:'비울수록 [[hl]]마음이 가벼워지는[[/hl]] 유형',
@@ -2424,7 +2424,7 @@ const TYPES=[
    bars:{'회복·안정 욕구':85,'자아표현·정체성':30,'감각·자극 처리':78,'공간·구조 욕구':90},
    desire:'여백·질서 (히든수납·자연광·단일소재)',
    insight:'쌓이는 물건에 묘한 압박감을 느낀다면, <strong>비우는 일 자체가 컨디션을 지키는 방법</strong>일 수 있습니다.',
-   weight:{minimal:1,control:1,solo:1,calm:1}},
+   weight:{blank:1, solo:1, restore:1}},
 
   {id:'nature_forest',
    name:'식물 없으면 [[hl]]뭔가 허전한[[/hl]] 유형',
@@ -2436,7 +2436,7 @@ const TYPES=[
    bars:{'회복·안정 욕구':68,'자아표현·정체성':70,'감각·자극 처리':60,'공간·구조 욕구':38},
    desire:'자연 소재 (원목·식물·천연패브릭)',
    insight:'자연 소재와 식물이 있는 공간에서 마음이 한결 느슨해집니다. <strong>몸이 먼저 알아보는 편안함</strong>에 가까워요.',
-   weight:{natural:1,cozy:1,warmth:1,open:1}},
+   weight:{natural_n:1, open:1, light:1}},
 
   {id:'nature_earth',
    name:'손으로 만든 것에서 [[hl]]따뜻함을 느끼는[[/hl]] 유형',
@@ -2448,7 +2448,7 @@ const TYPES=[
    bars:{'회복·안정 욕구':60,'자아표현·정체성':78,'감각·자극 처리':55,'공간·구조 욕구':32},
    desire:'핸드메이드 소품 (도자·황마·어스컬러)',
    insight:'손으로 만든 것을 좋아한다면, 공간도 <strong>이야기가 담긴 소품들</strong>로 채워질 때 가장 나답습니다.',
-   weight:{natural:1,warmth:1,identity:1,cozy:1}},
+   weight:{earth:1, material:1, quality:1}},
 
   {id:'luxe_royal',
    name:'좋은 소재와 마감에 [[hl]]마음이 가는[[/hl]] 유형',
@@ -2460,7 +2460,7 @@ const TYPES=[
    bars:{'회복·안정 욕구':52,'자아표현·정체성':88,'감각·자극 처리':75,'공간·구조 욕구':70},
    desire:'럭셔리 소재 (대리석·황동·벨벳)',
    insight:'좋은 공간에 들어서면 자세가 달라지는 경험이 있다면, <strong>그 감각을 집에서도 작게 구현하는 것</strong>이 핵심입니다.',
-   weight:{luxe:1,esteem:1,control:1}},
+   weight:{luxe:1, quality:1, aesthetic:1}},
 
   {id:'luxe_gallery',
    name:'집 안에도 [[hl]]전시처럼 머무는 장면이 필요한[[/hl]] 유형',
@@ -2472,7 +2472,7 @@ const TYPES=[
    bars:{'회복·안정 욕구':45,'자아표현·정체성':92,'감각·자극 처리':80,'공간·구조 욕구':65},
    desire:'갤러리 스타일 (스포트조명·아트오브제)',
    insight:'아름다운 것을 보는 순간 기분이 달라지는 타입이에요. <strong>집 안에 작은 갤러리 같은 시선의 자리</strong>를 만들어보세요.',
-   weight:{luxe:1,artistic:1,esteem:1,identity:1}},
+   weight:{display:1, art:1, aesthetic:1}},
 
   {id:'artistic_wild',
    name:'내 집에 [[hl]]내 취향이 분명히 보여야 하는[[/hl]] 유형',
@@ -2484,7 +2484,7 @@ const TYPES=[
    bars:{'회복·안정 욕구':35,'자아표현·정체성':98,'감각·자극 처리':85,'공간·구조 욕구':22},
    desire:'믹스앤매치 (빈티지·갤러리월·패턴)',
    insight:'"너답다"는 말이 가장 반가운 타입이에요. <strong>세상에 하나뿐인 조합</strong>이 이 유형의 가장 큰 매력입니다.',
-   weight:{artistic:1,identity:1,flow:1}},
+   weight:{bold:1, free:1, art:1}},
 
   {id:'artistic_indie',
    name:'오래된 것에서 [[hl]]아름다움을 발견하는[[/hl]] 유형',
@@ -2496,7 +2496,7 @@ const TYPES=[
    bars:{'회복·안정 욕구':42,'자아표현·정체성':90,'감각·자극 처리':78,'공간·구조 욕구':20},
    desire:'스토리 소품 (빈티지 오브제·컬렉션)',
    insight:'집이 일기장처럼 나의 시간을 담아주길 바라는 타입이에요. <strong>살아갈수록 레이어가 쌓이는 공간</strong>이 어울립니다.',
-   weight:{artistic:1,identity:1,cozy:1,flow:1}},
+   weight:{vintage:1, story:1, identity:1}},
 
   {id:'minimal_pure',
    name:'물건을 덜어낼수록 [[hl]]마음이 맑아지는[[/hl]] 유형',
@@ -2508,7 +2508,7 @@ const TYPES=[
    bars:{'회복·안정 욕구':78,'자아표현·정체성':28,'감각·자극 처리':82,'공간·구조 욕구':92},
    desire:'미니멀 (히든수납·흰벽·최소 가구)',
    insight:'시야에 들어오는 것이 줄어들수록 집중이 잘 되는 타입. <strong>비움이 곧 에너지 충전</strong>입니다.',
-   weight:{minimal:1,control:1,solo:1,calm:1}},
+   weight:{visual:2, function:1}},
 
   {id:'minimal_grid',
    name:'가구와 수납이 [[hl]]제자리에 있을 때 편한[[/hl]] 유형',
@@ -2520,7 +2520,7 @@ const TYPES=[
    bars:{'회복·안정 욕구':70,'자아표현·정체성':55,'감각·자극 처리':65,'공간·구조 욕구':95},
    desire:'인더스트리얼 (블랙스틸·콘크리트·모듈)',
    insight:'공간이 시스템처럼 돌아갈 때 삶도 효율적으로 돌아가는 타입. <strong>설계된 공간이 곧 삶의 태도</strong>입니다.',
-   weight:{minimal:1,control:1,energy:1}},
+   weight:{grid:1, organised:1, function:1}},
 
   {id:'cozy_hearth',
    name:'따뜻하고 폭신한 것에서 [[hl]]하루가 풀리는[[/hl]] 유형',
@@ -2532,7 +2532,7 @@ const TYPES=[
    bars:{'회복·안정 욕구':90,'자아표현·정체성':40,'감각·자극 처리':45,'공간·구조 욕구':32},
    desire:'포근한 소품 (부클레·러그·캔들·패브릭)',
    insight:'따뜻한 소재와 간접 조명은 하루의 긴장을 천천히 풀어줍니다. <strong>공간이 나를 감싸주는 느낌</strong>이 핵심이에요.',
-   weight:{cozy:1,safety:1,warmth:1,calm:1}},
+   weight:{warmth:1, cozy:1, intimacy:1}},
 
   {id:'cozy_family',
    name:'사람이 모일 때 [[hl]]집이 더 따뜻해지는[[/hl]] 유형',
@@ -2544,7 +2544,7 @@ const TYPES=[
    bars:{'회복·안정 욕구':72,'자아표현·정체성':52,'감각·자극 처리':40,'공간·구조 욕구':38},
    desire:'패밀리 공간 (대형다이닝·오픈키친)',
    insight:'집에서 쌓이는 기억과 대화가 가장 좋은 인테리어. <strong>공간이 관계를 만들어주는 그릇</strong>이어야 합니다.',
-   weight:{cozy:1,family:1,warmth:1,social:1}},
+   weight:{family:1, social_s:1, routine:1}},
 ];
 
 // SUB_MAP (호환성 유지)
@@ -4052,6 +4052,43 @@ function nextQ(){
 }
 
 // ── COMPUTE ──────────────────────────────────────────────────────
+// ── 태그 평균·표준편차 자동 계산 (문항이 바뀌어도 자동 적응) ──
+let _TAG_STATS=null;
+function tagStats(){
+  if(_TAG_STATS) return _TAG_STATS;
+  const tags=new Set();
+  QS.forEach(q=>{
+    if(q.type==='scale'){
+      if(q.keys&&q.keys.A) Object.keys(q.keys.A).forEach(k=>tags.add(k));
+      if(q.keys&&q.keys.D) Object.keys(q.keys.D).forEach(k=>tags.add(k));
+    } else if(q.o){ q.o.forEach(o=>Object.keys(o.g||{}).forEach(k=>tags.add(k))); }
+  });
+  // 각 문항에서 선택지별로 해당 태그가 얼마나 공급되는지로 기대값·분산 산출
+  const tagFor=(q,idx)=>{
+    let t={};
+    if(q.type==='scale'){
+      const score=5-idx;
+      if(score>=4&&q.keys&&q.keys.A) Object.entries(q.keys.A).forEach(([k,v])=>{t[k]=(t[k]||0)+Math.round(v*(score/5));});
+      if(score<=2&&q.keys&&q.keys.D) Object.entries(q.keys.D).forEach(([k,v])=>{t[k]=(t[k]||0)+Math.round(v*((5-score)/5));});
+    } else { t=(q.o&&q.o[idx]&&q.o[idx].g)||{}; }
+    return t;
+  };
+  const mean={}, varr={};
+  tags.forEach(k=>{
+    let m=0, vv=0;
+    QS.forEach(q=>{
+      const n=q.type==='scale'?5:(q.o?q.o.length:4);
+      let em=0, eq=0;
+      for(let idx=0;idx<n;idx++){ const val=(tagFor(q,idx))[k]||0; em+=val; eq+=val*val; }
+      em/=n; eq/=n;
+      m+=em; vv+=(eq-em*em);
+    });
+    mean[k]=m; varr[k]=Math.max(vv,0.01);
+  });
+  const sd={}; tags.forEach(k=>sd[k]=Math.sqrt(varr[k]));
+  _TAG_STATS={mean,sd}; return _TAG_STATS;
+}
+
 function compute(){
   const c={};
   Object.values(ans).forEach(a=>Object.entries(a.tags||{}).forEach(([k,v])=>{c[k]=(c[k]||0)+v;}));
@@ -4073,11 +4110,17 @@ function compute(){
     keys.forEach(k=>{total+=(c[k]||0);max+=18*3;});
     secScores[sec.label]=Math.min(99,Math.round((total/Math.max(max,1))*100)+20);
   });
-  // 유형 매칭
-  let best=TYPES[0],topScore=-1;
+  // 유형 매칭 — z-score 표준화 (과잉 공급 태그 자동 보정, 12유형 균등 분류)
+  const {mean,sd}=tagStats();
+  let best=TYPES[0],top=-Infinity;
   TYPES.forEach(t=>{
-    const s=Object.entries(t.weight).reduce((sum,[k,w])=>sum+(c[k]||0)*w,0);
-    if(s>topScore){topScore=s;best=t;}
+    let s=0,wsum=0;
+    Object.entries(t.weight).forEach(([k,w])=>{
+      const z=((c[k]||0)-(mean[k]||0))/(sd[k]||1);
+      s+=z*w; wsum+=w;
+    });
+    const score=wsum?s/wsum:0;
+    if(score>top){top=score;best=t;}
   });
   return{type:best,scores:secScores,counts:c};
 }
