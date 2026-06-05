@@ -2,6 +2,10 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
+<link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png">
+<link rel="icon" type="image/png" href="/favicon-48x48.png">
+<link rel="apple-touch-icon" href="/favicon-48x48.png">
+<link rel="shortcut icon" href="/favicon-48x48.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>셀인하자 관리자 : 기술자·업체 관리</title>
 <meta name="robots" content="noindex, nofollow">
@@ -188,15 +192,22 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dark);-web
     <div class="modal-grid">
       <div class="field"><label>이름/상호 *</label><input id="w_name"></div>
       <div class="field"><label>공정 *</label>
-        <select id="w_cat">
+        <select id="w_cat" onchange="autoIcon()">
           <option>철거</option><option>샷시</option><option>전기</option><option>목공</option>
           <option>타일</option><option>욕실</option><option>페인트</option><option>도배</option><option>마루</option>
         </select>
       </div>
-      <div class="field"><label>아이콘(이모지)</label><input id="w_icon" placeholder="🪵"></div>
+      <div class="field"><label>아이콘(이모지) <span style="font-weight:600;color:#8890A4;font-size:.78rem">· 공정 선택 시 자동 입력</span></label><input id="w_icon" placeholder="🪵"></div>
       <div class="field"><label>활동 지역</label><input id="w_region" placeholder="서울·경기 전역"></div>
       <div class="field"><label>전화번호</label><input id="w_phone" placeholder="010-1234-5678"></div>
       <div class="field"><label>경력</label><input id="w_career" placeholder="18년"></div>
+      <div class="field"><label>검증 상태</label>
+        <select id="w_verify">
+          <option value="verified">셀인하자 검증 완료</option>
+          <option value="reported">셀인러 제보</option>
+          <option value="pending">검증 중</option>
+        </select>
+      </div>
       <div class="field full"><label>소개</label><textarea id="w_desc"></textarea></div>
       <div class="field full"><label>해시태그 (쉼표로 구분)</label><input id="w_tags" placeholder="붙박이장, 중문, 몰딩"></div>
       <div class="field"><label>네이버 카페 URL</label><input id="w_cafe" placeholder="https://cafe.naver.com/..."></div>
@@ -349,10 +360,24 @@ async function loadWorkers(){
     </tr>`).join('') || '<tr><td colspan="7" class="empty">조건에 맞는 기술자가 없습니다.</td></tr>';
 }
 
+// 공정별 기본 이모지 (goodpartner 카드와 동일 매칭)
+const WCAT_ICON = {철거:'🔨', 샷시:'🪟', 전기:'💡', 목공:'🪵', 타일:'🧱', 욕실:'🚿', 페인트:'🖌️', 도배:'🎨', 마루:'🪟'};
+// 공정 선택 시 아이콘 자동 입력 (사용자가 직접 바꾼 값이 없을 때만)
+function autoIcon(){
+  const cat = $('w_cat').value;
+  const cur = $('w_icon').value.trim();
+  // 비어있거나, 다른 공정의 기본 이모지였다면 새 공정 이모지로 교체
+  const isDefault = !cur || Object.values(WCAT_ICON).includes(cur);
+  if(isDefault) $('w_icon').value = WCAT_ICON[cat] || '🔧';
+}
+
 function openWorker(w){
   $('workerModalTitle').textContent = w&&w.id ? '기술자 수정' : '기술자 등록';
   $('w_id').value=w?.id||''; $('w_name').value=w?.name||''; $('w_cat').value=w?.cat||'철거';
-  $('w_icon').value=w?.icon||''; $('w_region').value=w?.region||''; $('w_career').value=w?.career||'';
+  $('w_region').value=w?.region||''; $('w_career').value=w?.career||'';
+  $('w_verify').value=w?.verify||'verified';
+  // 아이콘: 기존 값 있으면 유지, 신규 등록이면 공정 기본 이모지 자동 입력
+  $('w_icon').value = w?.icon || WCAT_ICON[w?.cat||'철거'] || '🔧';
   $('w_phone').value=w?.phone||'';
   $('w_desc').value=w?.description||''; $('w_tags').value=(w?.tags||[]).join(', ');
   $('w_cafe').value=w?.link_cafe||''; $('w_blog').value=w?.link_blog||'';
@@ -366,6 +391,7 @@ async function saveWorker(){
   const payload = {
     name:$('w_name').value.trim(), cat:$('w_cat').value, icon:$('w_icon').value.trim()||'🔧',
     region:$('w_region').value.trim(), career:$('w_career').value.trim(),
+    verify:$('w_verify').value,
     phone:$('w_phone').value.trim(),
     description:$('w_desc').value.trim(),
     tags:$('w_tags').value.split(',').map(s=>s.trim()).filter(Boolean),
