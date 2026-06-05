@@ -126,11 +126,18 @@ nav{position:sticky;top:0;z-index:1000;display:flex;align-items:center;justify-c
 
 /* ── FILTER CHIPS ── */
 .filter-title{font-size:.85rem;font-weight:800;color:var(--gray);letter-spacing:.06em;margin-bottom:14px;text-align:center}
-.chips{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-.chip{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1.5px solid #e8eaf0;border-radius:50px;padding:10px 18px;font-size:.88rem;font-weight:800;color:var(--mid);cursor:pointer;transition:all .2s var(--ez);user-select:none}
+.chips{display:flex;flex-direction:column;align-items:center;gap:10px}
+.chips-all{display:flex;justify-content:center}
+.chips-proc{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;width:100%;max-width:760px}
+.chip{display:inline-flex;align-items:center;justify-content:center;gap:7px;background:#fff;border:1.5px solid #e8eaf0;border-radius:50px;padding:10px 16px;font-size:.86rem;font-weight:800;color:var(--mid);cursor:pointer;transition:all .2s var(--ez);user-select:none;white-space:nowrap}
 .chip:hover{border-color:var(--pink);color:var(--pink);transform:translateY(-1px)}
 .chip.active{background:var(--pink);border-color:var(--pink);color:#fff;box-shadow:0 6px 16px rgba(233,30,140,.3)}
+.chip.chip-all{padding:10px 30px}
 .chip .rdot{width:11px;height:11px;border-radius:50%}
+@media(max-width:640px){
+  .chips-proc{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;max-width:420px}
+  .chip{padding:9px 8px;font-size:.78rem}
+}
 
 /* region active colors */
 .chip[data-region="전체"].active{background:var(--dark);border-color:var(--dark)}
@@ -159,7 +166,12 @@ nav{position:sticky;top:0;z-index:1000;display:flex;align-items:center;justify-c
 .wcard.cat-샷시 .wcard-avatar{background:var(--teal-lt)}
 .wcard-headinfo{flex:1;min-width:0}
 .wcard-name{font-size:1.1rem;font-weight:900;color:var(--dark);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.verify-badge{display:inline-flex;align-items:center;gap:3px;background:var(--green-lt);color:#5a8a20;font-size:.64rem;font-weight:800;padding:2px 8px;border-radius:50px}
+.verify-badge{display:inline-flex;align-items:center;gap:3px;font-size:.62rem;font-weight:800;padding:2px 9px;border-radius:50px;white-space:nowrap;vertical-align:middle}
+.verify-badge.vb-verified{background:var(--green-lt);color:#5a8a20}
+.verify-badge.vb-reported{background:#e3f5fe;color:#0277bd}
+.verify-badge.vb-pending{background:#fff3e0;color:#e65100}
+.vb-legend{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 22px;margin:0 auto 22px;max-width:760px;padding:14px 18px;background:#fff;border:1px solid #eef0f5;border-radius:14px}
+.vb-legend-item{display:inline-flex;align-items:center;gap:7px;font-size:.76rem;font-weight:700;color:var(--gray)}
 .wcard-cat{font-size:.82rem;font-weight:800;color:var(--pink);margin-top:3px}
 .wcard-region{font-size:.76rem;font-weight:600;color:var(--gray);margin-top:2px}
 .wcard-body{padding:0 22px 18px}
@@ -329,18 +341,27 @@ footer{background:var(--dark);padding:48px 40px 32px;color:rgba(255,255,255,.5)}
       <div class="vs-item"><span class="vs-ic">✓</span>현장 품질 점검</div>
       <div class="vs-item"><span class="vs-ic">✓</span>중개 수수료 없음</div>
     </div>
+    <div class="vb-legend">
+      <span class="vb-legend-item"><span class="verify-badge vb-verified">✓ 셀인하자 검증 완료</span> 4단계 검증을 모두 통과</span>
+      <span class="vb-legend-item"><span class="verify-badge vb-reported">🙋 셀인러 제보</span> 셀인러가 추천·제보한 곳</span>
+      <span class="vb-legend-item"><span class="verify-badge vb-pending">⏳ 검증 중</span> 현재 검증 진행 중</span>
+    </div>
     <div class="filter-title">반셀프 공정 순서대로 필요한 기술자를 찾아보세요</div>
     <div class="chips" id="catChips">
-      <span class="chip active" data-cat="전체">🔧 전체</span>
-      <span class="chip" data-cat="철거">🔨 1. 철거</span>
-      <span class="chip" data-cat="샷시">🪟 2. 샷시·창호</span>
-      <span class="chip" data-cat="전기">💡 3. 전기·조명</span>
-      <span class="chip" data-cat="목공">🪵 4. 목공·가구</span>
-      <span class="chip" data-cat="타일">🧱 5. 타일</span>
-      <span class="chip" data-cat="욕실">🚿 6. 욕실·설비</span>
-      <span class="chip" data-cat="페인트">🖌️ 7. 페인트·도장</span>
-      <span class="chip" data-cat="도배">🎨 8. 도배·필름</span>
-      <span class="chip" data-cat="마루">🪟 9. 마루·바닥</span>
+      <div class="chips-all">
+        <span class="chip chip-all active" data-cat="전체">🔧 전체 공정</span>
+      </div>
+      <div class="chips-proc">
+        <span class="chip" data-cat="철거">🔨 1. 철거</span>
+        <span class="chip" data-cat="샷시">🪟 2. 샷시·창호</span>
+        <span class="chip" data-cat="전기">💡 3. 전기·조명</span>
+        <span class="chip" data-cat="목공">🪵 4. 목공·가구</span>
+        <span class="chip" data-cat="타일">🧱 5. 타일</span>
+        <span class="chip" data-cat="욕실">🚿 6. 욕실·설비</span>
+        <span class="chip" data-cat="페인트">🖌️ 7. 페인트·도장</span>
+        <span class="chip" data-cat="도배">🎨 8. 도배·필름</span>
+        <span class="chip" data-cat="마루">🪟 9. 마루·바닥</span>
+      </div>
     </div>
     <div class="count-line">총 <b id="wcount">0</b>명의 검증된 기술자</div>
     <div class="workers-grid" id="workersGrid"></div>
@@ -456,11 +477,11 @@ const REGIONS = {
 // ── 폴백 데이터 (Supabase 미설정 시) ──
 const FALLBACK_WORKERS = [
   {name:'김도현',cat:'목공',icon:'🪵',region:'서울·경기 전역',phone:'010-1234-5678',career:'18년',desc:'붙박이장·중문·아트월 전문. 도면 없이도 현장 상황에 맞춰 정밀 시공합니다.',tags:['붙박이장','중문','몰딩','아트월'],link_cafe:'https://cafe.naver.com/',link_blog:'https://blog.naver.com/',link_insta:'https://instagram.com/'},
-  {name:'박성훈',cat:'도배',icon:'🎨',region:'서울·인천',phone:'',career:'15년',desc:'실크·합지·뮤럴 전 종류 시공. 곰팡이·들뜸 없는 바탕 처리가 강점입니다.',tags:['실크벽지','뮤럴','친환경풀','천장도배'],link_blog:'https://blog.naver.com/',link_insta:'https://instagram.com/'},
+  {name:'박성훈',cat:'도배',icon:'🎨',region:'서울·인천',phone:'',career:'15년',desc:'실크·합지·뮤럴 전 종류 시공. 곰팡이·들뜸 없는 바탕 처리가 강점입니다.',tags:['실크벽지','뮤럴','친환경풀','천장도배'],verify:'reported',link_blog:'https://blog.naver.com/',link_insta:'https://instagram.com/'},
   {name:'이정민',cat:'타일',icon:'🧱',region:'경기 남부',phone:'',career:'12년',desc:'욕실·주방·현관 타일 시공. 대형 포세린·헤링본 패턴 시공 경험 풍부.',tags:['포세린','헤링본','줄눈시공','방수'],link_cafe:'https://cafe.naver.com/',link_insta:'https://instagram.com/'},
   {name:'최영재',cat:'전기',icon:'💡',region:'서울 전역',phone:'',career:'20년',desc:'조명·콘센트 증설·스마트홈 배선. 전기안전 자격 보유, 누전 걱정 없이.',tags:['간접조명','콘센트증설','스마트홈','분전반'],link_blog:'https://blog.naver.com/'},
   {name:'정우성',cat:'페인트',icon:'🖌️',region:'서울·경기',phone:'',career:'10년',desc:'친환경 도장·포인트 컬러 전문. 붓자국 없는 롤러·뿜칠 마감.',tags:['친환경페인트','포인트벽','문틀도장','외부도장'],link_insta:'https://instagram.com/'},
-  {name:'강민호',cat:'마루',icon:'🪟',region:'경기·인천',phone:'',career:'16년',desc:'강마루·강화마루·SPC 시공. 단차·소음 없는 바닥 평탄화가 특기.',tags:['강마루','SPC','평탄화','걸레받이'],link_cafe:'https://cafe.naver.com/',link_blog:'https://blog.naver.com/'},
+  {name:'강민호',cat:'마루',icon:'🪟',region:'경기·인천',phone:'',career:'16년',desc:'강마루·강화마루·SPC 시공. 단차·소음 없는 바닥 평탄화가 특기.',tags:['강마루','SPC','평탄화','걸레받이'],verify:'pending',link_cafe:'https://cafe.naver.com/',link_blog:'https://blog.naver.com/'},
   {name:'서지훈',cat:'욕실',icon:'🚿',region:'서울 전역',phone:'',career:'14년',desc:'욕실 전체 리모델링·방수·설비. 누수 없는 방수 2회 시공 원칙.',tags:['욕실리모델링','방수','양변기','수전설치'],link_insta:'https://instagram.com/'},
   {name:'임재현',cat:'철거',icon:'🔨',region:'서울·경기 전역',phone:'',career:'11년',desc:'안전 철거·폐기물 처리 일괄. 소음·분진 최소화 양생 작업 철저.',tags:['안전철거','폐기물처리','양생','분진관리'],link_blog:'https://blog.naver.com/'},
   {name:'홍석우',cat:'목공',icon:'🪵',region:'인천·경기',phone:'',career:'13년',desc:'가벽·파티션·우물천장 시공. 공간 분할 설계 상담도 함께 진행합니다.',tags:['가벽','우물천장','파티션','단열보강'],link_cafe:'https://cafe.naver.com/',link_site:'https://example.com/'},
@@ -505,6 +526,16 @@ function switchTab(tab){
 }
 
 // ════ 기술자 ════
+// 3단계 검증 배지: verified(셀인하자 검증 완료) / reported(셀인러 제보) / pending(검증 중)
+const VERIFY = {
+  verified: {cls:'vb-verified', ic:'✓', t:'셀인하자 검증 완료'},
+  reported: {cls:'vb-reported', ic:'🙋', t:'셀인러 제보'},
+  pending:  {cls:'vb-pending',  ic:'⏳', t:'검증 중'},
+};
+function verifyBadge(status){
+  const v = VERIFY[status] || VERIFY.verified;
+  return `<span class="verify-badge ${v.cls}">${v.ic} ${v.t}</span>`;
+}
 function workerCard(w){
   const links = [
     w.link_cafe  && {u:w.link_cafe,  t:'네이버 카페', c:'lk-cafe'},
@@ -518,7 +549,7 @@ function workerCard(w){
     <div class="wcard-top">
       <div class="wcard-avatar">${w.icon||'🔧'}</div>
       <div class="wcard-headinfo">
-        <div class="wcard-name">${w.name} <span class="verify-badge">✓ 검증</span></div>
+        <div class="wcard-name">${w.name} ${verifyBadge(w.verify)}</div>
         <div class="wcard-cat">${w.cat} 전문${w.career?` · 경력 ${w.career}`:''}</div>
         <div class="wcard-region">📍 ${w.region||''}${w.phone?` · 📞 ${w.phone}`:''}</div>
       </div>
@@ -691,7 +722,7 @@ async function loadData(){
         c.from('workers').select('*').eq('is_active',true).order('sort_order',{ascending:false}).order('created_at',{ascending:false}),
         c.from('shops').select('*').eq('is_active',true).order('sort_order',{ascending:false}).order('created_at',{ascending:false})
       ]);
-      WORKERS=(w||[]).map(r=>({name:r.name,cat:r.cat,icon:r.icon||'🔧',region:r.region||'',phone:r.phone||'',career:r.career||'',desc:r.description||'',tags:r.tags||[],link_cafe:r.link_cafe||'',link_blog:r.link_blog||'',link_insta:r.link_insta||'',link_site:r.link_site||''}));
+      WORKERS=(w||[]).map(r=>({name:r.name,cat:r.cat,icon:r.icon||'🔧',region:r.region||'',phone:r.phone||'',career:r.career||'',desc:r.description||'',tags:r.tags||[],verify:r.verify||'verified',link_cafe:r.link_cafe||'',link_blog:r.link_blog||'',link_insta:r.link_insta||'',link_site:r.link_site||''}));
       PLACES=(s||[]).map(r=>({name:r.name,region:r.region,cat:r.cat,lat:Number(r.lat),lng:Number(r.lng),addr:r.addr||'',phone:r.phone||'',hours:r.hours||'',desc:r.description||'',link_cafe:r.link_cafe||'',link_blog:r.link_blog||'',link_insta:r.link_insta||'',link_site:r.link_site||''}));
     }catch(e){ console.warn('Supabase 로드 실패, 폴백 사용:',e.message); WORKERS=FALLBACK_WORKERS; PLACES=FALLBACK_SHOPS; }
   }else{ WORKERS=FALLBACK_WORKERS; PLACES=FALLBACK_SHOPS; }
