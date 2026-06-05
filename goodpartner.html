@@ -234,6 +234,8 @@ nav{position:sticky;top:0;z-index:1000;display:flex;align-items:center;justify-c
 .pcard-titlewrap{flex:1;min-width:0}
 .pcard-name{font-size:1rem;font-weight:900;color:var(--dark);line-height:1.25;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .vbadge{display:inline-flex;align-items:center;gap:3px;background:var(--green-lt);color:#5a8a20;font-size:.62rem;font-weight:800;padding:2px 8px;border-radius:50px}
+.vbadge.vb-reported{background:#e3f5fe;color:#0277bd}
+.vbadge.vb-pending{background:#fff3e0;color:#e65100}
 .pcard-region{display:inline-flex;align-items:center;gap:5px;font-size:.72rem;font-weight:800;margin-top:3px}
 .pcard-rdot{width:8px;height:8px;border-radius:50%}
 .pcard-cat{font-size:.72rem;font-weight:700;color:var(--gray);background:var(--bg);border-radius:50px;padding:3px 10px;white-space:nowrap}
@@ -586,12 +588,18 @@ function switchTab(tab){
 // 3단계 검증 배지: verified(셀인하자 검증 완료) / reported(셀인러 제보) / pending(검증 중)
 const VERIFY = {
   verified: {cls:'vb-verified', ic:'✓', t:'셀인하자 검증 완료'},
-  reported: {cls:'vb-reported', ic:'🙋', t:'셀인러 제보'},
+  reported: {cls:'vb-reported', ic:'🙋', t:'셀인러 추천'},
   pending:  {cls:'vb-pending',  ic:'⏳', t:'검증 중'},
 };
 function verifyBadge(status){
   const v = VERIFY[status] || VERIFY.verified;
   return `<span class="verify-badge ${v.cls}">${v.ic} ${v.t}</span>`;
+}
+// 카드용 짧은 검증 배지 (좁은 공간)
+const VERIFY_SHORT={verified:{c:'vb-verified',t:'✓ 검증'},reported:{c:'vb-reported',t:'🙋 셀인러 추천'},pending:{c:'vb-pending',t:'⏳ 검증 중'}};
+function verifyBadgeShort(status){
+  const v=VERIFY_SHORT[status]||VERIFY_SHORT.verified;
+  return `<span class="vbadge ${v.c}">${v.t}</span>`;
 }
 function workerCard(w){
   const links = [
@@ -670,7 +678,7 @@ function popupHTML(p){
   const linkHTML = links.length ? `<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px">${links.map(l=>
     `<a href="${l.u}" target="_blank" rel="noopener" style="font-size:.68rem;font-weight:800;color:#fff;background:${l.c};padding:4px 9px;border-radius:6px;text-decoration:none">${l.t}</a>`).join('')}</div>` : '';
   return `<div style="background:#fff;border-radius:12px;padding:14px 16px;box-shadow:0 6px 24px rgba(0,0,0,.18);max-width:240px;font-family:'Nunito',sans-serif">
-      <div style="font-weight:900;font-size:.95rem;margin-bottom:3px">${p.name} <span style="background:#eef6e6;color:#5a8a20;font-size:.6rem;font-weight:800;padding:1px 7px;border-radius:50px;vertical-align:middle">✓ 검증</span></div>
+      <div style="font-weight:900;font-size:.95rem;margin-bottom:3px">${p.name} ${verifyBadgeShort(p.verify)}</div>
       <div style="font-size:.76rem;color:#8890A4;font-weight:700;margin-bottom:6px">${p.region} · ${p.cat}</div>
       <div style="font-size:.8rem;color:#3D3D5C;line-height:1.5;margin-bottom:8px">${p.desc||''}</div>
       <div style="font-size:.74rem;color:#8890A4;margin-bottom:8px">📍 ${p.addr||''}${p.hours?`<br>🕘 ${p.hours}`:''}${p.phone?`<br>📞 ${p.phone}`:''}</div>
@@ -718,7 +726,7 @@ function renderShops(){
     return `<div class="pcard" data-idx="${i}">
       <div class="pcard-head">
         <div class="pcard-pin" style="background:${color}">${CAT_ICON[p.cat]||'📍'}</div>
-        <div class="pcard-titlewrap"><div class="pcard-name">${p.name} <span class="vbadge">✓ 검증</span></div>
+        <div class="pcard-titlewrap"><div class="pcard-name">${p.name} ${verifyBadgeShort(p.verify)}</div>
         <div class="pcard-region" style="color:${color}"><span class="pcard-rdot" style="background:${color}"></span>${p.region}</div></div>
         <div class="pcard-cat">${p.cat}</div>
       </div>
@@ -783,7 +791,7 @@ function renderOnlineShops(){
     return `<div class="pcard pcard-online">
       <div class="pcard-head">
         <div class="pcard-pin" style="background:${color}">${CAT_ICON[p.cat]||'🛒'}</div>
-        <div class="pcard-titlewrap"><div class="pcard-name">${p.name} <span class="vbadge">✓ 검증</span></div>
+        <div class="pcard-titlewrap"><div class="pcard-name">${p.name} ${verifyBadgeShort(p.verify)}</div>
         <div class="pcard-region" style="color:${color}"><span class="pcard-rdot" style="background:${color}"></span>온라인 · 전국배송</div></div>
         <div class="pcard-cat">${p.cat}</div>
       </div>
