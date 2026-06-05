@@ -48,7 +48,12 @@
      - Application 등록 시 "Dynamic Map" 체크 (안 하면 429 오류)
      - Web 서비스 URL 에 https://skopos.kr 등록
      키가 없으면 자동으로 OpenStreetMap(Leaflet)으로 표시됩니다. */
-  var NAVER_MAP_KEY = 'YOUR_NAVER_MAP_KEY';
+  var NAVER_MAP_KEY = 'byl9ybx8iw';
+  // 인증 실패 시(도메인 미등록 등) 자동으로 OpenStreetMap으로 폴백
+  window.navermap_authFailure = function(){
+    console.warn('네이버 지도 인증 실패 — OpenStreetMap으로 대체합니다. (콘솔에서 Web 서비스 URL 등록 확인 필요)');
+    window.__naverAuthFailed = true;
+  };
   if (NAVER_MAP_KEY && NAVER_MAP_KEY !== 'YOUR_NAVER_MAP_KEY') {
     var nv = document.createElement('script');
     nv.src = 'https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=' + NAVER_MAP_KEY;
@@ -579,7 +584,7 @@ function switchTab(tab){
   document.querySelectorAll('.mtab').forEach(t=>t.classList.toggle('active', t.dataset.tab===tab));
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.getElementById('sec-'+tab).classList.add('active');
-  if(tab==='shops'){ ensureMap(); setTimeout(()=>{ invalidateMap(); renderShops(); },120); }
+  if(tab==='shops'){ ensureMap(()=>{ invalidateMap(); renderShops(); }); }
   if(tab==='online'){ renderOnlineShops(); }
   window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -640,11 +645,12 @@ function renderWorkers(){
 }
 
 // ════ 업체(지도) ════ — 네이버 지도(키 설정 시) 또는 Leaflet/OSM(폴백)
-function naverReady(){ return typeof NAVER_MAP_KEY!=='undefined' && NAVER_MAP_KEY!=='YOUR_NAVER_MAP_KEY' && window.naver && naver.maps; }
+function naverReady(){ return !window.__naverAuthFailed && typeof NAVER_MAP_KEY!=='undefined' && NAVER_MAP_KEY!=='YOUR_NAVER_MAP_KEY' && window.naver && naver.maps; }
+function naverConfigured(){ return !window.__naverAuthFailed && typeof NAVER_MAP_KEY!=='undefined' && NAVER_MAP_KEY!=='YOUR_NAVER_MAP_KEY'; }
 let useNaver = false;
 let nvInfo = null; // 네이버용 인포윈도우
 
-function ensureMap(){
+function buildMap(){
   if(mapInit) return;
   useNaver = naverReady();
   if(useNaver){
@@ -659,6 +665,25 @@ function ensureMap(){
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);
   }
   mapInit=true;
+}
+
+function ensureMap(cb){
+  if(mapInit){ if(cb) cb(); return; }
+  // 네이버 키는 있는데 스크립트가 아직 로딩 중이면 잠깐 기다렸다 다시 시도 (최대 ~3초)
+  if(naverConfigured() && !naverReady()){
+    let tries=0;
+    const t=setInterval(()=>{
+      tries++;
+      if(naverReady() || tries>30){
+        clearInterval(t);
+        buildMap();
+        if(cb) cb();
+      }
+    },100);
+    return;
+  }
+  buildMap();
+  if(cb) cb();
 }
 function invalidateMap(){ if(!useNaver && map && map.invalidateSize) map.invalidateSize(); }
 
