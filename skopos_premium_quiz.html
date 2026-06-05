@@ -2561,262 +2561,82 @@ TYPES.forEach(t => { TYPE_MAP[t.id] = t; });
 // ═══════════════════════════════════════
 // 유형별 공간 레퍼런스 이미지 (거실·침실)
 // ═══════════════════════════════════════
+// 유형별 공간 레퍼런스 이미지 (거실·침실·주방 각 2장)
+// 현재 12개 결과 유형에 1:1로 매핑. 유형 내 사진 중복 없음, 전 URL 정상 검증됨.
 const SPACE_REFS={
-  restore_deep:{
-    label:'감각을 차단하는 아늑한 공간',
-    living:[
-      {url:'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=900&q=85&auto=format&fit=crop',caption:'린넨 소재·히든 수납·간접 조명'},
-      {url:'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=900&q=85&auto=format&fit=crop',caption:'딥 베이지·어둑한 앰비언스'},
-    ],
-    bedroom:[
-      {url:'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=900&q=85&auto=format&fit=crop',caption:'암막 커튼·최소 조도'},
-      {url:'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=900&q=85&auto=format&fit=crop',caption:'린넨 침구·여백의 고요함'},
-    ]},
-  restore_quiet:{
-    label:'조용하고 사색적인 공간',
-    living:[
-      {url:'https://images.unsplash.com/photo-1540518614846-7eded433c457?w=900&q=85&auto=format&fit=crop',caption:'1인 체어·플로어 램프·독서 코너'},
-      {url:'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=900&q=85&auto=format&fit=crop',caption:'절제된 소품·고요한 중성톤'},
-    ],
-    bedroom:[
-      {url:'https://images.unsplash.com/photo-1617325247661-675ab4b64ae2?w=900&q=85&auto=format&fit=crop',caption:'블로킹 커튼·독서등'},
-      {url:'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=900&q=85&auto=format&fit=crop',caption:'모노톤·심플한 침구'},
-    ]},
-  restore_zen:{
-    label:'여백이 디자인인 공간',
-    living:[
-      {url:'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=900&q=85&auto=format&fit=crop',caption:'화이트 팔레트·무오브제'},
-      {url:'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=900&q=85&auto=format&fit=crop',caption:'자연광·원목 포인트 하나'},
-    ],
-    bedroom:[
-      {url:'https://images.unsplash.com/photo-1560448075-bb485b067938?w=900&q=85&auto=format&fit=crop',caption:'화이트 린넨·아무것도 없는 사이드'},
-      {url:'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=900&q=85&auto=format&fit=crop',caption:'선 미학·깊은 여백'},
-    ]},
-  restore_nest:{
-    label:'포근하고 아늑한 보금자리',
-    living:[
-      {url:'https://images.unsplash.com/photo-1600210492493-0946911123ea?w=900&q=85&auto=format&fit=crop',caption:'담요·쿠션·홈 분위기'},
-      {url:'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=900&q=85&auto=format&fit=crop',caption:'캔들·간접 조명·아늑함'},
-    ],
-    bedroom:[
-      {url:'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=900&q=85&auto=format&fit=crop',caption:'레이어드 침구·따뜻한 톤'},
-      {url:'https://images.unsplash.com/photo-1588046130717-0eb0c9a3ba15?w=900&q=85&auto=format&fit=crop',caption:'패브릭 레이어·포근한 조명'},
-    ]},
+  sanctuary_deep:{
+    label:'자극을 줄이고 깊게 쉬는 공간',
+    living:[{url:'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=900&q=85&auto=format&fit=crop',caption:'린넨 소파·낮은 채도·차분한 여백'},{url:'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=900&q=85&auto=format&fit=crop',caption:'간접 조명·부드러운 패브릭·고요한 코너'}],
+    bedroom:[{url:'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=900&q=85&auto=format&fit=crop',caption:'암막 커튼·포근한 침구·낮은 조도'},{url:'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=900&q=85&auto=format&fit=crop',caption:'딥 베이지 톤·눈이 쉬는 침실'}],
+    kitchen:[{url:'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=900&q=85&auto=format&fit=crop',caption:'상판을 비운 차분한 부엌'},{url:'https://images.unsplash.com/photo-1499933374294-4584851497cc?w=900&q=85&auto=format&fit=crop',caption:'은은한 조명·정돈된 주방'}],
+  },
+  sanctuary_zen:{
+    label:'여백이 마음을 가볍게 하는 공간',
+    living:[{url:'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=900&q=85&auto=format&fit=crop',caption:'화이트 팔레트·히든 수납·넓은 여백'},{url:'https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=900&q=85&auto=format&fit=crop',caption:'원목 포인트 하나·자연광·단정한 선'}],
+    bedroom:[{url:'https://images.unsplash.com/photo-1560448075-bb485b067938?w=900&q=85&auto=format&fit=crop',caption:'화이트 린넨·아무것도 없는 사이드'},{url:'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=900&q=85&auto=format&fit=crop',caption:'선(禪) 미학·깊은 여백'}],
+    kitchen:[{url:'https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=900&q=85&auto=format&fit=crop',caption:'통합형 수납·핸들리스 화이트'},{url:'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=900&q=85&auto=format&fit=crop',caption:'군더더기 없는 미니멀 주방'}],
+  },
   nature_forest:{
-    label:'자연이 실내로 들어온 공간',
-    living:[
-      {url:'https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=900&q=85&auto=format&fit=crop',caption:'식물·원목·라탄 소품'},
-      {url:'https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?w=900&q=85&auto=format&fit=crop',caption:'어스톤 팔레트·자연 소재'},
-    ],
-    bedroom:[
-      {url:'https://images.unsplash.com/photo-1617325247661-675ab4b64ae2?w=900&q=85&auto=format&fit=crop',caption:'원목 헤드보드·식물'},
-      {url:'https://images.unsplash.com/photo-1582582621959-48d27397dc4b?w=900&q=85&auto=format&fit=crop',caption:'린넨 침구·자연 소재'},
-    ]},
+    label:'식물과 자연광으로 충전되는 공간',
+    living:[{url:'https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=900&q=85&auto=format&fit=crop',caption:'실내 식물·라탄·원목 가구'},{url:'https://images.unsplash.com/photo-1600210492493-0946911123ea?w=900&q=85&auto=format&fit=crop',caption:'창으로 드는 자연광·그린 포인트'}],
+    bedroom:[{url:'https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=900&q=85&auto=format&fit=crop',caption:'식물 곁의 침대·내추럴 우드'},{url:'https://images.unsplash.com/photo-1462759353907-b2ea5ebd72e7?w=900&q=85&auto=format&fit=crop',caption:'아침 햇살·초록이 보이는 침실'}],
+    kitchen:[{url:'https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?w=900&q=85&auto=format&fit=crop',caption:'허브·우드 상판·자연 소재'},{url:'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=900&q=85&auto=format&fit=crop',caption:'세이지 톤·식물이 있는 주방'}],
+  },
   nature_earth:{
-    label:'대지의 온기와 핸드메이드 감성',
-    living:[
-      {url:'https://images.unsplash.com/photo-1616046229478-9901c5536a45?w=900&q=85&auto=format&fit=crop',caption:'테라코타·황마·도자 오브제'},
-      {url:'https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?w=900&q=85&auto=format&fit=crop',caption:'핸드메이드 소품·어스 컬러'},
-    ],
-    bedroom:[
-      {url:'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=900&q=85&auto=format&fit=crop',caption:'어스톤 침구·자연 소재'},
-      {url:'https://images.unsplash.com/photo-1560448075-bb485b067938?w=900&q=85&auto=format&fit=crop',caption:'핸드메이드 텍스처 레이어'},
-    ]},
-  nature_light:{
-    label:'자연광으로 완성되는 공간',
-    living:[
-      {url:'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=900&q=85&auto=format&fit=crop',caption:'쉬어 커튼·대형 창·밝은 소재'},
-      {url:'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=900&q=85&auto=format&fit=crop',caption:'자연광 중심·화이트·아이보리'},
-    ],
-    bedroom:[
-      {url:'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=900&q=85&auto=format&fit=crop',caption:'레이스 커튼·아침 햇살'},
-      {url:'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=900&q=85&auto=format&fit=crop',caption:'밝은 침구·자연 기상'},
-    ]},
-  nature_minimal:{
-    label:'절제된 자연주의 공간',
-    living:[
-      {url:'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=900&q=85&auto=format&fit=crop',caption:'원목 포인트·식물 하나'},
-      {url:'https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?w=900&q=85&auto=format&fit=crop',caption:'중성 어스톤·절제'},
-    ],
-    bedroom:[
-      {url:'https://images.unsplash.com/photo-1560448075-bb485b067938?w=900&q=85&auto=format&fit=crop',caption:'원목·린넨·미니멀 자연'},
-      {url:'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=900&q=85&auto=format&fit=crop',caption:'절제된 자연 소재'},
-    ]},
-  luxe_classic:{
-    label:'시대를 초월하는 럭셔리 공간',
-    living:[
-      {url:'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=900&q=85&auto=format&fit=crop',caption:'마블·황동·벨벳 소파'},
-      {url:'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=900&q=85&auto=format&fit=crop',caption:'헤링본 마루·갤러리 조명'},
-    ],
-    bedroom:[
-      {url:'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=900&q=85&auto=format&fit=crop',caption:'황동 벽등·실크 침구'},
-      {url:'https://images.unsplash.com/photo-1588046130717-0eb0c9a3ba15?w=900&q=85&auto=format&fit=crop',caption:'모던 클래식·품격 있는 소재'},
-    ]},
+    label:'손의 온기가 담긴 어스 톤 공간',
+    living:[{url:'https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?w=900&q=85&auto=format&fit=crop',caption:'테라코타·핸드메이드 오브제'},{url:'https://images.unsplash.com/photo-1588046130717-0eb0c9a3ba15?w=900&q=85&auto=format&fit=crop',caption:'어스 컬러·황마·유기적 형태'}],
+    bedroom:[{url:'https://images.unsplash.com/photo-1615529328331-f8917597711f?w=900&q=85&auto=format&fit=crop',caption:'머드 톤 침구·도예 소품'},{url:'https://images.unsplash.com/photo-1604014237800-1c9102c219da?w=900&q=85&auto=format&fit=crop',caption:'흙빛 질감·따뜻한 자연 소재'}],
+    kitchen:[{url:'https://images.unsplash.com/photo-1616627561839-074385245ff6?w=900&q=85&auto=format&fit=crop',caption:'도자기·오픈 선반·어스톤'},{url:'https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=900&q=85&auto=format&fit=crop',caption:'핸드메이드 식기·우드 상판'}],
+  },
+  luxe_royal:{
+    label:'좋은 소재로 채운 품격 있는 공간',
+    living:[{url:'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=900&q=85&auto=format&fit=crop',caption:'벨벳·마블·황동 포인트'},{url:'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=900&q=85&auto=format&fit=crop',caption:'헤링본 마루·정제된 고급감'}],
+    bedroom:[{url:'https://images.unsplash.com/photo-1616137466211-f939a420be84?w=900&q=85&auto=format&fit=crop',caption:'실크 침구·앤틱 조명'},{url:'https://images.unsplash.com/photo-1615875605825-5eb9bb5d52ac?w=900&q=85&auto=format&fit=crop',caption:'딥 네이비·골드 디테일'}],
+    kitchen:[{url:'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=900&q=85&auto=format&fit=crop',caption:'마블 아일랜드·황동 수전'},{url:'https://images.unsplash.com/photo-1616627561839-074385245ff6?w=900&q=85&auto=format&fit=crop',caption:'고급 소재·정돈된 품격'}],
+  },
   luxe_gallery:{
-    label:'갤러리처럼 큐레이션된 공간',
-    living:[
-      {url:'https://images.unsplash.com/photo-1600210492493-0946911123ea?w=900&q=85&auto=format&fit=crop',caption:'스포트라이트·아트워크·모노크롬'},
-      {url:'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=900&q=85&auto=format&fit=crop',caption:'픽처 레일·블랙 스틸 프레임'},
-    ],
-    bedroom:[
-      {url:'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=900&q=85&auto=format&fit=crop',caption:'헤드보드 위 아트워크'},
-      {url:'https://images.unsplash.com/photo-1560448075-bb485b067938?w=900&q=85&auto=format&fit=crop',caption:'미니멀 갤러리 침실'},
-    ]},
-  aesthetic_curator:{
-    label:'미적 통일성이 있는 공간',
-    living:[
-      {url:'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=900&q=85&auto=format&fit=crop',caption:'색상 통일·소재 큐레이션'},
-      {url:'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=900&q=85&auto=format&fit=crop',caption:'팔레트 3색 이내·완벽한 균형'},
-    ],
-    bedroom:[
-      {url:'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=900&q=85&auto=format&fit=crop',caption:'코디된 침구·커튼·러그'},
-      {url:'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=900&q=85&auto=format&fit=crop',caption:'타임리스 통일감'},
-    ]},
-  luxe_modern:{
-    label:'현대적 럭셔리 공간',
-    living:[
-      {url:'https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?w=900&q=85&auto=format&fit=crop',caption:'딥 그린·황동·리넨 드레이프'},
-      {url:'https://images.unsplash.com/photo-1616046229478-9901c5536a45?w=900&q=85&auto=format&fit=crop',caption:'모던 럭셔리·슬림한 라인'},
-    ],
-    bedroom:[
-      {url:'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=900&q=85&auto=format&fit=crop',caption:'딥 컬러 헤드보드·황동 벽등'},
-      {url:'https://images.unsplash.com/photo-1588046130717-0eb0c9a3ba15?w=900&q=85&auto=format&fit=crop',caption:'현대적 럭셔리 침실'},
-    ]},
-  artistic_bold:{
-    label:'세계관이 담긴 개성적 공간',
-    living:[
-      {url:'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=900&q=85&auto=format&fit=crop',caption:'갤러리 월·빈티지+현대 믹스'},
-      {url:'https://images.unsplash.com/photo-1616046229478-9901c5536a45?w=900&q=85&auto=format&fit=crop',caption:'강렬한 포인트·패턴 레이어'},
-    ],
-    bedroom:[
-      {url:'https://images.unsplash.com/photo-1617325247661-675ab4b64ae2?w=900&q=85&auto=format&fit=crop',caption:'포인트 벽 컬러·아트워크'},
-      {url:'https://images.unsplash.com/photo-1560448075-bb485b067938?w=900&q=85&auto=format&fit=crop',caption:'개성 있는 오브제·믹스매치'},
-    ]},
-  artistic_vintage:{
+    label:'전시처럼 큐레이션된 공간',
+    living:[{url:'https://images.unsplash.com/photo-1567225557594-88d73e55f2cb?w=900&q=85&auto=format&fit=crop',caption:'갤러리 조명·아트워크·모노크롬'},{url:'https://images.unsplash.com/photo-1615529182904-14819c35db37?w=900&q=85&auto=format&fit=crop',caption:'스포트라이트·여백 있는 디스플레이'}],
+    bedroom:[{url:'https://images.unsplash.com/photo-1567225591450-06036b3392a6?w=900&q=85&auto=format&fit=crop',caption:'블랙 프레임·미니멀 아트'},{url:'https://images.unsplash.com/photo-1602872030219-ad2b9a54315c?w=900&q=85&auto=format&fit=crop',caption:'절제된 컬러·오브제 하나'}],
+    kitchen:[{url:'https://images.unsplash.com/photo-1616137422495-1e9e46e2aa77?w=900&q=85&auto=format&fit=crop',caption:'블랙 스틸·갤러리 무드 주방'},{url:'https://images.unsplash.com/photo-1618220179428-22790b461013?w=900&q=85&auto=format&fit=crop',caption:'마블 포인트·정돈된 라인'}],
+  },
+  artistic_wild:{
+    label:'나만의 취향이 분명한 공간',
+    living:[{url:'https://images.unsplash.com/photo-1567016376408-0226e4d0c1ea?w=900&q=85&auto=format&fit=crop',caption:'컬러 포인트·믹스 앤 매치'},{url:'https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=900&q=85&auto=format&fit=crop',caption:'패턴 레이어링·개성 있는 소품'}],
+    bedroom:[{url:'https://images.unsplash.com/photo-1545241047-6083a3684587?w=900&q=85&auto=format&fit=crop',caption:'강렬한 컬러·자유로운 배치'},{url:'https://images.unsplash.com/photo-1513161455079-7dc1de15ef3e?w=900&q=85&auto=format&fit=crop',caption:'아트워크 가득한 침실'}],
+    kitchen:[{url:'https://images.unsplash.com/photo-1556912173-3bb406ef7e77?w=900&q=85&auto=format&fit=crop',caption:'젤리지 타일·구리 소품'},{url:'https://images.unsplash.com/photo-1565538810643-b5bdb714032a?w=900&q=85&auto=format&fit=crop',caption:'개성 있는 색감의 주방'}],
+  },
+  artistic_indie:{
     label:'시간이 쌓인 빈티지 공간',
-    living:[
-      {url:'https://images.unsplash.com/photo-1600210492493-0946911123ea?w=900&q=85&auto=format&fit=crop',caption:'빈티지 소파·오래된 러그·컬렉션'},
-      {url:'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=900&q=85&auto=format&fit=crop',caption:'패티나·스토리 있는 소품들'},
-    ],
-    bedroom:[
-      {url:'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=900&q=85&auto=format&fit=crop',caption:'빈티지 침대 프레임'},
-      {url:'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=900&q=85&auto=format&fit=crop',caption:'레이어드 패브릭·빈티지 소품'},
-    ]},
-  artistic_eclectic:{
-    label:'동서양이 공존하는 에클레틱 공간',
-    living:[
-      {url:'https://images.unsplash.com/photo-1616046229478-9901c5536a45?w=900&q=85&auto=format&fit=crop',caption:'모로칸 러그·글로벌 소품 믹스'},
-      {url:'https://images.unsplash.com/photo-1600210492493-0946911123ea?w=900&q=85&auto=format&fit=crop',caption:'다양한 패턴·컬러 블로킹'},
-    ],
-    bedroom:[
-      {url:'https://images.unsplash.com/photo-1617325247661-675ab4b64ae2?w=900&q=85&auto=format&fit=crop',caption:'믹스 패턴 침구·글로벌 소품'},
-      {url:'https://images.unsplash.com/photo-1588046130717-0eb0c9a3ba15?w=900&q=85&auto=format&fit=crop',caption:'에클레틱 믹스'},
-    ]},
-  artistic_minimal_art:{
-    label:'하나가 전부인 미니멀 아트 공간',
-    living:[
-      {url:'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=900&q=85&auto=format&fit=crop',caption:'단 하나의 아트워크·여백'},
-      {url:'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=900&q=85&auto=format&fit=crop',caption:'조명이 작품·깊은 여백'},
-    ],
-    bedroom:[
-      {url:'https://images.unsplash.com/photo-1560448075-bb485b067938?w=900&q=85&auto=format&fit=crop',caption:'하나의 오브제·완벽한 여백'},
-      {url:'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=900&q=85&auto=format&fit=crop',caption:'미니멀 아트 침실'},
-    ]},
-  minimal_empty:{
-    label:'비움이 완성하는 미니멀 공간',
-    living:[
-      {url:'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=900&q=85&auto=format&fit=crop',caption:'화이트·아무것도 없는 카운터'},
-      {url:'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=900&q=85&auto=format&fit=crop',caption:'히든 수납·깊은 여백'},
-    ],
-    bedroom:[
-      {url:'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=900&q=85&auto=format&fit=crop',caption:'화이트 침구·아무것도 없는'},
-      {url:'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=900&q=85&auto=format&fit=crop',caption:'완전한 비움'},
-    ]},
+    living:[{url:'https://images.unsplash.com/photo-1505693314120-0d443867891c?w=900&q=85&auto=format&fit=crop',caption:'빈티지 가구·패티나·레이어'},{url:'https://images.unsplash.com/photo-1519710164239-da123dc03ef4?w=900&q=85&auto=format&fit=crop',caption:'오래된 책·컬렉션 디스플레이'}],
+    bedroom:[{url:'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=900&q=85&auto=format&fit=crop',caption:'앤틱 소품·스토리가 있는 침실'},{url:'https://images.unsplash.com/photo-1567016526105-22da7c13161a?w=900&q=85&auto=format&fit=crop',caption:'빈티지 텍스타일·따뜻한 세월감'}],
+    kitchen:[{url:'https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=900&q=85&auto=format&fit=crop',caption:'빈티지 오브제·오픈 선반'},{url:'https://images.unsplash.com/photo-1588046130717-0eb0c9a3ba15?w=900&q=85&auto=format&fit=crop',caption:'세월이 묻은 소재·손맛'}],
+  },
+  minimal_pure:{
+    label:'덜어낼수록 맑아지는 공간',
+    living:[{url:'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=900&q=85&auto=format&fit=crop',caption:'화이트 온 화이트·최소한의 가구'},{url:'https://images.unsplash.com/photo-1567016432779-094069958ea5?w=900&q=85&auto=format&fit=crop',caption:'군더더기 없는 라인·넓은 여백'}],
+    bedroom:[{url:'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=900&q=85&auto=format&fit=crop',caption:'미니멀 침구·무오브제'},{url:'https://images.unsplash.com/photo-1560448075-bb485b067938?w=900&q=85&auto=format&fit=crop',caption:'시야를 비운 단정한 침실'}],
+    kitchen:[{url:'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=900&q=85&auto=format&fit=crop',caption:'퓨어 화이트·히든 수납'},{url:'https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=900&q=85&auto=format&fit=crop',caption:'표면을 비운 미니멀 주방'}],
+  },
   minimal_grid:{
-    label:'구조와 정렬의 미학',
-    living:[
-      {url:'https://images.unsplash.com/photo-1616046229478-9901c5536a45?w=900&q=85&auto=format&fit=crop',caption:'블랙 스틸·그리드 배치'},
-      {url:'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=900&q=85&auto=format&fit=crop',caption:'모듈 수납·정렬된 소품'},
-    ],
-    bedroom:[
-      {url:'https://images.unsplash.com/photo-1617325247661-675ab4b64ae2?w=900&q=85&auto=format&fit=crop',caption:'대칭 배치·블랙 스틸'},
-      {url:'https://images.unsplash.com/photo-1560448075-bb485b067938?w=900&q=85&auto=format&fit=crop',caption:'정밀한 정렬·미니멀'},
-    ]},
-  minimal_functional:{
-    label:'기능이 아름다움인 공간',
-    living:[
-      {url:'https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?w=900&q=85&auto=format&fit=crop',caption:'다기능 가구·효율적 동선'},
-      {url:'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=900&q=85&auto=format&fit=crop',caption:'기능+미학 동시 충족'},
-    ],
-    bedroom:[
-      {url:'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=900&q=85&auto=format&fit=crop',caption:'서랍 많은 침대·효율적 드레스룸'},
-      {url:'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=900&q=85&auto=format&fit=crop',caption:'심플·기능 우선'},
-    ]},
-  minimal_system:{
-    label:'시스템으로 돌아가는 공간',
-    living:[
-      {url:'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=900&q=85&auto=format&fit=crop',caption:'청소 편한 동선·시스템 수납'},
-      {url:'https://images.unsplash.com/photo-1616046229478-9901c5536a45?w=900&q=85&auto=format&fit=crop',caption:'루틴 스테이션·정리 시스템'},
-    ],
-    bedroom:[
-      {url:'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=900&q=85&auto=format&fit=crop',caption:'드레스룸 시스템·루틴 공간'},
-      {url:'https://images.unsplash.com/photo-1560448075-bb485b067938?w=900&q=85&auto=format&fit=crop',caption:'효율 중심 침실'},
-    ]},
-  cozy_warm:{
-    label:'따뜻하고 포근한 공간',
-    living:[
-      {url:'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=900&q=85&auto=format&fit=crop',caption:'부클레 소파·셰기 러그·캔들'},
-      {url:'https://images.unsplash.com/photo-1600210492493-0946911123ea?w=900&q=85&auto=format&fit=crop',caption:'간접 조명·패브릭 레이어'},
-    ],
-    bedroom:[
-      {url:'https://images.unsplash.com/photo-1588046130717-0eb0c9a3ba15?w=900&q=85&auto=format&fit=crop',caption:'두꺼운 이불 레이어링·앰버 조명'},
-      {url:'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=900&q=85&auto=format&fit=crop',caption:'부드러운 소재·포근한 온기'},
-    ]},
+    label:'질서와 구조가 잡힌 공간',
+    living:[{url:'https://images.unsplash.com/photo-1617104551722-3b2d51366400?w=900&q=85&auto=format&fit=crop',caption:'블랙 스틸·그리드 배치'},{url:'https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=900&q=85&auto=format&fit=crop',caption:'모듈 수납·직선의 정렬'}],
+    bedroom:[{url:'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=900&q=85&auto=format&fit=crop',caption:'정돈된 비례·기능적 수납'},{url:'https://images.unsplash.com/photo-1567016432779-094069958ea5?w=900&q=85&auto=format&fit=crop',caption:'각 잡힌 라인·산업적 무드'}],
+    kitchen:[{url:'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=900&q=85&auto=format&fit=crop',caption:'폴리싱 상판·그리드 수납'},{url:'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=900&q=85&auto=format&fit=crop',caption:'시스템처럼 정렬된 주방'}],
+  },
+  cozy_hearth:{
+    label:'따뜻하게 감싸 안는 공간',
+    living:[{url:'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=900&q=85&auto=format&fit=crop',caption:'부클레 소파·두꺼운 러그'},{url:'https://images.unsplash.com/photo-1484101403633-562f891dc89a?w=900&q=85&auto=format&fit=crop',caption:'앰버 조명·패브릭 레이어링'}],
+    bedroom:[{url:'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=900&q=85&auto=format&fit=crop',caption:'포근한 침구·은은한 조명'},{url:'https://images.unsplash.com/photo-1513161455079-7dc1de15ef3e?w=900&q=85&auto=format&fit=crop',caption:'담요·쿠션이 가득한 침실'}],
+    kitchen:[{url:'https://images.unsplash.com/photo-1616627561839-074385245ff6?w=900&q=85&auto=format&fit=crop',caption:'따뜻한 우드·아늑한 조명'},{url:'https://images.unsplash.com/photo-1556912173-3bb406ef7e77?w=900&q=85&auto=format&fit=crop',caption:'홈카페 느낌의 포근한 부엌'}],
+  },
   cozy_family:{
-    label:'함께하는 따뜻한 가족 공간',
-    living:[
-      {url:'https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=900&q=85&auto=format&fit=crop',caption:'패밀리 소파·오픈 플랜·다이닝'},
-      {url:'https://images.unsplash.com/photo-1616046229478-9901c5536a45?w=900&q=85&auto=format&fit=crop',caption:'함께 모이는 공간·온기'},
-    ],
-    bedroom:[
-      {url:'https://images.unsplash.com/photo-1617325247661-675ab4b64ae2?w=900&q=85&auto=format&fit=crop',caption:'가족 사진·추억 소품'},
-      {url:'https://images.unsplash.com/photo-1582582621959-48d27397dc4b?w=900&q=85&auto=format&fit=crop',caption:'따뜻한 침실·가족 공간'},
-    ]},
-  cozy_nurture:{
-    label:'환대와 돌봄의 공간',
-    living:[
-      {url:'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=900&q=85&auto=format&fit=crop',caption:'손님도 편한 소파·간식 트레이'},
-      {url:'https://images.unsplash.com/photo-1600210492493-0946911123ea?w=900&q=85&auto=format&fit=crop',caption:'홈 카페·따뜻한 환대'},
-    ],
-    bedroom:[
-      {url:'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=900&q=85&auto=format&fit=crop',caption:'게스트를 위한 배려'},
-      {url:'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=900&q=85&auto=format&fit=crop',caption:'아늑한 게스트룸'},
-    ]},
-  social_open:{
-    label:'항상 열려있는 소셜 공간',
-    living:[
-      {url:'https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=900&q=85&auto=format&fit=crop',caption:'오픈 플랜·파티 조명·대형 소파'},
-      {url:'https://images.unsplash.com/photo-1616046229478-9901c5536a45?w=900&q=85&auto=format&fit=crop',caption:'활기찬 공간·모임 중심'},
-    ],
-    bedroom:[
-      {url:'https://images.unsplash.com/photo-1617325247661-675ab4b64ae2?w=900&q=85&auto=format&fit=crop',caption:'유연한 구조·소파베드'},
-      {url:'https://images.unsplash.com/photo-1560448075-bb485b067938?w=900&q=85&auto=format&fit=crop',caption:'게스트 배려 침실'},
-    ]},
+    label:'사람이 모이는 따뜻한 공간',
+    living:[{url:'https://images.unsplash.com/photo-1565538810643-b5bdb714032a?w=900&q=85&auto=format&fit=crop',caption:'패밀리 소파·함께 머무는 거실'},{url:'https://images.unsplash.com/photo-1600210492493-0946911123ea?w=900&q=85&auto=format&fit=crop',caption:'넓게 모이는 좌석 배치'}],
+    bedroom:[{url:'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=900&q=85&auto=format&fit=crop',caption:'편안한 공용 휴식 공간'},{url:'https://images.unsplash.com/photo-1484101403633-562f891dc89a?w=900&q=85&auto=format&fit=crop',caption:'아늑하게 함께 쉬는 방'}],
+    kitchen:[{url:'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=900&q=85&auto=format&fit=crop',caption:'오픈 키친·대형 다이닝 테이블'},{url:'https://images.unsplash.com/photo-1556912173-3bb406ef7e77?w=900&q=85&auto=format&fit=crop',caption:'홈카페·함께 둘러앉는 식탁'}],
+  },
 };
-
-// 현재 12개 결과 유형에 맞춰 기존 레퍼런스 세트를 연결합니다.
-// 과거 유형명으로 저장된 이미지 데이터가 있어도 결과지에서 비어 보이지 않게 합니다.
-Object.assign(SPACE_REFS, {
-  sanctuary_deep:  SPACE_REFS.sanctuary_deep  || SPACE_REFS.restore_deep,
-  sanctuary_zen:   SPACE_REFS.sanctuary_zen   || SPACE_REFS.restore_zen,
-  luxe_royal:      SPACE_REFS.luxe_royal      || SPACE_REFS.luxe_classic,
-  luxe_gallery:    SPACE_REFS.luxe_gallery    || SPACE_REFS.aesthetic_curator || SPACE_REFS.luxe_modern,
-  artistic_wild:   SPACE_REFS.artistic_wild   || SPACE_REFS.artistic_bold,
-  artistic_indie:  SPACE_REFS.artistic_indie  || SPACE_REFS.artistic_vintage,
-  minimal_pure:    SPACE_REFS.minimal_pure    || SPACE_REFS.minimal_empty,
-  minimal_grid:    SPACE_REFS.minimal_grid    || SPACE_REFS.minimal_system || SPACE_REFS.minimal_functional,
-  cozy_hearth:     SPACE_REFS.cozy_hearth     || SPACE_REFS.cozy_warm,
-});
 
 // 결과지 공유용 공간 레퍼런스는 사람이 없는 실내 사진만 사용합니다.
 // 각 유형의 핵심 욕구가 잘 보이도록 거실·침실·부엌 이미지를 별도 매칭합니다.
@@ -2828,176 +2648,6 @@ const SPACE_REF_GROUP_FALLBACK={
   minimal:'minimal_pure',
   cozy:'cozy_hearth',
 };
-Object.assign(SPACE_REFS, {
-  sanctuary_deep:{
-    label:'자극을 줄이고 깊게 쉬는 공간',
-    living:[
-      {url:'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=900&q=85&auto=format&fit=crop',caption:'린넨 소파·낮은 채도·차분한 여백'},
-      {url:'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=900&q=85&auto=format&fit=crop',caption:'간접 조명·부드러운 패브릭·고요한 코너'},
-    ],
-    bedroom:[
-      {url:'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=900&q=85&auto=format&fit=crop',caption:'암막 커튼·포근한 침구·낮은 조도'},
-      {url:'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=900&q=85&auto=format&fit=crop',caption:'딥 베이지 톤·눈이 쉬는 침실'},
-    ],
-    kitchen:[
-      {url:'https://images.unsplash.com/photo-1600489000022-c2086d79f9d4?w=900&q=85&auto=format&fit=crop',caption:'상판 위를 비운 차분한 부엌'},
-      {url:'https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?w=900&q=85&auto=format&fit=crop',caption:'크림 톤 수납·은은한 조명'},
-    ]},
-  sanctuary_zen:{
-    label:'여백이 마음을 가볍게 하는 공간',
-    living:[
-      {url:'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=900&q=85&auto=format&fit=crop',caption:'화이트 팔레트·히든 수납·넓은 여백'},
-      {url:'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=900&q=85&auto=format&fit=crop',caption:'원목 포인트 하나·자연광·단정한 선'},
-    ],
-    bedroom:[
-      {url:'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=900&q=85&auto=format&fit=crop',caption:'화이트 침구·비워둔 협탁'},
-      {url:'https://images.unsplash.com/photo-1560448075-bb485b067938?w=900&q=85&auto=format&fit=crop',caption:'군더더기 없는 배치·맑은 톤'},
-    ],
-    kitchen:[
-      {url:'https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?w=900&q=85&auto=format&fit=crop',caption:'핸들리스 수납·화이트 상판'},
-      {url:'https://images.unsplash.com/photo-1600489000022-c2086d79f9d4?w=900&q=85&auto=format&fit=crop',caption:'정리된 동선·차분한 그레이 톤'},
-    ]},
-  nature_forest:{
-    label:'초록과 원목이 숨을 틔우는 공간',
-    living:[
-      {url:'https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=900&q=85&auto=format&fit=crop',caption:'식물·원목·라탄이 있는 거실'},
-      {url:'https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?w=900&q=85&auto=format&fit=crop',caption:'어스톤 팔레트·자연 소재'},
-    ],
-    bedroom:[
-      {url:'https://images.unsplash.com/photo-1617325247661-675ab4b64ae2?w=900&q=85&auto=format&fit=crop',caption:'원목 헤드보드·식물 포인트'},
-      {url:'https://images.unsplash.com/photo-1582582621959-48d27397dc4b?w=900&q=85&auto=format&fit=crop',caption:'린넨 침구·햇살이 드는 침실'},
-    ],
-    kitchen:[
-      {url:'https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=900&q=85&auto=format&fit=crop',caption:'허브 화분·원목 도마·따뜻한 햇살'},
-      {url:'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=900&q=85&auto=format&fit=crop',caption:'오픈 키친·식물·자연스러운 동선'},
-    ]},
-  nature_earth:{
-    label:'손맛과 흙빛이 편안한 공간',
-    living:[
-      {url:'https://images.unsplash.com/photo-1616046229478-9901c5536a45?w=900&q=85&auto=format&fit=crop',caption:'테라코타·황마·도자 오브제'},
-      {url:'https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?w=900&q=85&auto=format&fit=crop',caption:'핸드메이드 소품·어스 컬러'},
-    ],
-    bedroom:[
-      {url:'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=900&q=85&auto=format&fit=crop',caption:'어스톤 침구·자연 소재'},
-      {url:'https://images.unsplash.com/photo-1560448075-bb485b067938?w=900&q=85&auto=format&fit=crop',caption:'거친 질감·손맛 있는 레이어'},
-    ],
-    kitchen:[
-      {url:'https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=900&q=85&auto=format&fit=crop',caption:'오픈 선반·도자기·따뜻한 식탁'},
-      {url:'https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?w=900&q=85&auto=format&fit=crop',caption:'우드 상판·손때가 묻어나는 그릇'},
-    ]},
-  luxe_royal:{
-    label:'좋은 소재와 마감이 살아나는 공간',
-    living:[
-      {url:'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=900&q=85&auto=format&fit=crop',caption:'벨벳·마블·황동 포인트'},
-      {url:'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=900&q=85&auto=format&fit=crop',caption:'헤링본 무드·품격 있는 조명'},
-    ],
-    bedroom:[
-      {url:'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=900&q=85&auto=format&fit=crop',caption:'황동 벽등·실크 느낌 침구'},
-      {url:'https://images.unsplash.com/photo-1588046130717-0eb0c9a3ba15?w=900&q=85&auto=format&fit=crop',caption:'고급 패브릭·호텔 같은 침실'},
-    ],
-    kitchen:[
-      {url:'https://images.unsplash.com/photo-1600489000022-c2086d79f9d4?w=900&q=85&auto=format&fit=crop',caption:'마블 상판·정돈된 수납'},
-      {url:'https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?w=900&q=85&auto=format&fit=crop',caption:'화이트·우드·메탈 포인트'},
-    ]},
-  luxe_gallery:{
-    label:'집 안에 전시 장면이 생기는 공간',
-    living:[
-      {url:'https://images.unsplash.com/photo-1600210492493-0946911123ea?w=900&q=85&auto=format&fit=crop',caption:'스포트 조명·아트워크·모노톤'},
-      {url:'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=900&q=85&auto=format&fit=crop',caption:'픽처 레일·블랙 프레임'},
-    ],
-    bedroom:[
-      {url:'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=900&q=85&auto=format&fit=crop',caption:'헤드보드 위 아트워크'},
-      {url:'https://images.unsplash.com/photo-1560448075-bb485b067938?w=900&q=85&auto=format&fit=crop',caption:'여백과 오브제가 돋보이는 침실'},
-    ],
-    kitchen:[
-      {url:'https://images.unsplash.com/photo-1600489000022-c2086d79f9d4?w=900&q=85&auto=format&fit=crop',caption:'블랙 수납·선명한 조명'},
-      {url:'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=900&q=85&auto=format&fit=crop',caption:'오픈 키친·모던한 마감'},
-    ]},
-  artistic_wild:{
-    label:'내 취향이 분명하게 보이는 공간',
-    living:[
-      {url:'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=900&q=85&auto=format&fit=crop',caption:'갤러리 월·빈티지와 모던의 믹스'},
-      {url:'https://images.unsplash.com/photo-1616046229478-9901c5536a45?w=900&q=85&auto=format&fit=crop',caption:'강렬한 포인트·패턴 레이어'},
-    ],
-    bedroom:[
-      {url:'https://images.unsplash.com/photo-1617325247661-675ab4b64ae2?w=900&q=85&auto=format&fit=crop',caption:'포인트 벽·아트워크'},
-      {url:'https://images.unsplash.com/photo-1560448075-bb485b067938?w=900&q=85&auto=format&fit=crop',caption:'개성 있는 오브제·믹스매치'},
-    ],
-    kitchen:[
-      {url:'https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=900&q=85&auto=format&fit=crop',caption:'오픈 선반·취향이 보이는 그릇'},
-      {url:'https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?w=900&q=85&auto=format&fit=crop',caption:'색감 있는 소품·작은 포인트'},
-    ]},
-  artistic_indie:{
-    label:'시간의 흔적과 이야기가 쌓인 공간',
-    living:[
-      {url:'https://images.unsplash.com/photo-1600210492493-0946911123ea?w=900&q=85&auto=format&fit=crop',caption:'빈티지 소파·오래된 러그·컬렉션'},
-      {url:'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=900&q=85&auto=format&fit=crop',caption:'스토리 있는 소품·레이어드 무드'},
-    ],
-    bedroom:[
-      {url:'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=900&q=85&auto=format&fit=crop',caption:'빈티지 침대 프레임'},
-      {url:'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=900&q=85&auto=format&fit=crop',caption:'레이어드 패브릭·오래된 소품'},
-    ],
-    kitchen:[
-      {url:'https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=900&q=85&auto=format&fit=crop',caption:'오픈 선반·빈티지 식기'},
-      {url:'https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?w=900&q=85&auto=format&fit=crop',caption:'우드 스툴·생활감 있는 부엌'},
-    ]},
-  minimal_pure:{
-    label:'비움과 단정함이 편안한 공간',
-    living:[
-      {url:'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=900&q=85&auto=format&fit=crop',caption:'화이트 톤·비워둔 카운터'},
-      {url:'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=900&q=85&auto=format&fit=crop',caption:'히든 수납·깊은 여백'},
-    ],
-    bedroom:[
-      {url:'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=900&q=85&auto=format&fit=crop',caption:'화이트 침구·정돈된 사이드'},
-      {url:'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=900&q=85&auto=format&fit=crop',caption:'차분한 톤·최소한의 가구'},
-    ],
-    kitchen:[
-      {url:'https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?w=900&q=85&auto=format&fit=crop',caption:'화이트 수납·군더더기 없는 상판'},
-      {url:'https://images.unsplash.com/photo-1600489000022-c2086d79f9d4?w=900&q=85&auto=format&fit=crop',caption:'단정한 동선·필요한 것만 남긴 부엌'},
-    ]},
-  minimal_grid:{
-    label:'구조와 정렬이 아름다운 공간',
-    living:[
-      {url:'https://images.unsplash.com/photo-1616046229478-9901c5536a45?w=900&q=85&auto=format&fit=crop',caption:'블랙 스틸·직선이 보이는 배치'},
-      {url:'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=900&q=85&auto=format&fit=crop',caption:'모듈 수납·정렬된 소품'},
-    ],
-    bedroom:[
-      {url:'https://images.unsplash.com/photo-1617325247661-675ab4b64ae2?w=900&q=85&auto=format&fit=crop',caption:'대칭 배치·선명한 라인'},
-      {url:'https://images.unsplash.com/photo-1560448075-bb485b067938?w=900&q=85&auto=format&fit=crop',caption:'정밀한 정렬·미니멀 침실'},
-    ],
-    kitchen:[
-      {url:'https://images.unsplash.com/photo-1600489000022-c2086d79f9d4?w=900&q=85&auto=format&fit=crop',caption:'그레이 수납·직선 동선'},
-      {url:'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=900&q=85&auto=format&fit=crop',caption:'오픈 키친·선이 살아있는 구조'},
-    ]},
-  cozy_hearth:{
-    label:'온기와 촉감이 하루를 풀어주는 공간',
-    living:[
-      {url:'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=900&q=85&auto=format&fit=crop',caption:'부클레 소파·두꺼운 러그·따뜻한 조명'},
-      {url:'https://images.unsplash.com/photo-1600210492493-0946911123ea?w=900&q=85&auto=format&fit=crop',caption:'담요·쿠션·포근한 거실'},
-    ],
-    bedroom:[
-      {url:'https://images.unsplash.com/photo-1588046130717-0eb0c9a3ba15?w=900&q=85&auto=format&fit=crop',caption:'두꺼운 이불·앰버 조명'},
-      {url:'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=900&q=85&auto=format&fit=crop',caption:'부드러운 소재·감싸주는 침실'},
-    ],
-    kitchen:[
-      {url:'https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=900&q=85&auto=format&fit=crop',caption:'따뜻한 조명·머물고 싶은 식탁'},
-      {url:'https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?w=900&q=85&auto=format&fit=crop',caption:'홈카페 느낌의 포근한 부엌'},
-    ]},
-  cozy_family:{
-    label:'사람이 모이기 좋은 따뜻한 공간',
-    living:[
-      {url:'https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=900&q=85&auto=format&fit=crop',caption:'패밀리 소파·오픈 플랜·다이닝'},
-      {url:'https://images.unsplash.com/photo-1616046229478-9901c5536a45?w=900&q=85&auto=format&fit=crop',caption:'마주 보는 배치·대화가 쉬운 거실'},
-    ],
-    bedroom:[
-      {url:'https://images.unsplash.com/photo-1617325247661-675ab4b64ae2?w=900&q=85&auto=format&fit=crop',caption:'따뜻한 패브릭·추억을 놓기 좋은 침실'},
-      {url:'https://images.unsplash.com/photo-1582582621959-48d27397dc4b?w=900&q=85&auto=format&fit=crop',caption:'부드러운 톤·가족이 편한 침실'},
-    ],
-    kitchen:[
-      {url:'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=900&q=85&auto=format&fit=crop',caption:'오픈 키친·다이닝이 연결된 구조'},
-      {url:'https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=900&q=85&auto=format&fit=crop',caption:'따뜻한 조명·함께 머무는 식탁'},
-    ]},
-});
 
 // 유형 → 그룹 맵
 TYPES.forEach(t=>{ TYPE_MAP[t.id]=t; });
@@ -5234,8 +4884,8 @@ function renderSpaceImgs(refs,tab){
   document.getElementById('spaceRefLabel').textContent=label;
   document.getElementById('spaceImgsGrid').innerHTML=(imgs||[]).map(img=>`
     <div class="space-img-card">
-      <img src="${img.url}" alt="${img.caption}" loading="lazy"
-        onerror="this.src='https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=900&q=85'">
+      <img src="${img.url}" alt="${img.caption}" loading="lazy" decoding="async"
+        onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=900&q=85&auto=format&fit=crop'">
       <div class="space-img-overlay">
         <div class="space-img-caption">${img.caption}</div>
       </div>
