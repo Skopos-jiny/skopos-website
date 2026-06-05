@@ -81,6 +81,10 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dark);-web
 .tbl .tname{font-weight:800;color:var(--dark)}
 .badge{display:inline-block;font-size:.7rem;font-weight:800;padding:3px 10px;border-radius:50px;background:var(--pink-lt);color:var(--pink-dk)}
 .badge.off{background:#f0f1f5;color:var(--gray)}
+.averify{display:inline-block;font-size:.68rem;font-weight:800;padding:3px 9px;border-radius:50px;white-space:nowrap}
+.averify.av-verified{background:#eef6e6;color:#5a8a20}
+.averify.av-reported{background:#e3f5fe;color:#0277bd}
+.averify.av-pending{background:#fff3e0;color:#e65100}
 .row-actions{display:flex;gap:6px;justify-content:flex-end}
 .empty{text-align:center;color:var(--gray);font-weight:700;padding:40px;font-size:.9rem}
 
@@ -178,7 +182,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dark);-web
       </select>
     </div>
     <table class="tbl">
-      <thead><tr><th>업체명</th><th>권역</th><th>유형</th><th class="hide-m">영업시간</th><th>링크</th><th>노출</th><th></th></tr></thead>
+      <thead><tr><th>업체명</th><th>권역</th><th>유형</th><th>검증</th><th class="hide-m">영업시간</th><th>링크</th><th>노출</th><th></th></tr></thead>
       <tbody id="sBody"></tbody>
     </table>
   </div>
@@ -204,7 +208,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dark);-web
       <div class="field"><label>검증 상태</label>
         <select id="w_verify">
           <option value="verified">셀인하자 검증 완료</option>
-          <option value="reported">셀인러 제보</option>
+          <option value="reported">셀인러 추천</option>
           <option value="pending">검증 중</option>
         </select>
       </div>
@@ -241,6 +245,13 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dark);-web
         <select id="s_cat">
           <option>자재상</option><option>쇼룸</option><option>조명</option>
           <option>타일</option><option>가구</option><option>종합시장</option>
+        </select>
+      </div>
+      <div class="field"><label>검증 상태</label>
+        <select id="s_verify">
+          <option value="verified">셀인하자 검증 완료</option>
+          <option value="reported">셀인러 추천</option>
+          <option value="pending">검증 중</option>
         </select>
       </div>
       <div class="field"><label>위도(lat) *</label><input id="s_lat" placeholder="37.566"></div>
@@ -416,6 +427,17 @@ async function delWorker(id, name){
 }
 
 // ════════ SHOPS CRUD ════════
+// 검증 상태 → 배지 HTML (goodpartner 표시와 동일한 의미)
+function verifyBadge(v){
+  const map={
+    verified:{cls:'av-verified', txt:'✓ 검증 완료'},
+    reported:{cls:'av-reported', txt:'🙋 셀인러 추천'},
+    pending :{cls:'av-pending',  txt:'⏳ 검증 중'},
+  };
+  const m=map[v]||map.verified;
+  return `<span class="averify ${m.cls}">${m.txt}</span>`;
+}
+
 async function loadShops(){
   if(!client) return;
   const sortKey = $('sSort') ? $('sSort').value : 'sort_order';
@@ -443,6 +465,7 @@ async function loadShops(){
       <td class="tname">${s.name}</td>
       <td>${s.region}</td>
       <td>${s.cat}</td>
+      <td>${verifyBadge(s.verify)}</td>
       <td class="hide-m">${s.hours||'-'}</td>
       <td>${[s.link_cafe&&'카페',s.link_blog&&'블로그',s.link_insta&&'인스타',s.link_site&&'홈피'].filter(Boolean).join(', ')||'-'}</td>
       <td>${s.is_active?'<span class="badge">노출</span>':'<span class="badge off">숨김</span>'}</td>
@@ -450,13 +473,14 @@ async function loadShops(){
         <button class="btn btn-edit btn-sm" onclick='openShop(${JSON.stringify(s)})'>수정</button>
         <button class="btn btn-del btn-sm" onclick="delShop(${s.id},'${(s.name||'').replace(/'/g,"")}')">삭제</button>
       </div></td>
-    </tr>`).join('') || '<tr><td colspan="7" class="empty">조건에 맞는 업체가 없습니다.</td></tr>';
+    </tr>`).join('') || '<tr><td colspan="8" class="empty">조건에 맞는 업체가 없습니다.</td></tr>';
 }
 
 function openShop(s){
   $('shopModalTitle').textContent = s&&s.id ? '업체 수정' : '업체 등록';
   $('s_id').value=s?.id||''; $('s_name').value=s?.name||''; $('s_region').value=s?.region||'서울북부';
   $('s_cat').value=s?.cat||'자재상'; $('s_lat').value=s?.lat||''; $('s_lng').value=s?.lng||'';
+  $('s_verify').value=s?.verify||'verified';
   $('s_addr').value=s?.addr||''; $('s_desc').value=s?.description||'';
   $('s_phone').value=s?.phone||''; $('s_hours').value=s?.hours||'';
   $('s_cafe').value=s?.link_cafe||''; $('s_blog').value=s?.link_blog||'';
@@ -469,6 +493,7 @@ async function saveShop(){
   if(!client){ alert('Supabase 미설정'); return; }
   const payload = {
     name:$('s_name').value.trim(), region:$('s_region').value, cat:$('s_cat').value,
+    verify:$('s_verify').value,
     lat:parseFloat($('s_lat').value), lng:parseFloat($('s_lng').value),
     addr:$('s_addr').value.trim(), description:$('s_desc').value.trim(),
     phone:$('s_phone').value.trim(), hours:$('s_hours').value.trim(),
