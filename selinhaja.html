@@ -15,16 +15,48 @@
 <meta property="og:description" content="진단부터 시공까지. 스코포스 SDTI 자매 서비스 셀인하자. 심리 기반 정찰제 인테리어 대행.">
 <meta property="og:url" content="https://skopos.kr/selinhaja">
 <meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://skopos.kr/selinhaja_og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="셀인하자 | 공간 욕구 진단으로 시작하는 인테리어">
+<meta name="twitter:description" content="심리 기반 진단 결과로 시작하는 투명한 정찰제 인테리어 대행.">
+<meta name="twitter:image" content="https://skopos.kr/selinhaja_og.png">
+<meta name="robots" content="index, follow">
+
+<!-- favicon -->
+<link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png">
+<link rel="icon" type="image/png" href="/favicon-48x48.png">
+<link rel="apple-touch-icon" href="/favicon-48x48.png">
+<link rel="shortcut icon" href="/favicon-48x48.png">
+<!-- 모바일 브라우저 테마색 -->
+<meta name="theme-color" content="#E91E8C">
+
+<!-- 구조화 데이터 (JSON-LD) -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Service","name":"셀인하자 정찰제 인테리어 대행","url":"https://skopos.kr/selinhaja","inLanguage":"ko","provider":{"@type":"Organization","name":"스코포스(Skopos)","url":"https://skopos.kr","address":{"@type":"PostalAddress","addressRegion":"경기도","addressLocality":"고양시","streetAddress":"덕양구 능곡로13번길 16","addressCountry":"KR"},"telephone":"+82-10-2133-0426","email":"contact@skopos.kr"},"areaServed":{"@type":"AdministrativeArea","name":"수도권"},"hasOfferCatalog":{"@type":"OfferCatalog","name":"인테리어 플랜","itemListElement":[{"@type":"Offer","name":"현장 점검 서비스","priceCurrency":"KRW","price":"2000000"},{"@type":"Offer","name":"반셀프 도움 서비스","priceCurrency":"KRW","price":"3500000"},{"@type":"Offer","name":"턴키 서비스","priceCurrency":"KRW","price":"7500000"}]}}
+</script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
+<!-- GA4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M6RMFNZ7W3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-M6RMFNZ7W3', { page_title: '셀인하자', page_location: window.location.href });
+  function trackEvent(name,params){ if(typeof gtag!=='undefined') gtag('event',name,params); }
+</script>
 <style>
 :root{
   --pink:#E91E8C; --pink-dk:#c4156f; --pink-lt:#fce4f3;
   --orange:#FF9800; --orange-lt:#fff3e0;
   --green:#7CB342; --green-lt:#eef6e6;
   --blue:#29B6F6; --blue-lt:#e3f5fe;
-  --dark:#0F0F1A; --mid:#3D3D5C; --gray:#8890A4;
+  --dark:#0F0F1A; --mid:#3D3D5C; --gray:#6B7280; --gray-soft:#8890A4;
   --bg:#F7F8FC; --white:#FFFFFF;
   --radius:22px; --radius-sm:14px;
   --sh:0 4px 24px rgba(15,15,26,.07);
@@ -33,6 +65,9 @@
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dark);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
 
 /* SISTER-BRAND TOP BAR */
 .sister-bar{
