@@ -168,6 +168,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dark);-web
         <option value="">전체 권역</option>
         <option>서울북부</option><option>서울남부</option><option>서울서부</option>
         <option>서울동부</option><option>경기북부</option><option>경기남부</option>
+        <option>온라인</option>
       </select>
       <select id="sCatFilter" onchange="loadShops()">
         <option value="">전체 유형</option>
@@ -239,6 +240,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dark);-web
         <select id="s_region">
           <option>서울북부</option><option>서울남부</option><option>서울서부</option>
           <option>서울동부</option><option>경기북부</option><option>경기남부</option>
+          <option>온라인</option>
         </select>
       </div>
       <div class="field"><label>유형 *</label>
@@ -254,8 +256,8 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dark);-web
           <option value="pending">검증 중</option>
         </select>
       </div>
-      <div class="field"><label>위도(lat) *</label><input id="s_lat" placeholder="37.566"></div>
-      <div class="field"><label>경도(lng) *</label><input id="s_lng" placeholder="126.991"></div>
+      <div class="field"><label>위도(lat) <span style="font-weight:400;color:#9aa">· 온라인은 비워두세요</span></label><input id="s_lat" placeholder="37.566"></div>
+      <div class="field"><label>경도(lng) <span style="font-weight:400;color:#9aa">· 온라인은 비워두세요</span></label><input id="s_lng" placeholder="126.991"></div>
       <div class="field full"><label>주소</label><input id="s_addr"></div>
       <div class="field"><label>전화번호</label><input id="s_phone" placeholder="02-1234-5678"></div>
       <div class="field"><label>영업시간</label><input id="s_hours" placeholder="평일 09:00-18:00"></div>
@@ -491,10 +493,13 @@ function openShop(s){
 
 async function saveShop(){
   if(!client){ alert('Supabase 미설정'); return; }
+  const latRaw=$('s_lat').value.trim(), lngRaw=$('s_lng').value.trim();
+  const isOnline = $('s_region').value==='온라인';
   const payload = {
     name:$('s_name').value.trim(), region:$('s_region').value, cat:$('s_cat').value,
     verify:$('s_verify').value,
-    lat:parseFloat($('s_lat').value), lng:parseFloat($('s_lng').value),
+    lat: latRaw===''? null : parseFloat(latRaw),
+    lng: lngRaw===''? null : parseFloat(lngRaw),
     addr:$('s_addr').value.trim(), description:$('s_desc').value.trim(),
     phone:$('s_phone').value.trim(), hours:$('s_hours').value.trim(),
     link_cafe:$('s_cafe').value.trim(), link_blog:$('s_blog').value.trim(),
@@ -502,7 +507,16 @@ async function saveShop(){
     sort_order:parseInt($('s_sort').value)||0, is_active:$('s_active').checked
   };
   if(!payload.name){ alert('업체명을 입력하세요'); return; }
-  if(isNaN(payload.lat)||isNaN(payload.lng)){ alert('좌표(위도/경도)를 정확히 입력하세요'); return; }
+  // 오프라인(지도 노출) 업체는 좌표 필수, 온라인 채널은 좌표 없이 허용
+  if(!isOnline){
+    if(payload.lat===null||payload.lng===null||isNaN(payload.lat)||isNaN(payload.lng)){
+      alert('지도에 표시할 업체는 좌표(위도/경도)가 필요합니다.\n온라인 채널이라면 권역을 \'온라인\'으로 선택하세요.'); return;
+    }
+  } else {
+    // 온라인은 좌표가 일부만 입력돼 NaN이 되는 경우 방지
+    if(isNaN(payload.lat)) payload.lat=null;
+    if(isNaN(payload.lng)) payload.lng=null;
+  }
   const id = $('s_id').value;
   const res = id
     ? await client.from('shops').update(payload).eq('id', id)
