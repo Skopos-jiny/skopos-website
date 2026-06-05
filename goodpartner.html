@@ -141,6 +141,11 @@ nav{position:sticky;top:0;z-index:1000;display:flex;align-items:center;justify-c
 /* ── FILTER CHIPS ── */
 .filter-title{font-size:.85rem;font-weight:800;color:var(--gray);letter-spacing:.06em;margin-bottom:14px;text-align:center}
 .chips{display:flex;flex-direction:column;align-items:center;gap:10px}
+/* 권역·유형 필터: 2단 병렬 배치 */
+.chips-grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;width:100%;max-width:520px;margin-left:auto;margin-right:auto;align-items:stretch}
+.chips-grid2 .chip{width:100%}
+.chips-grid2 .chip[data-region="전체"],
+.chips-grid2 .chip[data-cat="전체"]{grid-column:1 / -1}
 .chips-all{display:flex;justify-content:center}
 .chips-proc{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;width:100%;max-width:760px}
 .chip{display:inline-flex;align-items:center;justify-content:center;gap:7px;background:#fff;border:1.5px solid #e8eaf0;border-radius:50px;padding:10px 16px;font-size:.86rem;font-weight:800;color:var(--mid);cursor:pointer;transition:all .2s var(--ez);user-select:none;white-space:nowrap}
@@ -151,6 +156,7 @@ nav{position:sticky;top:0;z-index:1000;display:flex;align-items:center;justify-c
 @media(max-width:640px){
   .chips-proc{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;max-width:420px}
   .chip{padding:9px 8px;font-size:.78rem}
+  .chips-grid2{gap:8px;max-width:340px}
 }
 
 /* region active colors */
@@ -396,7 +402,7 @@ footer{background:var(--dark);padding:48px 40px 32px;color:rgba(255,255,255,.5)}
 <section class="section" id="sec-shops">
   <div class="wrap">
     <div class="filter-title">권역을 선택하면 검증된 업체가 지도와 목록에 함께 표시됩니다</div>
-    <div class="chips" id="regionChips" style="margin-bottom:14px">
+    <div class="chips chips-grid2" id="regionChips" style="margin-bottom:14px">
       <span class="chip active" data-region="전체"><span class="rdot 전체"></span>전체</span>
       <span class="chip" data-region="서울북부"><span class="rdot 서울북부"></span>서울 북부</span>
       <span class="chip" data-region="서울남부"><span class="rdot 서울남부"></span>서울 남부</span>
@@ -405,7 +411,7 @@ footer{background:var(--dark);padding:48px 40px 32px;color:rgba(255,255,255,.5)}
       <span class="chip" data-region="경기북부"><span class="rdot 경기북부"></span>경기 북부</span>
       <span class="chip" data-region="경기남부"><span class="rdot 경기남부"></span>경기 남부</span>
     </div>
-    <div class="chips" id="shopCatChips">
+    <div class="chips chips-grid2" id="shopCatChips">
       <span class="chip active" data-cat="전체" style="padding:7px 15px;font-size:.8rem">전체 유형</span>
       <span class="chip" data-cat="자재상" style="padding:7px 15px;font-size:.8rem">🧱 자재상</span>
       <span class="chip" data-cat="쇼룸" style="padding:7px 15px;font-size:.8rem">🛋️ 쇼룸</span>
