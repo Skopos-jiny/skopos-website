@@ -243,7 +243,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dark);-web
           <option>온라인</option>
         </select>
       </div>
-      <div class="field"><label>유형 *</label>
+      <div class="field"><label id="s_cat_label">유형 *</label>
         <select id="s_cat">
           <option>자재상</option><option>쇼룸</option><option>조명</option>
           <option>타일</option><option>가구</option><option>종합시장</option>
@@ -254,6 +254,13 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dark);-web
           <option value="verified">셀인하자 검증 완료</option>
           <option value="reported">셀인러 추천</option>
           <option value="pending">검증 중</option>
+        </select>
+      </div>
+      <div class="field"><label>구분 *</label>
+        <select id="s_kind" onchange="onShopKindChange()">
+          <option value="offline">오프라인 (지도 표시)</option>
+          <option value="online">온라인 채널</option>
+          <option value="brand">브랜드 공식홈페이지</option>
         </select>
       </div>
       <div class="field"><label>위도(lat) <span style="font-weight:400;color:#9aa">· 온라인은 비워두세요</span></label><input id="s_lat" placeholder="37.566"></div>
@@ -481,8 +488,12 @@ async function loadShops(){
 function openShop(s){
   $('shopModalTitle').textContent = s&&s.id ? '업체 수정' : '업체 등록';
   $('s_id').value=s?.id||''; $('s_name').value=s?.name||''; $('s_region').value=s?.region||'서울북부';
-  $('s_cat').value=s?.cat||'자재상'; $('s_lat').value=s?.lat||''; $('s_lng').value=s?.lng||'';
+  $('s_lat').value=s?.lat||''; $('s_lng').value=s?.lng||'';
   $('s_verify').value=s?.verify||'verified';
+  // kind: 저장값 우선, 없으면 데이터로 추론(좌표 없으면 online)
+  $('s_kind').value = s?.kind || ((!s?.lat||!s?.lng) && s ? 'online' : 'offline');
+  onShopKindChange(); // kind에 맞춰 유형/공정 옵션 먼저 구성
+  $('s_cat').value = s?.cat || $('s_cat').options[0].value; // 그 다음 값 설정(옵션에 있을 때만 반영됨)
   $('s_addr').value=s?.addr||''; $('s_desc').value=s?.description||'';
   $('s_phone').value=s?.phone||''; $('s_hours').value=s?.hours||'';
   $('s_cafe').value=s?.link_cafe||''; $('s_blog').value=s?.link_blog||'';
@@ -491,13 +502,38 @@ function openShop(s){
   $('shopModal').classList.add('show');
 }
 
+// 구분(오프라인/온라인/브랜드)에 따라 좌표·권역 입력 상태 조정
+function onShopKindChange(){
+  const kind=$('s_kind').value;
+  const isOff = kind==='offline';
+  ['s_lat','s_lng'].forEach(id=>{ const el=$(id); if(el){ el.disabled=!isOff; el.style.opacity=isOff?'1':'.45'; if(!isOff) el.value=''; }});
+  const reg=$('s_region');
+  if(reg){
+    if(kind==='online'){ reg.value='온라인'; reg.disabled=true; reg.style.opacity='.6'; }
+    else if(kind==='brand'){ reg.value='온라인'; reg.disabled=true; reg.style.opacity='.6'; }
+    else { reg.disabled=false; reg.style.opacity='1'; if(reg.value==='온라인') reg.value='서울북부'; }
+  }
+  // 브랜드 채널은 기술자와 동일한 9가지 공정으로, 그 외는 6가지 유형으로
+  const cat=$('s_cat'), lbl=$('s_cat_label');
+  if(cat){
+    const prev=cat.value;
+    const TYPES=['자재상','쇼룸','조명','타일','가구','종합시장'];
+    const PROCS=['철거','샷시','전기','목공','타일','욕실','페인트','도배','마루'];
+    const opts = kind==='brand' ? PROCS : TYPES;
+    if(lbl) lbl.textContent = kind==='brand' ? '공정 *' : '유형 *';
+    cat.innerHTML = opts.map(o=>`<option>${o}</option>`).join('');
+    if(opts.includes(prev)) cat.value=prev; // 값 보존(타일 등 공통값)
+  }
+}
+
 async function saveShop(){
   if(!client){ alert('Supabase 미설정'); return; }
   const latRaw=$('s_lat').value.trim(), lngRaw=$('s_lng').value.trim();
-  const isOnline = $('s_region').value==='온라인';
+  const kind=$('s_kind').value;
+  const isOff = kind==='offline';
   const payload = {
     name:$('s_name').value.trim(), region:$('s_region').value, cat:$('s_cat').value,
-    verify:$('s_verify').value,
+    verify:$('s_verify').value, kind:kind,
     lat: latRaw===''? null : parseFloat(latRaw),
     lng: lngRaw===''? null : parseFloat(lngRaw),
     addr:$('s_addr').value.trim(), description:$('s_desc').value.trim(),
@@ -507,15 +543,15 @@ async function saveShop(){
     sort_order:parseInt($('s_sort').value)||0, is_active:$('s_active').checked
   };
   if(!payload.name){ alert('업체명을 입력하세요'); return; }
-  // 오프라인(지도 노출) 업체는 좌표 필수, 온라인 채널은 좌표 없이 허용
-  if(!isOnline){
+  if(isOff){
     if(payload.lat===null||payload.lng===null||isNaN(payload.lat)||isNaN(payload.lng)){
-      alert('지도에 표시할 업체는 좌표(위도/경도)가 필요합니다.\n온라인 채널이라면 권역을 \'온라인\'으로 선택하세요.'); return;
+      alert('지도에 표시할 오프라인 업체는 좌표(위도/경도)가 필요합니다.\n온라인/브랜드라면 구분을 바꿔주세요.'); return;
     }
   } else {
-    // 온라인은 좌표가 일부만 입력돼 NaN이 되는 경우 방지
-    if(isNaN(payload.lat)) payload.lat=null;
-    if(isNaN(payload.lng)) payload.lng=null;
+    payload.lat=null; payload.lng=null;
+    if(payload.region!=='온라인') payload.region='온라인';
+    const hasLink=payload.link_site||payload.link_cafe||payload.link_blog||payload.link_insta;
+    if(!hasLink){ alert(kind==='brand'?'브랜드는 공식 사이트 URL을 입력해주세요.':'온라인 채널은 사이트나 SNS 링크를 1개 이상 입력해주세요.'); return; }
   }
   const id = $('s_id').value;
   const res = id
