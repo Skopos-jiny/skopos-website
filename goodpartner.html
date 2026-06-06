@@ -364,6 +364,9 @@ footer{background:var(--dark);padding:48px 40px 32px;color:rgba(255,255,255,.5)}
     <div class="mtab" data-tab="online" onclick="switchTab('online')">
       <span class="mt-ic">🛒</span>온라인 채널 <span class="mt-count" id="tabCountO">0</span>
     </div>
+    <div class="mtab" data-tab="brand" onclick="switchTab('brand')">
+      <span class="mt-ic">🏢</span>브랜드 채널 <span class="mt-count" id="tabCountB">0</span>
+    </div>
   </div>
 </section>
 
@@ -481,6 +484,41 @@ footer{background:var(--dark);padding:48px 40px 32px;color:rgba(255,255,255,.5)}
   </div>
 </section>
 
+<!-- ════ BRAND CHANNEL SECTION ════ -->
+<section class="section" id="sec-brand">
+  <div class="wrap">
+    <div class="filter-title">제조사·브랜드 공식 채널입니다. 공정을 선택해 둘러보세요</div>
+    <div class="chips" id="brandCatChips">
+      <div class="chips-all">
+        <span class="chip chip-all active" data-cat="전체">🔧 전체 공정</span>
+      </div>
+      <div class="chips-proc">
+        <span class="chip" data-cat="철거">🔨 1. 철거</span>
+        <span class="chip" data-cat="샷시">🪟 2. 샷시·창호</span>
+        <span class="chip" data-cat="전기">💡 3. 전기·조명</span>
+        <span class="chip" data-cat="목공">🪵 4. 목공·가구</span>
+        <span class="chip" data-cat="타일">🧱 5. 타일</span>
+        <span class="chip" data-cat="욕실">🚿 6. 욕실·설비</span>
+        <span class="chip" data-cat="페인트">🖌️ 7. 페인트·도장</span>
+        <span class="chip" data-cat="도배">🎨 8. 도배·필름</span>
+        <span class="chip" data-cat="마루">🪟 9. 마루·바닥</span>
+      </div>
+    </div>
+    <div class="count-line">총 <b id="bcount">0</b>곳의 브랜드 채널</div>
+    <div class="online-grid" id="brandGrid"></div>
+
+    <!-- 브랜드 제보 -->
+    <div class="add-card">
+      <div class="add-ic">🏢</div>
+      <div class="add-body">
+        <div class="add-h">추천하고 싶은 <span class="hl">브랜드</span>가 있나요?</div>
+        <div class="add-p">반셀프에 도움 되는 공정별 자재·시공 브랜드 공식 채널을 제보해 주세요. 셀인하자 검증을 거쳐 등록합니다.</div>
+      </div>
+      <a href="http://pf.kakao.com/_dtGjX/chat" target="_blank" rel="noopener" class="add-btn" data-kakao-chat>브랜드 제보하기</a>
+    </div>
+  </div>
+</section>
+
 <!-- VERIFY EXPLAIN (공통) -->
 <div class="vexplain">
   <div class="vexplain-card">
@@ -531,6 +569,7 @@ footer{background:var(--dark);padding:48px 40px 32px;color:rgba(255,255,255,.5)}
 <script>
 const KAKAO_CHAT_URL = 'http://pf.kakao.com/_dtGjX/chat';
 const CAT_ICON = {'자재상':'🧱','쇼룸':'🛋️','조명':'💡','타일':'🟫','가구':'🪑','종합시장':'🏬'};
+const PROC_ICON = {'철거':'🔨','샷시':'🪟','전기':'💡','목공':'🪵','타일':'🧱','욕실':'🚿','페인트':'🖌️','도배':'🎨','마루':'🪟'};
 const REGIONS = {
   '서울북부':{center:[37.63,127.02],color:'#E91E8C'}, '서울남부':{center:[37.49,127.03],color:'#FF9800'},
   '서울서부':{center:[37.55,126.88],color:'#29B6F6'}, '서울동부':{center:[37.55,127.10],color:'#7CB342'},
@@ -568,7 +607,7 @@ const FALLBACK_SHOPS = [
 ];
 
 let WORKERS = [], PLACES = [];
-let curWCat='전체', curRegion='전체', curSCat='전체', curOCat='전체';
+let curWCat='전체', curRegion='전체', curSCat='전체', curOCat='전체', curBCat='전체';
 let map=null, markers=[], mapInit=false;
 
 function kakaoReady(){try{return !!(window.Kakao&&Kakao.Channel&&KAKAO_JS_KEY!=='YOUR_JAVASCRIPT_KEY'&&Kakao.isInitialized());}catch(e){return false;}}
@@ -586,6 +625,7 @@ function switchTab(tab){
   document.getElementById('sec-'+tab).classList.add('active');
   if(tab==='shops'){ ensureMap(()=>{ invalidateMap(); renderShops(); }); }
   if(tab==='online'){ renderOnlineShops(); }
+  if(tab==='brand'){ renderBrandShops(); }
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -712,12 +752,17 @@ function popupHTML(p){
     </div>`;
 }
 // 좌표 유무로 온라인/오프라인 판별 (region이 '온라인'이거나 좌표 없으면 온라인몰)
-function isOnlineShop(p){
-  const noCoord = p.lat===null||p.lng===null||p.lat===undefined||p.lng===undefined||p.lat===''||p.lng===''||isNaN(parseFloat(p.lat))||isNaN(parseFloat(p.lng));
-  return p.region==='온라인' || noCoord;
+function noCoord(p){
+  return p.lat===null||p.lng===null||p.lat===undefined||p.lng===undefined||p.lat===''||p.lng===''||isNaN(parseFloat(p.lat))||isNaN(parseFloat(p.lng));
 }
-function filteredShops(){return PLACES.filter(p=>!isOnlineShop(p)&&(curRegion==='전체'||p.region===curRegion)&&(curSCat==='전체'||p.cat===curSCat));}
+// 좌표 없는 항목 = 온라인 성격. 그중 kind==='brand'(또는 region==='브랜드')는 브랜드 채널로 분리
+function isBrandShop(p){ return (noCoord(p)||p.region==='온라인'||p.region==='브랜드') && (p.kind==='brand'||p.region==='브랜드'); }
+function isOnlineShop(p){ return (noCoord(p)||p.region==='온라인') && !isBrandShop(p); }
+function isOfflineShop(p){ return !noCoord(p) && p.region!=='온라인' && p.region!=='브랜드'; }
+
+function filteredShops(){return PLACES.filter(p=>isOfflineShop(p)&&(curRegion==='전체'||p.region===curRegion)&&(curSCat==='전체'||p.cat===curSCat));}
 function filteredOnlineShops(){return PLACES.filter(p=>isOnlineShop(p)&&(curOCat==='전체'||p.cat===curOCat));}
+function filteredBrandShops(){return PLACES.filter(p=>isBrandShop(p)&&(curBCat==='전체'||p.cat===curBCat));}
 
 function clearMarkers(){
   if(useNaver){ markers.forEach(m=>m.setMap(null)); }
@@ -828,6 +873,32 @@ function renderOnlineShops(){
   }).join('');
 }
 
+// 브랜드 채널 카드 렌더 (전용 탭)
+function renderBrandShops(){
+  const grid=document.getElementById('brandGrid');
+  if(!grid) return;
+  const list=filteredBrandShops();
+  const bc=document.getElementById('bcount'); if(bc) bc.textContent=list.length;
+  const tc=document.getElementById('tabCountB'); if(tc) tc.textContent=PLACES.filter(isBrandShop).length;
+  if(!list.length){ grid.innerHTML='<p style="grid-column:1/-1;text-align:center;color:#8890A4;font-weight:700;padding:30px">해당 유형의 브랜드가 곧 등록됩니다.</p>'; return; }
+  grid.innerHTML=list.map(p=>{
+    const ls=[p.link_cafe&&{u:p.link_cafe,t:'네이버 카페',c:'lk-cafe'},p.link_blog&&{u:p.link_blog,t:'블로그',c:'lk-blog'},p.link_insta&&{u:p.link_insta,t:'인스타',c:'lk-insta'},p.link_site&&{u:p.link_site,t:'공식 사이트',c:'lk-site'}].filter(Boolean);
+    const visit=p.link_site||p.link_cafe||p.link_blog||p.link_insta;
+    return `<div class="pcard pcard-online">
+      <div class="pcard-head">
+        <div class="pcard-pin" style="background:#3D3D5C">${PROC_ICON[p.cat]||'🏢'}</div>
+        <div class="pcard-titlewrap"><div class="pcard-name">${p.name} ${verifyBadgeShort(p.verify)}</div>
+        <div class="pcard-region" style="color:#3D3D5C"><span class="pcard-rdot" style="background:#3D3D5C"></span>공식 브랜드</div></div>
+        <div class="pcard-cat">${p.cat}</div>
+      </div>
+      <div class="pcard-desc">${p.desc||''}</div>
+      ${ls.length?`<div class="pcard-links">${ls.map(l=>`<a href="${l.u}" target="_blank" rel="noopener" class="wlink ${l.c}" onclick="event.stopPropagation()">${l.t}</a>`).join('')}</div>`:''}
+      <div class="pcard-foot">
+        ${visit?`<a href="${visit}" target="_blank" rel="noopener" class="pcard-btn pcard-btn-kakao" style="width:100%">공식 사이트 →</a>`:''}
+      </div></div>`;
+  }).join('');
+}
+
 // ════ 필터 이벤트 ════
 document.querySelectorAll('#catChips .chip').forEach(c=>c.addEventListener('click',()=>{
   document.querySelectorAll('#catChips .chip').forEach(x=>x.classList.remove('active'));c.classList.add('active');curWCat=c.dataset.cat;renderWorkers();}));
@@ -837,6 +908,8 @@ document.querySelectorAll('#shopCatChips .chip').forEach(c=>c.addEventListener('
   document.querySelectorAll('#shopCatChips .chip').forEach(x=>x.classList.remove('active'));c.classList.add('active');curSCat=c.dataset.cat;renderShops();}));
 document.querySelectorAll('#onlineCatChips .chip').forEach(c=>c.addEventListener('click',()=>{
   document.querySelectorAll('#onlineCatChips .chip').forEach(x=>x.classList.remove('active'));c.classList.add('active');curOCat=c.dataset.cat;renderOnlineShops();}));
+document.querySelectorAll('#brandCatChips .chip').forEach(c=>c.addEventListener('click',()=>{
+  document.querySelectorAll('#brandCatChips .chip').forEach(x=>x.classList.remove('active'));c.classList.add('active');curBCat=c.dataset.cat;renderBrandShops();}));
 
 // ════ 데이터 로드 ════
 async function loadData(){
@@ -852,8 +925,9 @@ async function loadData(){
     }catch(e){ console.warn('Supabase 로드 실패, 폴백 사용:',e.message); WORKERS=FALLBACK_WORKERS; PLACES=FALLBACK_SHOPS; }
   }else{ WORKERS=FALLBACK_WORKERS; PLACES=FALLBACK_SHOPS; }
   document.getElementById('tabCountW').textContent=WORKERS.length;
-  document.getElementById('tabCountS').textContent=PLACES.filter(p=>!isOnlineShop(p)).length;
+  document.getElementById('tabCountS').textContent=PLACES.filter(isOfflineShop).length;
   document.getElementById('tabCountO').textContent=PLACES.filter(isOnlineShop).length;
+  document.getElementById('tabCountB').textContent=PLACES.filter(isBrandShop).length;
   renderWorkers();
 }
 loadData();
