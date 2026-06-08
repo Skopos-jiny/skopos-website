@@ -593,8 +593,8 @@ footer{background:var(--dark); padding:56px 40px 36px; color:rgba(255,255,255,.5
 <section class="section price-table-section" id="market-price">
   <div class="sec-head">
     <div class="sec-tag">✦ 공정별 평당 시세</div>
-    <h2 class="sec-h2"><span class="hl" id="priceQuarter">2025 4분기</span> 기준 시세표</h2>
-    <p class="sec-sub">반셀프 준비에 참고하실 수 있도록, 주요 공정의 평당 시세를 분기별로 정리합니다. 자재 등급·현장 여건에 따라 달라질 수 있는 참고용 범위입니다.</p>
+    <h2 class="sec-h2"><span class="hl" id="priceQuarter">2026 2분기</span> 기준 시세표</h2>
+    <p class="sec-sub">반셀프 준비에 참고하실 수 있도록, 주요 공정의 평당 시세를 분기별로 정리합니다. 2025~2026년 시장 시세를 기반으로 하며, 자재 등급·현장 여건에 따라 달라질 수 있는 참고용 범위입니다.</p>
   </div>
   <div class="ptable-wrap">
     <table class="ptable" id="priceTable">
@@ -810,17 +810,17 @@ document.querySelectorAll('.why-card,.pcard,.cafe-item,.connect-rail').forEach(e
 
   // 폴백 데이터 (Supabase 미연결 시 표시 / 초기 기준값 — 실제 시세로 조정하세요)
   const FALLBACK = {
-    quarter:'2025 4분기',
+    quarter:'2026 2분기',
     rows:[
-      {cat:'철거',  min:8,  avg:12, max:18},
-      {cat:'샷시',  min:60, avg:85, max:130},
-      {cat:'전기',  min:10, avg:15, max:25},
-      {cat:'목공',  min:25, avg:40, max:70},
-      {cat:'타일',  min:18, avg:28, max:45},
-      {cat:'욕실',  min:35, avg:55, max:90},
-      {cat:'페인트',min:8,  avg:13, max:22},
-      {cat:'도배',  min:5,  avg:9,  max:16},
-      {cat:'마루',  min:12, avg:18, max:30},
+      {cat:'철거',  min:5,  avg:10, max:15},
+      {cat:'샷시',  min:40, avg:70, max:130},
+      {cat:'전기',  min:8,  avg:13, max:20},
+      {cat:'목공',  min:20, avg:35, max:60},
+      {cat:'타일',  min:15, avg:25, max:45},
+      {cat:'욕실',  min:30, avg:50, max:90},
+      {cat:'페인트',min:7,  avg:12, max:20},
+      {cat:'도배',  min:3,  avg:6,  max:12},
+      {cat:'마루',  min:8,  avg:16, max:30},
     ]
   };
 
