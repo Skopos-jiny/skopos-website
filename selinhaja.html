@@ -191,6 +191,29 @@ nav{
 .ptable-loading{color:#aab;font-weight:600;padding:28px!important}
 .ptable-note{max-width:760px;margin:16px auto 0;color:#9aa;font-size:.82rem;line-height:1.6;text-align:center}
 @media(max-width:560px){.ptable{font-size:.86rem}.ptable thead th,.ptable tbody td{padding:10px 8px}}
+/* 견적 계산기 */
+.calc-section{background:var(--bg)}
+.calc-wrap{max-width:880px;margin:36px auto 0;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.calc-input{background:#fff;border-radius:16px;border:1.5px solid #eef0f5;padding:24px;display:flex;flex-direction:column;gap:18px}
+.calc-field{display:flex;flex-direction:column;gap:7px}
+.calc-field label{font-weight:800;font-size:.9rem;color:#3D3D5C}
+.calc-field input,.calc-field select{padding:11px 13px;border:1.5px solid #e2e5ee;border-radius:10px;font-size:.95rem;font-weight:700;color:#3D3D5C;font-family:inherit}
+.calc-field input:focus,.calc-field select:focus{outline:none;border-color:#E91E8C}
+.calc-chips{display:flex;flex-wrap:wrap;gap:8px}
+.calc-chip{padding:8px 13px;border:1.5px solid #e2e5ee;border-radius:50px;font-size:.84rem;font-weight:700;color:#8890A4;cursor:pointer;transition:all .15s;user-select:none}
+.calc-chip.on{background:#E91E8C;border-color:#E91E8C;color:#fff}
+.calc-result{background:#3D3D5C;border-radius:16px;padding:28px 24px;color:#fff;display:flex;flex-direction:column}
+.calc-result-head{font-size:.92rem;font-weight:700;opacity:.8}
+.calc-total{font-size:2.6rem;font-weight:900;margin:6px 0 2px;line-height:1}
+.calc-total .calc-won{font-size:1.1rem;font-weight:700;margin-left:6px;opacity:.85}
+.calc-total-sub{font-size:.8rem;opacity:.6;margin-bottom:18px}
+.calc-breakdown{display:flex;flex-direction:column;gap:9px;border-top:1px solid rgba(255,255,255,.15);padding-top:16px;margin-top:auto}
+.calc-bd-row{display:flex;justify-content:space-between;align-items:center;font-size:.88rem}
+.calc-bd-row .bd-name{opacity:.85;font-weight:600}
+.calc-bd-row .bd-val{font-weight:800}
+.calc-bd-row.bd-precise .bd-name::after{content:' 정밀';font-size:.66rem;background:#E91E8C;padding:1px 6px;border-radius:50px;margin-left:6px;vertical-align:middle;font-weight:800}
+.calc-disclaim{max-width:880px;margin:16px auto 0;color:#9aa;font-size:.8rem;line-height:1.65;text-align:center}
+@media(max-width:680px){.calc-wrap{grid-template-columns:1fr}.calc-total{font-size:2.2rem}}
 .pricing-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:20px; max-width:1100px; margin:0 auto; align-items:stretch}
 .pcard{
   background:#fff; border-radius:var(--radius); padding:40px 26px 26px;
@@ -611,6 +634,50 @@ footer{background:var(--dark); padding:56px 40px 36px; color:rgba(255,255,255,.5
   </div>
 </section>
 
+<!-- 견적 계산기 -->
+<section class="section calc-section" id="estimate">
+  <div class="sec-head">
+    <div class="sec-tag">✦ 예상 견적 계산기</div>
+    <h2 class="sec-h2">우리 집 <span class="hl">예상 견적</span>을 미리 계산해보세요</h2>
+    <p class="sec-sub">공급면적과 공정을 선택하면 대략적인 예상 비용을 산출합니다. 도배는 평수·시공 수준 기반으로 정밀 계산하며, 그 외 공정은 시세표 기준 추정입니다. 실제 견적은 현장 실측 후 확정됩니다.</p>
+  </div>
+
+  <div class="calc-wrap">
+    <!-- 입력부 -->
+    <div class="calc-input">
+      <div class="calc-field">
+        <label>공급면적 (평)</label>
+        <input type="number" id="calcPyung" value="34" min="5" max="200" oninput="runEstimate()">
+      </div>
+      <div class="calc-field">
+        <label>도배 시공 수준</label>
+        <select id="calcDobaeLevel" onchange="runEstimate()">
+          <option value="20">가성비 일괄시공 (월세·전세)</option>
+          <option value="16">부분 초배 (상한 벽만)</option>
+          <option value="14" selected>기본 인테리어 도배 (벽 초배)</option>
+          <option value="12">고급 도배 (천장 초배 포함)</option>
+          <option value="10">완벽 추구 (어나더 레벨)</option>
+        </select>
+      </div>
+      <div class="calc-field calc-field-full">
+        <label>포함할 공정 (선택)</label>
+        <div class="calc-chips" id="calcProcChips"></div>
+      </div>
+    </div>
+
+    <!-- 결과부 -->
+    <div class="calc-result">
+      <div class="calc-result-head">예상 견적 합계</div>
+      <div class="calc-total"><span id="calcTotal">0</span><span class="calc-won">만원</span></div>
+      <div class="calc-total-sub" id="calcTotalSub">부가세 별도 · 참고용 추정</div>
+      <div class="calc-breakdown" id="calcBreakdown"></div>
+    </div>
+  </div>
+  <div class="calc-disclaim">
+    ※ 도배는 '공급면적 × 2.5 = 도배평수', 자재 1롤당 5평(로스 +1롤), 인건비 시공 수준별 품수(1품 30만원) 기준으로 산출합니다. 그 외 공정은 공정별 평당 시세 평균가 기준 추정이며, 철거·목공·설비는 현장 변동이 커 실측이 필요합니다. 본 계산은 참고용이며 실제 계약 견적과 다를 수 있습니다.
+  </div>
+</section>
+
 <!-- STORY REVIEWS · 진솔한 고객 이야기 -->
 <section class="section story-section" id="stories">
   <div class="sec-head">
@@ -867,6 +934,85 @@ document.querySelectorAll('.why-card,.pcard,.cafe-item,.connect-rail').forEach(e
     render(FALLBACK.quarter, FALLBACK.rows);
   }
   load();
+  // 계산기에서 시세를 쓸 수 있게 전역 노출
+  window.__PRICE_FALLBACK = FALLBACK;
+})();
+
+// ════ 예상 견적 계산기 ════
+(function(){
+  const PROCS = [
+    {key:'철거',  ic:'🔨', label:'철거'},
+    {key:'샷시',  ic:'🪟', label:'샷시·창호'},
+    {key:'전기',  ic:'💡', label:'전기·조명'},
+    {key:'목공',  ic:'🪵', label:'목공·가구'},
+    {key:'타일',  ic:'🧱', label:'타일'},
+    {key:'욕실',  ic:'🚿', label:'욕실·설비'},
+    {key:'페인트',ic:'🖌️', label:'페인트·도장'},
+    {key:'도배',  ic:'🎨', label:'도배·필름'},
+    {key:'마루',  ic:'🪟', label:'마루·바닥'},
+  ];
+  const DOBAE_ROLL_PRICE = 18000;   // 인터넷 최저가 기준 1롤
+  const DOBAE_PUM_PRICE  = 300000;  // 1품 30만원
+
+  const selected = new Set(PROCS.map(p=>p.key)); // 기본: 전체 선택
+
+  function chipsHTML(){
+    return PROCS.map(p=>`<span class="calc-chip on" data-key="${p.key}" onclick="toggleCalcProc('${p.key}',this)">${p.ic} ${p.label}</span>`).join('');
+  }
+
+  // 시세 평균가(만원/평) 가져오기
+  function avgPrice(cat){
+    const fb = window.__PRICE_FALLBACK;
+    if(fb && fb.rows){ const r=fb.rows.find(x=>x.cat===cat); if(r) return r.avg; }
+    return 0;
+  }
+
+  // 도배 정밀 계산 → {amount(만원), detail}
+  function calcDobae(pyung, levelPerPum){
+    const dobaePyung = pyung * 2.5;
+    const rolls = Math.ceil(dobaePyung/5 + 1);
+    const material = rolls * DOBAE_ROLL_PRICE;
+    const pum = dobaePyung / levelPerPum;
+    const labor = pum * DOBAE_PUM_PRICE;
+    const won = material + labor;
+    return { amount: Math.round(won/10000), precise:true,
+      detail:`도배평수 ${dobaePyung.toFixed(0)}평 · ${rolls}롤 · ${pum.toFixed(1)}품` };
+  }
+
+  window.toggleCalcProc = function(key, el){
+    if(selected.has(key)){ selected.delete(key); el.classList.remove('on'); }
+    else { selected.add(key); el.classList.add('on'); }
+    runEstimate();
+  };
+
+  window.runEstimate = function(){
+    const pyung = parseFloat(document.getElementById('calcPyung').value)||0;
+    const level = parseInt(document.getElementById('calcDobaeLevel').value)||14;
+    let total=0; const rows=[];
+    PROCS.forEach(p=>{
+      if(!selected.has(p.key)) return;
+      if(p.key==='도배'){
+        const d=calcDobae(pyung, level);
+        total+=d.amount;
+        rows.push({name:p.label, val:d.amount, precise:true, detail:d.detail});
+      } else {
+        const avg=avgPrice(p.key);
+        const amt=Math.round(avg*pyung);
+        total+=amt;
+        rows.push({name:p.label, val:amt, precise:false, detail:`평당 ${avg}만 × ${pyung}평`});
+      }
+    });
+    const fmt=n=>n.toLocaleString('ko-KR');
+    document.getElementById('calcTotal').textContent=fmt(total);
+    document.getElementById('calcTotalSub').textContent=`${pyung}평 기준 · 부가세 별도 · 참고용 추정`;
+    document.getElementById('calcBreakdown').innerHTML = rows.length
+      ? rows.map(r=>`<div class="calc-bd-row ${r.precise?'bd-precise':''}"><span class="bd-name">${r.name}</span><span class="bd-val">${fmt(r.val)}만</span></div>`).join('')
+      : '<div style="opacity:.6;font-size:.85rem">포함할 공정을 1개 이상 선택하세요.</div>';
+  };
+
+  // 초기화
+  const chipBox=document.getElementById('calcProcChips');
+  if(chipBox){ chipBox.innerHTML=chipsHTML(); runEstimate(); }
 })();
 </script>
 </body>
