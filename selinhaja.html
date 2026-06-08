@@ -175,6 +175,22 @@ nav{
 
 /* PRICING */
 .pricing-section{background:var(--bg)}
+/* 공정별 시세표 */
+.price-table-section{background:#fff}
+.sec-sub{text-align:center;color:#8890A4;font-weight:600;max-width:640px;margin:14px auto 0;line-height:1.6;font-size:.95rem}
+.ptable-wrap{max-width:760px;margin:36px auto 0;overflow-x:auto;border-radius:16px;border:1.5px solid #eef0f5}
+.ptable{width:100%;border-collapse:collapse;font-size:.95rem;min-width:480px}
+.ptable thead th{background:#3D3D5C;color:#fff;font-weight:800;padding:14px 12px;text-align:center;font-size:.88rem;white-space:nowrap}
+.ptable thead th:first-child{text-align:left}
+.ptable tbody td{padding:13px 12px;text-align:center;border-top:1px solid #f0f1f5;font-weight:700;color:#3D3D5C}
+.ptable tbody td:first-child{text-align:left;font-weight:800}
+.ptable tbody tr:nth-child(even){background:#fafafe}
+.ptable-avg{color:#E91E8C;font-weight:900}
+.ptable-unit{color:#aab;font-weight:600;font-size:.82rem}
+.ptable-proc-ic{margin-right:6px}
+.ptable-loading{color:#aab;font-weight:600;padding:28px!important}
+.ptable-note{max-width:760px;margin:16px auto 0;color:#9aa;font-size:.82rem;line-height:1.6;text-align:center}
+@media(max-width:560px){.ptable{font-size:.86rem}.ptable thead th,.ptable tbody td{padding:10px 8px}}
 .pricing-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:20px; max-width:1100px; margin:0 auto; align-items:stretch}
 .pcard{
   background:#fff; border-radius:var(--radius); padding:40px 26px 26px;
@@ -329,6 +345,8 @@ footer{background:var(--dark); padding:56px 40px 36px; color:rgba(255,255,255,.5
      ⚠️ 아래 SDK 버전(2.7.5)과 integrity 값은 예시입니다.
      정확한 최신 버전·integrity 값은 https://developers.kakao.com/docs/ko/javascript/download 에서
      복사해 교체하세요. (integrity가 실제 값과 다르면 SDK가 로드되지 않습니다) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="selinhaja_supabase_config.js"></script>
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.5/kakao.min.js" crossorigin="anonymous"></script>
 <script>
   /* ⚠️ 'YOUR_JAVASCRIPT_KEY'를 카카오 디벨로퍼스에서 발급받은 JavaScript 키로 교체하세요.
@@ -571,6 +589,28 @@ footer{background:var(--dark); padding:56px 40px 36px; color:rgba(255,255,255,.5
   </div>
 </section>
 
+<!-- 공정별 평당 시세표 (분기별 업데이트) -->
+<section class="section price-table-section" id="market-price">
+  <div class="sec-head">
+    <div class="sec-tag">✦ 공정별 평당 시세</div>
+    <h2 class="sec-h2"><span class="hl" id="priceQuarter">2025 4분기</span> 기준 시세표</h2>
+    <p class="sec-sub">반셀프 준비에 참고하실 수 있도록, 주요 공정의 평당 시세를 분기별로 정리합니다. 자재 등급·현장 여건에 따라 달라질 수 있는 참고용 범위입니다.</p>
+  </div>
+  <div class="ptable-wrap">
+    <table class="ptable" id="priceTable">
+      <thead>
+        <tr><th>공정</th><th>최소</th><th class="ptable-avg-h">평균</th><th>최대</th><th class="ptable-unit-h">단위</th></tr>
+      </thead>
+      <tbody id="priceTableBody">
+        <tr><td colspan="5" class="ptable-loading">시세 정보를 불러오는 중…</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="ptable-note" id="priceNote">
+    ※ 위 금액은 자재비·인건비를 포함한 평당 참고가이며, 실제 견적은 현장 점검 후 확정됩니다. 분기마다 시세를 갱신합니다.
+  </div>
+</section>
+
 <!-- STORY REVIEWS · 진솔한 고객 이야기 -->
 <section class="section story-section" id="stories">
   <div class="sec-head">
@@ -750,6 +790,83 @@ document.querySelectorAll('.why-card,.pcard,.cafe-item,.connect-rail').forEach(e
       Kakao.Channel.addChannel({ channelPublicId: KAKAO_CHANNEL_ID });
     });
   });
+})();
+
+// ════ 공정별 평당 시세표 ════
+(function(){
+  // 공정 순서·아이콘·라벨 (기술자/브랜드 탭과 동일한 9공정)
+  const PROCS = [
+    {key:'철거',  ic:'🔨', label:'철거'},
+    {key:'샷시',  ic:'🪟', label:'샷시·창호'},
+    {key:'전기',  ic:'💡', label:'전기·조명'},
+    {key:'목공',  ic:'🪵', label:'목공·가구'},
+    {key:'타일',  ic:'🧱', label:'타일'},
+    {key:'욕실',  ic:'🚿', label:'욕실·설비'},
+    {key:'페인트',ic:'🖌️', label:'페인트·도장'},
+    {key:'도배',  ic:'🎨', label:'도배·필름'},
+    {key:'마루',  ic:'🪟', label:'마루·바닥'},
+  ];
+  const won = n => (n==null||n==='') ? '-' : Number(n).toLocaleString('ko-KR')+'만';
+
+  // 폴백 데이터 (Supabase 미연결 시 표시 / 초기 기준값 — 실제 시세로 조정하세요)
+  const FALLBACK = {
+    quarter:'2025 4분기',
+    rows:[
+      {cat:'철거',  min:8,  avg:12, max:18},
+      {cat:'샷시',  min:60, avg:85, max:130},
+      {cat:'전기',  min:10, avg:15, max:25},
+      {cat:'목공',  min:25, avg:40, max:70},
+      {cat:'타일',  min:18, avg:28, max:45},
+      {cat:'욕실',  min:35, avg:55, max:90},
+      {cat:'페인트',min:8,  avg:13, max:22},
+      {cat:'도배',  min:5,  avg:9,  max:16},
+      {cat:'마루',  min:12, avg:18, max:30},
+    ]
+  };
+
+  function render(quarter, rows){
+    const qEl=document.getElementById('priceQuarter'); if(qEl&&quarter) qEl.textContent=quarter;
+    const body=document.getElementById('priceTableBody'); if(!body) return;
+    const map={}; rows.forEach(r=>{ map[r.cat]=r; });
+    const html = PROCS.map(p=>{
+      const r=map[p.key];
+      if(!r) return `<tr><td><span class="ptable-proc-ic">${p.ic}</span>${p.label}</td><td colspan="3" style="color:#bbc">준비 중</td><td class="ptable-unit">평당</td></tr>`;
+      return `<tr>
+        <td><span class="ptable-proc-ic">${p.ic}</span>${p.label}</td>
+        <td>${won(r.min)}</td>
+        <td class="ptable-avg">${won(r.avg)}</td>
+        <td>${won(r.max)}</td>
+        <td class="ptable-unit">평당</td>
+      </tr>`;
+    }).join('');
+    body.innerHTML=html;
+  }
+
+  async function load(){
+    // Supabase 연결되어 있으면 최신 분기 시세를 불러옴
+    try{
+      if(typeof isSupabaseReady==='function' && isSupabaseReady()){
+        const c=getSupabase();
+        const { data, error } = await c
+          .from('process_prices')
+          .select('*')
+          .eq('is_active', true)
+          .order('quarter',{ascending:false})
+          .order('sort_order',{ascending:true});
+        if(!error && data && data.length){
+          // 가장 최신 quarter만 필터
+          const latest = data[0].quarter;
+          const rows = data.filter(d=>d.quarter===latest)
+                           .map(d=>({cat:d.cat, min:d.price_min, avg:d.price_avg, max:d.price_max}));
+          render(latest, rows);
+          return;
+        }
+      }
+    }catch(e){ console.warn('시세 로드 실패, 폴백 사용:', e.message); }
+    // 폴백
+    render(FALLBACK.quarter, FALLBACK.rows);
+  }
+  load();
 })();
 </script>
 </body>
