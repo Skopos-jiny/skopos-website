@@ -175,45 +175,6 @@ nav{
 
 /* PRICING */
 .pricing-section{background:var(--bg)}
-/* 공정별 시세표 */
-.price-table-section{background:#fff}
-.sec-sub{text-align:center;color:#8890A4;font-weight:600;max-width:640px;margin:14px auto 0;line-height:1.6;font-size:.95rem}
-.ptable-wrap{max-width:760px;margin:36px auto 0;overflow-x:auto;border-radius:16px;border:1.5px solid #eef0f5}
-.ptable{width:100%;border-collapse:collapse;font-size:.95rem;min-width:480px}
-.ptable thead th{background:#3D3D5C;color:#fff;font-weight:800;padding:14px 12px;text-align:center;font-size:.88rem;white-space:nowrap}
-.ptable thead th:first-child{text-align:left}
-.ptable tbody td{padding:13px 12px;text-align:center;border-top:1px solid #f0f1f5;font-weight:700;color:#3D3D5C}
-.ptable tbody td:first-child{text-align:left;font-weight:800}
-.ptable tbody tr:nth-child(even){background:#fafafe}
-.ptable-avg{color:#E91E8C;font-weight:900}
-.ptable-unit{color:#aab;font-weight:600;font-size:.82rem}
-.ptable-proc-ic{margin-right:6px}
-.ptable-loading{color:#aab;font-weight:600;padding:28px!important}
-.ptable-note{max-width:760px;margin:16px auto 0;color:#9aa;font-size:.82rem;line-height:1.6;text-align:center}
-@media(max-width:560px){.ptable{font-size:.86rem}.ptable thead th,.ptable tbody td{padding:10px 8px}}
-/* test 견적 계산기 */
-.calc-section{background:var(--bg)}
-.calc-wrap{max-width:880px;margin:36px auto 0;display:grid;grid-template-columns:1fr 1fr;gap:20px}
-.calc-input{background:#fff;border-radius:16px;border:1.5px solid #eef0f5;padding:24px;display:flex;flex-direction:column;gap:18px}
-.calc-field{display:flex;flex-direction:column;gap:7px}
-.calc-field label{font-weight:800;font-size:.9rem;color:#3D3D5C}
-.calc-field input,.calc-field select{padding:11px 13px;border:1.5px solid #e2e5ee;border-radius:10px;font-size:.95rem;font-weight:700;color:#3D3D5C;font-family:inherit}
-.calc-field input:focus,.calc-field select:focus{outline:none;border-color:#E91E8C}
-.calc-chips{display:flex;flex-wrap:wrap;gap:8px}
-.calc-chip{padding:8px 13px;border:1.5px solid #e2e5ee;border-radius:50px;font-size:.84rem;font-weight:700;color:#8890A4;cursor:pointer;transition:all .15s;user-select:none}
-.calc-chip.on{background:#E91E8C;border-color:#E91E8C;color:#fff}
-.calc-result{background:#3D3D5C;border-radius:16px;padding:28px 24px;color:#fff;display:flex;flex-direction:column}
-.calc-result-head{font-size:.92rem;font-weight:700;opacity:.8}
-.calc-total{font-size:2.6rem;font-weight:900;margin:6px 0 2px;line-height:1}
-.calc-total .calc-won{font-size:1.1rem;font-weight:700;margin-left:6px;opacity:.85}
-.calc-total-sub{font-size:.8rem;opacity:.6;margin-bottom:18px}
-.calc-breakdown{display:flex;flex-direction:column;gap:9px;border-top:1px solid rgba(255,255,255,.15);padding-top:16px;margin-top:auto}
-.calc-bd-row{display:flex;justify-content:space-between;align-items:center;font-size:.88rem}
-.calc-bd-row .bd-name{opacity:.85;font-weight:600}
-.calc-bd-row .bd-val{font-weight:800}
-.calc-bd-row.bd-precise .bd-name::after{content:' 정밀';font-size:.66rem;background:#E91E8C;padding:1px 6px;border-radius:50px;margin-left:6px;vertical-align:middle;font-weight:800}
-.calc-disclaim{max-width:880px;margin:16px auto 0;color:#9aa;font-size:.8rem;line-height:1.65;text-align:center}
-@media(max-width:680px){.calc-wrap{grid-template-columns:1fr}.calc-total{font-size:2.2rem}}
 .pricing-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:20px; max-width:1100px; margin:0 auto; align-items:stretch}
 .pcard{
   background:#fff; border-radius:var(--radius); padding:40px 26px 26px;
@@ -403,7 +364,7 @@ footer{background:var(--dark); padding:56px 40px 36px; color:rgba(255,255,255,.5
   <div class="nav-links">
     <a href="#connect">진단 연동</a>
     <a href="#why">왜 셀인하자</a>
-    <a href="#pricing">견적·가격</a>
+    <a href="/PriceInformation">견적·시세</a>
     <a href="#stories">고객 이야기</a>
     <a href="#home-types">주거 공간</a>
     <a href="/goodpartner">굿파트너</a>
@@ -425,7 +386,7 @@ footer{background:var(--dark); padding:56px 40px 36px; color:rgba(255,255,255,.5
   </p>
   <div class="hero-ctas">
     <a href="https://skopos.kr/skopos_quiz.html" class="btn-pink">무료 SDTI 진단 먼저 하기</a>
-    <a href="#pricing" class="btn-line">견적·가격 test 보기</a>
+    <a href="#pricing" class="btn-line">견적·가격 보기</a>
   </div>
 </section>
 
@@ -612,72 +573,6 @@ footer{background:var(--dark); padding:56px 40px 36px; color:rgba(255,255,255,.5
   </div>
 </section>
 
-<!-- 견적 계산기 -->
-<section class="section calc-section" id="estimate">
-  <div class="sec-head">
-    <div class="sec-tag">✦ test 예상 견적 계산기</div>
-    <h2 class="sec-h2">우리 집 <span class="hl">예상 견적</span>을 미리 계산해보세요</h2>
-    <p class="sec-sub">공급면적과 전체 시공 수준을 선택하면 공정별 예상 비용을 산출합니다. 시공 수준(가성비~완벽)에 따라 자재·시공 등급이 달라져 금액이 조정되며, 도배는 평수 기반으로 정밀 계산합니다. 실제 견적은 현장 실측 후 확정됩니다.</p>
-  </div>
-
-  <div class="calc-wrap">
-    <!-- 입력부 -->
-    <div class="calc-input">
-      <div class="calc-field">
-        <label>공급면적 (평)</label>
-        <input type="number" id="calcPyung" value="34" min="5" max="200" oninput="runEstimate()">
-      </div>
-      <div class="calc-field">
-        <label>전체 시공 수준</label>
-        <select id="calcGrade" onchange="runEstimate()">
-          <option value="0">가성비 (월세·전세 / 최소 사양)</option>
-          <option value="1">실속 (부분 보수 / 합리적 사양)</option>
-          <option value="2" selected>기본 (일반 인테리어 / 표준 사양)</option>
-          <option value="3">고급 (나만의 집 / 상급 자재)</option>
-          <option value="4">완벽 (Top tier / 최고급)</option>
-        </select>
-      </div>
-      <div class="calc-field calc-field-full">
-        <label>포함할 공정 (선택)</label>
-        <div class="calc-chips" id="calcProcChips"></div>
-      </div>
-    </div>
-
-    <!-- 결과부 -->
-    <div class="calc-result">
-      <div class="calc-result-head"> test 예상 견적 합계</div>
-      <div class="calc-total"><span id="calcTotal">0</span><span class="calc-won">만원</span></div>
-      <div class="calc-total-sub" id="calcTotalSub">부가세 별도 · 참고용 추정</div>
-      <div class="calc-breakdown" id="calcBreakdown"></div>
-    </div>
-  </div>
-  <div class="calc-disclaim">
-    ※ '전체 시공 수준'을 가성비→완벽 5단계로 선택하면, 각 공정 단가가 시세표의 최소~최대 범위 안에서 등급에 맞춰 조정됩니다(가성비=최소가, 기본=평균가, 완벽=최대가). 도배는 추가로 '공급면적 × 2.5 = 도배평수', 자재 1롤당 5평(로스 +1롤), 등급별 품수(1품 30만원) 기준으로 정밀 산출합니다. 철거·목공·설비는 현장 변동이 커 실측이 필요하며, 본 계산은 참고용으로 실제 계약 견적과 다를 수 있습니다.
-  </div>
-</section>
-
-<!-- 공정별 평당 시세표 (분기별 업데이트) -->
-<section class="section price-table-section" id="market-price">
-  <div class="sec-head">
-    <div class="sec-tag">✦ 공정별 평당 시세</div>
-    <h2 class="sec-h2"><span class="hl" id="priceQuarter">2026 2분기</span> 기준 시세표</h2>
-    <p class="sec-sub">반셀프 준비에 참고하실 수 있도록, 주요 공정의 평당 시세를 분기별로 정리합니다. 2025~2026년 시장 시세를 기반으로 하며, 자재 등급·현장 여건에 따라 달라질 수 있는 참고용 범위입니다.</p>
-  </div>
-  <div class="ptable-wrap">
-    <table class="ptable" id="priceTable">
-      <thead>
-        <tr><th>공정</th><th>최소</th><th class="ptable-avg-h">평균</th><th>최대</th><th class="ptable-unit-h">단위</th></tr>
-      </thead>
-      <tbody id="priceTableBody">
-        <tr><td colspan="5" class="ptable-loading">시세 정보를 불러오는 중…</td></tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="ptable-note" id="priceNote">
-    ※ 위 금액은 자재비·인건비를 포함한 평당 참고가이며, 실제 견적은 현장 점검 후 확정됩니다. 분기마다 시세를 갱신합니다.
-  </div>
-</section>
-
 <!-- STORY REVIEWS · 진솔한 고객 이야기 -->
 <section class="section story-section" id="stories">
   <div class="sec-head">
@@ -857,174 +752,6 @@ document.querySelectorAll('.why-card,.pcard,.cafe-item,.connect-rail').forEach(e
       Kakao.Channel.addChannel({ channelPublicId: KAKAO_CHANNEL_ID });
     });
   });
-})();
-
-// ════ 공정별 평당 시세표 ════
-(function(){
-  // 공정 순서·아이콘·라벨 (기술자/브랜드 탭과 동일한 9공정)
-  const PROCS = [
-    {key:'철거',  ic:'🔨', label:'철거'},
-    {key:'샷시',  ic:'🪟', label:'샷시·창호'},
-    {key:'전기',  ic:'💡', label:'전기·조명'},
-    {key:'목공',  ic:'🪵', label:'목공·가구'},
-    {key:'타일',  ic:'🧱', label:'타일'},
-    {key:'욕실',  ic:'🚿', label:'욕실·설비'},
-    {key:'페인트',ic:'🖌️', label:'페인트·도장'},
-    {key:'도배',  ic:'🎨', label:'도배·필름'},
-    {key:'마루',  ic:'🪟', label:'마루·바닥'},
-  ];
-  const won = n => (n==null||n==='') ? '-' : Number(n).toLocaleString('ko-KR')+'만';
-
-  // 폴백 데이터 (Supabase 미연결 시 표시 / 초기 기준값 — 실제 시세로 조정하세요)
-  const FALLBACK = {
-    quarter:'2026 2분기',
-    rows:[
-      {cat:'철거',  min:5,  avg:10, max:15},
-      {cat:'샷시',  min:40, avg:70, max:130},
-      {cat:'전기',  min:8,  avg:13, max:20},
-      {cat:'목공',  min:20, avg:35, max:60},
-      {cat:'타일',  min:15, avg:25, max:45},
-      {cat:'욕실',  min:30, avg:50, max:90},
-      {cat:'페인트',min:7,  avg:12, max:20},
-      {cat:'도배',  min:3,  avg:6,  max:12},
-      {cat:'마루',  min:8,  avg:16, max:30},
-    ]
-  };
-
-  function render(quarter, rows){
-    const qEl=document.getElementById('priceQuarter'); if(qEl&&quarter) qEl.textContent=quarter;
-    const body=document.getElementById('priceTableBody'); if(!body) return;
-    const map={}; rows.forEach(r=>{ map[r.cat]=r; });
-    const html = PROCS.map(p=>{
-      const r=map[p.key];
-      if(!r) return `<tr><td><span class="ptable-proc-ic">${p.ic}</span>${p.label}</td><td colspan="3" style="color:#bbc">준비 중</td><td class="ptable-unit">평당</td></tr>`;
-      return `<tr>
-        <td><span class="ptable-proc-ic">${p.ic}</span>${p.label}</td>
-        <td>${won(r.min)}</td>
-        <td class="ptable-avg">${won(r.avg)}</td>
-        <td>${won(r.max)}</td>
-        <td class="ptable-unit">평당</td>
-      </tr>`;
-    }).join('');
-    body.innerHTML=html;
-  }
-
-  async function load(){
-    // Supabase 연결되어 있으면 최신 분기 시세를 불러옴
-    try{
-      if(typeof isSupabaseReady==='function' && isSupabaseReady()){
-        const c=getSupabase();
-        const { data, error } = await c
-          .from('process_prices')
-          .select('*')
-          .eq('is_active', true)
-          .order('quarter',{ascending:false})
-          .order('sort_order',{ascending:true});
-        if(!error && data && data.length){
-          // 가장 최신 quarter만 필터
-          const latest = data[0].quarter;
-          const rows = data.filter(d=>d.quarter===latest)
-                           .map(d=>({cat:d.cat, min:d.price_min, avg:d.price_avg, max:d.price_max}));
-          render(latest, rows);
-          return;
-        }
-      }
-    }catch(e){ console.warn('시세 로드 실패, 폴백 사용:', e.message); }
-    // 폴백
-    render(FALLBACK.quarter, FALLBACK.rows);
-  }
-  load();
-  // 계산기에서 시세를 쓸 수 있게 전역 노출
-  window.__PRICE_FALLBACK = FALLBACK;
-})();
-
-// ════ 예상 견적 계산기 ════
-(function(){
-  const PROCS = [
-    {key:'철거',  ic:'🔨', label:'철거'},
-    {key:'샷시',  ic:'🪟', label:'샷시·창호'},
-    {key:'전기',  ic:'💡', label:'전기·조명'},
-    {key:'목공',  ic:'🪵', label:'목공·가구'},
-    {key:'타일',  ic:'🧱', label:'타일'},
-    {key:'욕실',  ic:'🚿', label:'욕실·설비'},
-    {key:'페인트',ic:'🖌️', label:'페인트·도장'},
-    {key:'도배',  ic:'🎨', label:'도배·필름'},
-    {key:'마루',  ic:'🪟', label:'마루·바닥'},
-  ];
-  const DOBAE_ROLL_PRICE = 18000;   // 인터넷 최저가 기준 1롤
-  const DOBAE_PUM_PRICE  = 300000;  // 1품 30만원
-  // 5단계 등급: 도배 평당 품수 기준(이미지 로직) — 가성비→완벽
-  const DOBAE_LEVEL = [20, 16, 14, 12, 10];
-  const GRADE_LABEL = ['가성비','실속','기본','고급','완벽'];
-
-  const selected = new Set(PROCS.map(p=>p.key)); // 기본: 전체 선택
-
-  function chipsHTML(){
-    return PROCS.map(p=>`<span class="calc-chip on" data-key="${p.key}" onclick="toggleCalcProc('${p.key}',this)">${p.ic} ${p.label}</span>`).join('');
-  }
-
-  // 시세표에서 공정의 min/avg/max(만원/평) 가져오기
-  function priceRange(cat){
-    const fb = window.__PRICE_FALLBACK;
-    if(fb && fb.rows){ const r=fb.rows.find(x=>x.cat===cat); if(r) return {min:r.min,avg:r.avg,max:r.max}; }
-    return {min:0,avg:0,max:0};
-  }
-
-  // 등급(0~4)을 시세 범위에 매핑: 0=최소, 2=평균, 4=최대, 1·3은 보간
-  function gradePrice(cat, grade){
-    const {min,avg,max}=priceRange(cat);
-    const map=[min, (min+avg)/2, avg, (avg+max)/2, max];
-    return map[grade] ?? avg;
-  }
-
-  // 도배 정밀 계산(등급별 품수) → {amount(만원), detail}
-  function calcDobae(pyung, grade){
-    const levelPerPum = DOBAE_LEVEL[grade] ?? 14;
-    const dobaePyung = pyung * 2.5;
-    const rolls = Math.ceil(dobaePyung/5 + 1);
-    const material = rolls * DOBAE_ROLL_PRICE;
-    const pum = dobaePyung / levelPerPum;
-    const labor = pum * DOBAE_PUM_PRICE;
-    const won = material + labor;
-    return { amount: Math.round(won/10000), precise:true,
-      detail:`도배평수 ${dobaePyung.toFixed(0)}평 · ${rolls}롤 · ${pum.toFixed(1)}품` };
-  }
-
-  window.toggleCalcProc = function(key, el){
-    if(selected.has(key)){ selected.delete(key); el.classList.remove('on'); }
-    else { selected.add(key); el.classList.add('on'); }
-    runEstimate();
-  };
-
-  window.runEstimate = function(){
-    const pyung = parseFloat(document.getElementById('calcPyung').value)||0;
-    const grade = parseInt(document.getElementById('calcGrade').value);
-    const g = isNaN(grade)?2:grade;
-    let total=0; const rows=[];
-    PROCS.forEach(p=>{
-      if(!selected.has(p.key)) return;
-      if(p.key==='도배'){
-        const d=calcDobae(pyung, g);
-        total+=d.amount;
-        rows.push({name:p.label, val:d.amount, precise:true});
-      } else {
-        const unit=gradePrice(p.key, g);
-        const amt=Math.round(unit*pyung);
-        total+=amt;
-        rows.push({name:p.label, val:amt, precise:false});
-      }
-    });
-    const fmt=n=>n.toLocaleString('ko-KR');
-    document.getElementById('calcTotal').textContent=fmt(total);
-    document.getElementById('calcTotalSub').textContent=`${pyung}평 · ${GRADE_LABEL[g]} 수준 · 부가세 별도 · 참고용 추정`;
-    document.getElementById('calcBreakdown').innerHTML = rows.length
-      ? rows.map(r=>`<div class="calc-bd-row ${r.precise?'bd-precise':''}"><span class="bd-name">${r.name}</span><span class="bd-val">${fmt(r.val)}만</span></div>`).join('')
-      : '<div style="opacity:.6;font-size:.85rem">포함할 공정을 1개 이상 선택하세요.</div>';
-  };
-
-  // 초기화
-  const chipBox=document.getElementById('calcProcChips');
-  if(chipBox){ chipBox.innerHTML=chipsHTML(); runEstimate(); }
 })();
 </script>
 </body>
