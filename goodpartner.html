@@ -187,6 +187,7 @@ nav{position:sticky;top:0;z-index:1000;display:flex;align-items:center;justify-c
 .wcard.cat-목공 .wcard-avatar{background:var(--orange-lt)} .wcard.cat-도배 .wcard-avatar{background:var(--blue-lt)}
 .wcard.cat-타일 .wcard-avatar{background:var(--green-lt)} .wcard.cat-전기 .wcard-avatar{background:var(--purple-lt)}
 .wcard.cat-페인트 .wcard-avatar{background:var(--pink-lt)} .wcard.cat-마루 .wcard-avatar{background:var(--orange-lt)}
+.wcard.cat-마감 .wcard-avatar{background:var(--green-lt)}
 .wcard.cat-욕실 .wcard-avatar{background:var(--blue-lt)} .wcard.cat-철거 .wcard-avatar{background:var(--green-lt)}
 .wcard.cat-샷시 .wcard-avatar{background:var(--teal-lt)}
 .wcard-headinfo{flex:1;min-width:0}
@@ -399,6 +400,7 @@ footer{background:var(--dark);padding:48px 40px 32px;color:rgba(255,255,255,.5)}
         <span class="chip" data-cat="페인트">🖌️ 7. 페인트·도장</span>
         <span class="chip" data-cat="도배">🎨 8. 도배·필름</span>
         <span class="chip" data-cat="마루">🪟 9. 마루·바닥</span>
+        <span class="chip" data-cat="마감">🧹 10. 마감·청소</span>
       </div>
     </div>
     <div class="count-line">총 <b id="wcount">0</b>명의 검증된 기술자</div>
@@ -502,6 +504,7 @@ footer{background:var(--dark);padding:48px 40px 32px;color:rgba(255,255,255,.5)}
         <span class="chip" data-cat="페인트">🖌️ 7. 페인트·도장</span>
         <span class="chip" data-cat="도배">🎨 8. 도배·필름</span>
         <span class="chip" data-cat="마루">🪟 9. 마루·바닥</span>
+        <span class="chip" data-cat="마감">🧹 10. 마감·청소</span>
       </div>
     </div>
     <div class="count-line">총 <b id="bcount">0</b>곳의 브랜드 채널</div>
@@ -569,7 +572,7 @@ footer{background:var(--dark);padding:48px 40px 32px;color:rgba(255,255,255,.5)}
 <script>
 const KAKAO_CHAT_URL = 'http://pf.kakao.com/_dtGjX/chat';
 const CAT_ICON = {'자재상':'🧱','쇼룸':'🛋️','조명':'💡','타일':'🟫','가구':'🪑','종합시장':'🏬'};
-const PROC_ICON = {'철거':'🔨','샷시':'🪟','전기':'💡','목공':'🪵','타일':'🧱','욕실':'🚿','페인트':'🖌️','도배':'🎨','마루':'🪟'};
+const PROC_ICON = {'철거':'🔨','샷시':'🪟','전기':'💡','목공':'🪵','타일':'🧱','욕실':'🚿','페인트':'🖌️','도배':'🎨','마루':'🪟','마감':'🧹'};
 const REGIONS = {
   '서울북부':{center:[37.63,127.02],color:'#E91E8C'}, '서울남부':{center:[37.49,127.03],color:'#FF9800'},
   '서울서부':{center:[37.55,126.88],color:'#29B6F6'}, '서울동부':{center:[37.55,127.10],color:'#7CB342'},
