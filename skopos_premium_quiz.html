@@ -32,14 +32,21 @@ em{font-style:normal}
 a{text-decoration:none}
 
 /* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:200;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:rgba(255,255,255,.92);backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,0,0,.06)}
+nav{position:fixed;top:42px;left:0;right:0;z-index:200;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:rgba(255,255,255,.92);backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,0,0,.06)}
+.cafe-bar{background:linear-gradient(90deg,#E91E8C,#ff5fb0);color:#fff;display:flex;align-items:center;justify-content:center;gap:12px;padding:10px 20px;font-size:.82rem;font-weight:700;text-decoration:none;transition:filter .2s;position:fixed;top:0;left:0;right:0;z-index:201}
+.cafe-bar:hover{filter:brightness(1.06)}
+.cafe-bar-ic{font-size:1.1rem}
+.cafe-bar-txt{font-weight:600}
+.cafe-bar-txt b{font-weight:900}
+.cafe-bar-cta{background:rgba(255,255,255,.22);border-radius:50px;padding:4px 14px;font-weight:800;white-space:nowrap;font-size:.78rem}
+@media(max-width:680px){.cafe-bar{flex-direction:column;gap:6px;padding:9px 16px;text-align:center;font-size:.76rem}.cafe-bar-txt{line-height:1.4}nav{top:64px}}
 .nav-brand{font-size:1.1rem;font-weight:900;letter-spacing:-.02em;color:var(--dark)}
 .nav-brand span{color:var(--pink)}
 .nav-right{display:flex;align-items:center;gap:8px}
 .nav-tag{font-size:.7rem;font-weight:700;background:linear-gradient(135deg,var(--pink),var(--orange));color:#fff;padding:4px 12px;border-radius:50px}
 
 /* SCREENS */
-.screen{display:none;min-height:100vh;padding:72px 24px 60px}
+.screen{display:none;min-height:100vh;padding:114px 24px 60px}
 .screen.active{display:flex;flex-direction:column;align-items:center;justify-content:center}
 
 /* ── PAYMENT GATE ── */
@@ -627,6 +634,15 @@ html{scroll-behavior:smooth}
 .btn-retry{padding:11px 28px;background:none;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6);border-radius:50px;font-family:'Nunito',sans-serif;font-size:.82rem;cursor:pointer;transition:all .2s}
 .btn-retry:hover{border-color:rgba(255,255,255,.5);color:#fff}
 
+/* 결과지 카페 안내 카드 */
+.cafe-card{margin-top:18px;padding:26px 24px;background:linear-gradient(135deg,#E91E8C,#7a1546);border-radius:24px;text-align:center;color:#fff}
+.cafe-card-ic{font-size:1.9rem;margin-bottom:8px}
+.cafe-card-label{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.65);margin-bottom:8px}
+.cafe-card-title{font-size:1.08rem;font-weight:900;margin-bottom:8px;line-height:1.4}
+.cafe-card-desc{font-size:.83rem;font-weight:500;color:rgba(255,255,255,.88);line-height:1.6;margin-bottom:18px;max-width:340px;margin-left:auto;margin-right:auto}
+.btn-cafe{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 30px;background:#fff;color:#E91E8C;border-radius:50px;font-family:'Nunito',sans-serif;font-size:.88rem;font-weight:800;text-decoration:none;transition:all .2s;width:100%;max-width:320px}
+.btn-cafe:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,0,0,.2)}
+
 /* TOAST */
 .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--dark);color:#fff;font-size:.78rem;font-weight:700;padding:10px 22px;border-radius:50px;opacity:0;transition:all .35s;z-index:999;pointer-events:none;white-space:nowrap}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -1036,6 +1052,12 @@ html{scroll-behavior:smooth}
 </head>
 
 <body>
+<!-- CAFE COMMUNITY BANNER -->
+<a class="cafe-bar" href="https://cafe.naver.com/selinhaja" target="_blank" rel="noopener">
+  <span class="cafe-bar-ic">☕</span>
+  <span class="cafe-bar-txt"><b>셀인하자 공식 카페</b> 오픈! 진단 결과 공유·반셀프 시공 노하우를 함께 나눠요</span>
+  <span class="cafe-bar-cta">카페 가입하기 →</span>
+</a>
 <nav>
   <a class="nav-brand" href="index.html">SKO<span>POS</span></a>
   <div class="nav-right">
@@ -4742,6 +4764,14 @@ function renderResult(t,scores){
       </button>
       <br>
       <button class="btn-retry" onclick="retryQuiz()">다시 진단하기</button>
+    </div>
+
+    <div class="cafe-card">
+      <div class="cafe-card-ic">☕</div>
+      <div class="cafe-card-label">셀인하자 공식 카페</div>
+      <div class="cafe-card-title">내 유형, 다른 사람들은 어떻게 살고 있을까?</div>
+      <div class="cafe-card-desc">같은 공간 욕구 유형끼리 인테리어 사례를 공유하고, 반셀프 시공 노하우·견적 후기·자재 공동구매 정보를 나누는 커뮤니티예요. 진단 결과를 가지고 가벼운 마음으로 들러보세요.</div>
+      <a class="btn-cafe" href="https://cafe.naver.com/selinhaja" target="_blank" rel="noopener">네이버 카페 가입하기 →</a>
     </div>
   `;
   try{ renderSpaceRefs(t); }catch(e){ console.warn('공간 레퍼런스 렌더 오류:', e); }
