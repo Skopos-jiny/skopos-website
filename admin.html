@@ -129,6 +129,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dark);-web
   <div class="tabs">
     <div class="tab active" data-tab="workers">🛠️ 기술자</div>
     <div class="tab" data-tab="shops">📍 검증된 업체</div>
+    <div class="tab" data-tab="prices">💰 공정별 시세</div>
   </div>
 
   <!-- WORKERS PANEL -->
@@ -142,7 +143,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dark);-web
       <select id="wCatFilter" onchange="loadWorkers()">
         <option value="">전체 공정</option>
         <option>철거</option><option>샷시</option><option>전기</option><option>목공</option>
-        <option>타일</option><option>욕실</option><option>페인트</option><option>도배</option><option>마루</option>
+        <option>타일</option><option>욕실</option><option>페인트</option><option>도배</option><option>마루</option><option>마감</option>
       </select>
       <select id="wSort" onchange="loadWorkers()">
         <option value="sort_order">정렬: 우선순위</option>
@@ -189,6 +190,32 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dark);-web
   </div>
 </div>
 
+<!-- PRICES PANEL -->
+<div class="panel" id="panel-prices">
+  <div class="panel-head">
+    <div class="panel-title">공정별 평당 시세 <span>분기별 관리 · 셀인하자 견적 페이지에 노출</span></div>
+  </div>
+  <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin-bottom:16px">
+    <div class="field" style="margin:0">
+      <label>분기 선택</label>
+      <select id="pQuarter" onchange="loadPrices()"></select>
+    </div>
+    <div class="field" style="margin:0">
+      <label>새 분기 추가</label>
+      <input id="pNewQuarter" placeholder="예: 2026 1분기" style="width:150px">
+    </div>
+    <button class="btn btn-pink btn-sm" onclick="addQuarter()">+ 분기 생성</button>
+    <button class="btn btn-edit btn-sm" onclick="savePrices()" style="margin-left:auto">전체 저장</button>
+  </div>
+  <div class="tbl">
+    <table>
+      <thead><tr><th>공정</th><th>최소(만원/평)</th><th>평균</th><th>최대</th><th>비고</th></tr></thead>
+      <tbody id="pBody"></tbody>
+    </table>
+  </div>
+  <p style="color:#9aa;font-size:.82rem;margin-top:12px;line-height:1.6">※ 단위는 만원/평입니다. 새 분기를 만들면 현재 보고 있는 분기 값이 복사되어 시작됩니다. 값을 수정하고 '전체 저장'을 누르세요. 셀인하자 페이지는 가장 최신 분기를 자동으로 노출합니다.</p>
+</div>
+
 <!-- WORKER MODAL -->
 <div class="modal-bg" id="workerModal">
   <div class="modal">
@@ -199,7 +226,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dark);-web
       <div class="field"><label>공정 *</label>
         <select id="w_cat" onchange="autoIcon()">
           <option>철거</option><option>샷시</option><option>전기</option><option>목공</option>
-          <option>타일</option><option>욕실</option><option>페인트</option><option>도배</option><option>마루</option>
+          <option>타일</option><option>욕실</option><option>페인트</option><option>도배</option><option>마루</option><option>마감</option>
         </select>
       </div>
       <div class="field"><label>아이콘(이모지) <span style="font-weight:600;color:#8890A4;font-size:.78rem">· 공정 선택 시 자동 입력</span></label><input id="w_icon" placeholder="🪵"></div>
@@ -339,6 +366,7 @@ document.querySelectorAll('.tab').forEach(t=>{
     document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
     t.classList.add('active');
     $('panel-'+t.dataset.tab).classList.add('active');
+    if(t.dataset.tab==='prices') initPrices();
   });
 });
 
@@ -381,7 +409,7 @@ async function loadWorkers(){
 }
 
 // 공정별 기본 이모지 (goodpartner 카드와 동일 매칭)
-const WCAT_ICON = {철거:'🔨', 샷시:'🪟', 전기:'💡', 목공:'🪵', 타일:'🧱', 욕실:'🚿', 페인트:'🖌️', 도배:'🎨', 마루:'🪟'};
+const WCAT_ICON = {철거:'🔨', 샷시:'🪟', 전기:'💡', 목공:'🪵', 타일:'🧱', 욕실:'🚿', 페인트:'🖌️', 도배:'🎨', 마루:'🪟', 마감:'🧹'};
 // 공정 선택 시 아이콘 자동 입력 (사용자가 직접 바꾼 값이 없을 때만)
 function autoIcon(){
   const cat = $('w_cat').value;
@@ -518,7 +546,7 @@ function onShopKindChange(){
   if(cat){
     const prev=cat.value;
     const TYPES=['자재상','쇼룸','조명','타일','가구','종합시장'];
-    const PROCS=['철거','샷시','전기','목공','타일','욕실','페인트','도배','마루'];
+    const PROCS=['철거','샷시','전기','목공','타일','욕실','페인트','도배','마루','마감'];
     const opts = kind==='brand' ? PROCS : TYPES;
     if(lbl) lbl.textContent = kind==='brand' ? '공정 *' : '유형 *';
     cat.innerHTML = opts.map(o=>`<option>${o}</option>`).join('');
@@ -575,6 +603,86 @@ document.querySelectorAll('.modal-bg').forEach(m=>{
 });
 
 init();
+
+// ════════ 공정별 시세 CRUD ════════
+const PRICE_PROCS = [
+  {key:'철거',  ic:'🔨', so:1},{key:'샷시',ic:'🪟',so:2},{key:'전기',ic:'💡',so:3},
+  {key:'목공',  ic:'🪵', so:4},{key:'타일',ic:'🧱',so:5},{key:'욕실',ic:'🚿',so:6},
+  {key:'페인트',ic:'🖌️',so:7},{key:'도배',ic:'🎨',so:8},{key:'마루',ic:'🪟',so:9},
+];
+let pricesInited=false, allQuarters=[];
+
+async function initPrices(){
+  if(pricesInited) return;
+  pricesInited=true;
+  await refreshQuarters();
+}
+
+async function refreshQuarters(){
+  if(!client) return;
+  const { data, error } = await client.from('process_prices').select('quarter').order('quarter',{ascending:false});
+  if(error){ console.error(error); return; }
+  allQuarters = [...new Set((data||[]).map(d=>d.quarter))];
+  const sel=$('pQuarter');
+  sel.innerHTML = allQuarters.length ? allQuarters.map(q=>`<option>${q}</option>`).join('') : '<option value="">(등록된 분기 없음)</option>';
+  loadPrices();
+}
+
+async function loadPrices(){
+  const q=$('pQuarter').value;
+  const body=$('pBody');
+  let map={};
+  if(client && q){
+    const { data } = await client.from('process_prices').select('*').eq('quarter',q);
+    (data||[]).forEach(d=>{ map[d.cat]=d; });
+  }
+  body.innerHTML = PRICE_PROCS.map(p=>{
+    const r=map[p.key]||{};
+    return `<tr data-cat="${p.key}">
+      <td style="font-weight:800">${p.ic} ${p.key}</td>
+      <td><input type="number" class="pin pin-min" value="${r.price_min??''}" style="width:90px"></td>
+      <td><input type="number" class="pin pin-avg" value="${r.price_avg??''}" style="width:90px"></td>
+      <td><input type="number" class="pin pin-max" value="${r.price_max??''}" style="width:90px"></td>
+      <td><input type="text" class="pin pin-note" value="${(r.note||'').replace(/"/g,'&quot;')}" placeholder="비고" style="width:140px"></td>
+    </tr>`;
+  }).join('');
+}
+
+function addQuarter(){
+  const nq=$('pNewQuarter').value.trim();
+  if(!nq){ alert('새 분기명을 입력하세요 (예: 2026 1분기)'); return; }
+  if(allQuarters.includes(nq)){ alert('이미 있는 분기입니다.'); return; }
+  allQuarters.unshift(nq);
+  const sel=$('pQuarter');
+  sel.innerHTML = allQuarters.map(q=>`<option>${q}</option>`).join('');
+  sel.value=nq;
+  $('pNewQuarter').value='';
+  alert(`'${nq}' 분기를 만들었습니다. 현재 표의 값이 그대로 복사됩니다. 값을 확인/수정 후 '전체 저장'을 누르세요.`);
+}
+
+async function savePrices(){
+  if(!client){ alert('Supabase 미설정'); return; }
+  const q=$('pQuarter').value.trim();
+  if(!q){ alert('분기를 선택하거나 새로 추가하세요.'); return; }
+  const rows=[...document.querySelectorAll('#pBody tr')].map(tr=>{
+    const g=s=>tr.querySelector(s).value.trim();
+    const cat=tr.dataset.cat;
+    const so=(PRICE_PROCS.find(p=>p.key===cat)||{}).so||0;
+    return {
+      quarter:q, cat,
+      price_min: g('.pin-min')===''?null:Number(g('.pin-min')),
+      price_avg: g('.pin-avg')===''?null:Number(g('.pin-avg')),
+      price_max: g('.pin-max')===''?null:Number(g('.pin-max')),
+      note: g('.pin-note')||null,
+      is_active:true, sort_order:so
+    };
+  });
+  const { error } = await client.from('process_prices').upsert(rows, { onConflict:'quarter,cat' });
+  if(error){ alert('저장 실패: '+error.message); console.error(error); return; }
+  alert(`'${q}' 분기 시세를 저장했습니다.`);
+  await refreshQuarters();
+  $('pQuarter').value=q; loadPrices();
+}
 </script>
 </body>
 </html>
