@@ -78,6 +78,13 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dark);over
 .sister-bar a{color:var(--pink); text-decoration:none; font-weight:800; display:inline-flex; align-items:center; gap:4px}
 .sister-bar a:hover{text-decoration:underline}
 .sister-bar .chip{background:rgba(255,255,255,.1); border-radius:50px; padding:2px 10px; font-size:.68rem; font-weight:700}
+.cafe-bar{background:linear-gradient(90deg,#E91E8C,#ff5fb0); color:#fff; display:flex; align-items:center; justify-content:center; gap:12px; padding:10px 20px; font-size:.82rem; font-weight:700; text-decoration:none; transition:filter .2s}
+.cafe-bar:hover{filter:brightness(1.06)}
+.cafe-bar-ic{font-size:1.1rem}
+.cafe-bar-txt{font-weight:600}
+.cafe-bar-txt b{font-weight:900}
+.cafe-bar-cta{background:rgba(255,255,255,.22); border-radius:50px; padding:4px 14px; font-weight:800; white-space:nowrap; font-size:.78rem}
+@media(max-width:680px){.cafe-bar{flex-direction:column; gap:6px; padding:9px 16px; text-align:center; font-size:.76rem} .cafe-bar-txt{line-height:1.4}}
 
 /* NAV */
 nav{
@@ -346,6 +353,13 @@ footer{background:var(--dark); padding:56px 40px 36px; color:rgba(255,255,255,.5
 </script>
 </head>
 <body>
+
+<!-- CAFE COMMUNITY BANNER -->
+<a class="cafe-bar" href="https://cafe.naver.com/selinhaja" target="_blank" rel="noopener">
+  <span class="cafe-bar-ic">☕</span>
+  <span class="cafe-bar-txt"><b>셀인하자 공식 카페</b> 오픈! 반셀프 시공 노하우·견적 후기·자재 공동구매 정보를 나눠요</span>
+  <span class="cafe-bar-cta">카페 가입하기 →</span>
+</a>
 
 <!-- SISTER BRAND BAR -->
 <div class="sister-bar">
