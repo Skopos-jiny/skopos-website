@@ -945,9 +945,25 @@ em{font-style:normal}
 .hero-badge-new{font-size:.62rem;font-weight:800;letter-spacing:.15em;background:var(--pink);color:#fff;padding:3px 10px;border-radius:50px}
 .hero-badge-name{font-size:.75rem;font-weight:700;color:var(--dark);letter-spacing:-.01em}
 .hero-badge-en{font-size:.65rem;color:var(--gray);font-style:normal}
+.cafe-bar{background:linear-gradient(90deg,#DC1478,#FF6B9D);color:#fff;display:flex;align-items:center;justify-content:center;gap:12px;padding:10px 20px;font-size:.82rem;font-weight:700;text-decoration:none;transition:filter .2s;position:fixed;top:0;left:0;right:0;z-index:1002}
+.cafe-bar:hover{filter:brightness(1.06)}
+.cafe-bar-ic{font-size:1.1rem}
+.cafe-bar-txt{font-weight:600}
+.cafe-bar-txt b{font-weight:900}
+.cafe-bar-cta{background:rgba(255,255,255,.22);border-radius:50px;padding:4px 14px;font-weight:800;white-space:nowrap;font-size:.78rem}
+body{padding-top:42px}
+nav{top:42px!important}
+@media(max-width:680px){.cafe-bar{flex-direction:column;gap:6px;padding:9px 16px;text-align:center;font-size:.76rem}.cafe-bar-txt{line-height:1.4}body{padding-top:64px}nav{top:64px!important}}
 </style>
 </head>
 <body>
+
+<!-- CAFE COMMUNITY BANNER -->
+<a class="cafe-bar" href="https://cafe.naver.com/selinhaja" target="_blank" rel="noopener">
+  <span class="cafe-bar-ic">☕</span>
+  <span class="cafe-bar-txt"><b>셀인하자 공식 카페</b> 오픈! 공간 진단부터 반셀프 시공까지, 함께 나누는 커뮤니티에 참여하세요</span>
+  <span class="cafe-bar-cta">카페 가입하기 →</span>
+</a>
 
 <!-- NAV -->
 <nav id="nav">
