@@ -126,13 +126,11 @@ footer{background:var(--dark); padding:56px 40px 36px; color:rgba(255,255,255,.5
     <span class="nav-logo">셀인<b>하자</b></span>
   </a>
   <div class="nav-links">
-    <a href="#connect">진단 연동</a>
-    <a href="#why">왜 셀인하자</a>
-    <a href="#pricing">견적·가격</a>
-    <a href="#stories">고객 이야기</a>
-    <a href="#home-types">주거 공간</a>
+    <a href="/selinhaja">셀인하자 홈</a>
+    <a href="#estimate">견적 계산기</a>
+    <a href="#market-price">공정별 시세</a>
     <a href="/goodpartner">굿파트너</a>
-    <a href="#start" class="nav-cta">무료 진단 시작</a>
+    <a href="/selinhaja#start" class="nav-cta">무료 진단 시작</a>
   </div>
 </nav>
 
@@ -165,8 +163,8 @@ footer{background:var(--dark); padding:56px 40px 36px; color:rgba(255,255,255,.5
           <option value="0">가성비 (월세·전세 / 최소 사양)</option>
           <option value="1">실속 (부분 보수 / 합리적 사양)</option>
           <option value="2" selected>기본 (일반 인테리어 / 표준 사양)</option>
-          <option value="3">고급 (나다운 공간 / 상급 자재)</option>
-          <option value="4">완벽 (평생 실거주 / 최고급)</option>
+          <option value="3">고급 (이쁜 집 / 상급 자재)</option>
+          <option value="4">완벽 (어나더 레벨 / 최고급)</option>
         </select>
       </div>
       <div class="calc-field calc-field-full">
@@ -221,10 +219,10 @@ footer{background:var(--dark); padding:56px 40px 36px; color:rgba(255,255,255,.5
     <div>
       <div class="foot-col-t">서비스</div>
       <div class="foot-links">
-        <a href="#pricing">현장 점검 서비스 200만원</a>
-        <a href="#pricing">반셀프 도움 350만원</a>
-        <a href="#pricing">턴키 서비스 750만원</a>
-        <a href="#home-types">아파트·주거 공간</a>
+        <a href="/selinhaja#pricing">현장 점검 서비스 200만원</a>
+        <a href="/selinhaja#pricing">반셀프 도움 350만원</a>
+        <a href="/selinhaja#pricing">턴키 서비스 750만원</a>
+        <a href="/selinhaja#home-types">아파트·주거 공간</a>
         <a href="/goodpartner">굿파트너 (기술자·업체)</a>
       </div>
     </div>
@@ -416,6 +414,15 @@ footer{background:var(--dark); padding:56px 40px 36px; color:rgba(255,255,255,.5
   const chipBox=document.getElementById('calcProcChips');
   if(chipBox){ chipBox.innerHTML=chipsHTML(); runEstimate(); }
 })();
+
+// 페이지 내 앵커 스무스 스크롤 (네비 고정 높이 보정)
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    const id=a.getAttribute('href'); if(id==='#')return;
+    const el=document.querySelector(id);
+    if(el){ e.preventDefault(); const y=el.getBoundingClientRect().top+window.scrollY-70; window.scrollTo({top:y,behavior:'smooth'}); }
+  });
+});
 </script>
 </body>
 </html>
