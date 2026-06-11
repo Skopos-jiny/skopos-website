@@ -1,6 +1,13 @@
 User-agent: *
 Allow: /
-Disallow: /admin/
 Disallow: /admin.html
+Disallow: /admin
+
+# 검색엔진 크롤러
+User-agent: Googlebot
+Allow: /
+
+User-agent: Yeti
+Allow: /
 
 Sitemap: https://skopos.kr/sitemap.xml
