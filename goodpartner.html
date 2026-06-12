@@ -328,8 +328,9 @@ footer{background:var(--dark);padding:48px 40px 32px;color:rgba(255,255,255,.5)}
 }
 @media(max-width:620px){
   .workers-grid{grid-template-columns:1fr;max-width:420px;margin:0 auto}
-  .maintabs{flex-direction:row}
-  .mtab{padding:12px 18px;font-size:.85rem}
+  .maintabs{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:420px;margin-left:auto;margin-right:auto}
+  .mtab{padding:14px 14px;font-size:.85rem;justify-content:center;border-radius:16px;white-space:nowrap;min-width:0}
+  .mtab .mt-ic{font-size:1.05rem}
 }
 </style>
 </head>
