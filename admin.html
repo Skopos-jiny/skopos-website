@@ -577,7 +577,7 @@ async function saveShop(){
     }
   } else {
     payload.lat=null; payload.lng=null;
-    if(payload.region!=='온라인') payload.region='온라인';
+    payload.region = (kind==='brand') ? '브랜드' : '온라인';
     const hasLink=payload.link_site||payload.link_cafe||payload.link_blog||payload.link_insta;
     if(!hasLink){ alert(kind==='brand'?'브랜드는 공식 사이트 URL을 입력해주세요.':'온라인 채널은 사이트나 SNS 링크를 1개 이상 입력해주세요.'); return; }
   }
