@@ -773,10 +773,25 @@ function popupHTML(p){
 function noCoord(p){
   return p.lat===null||p.lng===null||p.lat===undefined||p.lng===undefined||p.lat===''||p.lng===''||isNaN(parseFloat(p.lat))||isNaN(parseFloat(p.lng));
 }
-// 좌표 없는 항목 = 온라인 성격. 그중 kind==='brand'(또는 region==='브랜드')는 브랜드 채널로 분리
-function isBrandShop(p){ return (noCoord(p)||p.region==='온라인'||p.region==='브랜드') && (p.kind==='brand'||p.region==='브랜드'); }
-function isOnlineShop(p){ return (noCoord(p)||p.region==='온라인') && !isBrandShop(p); }
-function isOfflineShop(p){ return !noCoord(p) && p.region!=='온라인' && p.region!=='브랜드'; }
+// 분류 기준: kind 필드를 최우선으로 신뢰. kind가 없을 때만 좌표/region 으로 추론.
+// (좌표가 잘못 채워진 brand 레코드도 항상 브랜드 채널로 분류됨)
+function isBrandShop(p){
+  if(p.kind==='brand') return true;
+  if(p.kind) return false; // kind가 online/offline 등으로 명시되면 브랜드 아님
+  return p.region==='브랜드'; // kind 미지정 레거시 대비
+}
+function isOnlineShop(p){
+  if(isBrandShop(p)) return false;
+  if(p.kind==='online') return true;
+  if(p.kind) return false; // kind가 offline 으로 명시되면 온라인 아님
+  return noCoord(p)||p.region==='온라인'; // kind 미지정 레거시 대비
+}
+function isOfflineShop(p){
+  if(isBrandShop(p)||isOnlineShop(p)) return false;
+  if(p.kind==='offline') return true;
+  if(p.kind) return false;
+  return !noCoord(p) && p.region!=='온라인' && p.region!=='브랜드'; // kind 미지정 레거시 대비
+}
 
 function filteredShops(){return PLACES.filter(p=>isOfflineShop(p)&&(curRegion==='전체'||p.region===curRegion)&&(curSCat==='전체'||p.cat===curSCat));}
 function filteredOnlineShops(){return PLACES.filter(p=>isOnlineShop(p)&&(curOCat==='전체'||p.cat===curOCat));}
