@@ -185,7 +185,12 @@ function updatePriceView(){
   document.getElementById('originalAmountText').textContent=formatWon(priceState.original_amount);
   document.getElementById('discountAmountText').textContent='-'+formatWon(priceState.discount_amount);
   document.getElementById('finalAmountText').textContent=formatWon(priceState.final_amount);
-  document.getElementById('payBtn').textContent='신용카드로 결제하기 '+formatWon(priceState.final_amount);
+  const payBtn=document.getElementById('payBtn');
+  if(priceState.final_amount<=0){
+    payBtn.textContent='무료로 정밀 검사 시작하기';
+  }else{
+    payBtn.textContent='신용카드로 결제하기 '+formatWon(priceState.final_amount);
+  }
 }
 function showCouponMessage(msg,type){
   const el=document.getElementById('couponMsg');
@@ -282,8 +287,9 @@ async function logout(){await sb.auth.signOut();currentUser=null;setStep(1);show
 
 function requestPay(){
   if(!currentUser){showAlert('payAlert','로그인이 필요합니다');setStep(1);showPanel('panelLogin');return;}
-  if(priceState.final_amount < 100){
-    showAlert('payAlert','카드 결제 최소 금액보다 낮습니다. 무료 쿠폰은 별도 처리 함수가 필요합니다.');
+  // 최종 금액 0원(100% 할인 쿠폰): 카드 결제 없이 서버에서 무료 발급 처리
+  if(priceState.final_amount <= 0){
+    redeemFreeCoupon();
     return;
   }
   const btn=document.getElementById('payBtn');
@@ -312,6 +318,35 @@ function requestPay(){
       setStep(2);
     }
   });
+}
+
+async function redeemFreeCoupon(){
+  const btn=document.getElementById('payBtn');
+  btn.disabled=true;btn.textContent='무료 이용권 발급 중...';
+  hideAlert('payAlert');
+  const name=currentUser.user_metadata?.full_name||currentUser.email?.split('@')[0]||'';
+  const email=currentUser.email||'';
+  try{
+    const res=await fetch('/.netlify/functions/redeem-free-coupon',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({coupon_code:priceState.coupon_code,name,email,user_id:currentUser?.id||''})});
+    const result=await res.json();
+    if(result.success){
+      sessionStorage.setItem('skopos_paid','1');
+      toast('✅ 무료 이용권이 발급됐어요!',1500);
+      setStep(3);
+      window.location.href='skopos_premium_quiz.html?paid=1';
+    }else{
+      // 서버가 0원이 아니라고 판단하면 카드 결제로 유도
+      if(result.requires_payment){
+        showAlert('payAlert','무료 발급 대상 쿠폰이 아닙니다. 카드 결제를 진행해 주세요.');
+      }else{
+        showAlert('payAlert',result.message||'무료 이용권 발급에 실패했습니다. 잠시 후 다시 시도해 주세요.');
+      }
+      btn.disabled=false;updatePriceView();setStep(2);
+    }
+  }catch(err){
+    showAlert('payAlert','발급 서버에 연결하지 못했습니다. 잠시 후 다시 시도해 주세요.');
+    btn.disabled=false;updatePriceView();setStep(2);
+  }
 }
 
 async function verifyAndStart(impUid,merchantUid,name,email){
