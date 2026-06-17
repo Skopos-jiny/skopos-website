@@ -861,6 +861,12 @@ footer{background:var(--dark);color:rgba(255,255,255,.5);padding:52px 24px 36px}
 .footer-legal .divider{color:rgba(255,255,255,.12);font-size:.6rem}
 .footer-bottom{font-size:.72rem;color:rgba(255,255,255,.22);line-height:1.9}
 .footer-bottom strong{color:rgba(255,255,255,.38);font-weight:600}
+.footer-copyright-badge{display:inline-flex;align-items:center;gap:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.10);border-radius:10px;padding:13px 18px;margin-bottom:22px;max-width:540px}
+.footer-copyright-badge .fcb-icon{flex-shrink:0;width:40px;height:40px;border-radius:50%;background:rgba(220,20,120,.14);display:flex;align-items:center;justify-content:center;font-size:21px;color:var(--pink)}
+.footer-copyright-badge .fcb-title{font-size:.83rem;color:rgba(255,255,255,.88);font-weight:600;margin-bottom:2px}
+.footer-copyright-badge .fcb-sub{font-size:.72rem;color:rgba(255,255,255,.4);line-height:1.5}
+.footer-copyright-badge .fcb-sub b{color:var(--pink);font-weight:600}
+@media(max-width:600px){.footer-copyright-badge{max-width:100%}}
 /* 모달 */
 .modal-overlay{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.65);backdrop-filter:blur(8px);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
 .modal-overlay.open{opacity:1;pointer-events:all}
@@ -1626,6 +1632,17 @@ em{font-style:normal}
       <a href="#" onclick="openModal('privacy');return false;" style="font-weight:700;color:rgba(255,255,255,.65)">개인정보처리방침</a>
       <span class="divider">|</span>
       <a href="#" onclick="openModal('refund');return false;">환불 정책</a>
+    </div>
+
+    <!-- 저작권 등록 인증 뱃지 -->
+    <div class="footer-copyright-badge">
+      <div class="fcb-icon" aria-hidden="true">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"></circle><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"></path></svg>
+      </div>
+      <div>
+        <div class="fcb-title">SDTI 검사 엔진 · 프로그램저작권 등록</div>
+        <div class="fcb-sub">한국저작권위원회 등록 <b>제 C-2026-029862 호</b> · 컴퓨터프로그램저작물</div>
+      </div>
     </div>
 
     <!-- 저작권 -->
