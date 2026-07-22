@@ -11,7 +11,7 @@ function json(statusCode, body) {
     statusCode,
     headers: {
       'Access-Control-Allow-Origin': SITE_ORIGIN,
-      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(body),
@@ -57,6 +57,15 @@ exports.handler = async (event) => {
 
     const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
+    // JWT 가 있으면 검증된 사용자 id 로 대체 (per_user_limit 판정 정확도 향상)
+    let resolvedUserId = user_id || null;
+    const authHeader = event.headers.authorization || event.headers.Authorization || '';
+    const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : '';
+    if (token) {
+      const { data: userData, error: userError } = await sb.auth.getUser(token);
+      if (!userError && userData?.user?.id) resolvedUserId = userData.user.id;
+    }
+
     const { data: coupon, error } = await sb
       .from('coupons')
       .select('*')
@@ -93,12 +102,12 @@ exports.handler = async (event) => {
       return json(400, { success: false, message: '쿠폰 사용 가능 횟수가 모두 소진되었습니다.' });
     }
 
-    if (user_id && coupon.per_user_limit) {
+    if (resolvedUserId && coupon.per_user_limit) {
       const { count, error: countError } = await sb
         .from('coupon_redemptions')
         .select('id', { count: 'exact', head: true })
         .eq('coupon_code', code)
-        .eq('user_id', user_id);
+        .eq('user_id', resolvedUserId);
 
       if (countError) {
         console.error('Coupon redemption count failed:', countError);

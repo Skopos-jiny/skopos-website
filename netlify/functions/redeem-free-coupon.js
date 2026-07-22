@@ -14,7 +14,7 @@ function json(statusCode, body) {
     statusCode,
     headers: {
       'Access-Control-Allow-Origin': SITE_ORIGIN,
-      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(body),
@@ -98,16 +98,46 @@ exports.handler = async (event) => {
   }
 
   try {
-    const { coupon_code, name, email, phone, user_id } = JSON.parse(event.body || '{}');
+    const { coupon_code, name, email, phone } = JSON.parse(event.body || '{}');
 
-    if (!user_id) {
-      return json(401, { success: false, message: '로그인이 필요합니다.' });
-    }
     if (!coupon_code) {
       return json(400, { success: false, message: '쿠폰 코드가 없습니다.' });
     }
 
     const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+
+    // 무료 발급은 로그인 사용자만 가능. body 의 user_id 는 위조 가능하므로
+    // 반드시 Authorization 헤더의 Supabase JWT 로 사용자를 확인한다.
+    // (미검증 user_id 를 허용하면 가짜 id 를 돌려가며 per_user_limit 을 우회할 수 있음)
+    const authHeader = event.headers.authorization || event.headers.Authorization || '';
+    const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : '';
+    if (!token) {
+      return json(401, { success: false, message: '로그인이 필요합니다.' });
+    }
+    const { data: userData, error: userError } = await sb.auth.getUser(token);
+    if (userError || !userData?.user?.id) {
+      return json(401, { success: false, message: '로그인 세션이 만료되었습니다. 다시 로그인해 주세요.' });
+    }
+    const user_id = userData.user.id;
+
+    // 멱등성: 이미 이용권(결제 또는 무료 발급)이 있는 사용자는
+    // 중복 발급 없이 성공으로 응답한다 (반복 호출로 인한 행 남발 방지)
+    const { data: existing, error: existingErr } = await sb
+      .from('payments')
+      .select('id')
+      .eq('user_id', user_id)
+      .in('status', ['paid', 'free'])
+      .limit(1);
+    if (!existingErr && existing && existing.length) {
+      return json(200, {
+        success: true,
+        free: true,
+        already: true,
+        message: '이미 이용권이 있습니다.',
+        amount: 0,
+        payment_id: existing[0].id,
+      });
+    }
 
     // 서버가 쿠폰을 다시 계산. 클라이언트 금액은 신뢰하지 않는다.
     const couponResult = await getValidCoupon(sb, coupon_code, BASE_AMOUNT, user_id);
@@ -179,7 +209,7 @@ exports.handler = async (event) => {
 
     try {
       if (process.env.AIRTABLE_BASE && process.env.AIRTABLE_TOKEN) {
-        await fetch(`https://api.airtable.com/v0/${process.env.AIRTABLE_BASE}/payments`, {
+        const atRes = await fetch(`https://api.airtable.com/v0/${process.env.AIRTABLE_BASE}/payments`, {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${process.env.AIRTABLE_TOKEN}`,
@@ -187,6 +217,8 @@ exports.handler = async (event) => {
           },
           body: JSON.stringify({ fields: paymentRecord }),
         });
+        const atData = await atRes.json();
+        if (atData.error) console.error('Airtable payments insert error (free):', JSON.stringify(atData.error));
       }
     } catch (atEx) {
       console.error('Airtable insert failed (free):', atEx);

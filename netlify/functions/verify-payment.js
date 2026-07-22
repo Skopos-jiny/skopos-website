@@ -12,11 +12,27 @@ function json(statusCode, body) {
     statusCode,
     headers: {
       'Access-Control-Allow-Origin': SITE_ORIGIN,
-      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(body),
   };
+}
+
+// Authorization: Bearer <supabase access_token> 에서 사용자 확인.
+// 토큰이 유효하면 그 사용자의 id를 반환하고, body 의 user_id 는 무시한다.
+// (클라이언트가 보낸 user_id 는 위조 가능하므로 신뢰하지 않는다)
+async function resolveUserId(sb, event, bodyUserId) {
+  const authHeader = event.headers.authorization || event.headers.Authorization || '';
+  const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : '';
+  if (token) {
+    const { data, error } = await sb.auth.getUser(token);
+    if (!error && data?.user?.id) return { userId: data.user.id, verified: true };
+    // 토큰이 왔는데 유효하지 않으면 명시적으로 거부
+    return { userId: null, verified: false, invalidToken: true };
+  }
+  // 토큰이 없으면 레거시 호환: body 값을 미검증 상태로 사용
+  return { userId: bodyUserId || null, verified: false };
 }
 
 function calculateDiscount(coupon, originalAmount) {
@@ -98,13 +114,18 @@ async function getValidCoupon(sb, couponCode, originalAmount, userId) {
 
 async function cancelPayment(accessToken, impUid, reason) {
   try {
-    await fetch('https://api.iamport.kr/payments/cancel', {
+    const res = await fetch('https://api.iamport.kr/payments/cancel', {
       method: 'POST',
       headers: { Authorization: accessToken, 'Content-Type': 'application/json' },
       body: JSON.stringify({ imp_uid: impUid, reason }),
     });
+    const data = await res.json();
+    if (data.code !== 0) {
+      // 취소 실패는 반드시 로그에 남겨 운영자가 수동 환불할 수 있게 한다
+      console.error('PortOne cancel rejected:', impUid, reason, JSON.stringify(data));
+    }
   } catch (err) {
-    console.error('PortOne cancel failed:', err);
+    console.error('PortOne cancel failed:', impUid, reason, err);
   }
 }
 
@@ -119,6 +140,13 @@ exports.handler = async (event) => {
     if (!imp_uid) return json(400, { success: false, message: 'imp_uid가 없습니다.' });
 
     const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+
+    // 로그인 사용자 확인 (JWT 우선, 위조된 body user_id 차단)
+    const auth = await resolveUserId(sb, event, user_id);
+    if (auth.invalidToken) {
+      return json(401, { success: false, message: '로그인 세션이 만료되었습니다. 다시 로그인해 주세요.' });
+    }
+    const resolvedUserId = auth.userId;
 
     const tokenRes = await fetch('https://api.iamport.kr/users/getToken', {
       method: 'POST',
@@ -147,7 +175,26 @@ exports.handler = async (event) => {
       return json(400, { success: false, message: `결제가 완료되지 않았습니다. (${payment.status})` });
     }
 
-    const couponResult = await getValidCoupon(sb, coupon_code, BASE_AMOUNT, user_id);
+    // 쿠폰 사용은 JWT 로 검증된 로그인 사용자에게만 허용.
+    // 토큰 없는 레거시 경로에서 미검증(또는 생략된) user_id 로
+    // per_user_limit 검사를 우회하는 것을 차단한다.
+    // 결제는 이미 확정된 상태이므로 거부 시 자동 취소를 동반한다.
+    if (String(coupon_code || '').trim() && !auth.verified) {
+      console.error('Coupon payment without verified user:', imp_uid, coupon_code);
+      await cancelPayment(accessToken, imp_uid, '쿠폰 결제 로그인 검증 실패');
+      return json(401, { success: false, message: '쿠폰 사용에는 로그인이 필요합니다. 결제를 자동 취소했으니 로그인 후 다시 시도해 주세요.' });
+    }
+
+    // 쿠폰 재검증: 결제는 이미 완료된 상태이므로, 여기서 실패하면
+    // 반드시 자동 취소해야 한다 (돈만 빠지고 기록·이용권이 없는 상태 방지)
+    let couponResult;
+    try {
+      couponResult = await getValidCoupon(sb, coupon_code, BASE_AMOUNT, resolvedUserId);
+    } catch (couponErr) {
+      console.error('Coupon revalidation failed after payment:', imp_uid, couponErr.message);
+      await cancelPayment(accessToken, imp_uid, '쿠폰 검증 실패: ' + couponErr.message);
+      return json(400, { success: false, message: '쿠폰 검증에 실패하여 결제를 자동 취소했습니다. (' + couponErr.message + ')' });
+    }
     const expectedAmount = couponResult.final_amount;
     const clientAmount = Number(amount || 0);
 
@@ -182,7 +229,7 @@ exports.handler = async (event) => {
     let supabasePaymentId = null;
     const { data: sbData, error: sbErr } = await sb
       .from('payments')
-      .insert([{ ...paymentRecord, user_id: user_id || null }])
+      .insert([{ ...paymentRecord, user_id: resolvedUserId || null }])
       .select('id')
       .single();
 
@@ -195,7 +242,7 @@ exports.handler = async (event) => {
     if (couponResult.coupon) {
       const { error: redemptionError } = await sb.from('coupon_redemptions').insert([{
         coupon_code: couponResult.coupon.code,
-        user_id: user_id || null,
+        user_id: resolvedUserId || null,
         imp_uid,
         merchant_uid,
         original_amount: couponResult.original_amount,
@@ -219,7 +266,7 @@ exports.handler = async (event) => {
 
     try {
       if (process.env.AIRTABLE_BASE && process.env.AIRTABLE_TOKEN) {
-        await fetch(`https://api.airtable.com/v0/${process.env.AIRTABLE_BASE}/payments`, {
+        const atRes = await fetch(`https://api.airtable.com/v0/${process.env.AIRTABLE_BASE}/payments`, {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${process.env.AIRTABLE_TOKEN}`,
@@ -227,6 +274,9 @@ exports.handler = async (event) => {
           },
           body: JSON.stringify({ fields: paymentRecord }),
         });
+        const atData = await atRes.json();
+        // 스키마 불일치(UNKNOWN_FIELD_NAME 등)가 침묵되지 않도록 로깅
+        if (atData.error) console.error('Airtable payments insert error:', JSON.stringify(atData.error));
       }
     } catch (atEx) {
       console.error('Airtable insert failed:', atEx);
