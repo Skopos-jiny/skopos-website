@@ -176,6 +176,16 @@ let priceState = {
 };
 
 function toast(msg,dur=2800){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),dur);}
+
+// 서버 함수 호출용 헤더: 로그인 세션의 JWT 를 첨부해 서버가 사용자를 검증할 수 있게 함
+async function authHeaders(){
+  const h={'Content-Type':'application/json'};
+  try{
+    const {data:{session}}=await sb.auth.getSession();
+    if(session?.access_token)h['Authorization']='Bearer '+session.access_token;
+  }catch(e){}
+  return h;
+}
 function showAlert(id,msg){const el=document.getElementById(id);el.textContent=msg;el.classList.add('show');}
 function hideAlert(id){document.getElementById(id).classList.remove('show');}
 function setStep(n){[1,2,3].forEach(i=>{const el=document.getElementById('step'+i);el.className='step'+(i<n?' done':i===n?' active':'');});}
@@ -210,7 +220,7 @@ async function applyCoupon(){
   if(!code){resetCoupon();showCouponMessage('쿠폰 코드를 입력해주세요.','error');return;}
   btn.disabled=true;btn.textContent='확인';
   try{
-    const res=await fetch('/.netlify/functions/validate-coupon',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({coupon_code:code,amount:BASE_AMOUNT,user_id:currentUser?.id||''})});
+    const res=await fetch('/.netlify/functions/validate-coupon',{method:'POST',headers:await authHeaders(),body:JSON.stringify({coupon_code:code,amount:BASE_AMOUNT,user_id:currentUser?.id||''})});
     const result=await res.json();
     if(!res.ok||!result.success){
       resetCoupon();
@@ -306,7 +316,10 @@ function requestPay(){
     pg:'kcp',pay_method:'card',merchant_uid:merchantUid,
     name:'SKOPOS SDTI 정밀 검사',amount:priceState.final_amount,
     buyer_name:name,buyer_email:email,buyer_tel:'',
-    m_redirect_url:window.location.href,
+    // 주의: href 를 그대로 쓰면 이전 시도의 imp_uid/imp_success 파라미터가
+    // 남아 있어 재시도 복귀 시 첫 번째(옛) 파라미터를 읽어 성공 결제를
+    // 실패로 오판할 수 있음 → 쿼리 없는 깨끗한 URL 사용
+    m_redirect_url:window.location.origin+window.location.pathname,
   },async(rsp)=>{
     if(rsp.success){
       toast('✅ 결제 완료! 검증 중...',2000);setStep(3);
@@ -327,7 +340,7 @@ async function redeemFreeCoupon(){
   const name=currentUser.user_metadata?.full_name||currentUser.email?.split('@')[0]||'';
   const email=currentUser.email||'';
   try{
-    const res=await fetch('/.netlify/functions/redeem-free-coupon',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({coupon_code:priceState.coupon_code,name,email,user_id:currentUser?.id||''})});
+    const res=await fetch('/.netlify/functions/redeem-free-coupon',{method:'POST',headers:await authHeaders(),body:JSON.stringify({coupon_code:priceState.coupon_code,name,email})});
     const result=await res.json();
     if(result.success){
       sessionStorage.setItem('skopos_paid','1');
@@ -353,7 +366,7 @@ async function verifyAndStart(impUid,merchantUid,name,email){
   try{
     const couponCode=priceState.coupon_code||sessionStorage.getItem('skopos_coupon_code')||'';
     const expectedAmount=Number(sessionStorage.getItem('skopos_expected_amount')||priceState.final_amount||BASE_AMOUNT);
-    const res=await fetch('/.netlify/functions/verify-payment',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({imp_uid:impUid,merchant_uid:merchantUid,amount:expectedAmount,coupon_code:couponCode,name,email,user_id:currentUser?.id||''})});
+    const res=await fetch('/.netlify/functions/verify-payment',{method:'POST',headers:await authHeaders(),body:JSON.stringify({imp_uid:impUid,merchant_uid:merchantUid,amount:expectedAmount,coupon_code:couponCode,name,email,user_id:currentUser?.id||''})});
     const result=await res.json();
     if(result.success){sessionStorage.setItem('skopos_paid','1');window.location.href='skopos_premium_quiz.html?paid=1';}
     else{showAlert('payAlert','결제 검증 실패: '+(result.message||'관리자에게 문의해 주세요'));document.getElementById('payBtn').disabled=false;updatePriceView();setStep(2);}
@@ -363,11 +376,19 @@ async function verifyAndStart(impUid,merchantUid,name,email){
 window.addEventListener('load',async()=>{
   const params=new URLSearchParams(window.location.search);
   const impUid=params.get('imp_uid'),merchantUid=params.get('merchant_uid'),impSuccess=params.get('imp_success');
+  // 복귀 파라미터는 1회 소비 후 URL 에서 제거 (재시도·새로고침 시 오판 방지)
+  if(impUid){
+    try{ window.history.replaceState({},'',window.location.origin+window.location.pathname); }catch(e){}
+  }
   if(impUid&&impSuccess==='true'){
     const name=sessionStorage.getItem('skopos_buyer_name')||'';
     const email=sessionStorage.getItem('skopos_buyer_email')||'';
+    // 가격 상태 전체 복원 (요약 표시 정합성: 검증 실패로 결제 패널에
+    // 돌아왔을 때 할인 전/할인/최종 금액이 일치하도록)
     priceState.coupon_code=sessionStorage.getItem('skopos_coupon_code')||'';
     priceState.final_amount=Number(sessionStorage.getItem('skopos_expected_amount')||BASE_AMOUNT);
+    priceState.original_amount=BASE_AMOUNT;
+    priceState.discount_amount=Math.max(0,BASE_AMOUNT-priceState.final_amount);
     toast('결제 확인 중...',2000);setStep(3);
     await verifyAndStart(impUid,merchantUid,name,email);
   }else if(impUid&&impSuccess==='false'){showAlert('payAlert','결제가 완료되지 않았어요. 다시 시도해주세요.');setStep(2);}

@@ -150,13 +150,27 @@ const KAKAO_APP_KEY  = 'd0c68901a08c4272cce34084fca1372d';
 const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
 
+// ── redirect 파라미터 검증 (오픈 리다이렉트 방지) ──────────
+// 내부 상대 경로만 허용: "payment.html", "skopos_quiz.html?x=1",
+// "/path?query" 형태. 절대 URL(https://...)이나 //host 는 거부.
+function safeRedirect(){
+  const raw = new URLSearchParams(window.location.search).get('redirect') || '';
+  if(/^(?:[\w-]+\.html(?:[?#].*)?|\/(?!\/)[^\s]*)$/.test(raw)) return raw;
+  return 'mypage.html';
+}
+
 // ── 이미 로그인된 경우 리다이렉트 ─────────────────────────
 (async()=>{
   const { data:{ session } } = await sb.auth.getSession();
   if(session){
-    const redirect = new URLSearchParams(window.location.search).get('redirect') || 'mypage.html';
-    window.location.href = redirect;
+    window.location.href = safeRedirect();
   }
+})();
+
+// ── URL 파라미터로 초기 탭 지정 (payment.html 의 회원가입 링크 대응) ──
+(function(){
+  const tab = new URLSearchParams(window.location.search).get('tab');
+  if(tab === 'signup') switchTab('signup');
 })();
 
 // ── 탭 전환 ──────────────────────────────────────────────
@@ -177,11 +191,11 @@ function showInfo(msg) { const el=document.getElementById('alertInfo');  el.text
 // ── 카카오 로그인 ──────────────────────────────────────────
 async function loginKakao(){
   clearAlerts();
-  const redirect = new URLSearchParams(window.location.search).get('redirect') || 'mypage.html';
+  const redirect = safeRedirect();
   const { error } = await sb.auth.signInWithOAuth({
     provider: 'kakao',
     options: {
-      redirectTo: window.location.origin + '/' + redirect,
+      redirectTo: window.location.origin + (redirect.startsWith('/') ? '' : '/') + redirect,
     }
   });
   if(error){ console.error('카카오:', error); showError('카카오 로그인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.'); }
@@ -192,8 +206,7 @@ function loginNaver(){
   clearAlerts();
   const state = Math.random().toString(36).slice(2);
   sessionStorage.setItem('naver_state', state);
-  const redirect = new URLSearchParams(window.location.search).get('redirect') || 'mypage.html';
-  sessionStorage.setItem('naver_redirect', redirect);
+  sessionStorage.setItem('naver_redirect', safeRedirect());
 
   const params = new URLSearchParams({
     response_type: 'code',
@@ -227,8 +240,7 @@ async function loginEmail(){
     errEl.classList.add('show');
     btn.disabled = false; btn.textContent = '로그인';
   } else {
-    const redirect = new URLSearchParams(window.location.search).get('redirect') || 'mypage.html';
-    window.location.href = redirect;
+    window.location.href = safeRedirect();
   }
 }
 
@@ -250,7 +262,7 @@ async function signupEmail(){
   btn.disabled = true; btn.textContent = '가입 중...';
   errEl.classList.remove('show');
 
-  const { error } = await sb.auth.signUp({
+  const { data, error } = await sb.auth.signUp({
     email, password: pw,
     options: { data: { full_name: name } }
   });
@@ -258,10 +270,17 @@ async function signupEmail(){
   if(error){
     showError('가입 오류: ' + error.message);
     btn.disabled = false; btn.textContent = '회원가입';
+  } else if(data && data.session){
+    // 이메일 인증 불필요 설정: 즉시 세션 발급 → 바로 목적지로 이동
+    const el = document.getElementById('signupSuccess');
+    el.textContent = '✅ 가입 완료! 잠시 후 이동합니다.';
+    el.classList.add('show');
+    btn.textContent = '가입 완료';
+    setTimeout(()=>{ window.location.href = safeRedirect(); }, 800);
   } else {
+    // 이메일 인증 필요: 안내 후 로그인 탭으로
     document.getElementById('signupSuccess').classList.add('show');
     btn.disabled = false; btn.textContent = '회원가입 완료';
-    // 이메일 인증 불필요 설정 시 자동 로그인
     setTimeout(()=> switchTab('login'), 2000);
   }
 }

@@ -1090,8 +1090,9 @@ html{scroll-behavior:smooth}
 </style>
 <!-- Supabase SDK -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" defer></script>
-<!-- 포트원 V1 SDK -->
-<script src="https://cdn.iamport.kr/v1/iamport.js" defer></script>
+<!-- SKOPOS 공유 로그인 게이트 모듈 -->
+<script src="skopos-auth.js" defer></script>
+<!-- 결제는 payment.html 로 일원화되어 포트원 SDK 는 이 페이지에서 제거됨 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
 </head>
@@ -3402,19 +3403,15 @@ function clearProgress(){
   try{ localStorage.removeItem(PROGRESS_KEY); }catch(e){}
 }
 
-// ── Supabase 사용자 이름 불러오기 ──────────────────────────
-window.addEventListener('DOMContentLoaded', (async function loadUserName(){
-  try{
-    if(typeof supabase === 'undefined') return;
-    const { createClient } = supabase;
-    const sb = createClient(
-      'https://rgbukqphcqptnfeqipfn.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJnYnVrcXBoY3FwdG5mZXFpcGZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2OTkzMDMsImV4cCI6MjA5NDI3NTMwM30.fWUHe2AoWr9fMLUNSQkbhosUO7FH9dvZOIZbz_XyzFM'
-    );
-    const { data:{ session } } = await sb.auth.getSession();
-    if(!session) return;
+// ── 로그인 사용자 정보 화면 반영 (guard onReady 에서 호출) ──
+let _authed = false;      // 로그인 확인 여부
+let _currentUser = null;  // 로그인 사용자 객체
 
-    const user = session.user;
+function applyLoggedInUser(user){
+  try{
+    if(!user) return;
+    _currentUser = user;
+
     const name = user.user_metadata?.full_name
               || user.user_metadata?.name
               || user.email?.split('@')[0]
@@ -3441,9 +3438,8 @@ window.addEventListener('DOMContentLoaded', (async function loadUserName(){
       badgeNameEl.textContent = name;
       badgeEl.style.display   = 'flex';
     }
-
-  }catch(e){ console.warn('사용자 이름 로드 오류:', e); }
-}));
+  }catch(e){ console.warn('사용자 이름 반영 오류:', e); }
+}
 
 // 이름 반영 헬퍼, 로딩·결과 화면에 이름 적용
 function applyUserName(){
@@ -3542,55 +3538,49 @@ function toast(msg,dur=2800){const t=document.getElementById('toast');t.textCont
 function trackEvent(n,p){if(typeof gtag!=='undefined')gtag('event',n,p||{});}
 
 // ── PAYMENT ──────────────────────────────────────────────────────
-const IMP_CODE = 'imp57703773'; // 포트원 가맹점 식별코드
-
+// 결제는 payment.html(전용 결제 페이지)로 일원화.
+//   - 쿠폰 적용 · 무료 쿠폰 발급 · 서버 검증(verify-payment) · 모바일
+//     리다이렉트 복귀 처리를 모두 payment.html 이 담당한다.
+//   - 검증 성공 시 payment.html 이 sessionStorage 'skopos_paid'='1' 을
+//     기록하고 ?paid=1 로 이 페이지로 복귀시킨다.
+//   - 이 페이지는 로그인 계정의 결제 이력(payments 테이블)을 조회해
+//     "1회 결제 · 영구 열람"을 보장한다. (아래 checkEntitlement)
 async function initPayment(){
-  // IMP 초기화
-  IMP.init(IMP_CODE);
-
-  const merchantUid = 'SKOPOS-' + Date.now();
-
-  IMP.request_pay({
-    pg:           'kcp',
-    pay_method:   'card',
-    merchant_uid:  merchantUid,
-    name:         'SKOPOS SDTI 정밀 검사',
-    amount:        9900,
-    buyer_name:   currentUserName || '',
-    buyer_email:  '',
-    buyer_tel:    '',
-    m_redirect_url: window.location.href,
-  }, async (rsp) => {
-    if(rsp.success){
-      toast('✅ 결제 완료! 진단을 시작합니다.', 2500);
-      await verifyPayment(rsp.imp_uid, rsp.merchant_uid);
-    } else {
-      if(rsp.error_msg && rsp.error_msg !== '사용자가 결제를 취소하였습니다.'){
-        alert('결제 실패: ' + rsp.error_msg);
-      }
-    }
-  });
+  // 로그인 필수: 비로그인 상태면 결제 대신 로그인 게이트 노출
+  if(!_authed){
+    if(window.SkoposAuth) SkoposAuth.showGate({
+      subtitle:'결제 전 <strong>로그인</strong>이 필요해요.<br>결제 내역이 계정에 안전하게 연결됩니다.'
+    });
+    return;
+  }
+  // 기결제 사용자 이중 결제 방지: 영수 플래그 또는 결제 이력이 있으면
+  // 결제 페이지 대신 바로 검사 시작
+  let receipt = false;
+  try{ receipt = sessionStorage.getItem('skopos_paid') === '1'; }catch(e){}
+  if(receipt){ startQuiz(true); return; }
+  if(_currentUser && await checkEntitlement(_currentUser)){
+    try{ sessionStorage.setItem('skopos_paid','1'); }catch(e){}
+    startQuiz(true); return;
+  }
+  try{ trackEvent('premium_pay_click',{}); }catch(e){}
+  window.location.href = 'payment.html';
 }
 
-async function verifyPayment(impUid, merchantUid){
+// 로그인 계정의 결제 이력 조회 → 재방문 시 자동 잠금 해제
+// (payments 테이블에 본인 행 SELECT 를 허용하는 RLS 정책 필요:
+//  using (auth.uid() = user_id))
+async function checkEntitlement(user){
   try{
-    const res = await fetch('/.netlify/functions/verify-payment', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ imp_uid: impUid, merchant_uid: merchantUid, amount: 9900 }),
-    });
-    const result = await res.json();
-    if(result.success){
-      toast('✅ 결제 확인 완료! 진단을 시작합니다.', 2000);
-      setTimeout(()=> startQuiz(true), 800);
-    } else {
-      alert('결제 검증 실패: ' + (result.message || '관리자에게 문의해 주세요.'));
-    }
-  }catch(err){
-    console.error('검증 오류:', err);
-    toast('결제 확인 중 오류. 진단을 시작합니다.', 2000);
-    setTimeout(()=> startQuiz(true), 1000);
-  }
+    if(!window.SkoposAuth || !user) return false;
+    const sb = await SkoposAuth.getClient();
+    const { data, error } = await sb.from('payments')
+      .select('id,status')
+      .eq('user_id', user.id)
+      .in('status', ['paid','free'])
+      .limit(1);
+    if(error){ console.warn('결제 이력 조회 오류:', error); return false; }
+    return !!(data && data.length);
+  }catch(e){ console.warn('결제 이력 조회 실패:', e); return false; }
 }
 
 // ── QUIZ ──────────────────────────────────────────────────────
@@ -3623,6 +3613,11 @@ function confirmAge(){
 
 // 연령 선택 화면을 띄우는 진입점 (결제 완료/자동 시작에서 호출)
 function startQuiz(paid){
+  // 로그인 필수: 비로그인 상태면 로그인 게이트 노출 (무료 퀴즈와 동일한 방어)
+  if(!_authed){
+    if(window.SkoposAuth) SkoposAuth.showGate();
+    return;
+  }
   _pendingPaid = paid||false;
   // 저장된 연령대가 있으면 미리 반영
   try{
@@ -4136,13 +4131,8 @@ async function openSeasonSubModal(){
 
   // 로그인 사용자의 이메일 자동 입력
   try{
-    if(typeof supabase !== 'undefined'){
-      const { createClient } = supabase;
-      const sb = createClient(
-        'https://rgbukqphcqptnfeqipfn.supabase.co',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJnYnVrcXBoY3FwdG5mZXFpcGZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2OTkzMDMsImV4cCI6MjA5NDI3NTMwM30.fWUHe2AoWr9fMLUNSQkbhosUO7FH9dvZOIZbz_XyzFM'
-      );
-      const { data:{ session } } = await sb.auth.getSession();
+    if(window.SkoposAuth){
+      const session = await SkoposAuth.getSession();
       if(session?.user?.email && emailInput && !emailInput.value){
         emailInput.value = session.user.email;
       }
@@ -4181,16 +4171,13 @@ async function submitSeasonSubscription(ev){
   submitBtn.textContent = '신청 중...';
 
   try{
-    // Supabase 라이브러리 로드 확인
-    if(typeof window.supabase === 'undefined' || !window.supabase.createClient){
+    // 공유 모듈 로드 확인
+    if(!window.SkoposAuth){
       throw new Error('LIB_NOT_LOADED');
     }
 
-    // 클라이언트 생성 (변수명 sbClient로 충돌 방지)
-    const sbClient = window.supabase.createClient(
-      'https://rgbukqphcqptnfeqipfn.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJnYnVrcXBoY3FwdG5mZXFpcGZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2OTkzMDMsImV4cCI6MjA5NDI3NTMwM30.fWUHe2AoWr9fMLUNSQkbhosUO7FH9dvZOIZbz_XyzFM'
-    );
+    // 공유 Supabase 클라이언트 (싱글턴)
+    const sbClient = await SkoposAuth.getClient();
 
     // 현재 로그인 세션 확인 (있으면 user_id 연결)
     const { data:{ session } } = await sbClient.auth.getSession();
@@ -4847,12 +4834,8 @@ async function saveResult(id){
   }catch(e){}
   // 3. Supabase quiz_results 테이블 저장
   try{
-    if(typeof supabase === 'undefined') return;
-    const { createClient } = supabase;
-    const sb = createClient(
-      'https://rgbukqphcqptnfeqipfn.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJnYnVrcXBoY3FwdG5mZXFpcGZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2OTkzMDMsImV4cCI6MjA5NDI3NTMwM30.fWUHe2AoWr9fMLUNSQkbhosUO7FH9dvZOIZbz_XyzFM'
-    );
+    if(!window.SkoposAuth) return;
+    const sb = await SkoposAuth.getClient();
     const { data:{ session } } = await sb.auth.getSession();
     if(!session) return;
     const { error } = await sb.from('quiz_results').insert([{
@@ -6548,48 +6531,50 @@ function resumeRestart(){
   try{ trackEvent('quiz_resume_restart', {});  }catch(e){}
 }
 
-// ── 초기화: paid=1 자동시작 or URL 결과 복원 ─────────────────
-(function(){
+// ── 초기화: 로그인 게이트 → paid=1 자동시작 / 이어하기 / 결과 복원 ──
+// (skopos-auth.js 가 defer 로 로드되므로 DOMContentLoaded 이후 실행해야
+//  window.SkoposAuth 가 준비됨)
+function _initPremiumGate(){
   const p = new URLSearchParams(window.location.search);
 
-  // 결과 공유 링크가 있으면 결과 복원이 우선 (아래 r= 분기에서 처리됨)
-  // 그렇지 않으면 저장된 진행 상태가 있는지 먼저 확인 → 있으면 모달 표시
-  if(!p.get('r') && !p.get('pdf')){
-    const saved = loadProgress();
-    if(saved){
-      showResumeModal(saved);
-      return;
-    }
+  // 공개 열람 화면용 passive 인증 구독:
+  // 게이트는 띄우지 않되, 이후 결제/검사 버튼이 showGate() 로 띄운
+  // 게이트에서 로그인하면 onReady 가 발화해 _authed 가 갱신되도록 함
+  function watchAuthPassive(){
+    if(!window.SkoposAuth) return;
+    SkoposAuth.guard({
+      passive: true,
+      onReady(user){ _authed = true; applyLoggedInUser(user); }
+    });
   }
 
-  if(p.get('paid') === '1'){
-    startQuiz(true);
-    return;
-  }
+  // ═══ 공개 열람 (로그인 불필요) ═══════════════════════════
   // 마이페이지에서 PDF 재다운로드 요청
   if(p.get('pdf') === '1' && p.get('r')){
-    const id = decodeURIComponent(atob(p.get('r')));
-    const type = TYPE_MAP[id];
-    if(type){
-      resultType = type;
-      const scores={};
-      SECS.forEach(s=>{ scores[s.label]=getSectionScore(type, {}, s, 55); });
-      renderResult(type, scores);
-      show('sr');
-      setTimeout(async()=>{
-        document.querySelectorAll('.r-bar-fill').forEach(b=>b.style.width=b.dataset.val+'%');
-        document.querySelectorAll('.budget-fill').forEach(b=>b.style.width=b.dataset.val+'%');
-        if(resultType) renderSpaceRefs(resultType);
-        // 자동 PDF 다운로드
-        setTimeout(()=>downloadPDF(), 1200);
-      }, 500);
-      return;
-    }
-  }
-  const r = p.get('r');
-  if(r){
     try{
-      const id   = decodeURIComponent(atob(r));
+      const id = decodeURIComponent(atob(p.get('r')));
+      const type = TYPE_MAP[id];
+      if(type){
+        resultType = type;
+        const scores={};
+        SECS.forEach(s=>{ scores[s.label]=getSectionScore(type, {}, s, 55); });
+        renderResult(type, scores);
+        show('sr');
+        setTimeout(async()=>{
+          document.querySelectorAll('.r-bar-fill').forEach(b=>b.style.width=b.dataset.val+'%');
+          document.querySelectorAll('.budget-fill').forEach(b=>b.style.width=b.dataset.val+'%');
+          if(resultType) renderSpaceRefs(resultType);
+          setTimeout(()=>downloadPDF(), 1200);
+        }, 500);
+      }
+    }catch(e){ console.warn('PDF 복원 오류:', e); }
+    watchAuthPassive();
+    return;
+  }
+  // 공유된 결과 링크 열람
+  if(p.get('r')){
+    try{
+      const id   = decodeURIComponent(atob(p.get('r')));
       const type = TYPE_MAP[id];
       if(type){
         resultType = type;
@@ -6604,8 +6589,76 @@ function resumeRestart(){
         }, 400);
       }
     }catch(e){ console.warn('결과 복원 오류:', e); }
+    watchAuthPassive();
+    return;
   }
-})();
+
+  // 결제 게이트(sp)의 결제 버튼을 "검사 시작" 버튼으로 전환
+  function unlockPayGate(){
+    try{ sessionStorage.setItem('skopos_paid','1'); }catch(e){}
+    const payBtn = document.querySelector('#sp .btn-pay');
+    if(payBtn){
+      payBtn.textContent = '✦ 결제 완료 · 검사 시작하기';
+      payBtn.onclick = ()=> startQuiz(true);
+    }
+    const guaranteeEl = document.querySelector('#sp .guarantee');
+    if(guaranteeEl) guaranteeEl.textContent = '✅ 결제 이력이 확인되었습니다 · 바로 검사를 시작할 수 있어요';
+  }
+
+  // ═══ 로그인 필수: 검사 · 결제 · 이어하기 ══════════════════
+  async function afterLogin(user){
+    _authed = true;
+    applyLoggedInUser(user);
+    try{ trackEvent('auth_ready',{page:'premium_quiz'}); }catch(e){}
+
+    // 1) 저장된 진행 상태가 있으면 "이어하기" 모달
+    //    ("처음부터 새로 시작" 시 결제 게이트로 돌아가므로,
+    //     백그라운드로 결제 이력을 확인해 게이트 버튼을 미리 전환)
+    const saved = loadProgress();
+    if(saved){
+      showResumeModal(saved);
+      checkEntitlement(user).then(ok=>{ if(ok) unlockPayGate(); });
+      return;
+    }
+
+    // 2) 결제 직후 복귀(paid=1): payment.html 이 남긴 영수 플래그 확인
+    //    (URL 에 paid=1 만 붙여 결제를 우회하는 것을 차단)
+    //    ※ startQuiz 전에 unlockPayGate 로 결제 게이트 버튼도 전환해 두어야
+    //      결과 화면 "다시 진단하기"→결제 게이트 복귀 시 재결제로 이어지지 않음
+    let receipt = false;
+    try{ receipt = sessionStorage.getItem('skopos_paid') === '1'; }catch(e){}
+    if(p.get('paid') === '1' && receipt){ unlockPayGate(); startQuiz(true); return; }
+
+    // 3) 계정의 결제 이력 조회 → 결제한 적 있으면 자동 잠금 해제
+    //    ("1회 결제 · 영구 열람": 기기·세션이 바뀌어도 로그인만 하면 이용 가능)
+    const entitled = await checkEntitlement(user);
+    if(entitled){
+      unlockPayGate();
+      if(p.get('paid') === '1'){ startQuiz(true); }
+      return;
+    }
+
+    // 4) 결제 이력 없음 → 결제 게이트(sp)에 그대로 머무름
+    if(p.get('paid') === '1'){
+      toast('결제 확인이 필요해요. 결제 페이지로 이동합니다.', 2600);
+      setTimeout(()=>{ window.location.href = 'payment.html'; }, 1500);
+    }
+  }
+
+  if(window.SkoposAuth){
+    SkoposAuth.guard({
+      subtitle:'SDTI 정밀 검사는 <strong>로그인 후</strong> 진행할 수 있어요.<br>결제 내역과 결과가 계정에 안전하게 저장됩니다.',
+      onReady: afterLogin
+    });
+  }else{
+    console.warn('SkoposAuth 모듈이 로드되지 않았습니다.');
+  }
+}
+if(document.readyState === 'loading'){
+  document.addEventListener('DOMContentLoaded', _initPremiumGate);
+}else{
+  _initPremiumGate();
+}
 
 </script>
 </body>

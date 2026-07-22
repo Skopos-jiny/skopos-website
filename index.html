@@ -1797,6 +1797,20 @@ document.querySelectorAll('.hero .fade-up').forEach(el=>el.classList.add('on'));
 
 
 <!-- Supabase 로그인 상태 체크 -->
+<script>
+// #terms / #privacy / #refund 해시로 진입 시 해당 모달 자동 오픈
+// (login.html 회원가입 폼의 약관 링크가 index.html#terms 로 연결됨)
+(function(){
+  function openFromHash(){
+    const key = (window.location.hash||'').replace('#','');
+    if(['terms','privacy','refund'].includes(key) && typeof openModal==='function'){
+      openModal(key);
+    }
+  }
+  window.addEventListener('load', openFromHash);
+  window.addEventListener('hashchange', openFromHash);
+})();
+</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
 (async()=>{

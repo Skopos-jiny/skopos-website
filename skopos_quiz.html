@@ -55,6 +55,10 @@
   function trackEvent(name,params){ if(typeof gtag!=='undefined') gtag('event',name,params); }
 </script>
 
+<!-- 인증: Supabase + 공유 로그인 게이트 모듈 -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="skopos-auth.js"></script>
+
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -1798,6 +1802,24 @@ function saveResult(type, sub){
     url.searchParams.set('r',btoa(encodeURIComponent(type.id)));
     window.history.replaceState({},'',url.toString());
   }catch(e){}
+  // 로그인 계정에 결과 저장 (프리미엄과 동일한 quiz_results 테이블)
+  // 실패해도 결과 표시는 그대로 진행 (fire-and-forget)
+  (async()=>{
+    try{
+      if(!window.SkoposAuth) return;
+      const sb = await SkoposAuth.getClient();
+      const { data:{ session } } = await sb.auth.getSession();
+      if(!session) return;
+      const { error } = await sb.from('quiz_results').insert([{
+        user_id:     session.user.id,
+        quiz_type:   'SDTI 기초',
+        result_type: type.id,
+        result_name: type.plain || type.id,
+        created_at:  new Date().toISOString(),
+      }]);
+      if(error) console.warn('quiz_results 저장 오류:', error);
+    }catch(e){ console.warn('결과 저장 실패:', e); }
+  })();
 }
 function loadSavedResult(){
   let raw=null;
@@ -1825,7 +1847,15 @@ function getShareUrl(){
   }catch(e){return window.location.href;}
 }
 
+let _authed=false;      // 로그인 확인 여부 (guard onReady 에서 true)
+let _currentUser=null;  // 로그인 사용자
+
 function startQuiz(){
+  // 로그인 안 된 상태에서 진입 시 게이트를 다시 띄우고 차단
+  if(!_authed){
+    if(window.SkoposAuth) SkoposAuth.showGate();
+    return;
+  }
   cur=0;ans={};
   show('sq');
   renderQ();
@@ -2433,8 +2463,15 @@ function retryQuiz(){
 // ON LOAD — check URL for shared result
 // ═══════════════════════════════════════════════════════
 window.addEventListener('load',()=>{
+  const onAuthReady=(user)=>{
+    _authed=true;
+    _currentUser=user;
+    try{ trackEvent('auth_ready',{page:'free_quiz'}); }catch(e){}
+  };
+
   const found=loadSavedResult();
   if(found){
+    // 공유된 결과 링크(?r=)는 로그인 없이도 열람 허용
     resultType=found.type;
     resultSub=found.sub;
     renderResult(found.type, found.sub, true);
@@ -2443,6 +2480,22 @@ window.addEventListener('load',()=>{
       document.querySelectorAll('.rbar').forEach(b=>b.style.width=b.dataset.val+'%');
       setTimeout(renderSpaceImages, 600);
     },400);
+    // passive: 게이트는 띄우지 않되 인증 구독은 유지
+    // → "다시 하기" 후 startQuiz 가 띄운 게이트에서 로그인해도 정상 진행
+    if(window.SkoposAuth){
+      SkoposAuth.guard({ passive:true, onReady:onAuthReady });
+    }
+    return;
+  }
+
+  // ── 로그인 필수: 로그인 확인 전까지 로그인 게이트 노출 ──
+  if(window.SkoposAuth){
+    SkoposAuth.guard({
+      subtitle:'무료 검사는 <strong>로그인 후</strong> 진행할 수 있어요.<br>결과가 계정에 안전하게 저장됩니다.',
+      onReady:onAuthReady
+    });
+  }else{
+    console.warn('SkoposAuth 모듈이 로드되지 않았습니다.');
   }
 });
 </script>
