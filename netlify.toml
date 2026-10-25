@@ -1,2 +1,33 @@
 [functions]
   directory = "netlify/functions"
+
+# 셀인하자 라인 종료에 따른 리다이렉트 (기존 유입 링크 보존)
+[[redirects]]
+  from = "/selinhaja"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/selinhaja.html"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/goodpartner"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/goodpartner.html"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/PriceInformation"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/PriceInformation.html"
+  to = "/"
+  status = 301

@@ -1,7 +1,5 @@
 User-agent: *
 Allow: /
-Disallow: /admin.html
-Disallow: /admin
 
 # 검색엔진 크롤러
 User-agent: Googlebot
