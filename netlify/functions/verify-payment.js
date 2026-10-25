@@ -3,7 +3,7 @@
 
 const { createClient } = require('@supabase/supabase-js');
 
-const BASE_AMOUNT = 9900;
+const BASE_AMOUNT = 29900;
 const ORDER_NAME = 'SKOPOS SDTI 정밀 검사';
 const SITE_ORIGIN = 'https://skopos.kr';
 
