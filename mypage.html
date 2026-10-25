@@ -278,7 +278,7 @@ async function renderPayments(user){
     area.innerHTML = `<div class="empty">
       <div class="empty-icon">💳</div>
       <div class="empty-text">아직 결제 내역이 없어요<br>SDTI 정밀 검사로 더 깊이 알아보세요</div>
-      <a class="btn-cta" href="payment.html">SDTI 정밀 검사 ₩9,900</a>
+      <a class="btn-cta" href="payment.html">SDTI 정밀 검사 ₩29,900</a>
     </div>`;
     return;
   }
@@ -293,7 +293,7 @@ async function renderPayments(user){
           <div class="pay-detail">${date} ${time} · ${p.pg||'NHN KCP'} · 주문번호: ${(p.merchant_uid||p.imp_uid||'').slice(-12)}</div>
         </div>
         <div class="pay-right">
-          <div class="pay-amount">₩${(p.amount||9900).toLocaleString()}</div>
+          <div class="pay-amount">₩${(p.amount||29900).toLocaleString()}</div>
           <span class="pay-status">${p.status==='paid'||p.status==='PAID'?'결제완료':'처리중'}</span>
         </div>
       </div>`;

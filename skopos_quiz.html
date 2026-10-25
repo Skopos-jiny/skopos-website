@@ -745,11 +745,6 @@ em{font-style:normal;}
 </style>
 </head>
 <body>
-<a class="cafe-bar" href="https://cafe.naver.com/selinhaja" target="_blank" rel="noopener">
-  <span class="cafe-bar-ic">☕</span>
-  <span class="cafe-bar-txt"><b>셀인하자 공식 카페</b> 오픈! 진단 결과 공유·반셀프 시공 노하우를 함께 나눠요</span>
-  <span class="cafe-bar-cta">카페 가입하기 →</span>
-</a>
 <nav aria-label="주 메뉴">
   <a class="nav-brand" href="https://skopos.kr">SKO<span>POS</span></a>
   <div class="nav-right">
@@ -2200,16 +2195,11 @@ function renderResult(t, sub, unlocked){
         </div>
       </div>
 
-      <!-- 가격 비교 -->
+      <!-- 가격 안내 -->
       <div class="upg-price">
-        <div class="upg-price-row">
-          <span class="upg-price-label">정가</span>
-          <span class="upg-price-strike">39,000원</span>
-        </div>
         <div class="upg-price-row upg-price-now">
-          <span class="upg-price-label-now">지금 가격</span>
-          <span class="upg-price-value">9,900원</span>
-          <span class="upg-price-badge">75% OFF</span>
+          <span class="upg-price-label-now">정밀 검사</span>
+          <span class="upg-price-value">29,900원</span>
         </div>
         <p class="upg-price-note">1회 결제 · 평생 열람 · 환불 가능 (7일 이내)</p>
       </div>
@@ -2217,25 +2207,12 @@ function renderResult(t, sub, unlocked){
       <!-- CTA 버튼 -->
       <a class="upg-btn-primary" href="skopos_premium_quiz.html" onclick="trackEvent('upgrade_cta_click',{from_type:'${t.id}'})">
         <span>정밀 검사 시작하기</span>
-        <span class="upg-btn-price">9,900원</span>
+        <span class="upg-btn-price">29,900원</span>
         <span class="upg-btn-arrow">→</span>
       </a>
 
       <p class="upg-trust">💳 카카오페이 · 토스 · 카드 결제 · 14분 평균 소요</p>
     </div>
-
-    <!-- ═══════════════════════════════════════════════
-         셀인하자 시공 안내 (진단 → 실제 공간 연결)
-         ═══════════════════════════════════════════════ -->
-    <a href="/selinhaja?from=free" onclick="trackEvent('selinhaja_cta_click',{from:'free',from_type:'${t.id}'})" style="display:block;text-decoration:none;margin:24px 0 4px;background:linear-gradient(145deg,#FFFAFC,#F8F0F5);border:1px solid rgba(220,20,120,.15);border-radius:16px;padding:26px 24px;text-align:center;box-shadow:0 4px 24px rgba(220,20,120,.08);position:relative;overflow:hidden">
-      <span style="position:absolute;top:-40px;right:-40px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(220,20,120,.1),transparent 70%);pointer-events:none"></span>
-      <span style="display:block;font-size:2.2rem;margin-bottom:12px;position:relative;z-index:1">🏠</span>
-      <span style="display:inline-block;font-size:.68rem;font-weight:800;letter-spacing:.08em;color:#DC1478;margin-bottom:8px;position:relative;z-index:1">✦ 진단 결과를 실제 공간으로</span>
-      <span style="display:block;font-size:1.25rem;font-weight:900;color:#0F0F1A;line-height:1.35;margin-bottom:8px;position:relative;z-index:1">내 유형, 이제 <span style="color:#DC1478">실제 집</span>에 적용할 차례</span>
-      <span style="display:block;font-size:.88rem;font-weight:600;color:#3D3D5C;line-height:1.7;margin-bottom:18px;position:relative;z-index:1">진단 결과를 그대로 이어받아 인테리어 시공까지.<br>심리에 맞는 공간을 투명한 정찰제로 만들어드려요.</span>
-      <span style="display:inline-flex;align-items:center;gap:8px;background:#DC1478;color:#fff;font-size:.92rem;font-weight:800;padding:15px 32px;border-radius:50px;box-shadow:0 8px 24px rgba(220,20,120,.3);position:relative;z-index:1">셀인하자에서 시공 알아보기 →</span>
-      <span style="display:block;font-size:.74rem;color:#8890A4;font-weight:600;margin-top:12px;position:relative;z-index:1">감사 이벤트 50% 할인 · 6월 말일까지 · 현장점검 200만원부터</span>
-    </a>
 
     <!-- 카카오톡 공유 버튼 -->
     <div style="margin-top:36px;padding-top:28px;border-top:1px solid rgba(0,0,0,.06);display:flex;flex-direction:column;align-items:center;gap:14px">
@@ -2245,13 +2222,6 @@ function renderResult(t, sub, unlocked){
         카카오톡으로 공유하기
       </button>
       <button class="bretry" onclick="retryQuiz()">다시 하기</button>
-      <a href="https://cafe.naver.com/selinhaja" target="_blank" rel="noopener" style="display:block;width:100%;max-width:380px;margin-top:18px;padding:18px 20px;background:linear-gradient(135deg,#E91E8C,#7a1546);border-radius:18px;text-decoration:none;color:#fff;text-align:center">
-        <div style="font-size:1.6rem;margin-bottom:6px">☕</div>
-        <div style="font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;opacity:.85;font-weight:700;margin-bottom:4px">셀인하자 공식 카페</div>
-        <div style="font-size:1rem;font-weight:900;margin-bottom:6px">내 유형, 다른 사람들은 어떻게 살고 있을까?</div>
-        <div style="font-size:.78rem;opacity:.9;line-height:1.5;margin-bottom:12px">같은 유형끼리 사례 공유·반셀프 노하우·견적 후기·공동구매까지</div>
-        <div style="display:inline-block;background:#fff;color:#E91E8C;font-weight:800;font-size:.82rem;padding:8px 20px;border-radius:50px">네이버 카페 가입하기 →</div>
-      </a>
     </div>
   `;
 
