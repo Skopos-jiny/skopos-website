@@ -202,6 +202,47 @@ nav{position:sticky;top:0;left:0;right:0;z-index:200;height:60px;display:flex;al
 .q-timer-txt{font-size:.75rem;font-weight:700;color:var(--gray);transition:color .3s}
 .q-timer-txt.warn{color:#E07070}
 
+/* ── 25p 확장 웹 결과지 ── */
+.radar-figure{display:flex;justify-content:center;margin:6px 0 22px}
+.radar-svg{width:min(320px,86vw);height:auto}
+.rg-formula{display:flex;align-items:stretch;gap:8px;margin:14px 0 18px}
+.rg-f{flex:1;border-radius:12px;padding:12px 10px;text-align:center}
+.rg-f b{display:block;font-size:.8rem;margin-bottom:4px}
+.rg-f span{font-size:.68rem;color:#6B7086;line-height:1.5;display:block}
+.rg-op{align-self:center;font-weight:800;color:#C9A96E;font-size:1rem}
+.concept-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.concept-card{background:#FAFAFC;border:1px solid #EEEEF4;border-radius:12px;padding:14px 16px}
+.concept-card b{display:block;font-size:.85rem;margin-bottom:2px}
+.concept-card em{font-style:normal;font-size:.6rem;letter-spacing:.08em;color:#9AA0B4;text-transform:uppercase;display:block;margin-bottom:6px}
+.concept-card p{font-size:.76rem;color:#4A4E63;line-height:1.65;margin:0}
+.typemap-row{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.typemap-group{width:88px;flex:none;font-size:.7rem;font-weight:800;color:#6B7086}
+.typemap-chips{flex:1;display:flex;gap:6px}
+.typemap-chip{flex:1;display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:9px;background:#FAFAFC;border:1px solid #EEEEF4;font-size:.73rem;font-weight:600;color:#3A3E53}
+.typemap-chip.me{background:#1A1040;color:#fff;font-weight:800;border-color:#1A1040}
+.principle-card{background:#FAFAFC;border:1px solid #EEEEF4;border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.principle-card .pc-no{font-size:.62rem;font-weight:800;letter-spacing:.08em;color:#C9A96E;margin-bottom:3px}
+.principle-card b{display:block;font-size:.85rem;margin-bottom:5px}
+.principle-card p{font-size:.78rem;color:#4A4E63;line-height:1.7;margin:0}
+.faq-mini .fm-q{font-size:.8rem;font-weight:800;margin:12px 0 4px}
+.faq-mini .fm-a{font-size:.77rem;color:#4A4E63;line-height:1.7}
+.quad-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.quad-card{background:#FAFAFC;border:1px solid #EEEEF4;border-radius:12px;padding:14px 16px}
+.quad-card .qd-ic{font-size:1.2rem;margin-bottom:6px}
+.quad-card b{display:block;font-size:.83rem;margin-bottom:5px}
+.quad-card p{font-size:.76rem;color:#4A4E63;line-height:1.65;margin:0}
+.dict-row{display:flex;gap:12px;padding:10px 2px;border-bottom:1px solid #F0F0F5}
+.dict-k{width:116px;flex:none;font-size:.76rem;font-weight:800}
+.dict-v{flex:1;font-size:.74rem;color:#4A4E63;line-height:1.65}
+.fb-item{display:flex;align-items:center;gap:10px;padding:9px 2px;border-bottom:1px solid #F0F0F5;font-size:.8rem;color:#3A3E53}
+.fb-item input{width:17px;height:17px;accent-color:#E91E8C;flex:none}
+.pledge-card{background:linear-gradient(145deg,#0F0F1A,#1A1040);border-radius:16px;padding:28px 22px;color:#fff;text-align:center}
+.pledge-card .pl-t{font-family:'Cormorant Garamond',serif;font-size:1.3rem;margin-bottom:8px}
+.pledge-card .pl-s{font-size:.75rem;color:rgba(255,255,255,.6);line-height:1.7;margin-bottom:16px}
+.pledge-line{border:1px solid rgba(201,169,110,.4);border-radius:12px;padding:18px 16px;font-size:.85rem;color:rgba(255,255,255,.9);text-align:left}
+.pledge-line .pl-blank{border-bottom:1px solid rgba(255,255,255,.3);height:26px;margin:6px 8px}
+@media (max-width:560px){.concept-grid,.quad-grid{grid-template-columns:1fr}.rg-formula{flex-direction:column}.typemap-group{width:72px}}
+
 /* ── LOADING ── */
 #sl{text-align:center;background:linear-gradient(135deg,#0F0F1A,#1E1040)}
 .ld-icon{font-size:3rem;margin-bottom:20px;animation:spin 3s linear infinite}
@@ -3920,8 +3961,10 @@ function buildMainTOC(){
       title:'나를 한눈에 알기',
       sub:'결과 카드와 집 취향 점수표',
       items:[
-        {id:'sec-hero',  label:'결과 카드'},
-        {id:'sec-radar', label:'집 취향 점수표'},
+        {id:'sec-hero',    label:'결과 카드'},
+        {id:'sec-about',   label:'리포트 읽는 법'},
+        {id:'sec-typemap', label:'12유형 지도'},
+        {id:'sec-radar',   label:'8개 영역 프로파일'},
       ]
     },
     {
@@ -3933,6 +3976,7 @@ function buildMainTOC(){
         {id:'sec-story',      label:'공간 취향 이야기'},
         {id:'sec-insights',   label:'좋은 점과 챙길 점'},
         {id:'sec-psychology', label:'왜 편할까'},
+        {id:'sec-howto',      label:'해석 주의사항'},
       ]
     },
     {
@@ -3942,6 +3986,8 @@ function buildMainTOC(){
       items:[
         {id:'sec-rooms', label:'공간별 추천'},
         {id:'sec-match', label:'살 것 / 피할 것'},
+        {id:'sec-usage', label:'결과 활용법'},
+        {id:'sec-dict',  label:'소재·조명 사전'},
       ]
     },
     {
@@ -3951,6 +3997,7 @@ function buildMainTOC(){
       items:[
         {id:'sec-plan',     label:'90일 바꾸는 순서'},
         {id:'sec-seasonal', label:'계절별 가이드'},
+        {id:'sec-feedback', label:'30일 피드백 체크'},
       ]
     },
     {
@@ -3962,6 +4009,7 @@ function buildMainTOC(){
         {id:'sec-shopping', label:'가격대별 추천'},
         {id:'sec-palette',  label:'컬러 팔레트'},
         {id:'sec-compat',   label:'같이 살 때 조율'},
+        {id:'sec-pledge',   label:'나의 공간 다짐'},
       ]
     },
   ];
@@ -4388,6 +4436,21 @@ function buildKoreanHomeBlock(t){
 }
 
 
+// 8영역 레이더 차트 (25p 완전판 10페이지 반영)
+function buildRadarSVG(t,scores){
+  const labels=['감각','공간','소품','컬러','라이프','관계','정체성','회복'];
+  const vals=SECS.map(sec=>getSectionScore(t, scores, sec, 50));
+  const cx=150, cy=152, R=102, N=8;
+  const pt=(i,r)=>{const a=-Math.PI/2 + i*2*Math.PI/N; return [cx+r*Math.cos(a), cy+r*Math.sin(a)];};
+  const ringPts=f=>Array.from({length:N},(_,i)=>pt(i,R*f).map(v=>v.toFixed(1)).join(',')).join(' ');
+  const rings=[.25,.5,.75,1].map(f=>`<polygon points="${ringPts(f)}" fill="none" stroke="#E8DFD2" stroke-width="1"/>`).join('');
+  const axes=Array.from({length:N},(_,i)=>{const [x,y]=pt(i,R);return `<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="#EFE8DC" stroke-width="1"/>`;}).join('');
+  const poly=vals.map((v,i)=>pt(i,R*Math.max(8,v)/100).map(n=>n.toFixed(1)).join(',')).join(' ');
+  const dots=vals.map((v,i)=>{const[x,y]=pt(i,R*Math.max(8,v)/100);return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.4" fill="#E91E8C"/>`;}).join('');
+  const labelEls=labels.map((lb,i)=>{const [x,y]=pt(i,R+22);return `<text x="${x.toFixed(1)}" y="${(y+4).toFixed(1)}" text-anchor="middle" font-size="13" font-weight="700" fill="#3A3E53">${lb}</text>`;}).join('');
+  return `<svg class="radar-svg" viewBox="0 0 300 304" role="img" aria-label="8개 영역 욕구 프로파일 레이더 차트">${rings}${axes}<polygon points="${poly}" fill="rgba(233,30,140,.15)" stroke="#E91E8C" stroke-width="2.5" stroke-linejoin="round"/>${dots}${labelEls}</svg>`;
+}
+
 function renderResult(t,scores){
   // 결과 컨테이너 명시적 초기화 + PDF 임시 컨테이너 잔류분 정리
   const rwEl = document.getElementById('rw');
@@ -4447,11 +4510,47 @@ function renderResult(t,scores){
 
     ${buildMainTOC()}
 
-    ${chapterDivider('01','Chapter 01 · 결과 프로파일','나를 한눈에 알기','결과 카드와 집 취향 점수표')}
+    <div class="analysis-block" data-anchor id="sec-about" data-toc-label="리포트 읽는 법">
+      <div class="ab-tag">📖 ABOUT SDTI</div>
+      <div class="ab-title">이 리포트를 읽는 법</div>
+      <p style="font-size:.82rem;color:var(--gray);line-height:1.7;margin-bottom:4px">SDTI는 "어떤 집이 예쁜가"가 아니라 "어떤 공간에서 내가 회복되는가"를 측정하는 검사예요. 보이지 않는 공간 욕구를 8개 영역으로 측정하고, 12가지 유형으로 구조화합니다.</p>
+      <div class="rg-formula">
+        <div class="rg-f" style="background:#F3F1FB"><b style="color:#5C4FD3">공간 욕구</b><span>8개 영역으로 측정되는<br>타고난 공간 성향</span></div>
+        <div class="rg-op">×</div>
+        <div class="rg-f" style="background:#F1F7F3"><b style="color:#2E8B57">공간 환경</b><span>지금 내가 사는 집의<br>실제 조건</span></div>
+        <div class="rg-op">=</div>
+        <div class="rg-f" style="background:#FBF4EA"><b style="color:#B07D3C">회복과 몰입</b><span>맞으면 충전기,<br>어긋나면 방전기</span></div>
+      </div>
+      <div class="concept-grid">
+        <div class="concept-card"><b>🌊 공간 욕구</b><em>Space Desire</em><p>의식하든 못하든 공간에 강하게 끌리는 마음. 취향보다 깊은 층에 있어 유행이 바뀌어도 잘 변하지 않아요.</p></div>
+        <div class="concept-card"><b>🗣️ 공간 언어</b><em>Space Language</em><p>욕구를 실제 공간으로 번역한 결과물. 소재, 조명, 색, 배치, 수납 방식이 모두 공간 언어예요.</p></div>
+        <div class="concept-card"><b>🧭 공간 욕구 유형</b><em>Space Type</em><p>8개 영역 점수의 조합으로 나타나는 성향. 유형은 규정하는 틀이 아니라, 선택을 빠르게 만드는 나침반이에요.</p></div>
+        <div class="concept-card"><b>📏 욕구와 현실의 간격</b><em>Gap</em><p>내 욕구와 지금 집 사이의 간격. 간격이 큰 영역이 나를 조용히 지치게 하는 영역이에요.</p></div>
+      </div>
+    </div>
+
+    <div class="analysis-block" data-anchor id="sec-typemap" data-toc-label="12유형 지도">
+      <div class="ab-tag">🗺️ TYPE MAP</div>
+      <div class="ab-title">12가지 유형 지도, 그리고 나의 자리</div>
+      <p style="font-size:.82rem;color:var(--gray);line-height:1.7;margin-bottom:14px">SDTI의 12가지 유형은 6개의 큰 그룹 아래 각각 두 가지 유형으로 나뉘어요. 당신은 <strong>${krText(t.groupName||'')}</strong> 그룹의 <strong>${krText(t.plain)}</strong>입니다.</p>
+      ${(()=>{
+        const groupOrder=[]; TYPES.forEach(tp=>{ if(!groupOrder.includes(tp.groupName)) groupOrder.push(tp.groupName); });
+        return groupOrder.map(gn=>{
+          const pair=TYPES.filter(tp=>tp.groupName===gn);
+          return `<div class="typemap-row">
+            <div class="typemap-group">${krText(gn)}</div>
+            <div class="typemap-chips">${pair.map(tp=>`<div class="typemap-chip${tp.id===t.id?' me':''}">${tp.emoji} ${krText(tp.plain)}${tp.id===t.id?' · 나':''}</div>`).join('')}</div>
+          </div>`;
+        }).join('');
+      })()}
+    </div>
+
+    ${chapterDivider('01','Chapter 01 · 결과 프로파일','나를 한눈에 알기','결과 카드와 8개 영역 프로파일')}
 
     <div class="radar-section" data-anchor id="sec-radar" data-toc-label="집 취향 점수표">
-      <div class="radar-title">한눈에 보는 8가지 공간 성향</div>
-      <p class="radar-sub-desc">강한 욕구부터 순서대로 보여드려요. 높고 낮음에 좋고 나쁨은 없어요. 모두 당신의 고유한 색이에요.</p>
+      <div class="radar-title">8개 영역 욕구 프로파일</div>
+      <p class="radar-sub-desc">8개 영역의 점수는 우열이 아니라 욕구의 강도예요. 강한 영역일수록 충족될 때의 만족과 어긋날 때의 피로가 모두 큽니다. 점수가 잔잔한 영역은 비워 두어도 괜찮은, 투자 후순위 영역이에요.</p>
+      <div class="radar-figure">${buildRadarSVG(t,scores)}</div>
       <div class="radar-bars">
         ${(()=>{
           // 점수 내림차순 정렬 — 가장 강한 욕구가 위로 (원래 인덱스 보존하여 색상 매핑 유지)
@@ -4631,7 +4730,23 @@ function renderResult(t,scores){
       </div>`;
     })()}
 
-    ${chapterDivider('03','Chapter 03 · 공간 만들기','내 공간 만드는 법','공간별 추천 · 잘 맞는 것과 덜 맞는 것')}
+    <div class="analysis-block" data-anchor id="sec-howto" data-toc-label="해석 주의사항">
+      <div class="ab-tag">🧭 HOW TO READ</div>
+      <div class="ab-title">해석 주의사항과 자주 묻는 질문</div>
+      <div class="principle-card"><div class="pc-no">원칙 1</div><b>유형은 규정이 아니라 경향이에요</b><p>${krText(t.plain)}이라고 해서 다른 스타일의 공간을 즐기면 안 되는 것이 아니에요. 유형은 금지 목록이 아니라, 내 에너지가 어디에서 차오르고 어디에서 새는지 알려주는 사용 설명서에 가깝습니다.</p></div>
+      <div class="principle-card"><div class="pc-no">원칙 2</div><b>점수는 우열이 아니라 강도예요</b><p>어떤 영역의 점수가 낮다는 것은 그 능력이 부족하다는 뜻이 아니라, 집이라는 공간에서는 그 욕구의 우선순위가 낮다는 뜻이에요. 낮은 점수는 고쳐야 할 약점이 아닙니다.</p></div>
+      <div class="principle-card"><div class="pc-no">원칙 3</div><b>욕구는 삶의 단계에 따라 변해요</b><p>이사, 결혼, 출산, 독립 같은 공간 전환기에는 욕구 구조가 재편되곤 합니다. 큰 전환기를 지난 뒤에는 재검사로 나의 지도를 갱신해 보세요.</p></div>
+      <div class="faq-mini">
+        <div class="fm-q">Q. 두 유형 사이에 있는 것 같아요</div>
+        <div class="fm-a">자연스러운 일이에요. 유형은 가장 강한 결을 대표로 보여주는 것이고, 위의 8개 영역 프로파일이 유형 이름보다 언제나 더 정확합니다. 경계에 있다면 두 유형의 처방 중 끌리는 쪽을 먼저 실험해 보세요.</div>
+        <div class="fm-q">Q. 가족과 유형이 달라요</div>
+        <div class="fm-a">다른 것이 정상이에요. 아래 "같이 살 때 조율" 섹션을 함께 읽어 보세요. 상대의 결과지가 있다면 두 지도를 겹쳐 보는 것이 가장 빠른 대화법입니다.</div>
+        <div class="fm-q">Q. 결과가 매번 조금씩 다르게 나올 수 있나요</div>
+        <div class="fm-a">그날의 컨디션과 상황에 따라 응답이 달라질 수 있어요. 다만 핵심 욕구 상위권은 대체로 안정적으로 유지됩니다. 큰 변화가 느껴진다면 삶의 조건이 바뀌었다는 신호일 수 있어요.</div>
+      </div>
+    </div>
+
+    ${chapterDivider('03','Chapter 03 · 공간 만들기','내 공간 만드는 법','공간별 추천 · 잘 맞는 것과 덜 맞는 것 · 소재와 조명')}
 
     <div class="analysis-block" data-anchor id="sec-rooms" data-toc-label="공간별 추천">
       <div class="ab-tag">🛋️ 공간별 추천</div>
@@ -4653,6 +4768,29 @@ function renderResult(t,scores){
         </div>
       </div>
       <p style="font-size:.78rem;color:var(--gray);margin-top:14px;line-height:1.65">좋고 나쁨의 문제가 아니라 결이 다른 선택지예요. 누군가에게는 잘 맞아도, 내 집에서는 오래 볼수록 피곤하거나 만족도가 낮을 수 있다는 뜻입니다.</p>
+    </div>
+
+    <div class="analysis-block" data-anchor id="sec-usage" data-toc-label="결과 활용법">
+      <div class="ab-tag">💡 결과를 일상에서 쓰는 네 가지 장면</div>
+      <div class="ab-title">리포트는 읽고 덮는 것이 아니라 생활의 기준이에요</div>
+      <div class="quad-grid">
+        <div class="quad-card"><div class="qd-ic">🔋</div><b>내가 살아나는 공간</b><p>${((t.keys&&t.keys.length)?t.keys:[]).slice(0,3).map(krText).join(', ')||'내 취향의 요소들'}이(가) 중심이 되는 공간에서 짧게 쉬어도 깊게 회복돼요. 집에 들어선 첫 30초의 느낌이 기준입니다.</p></div>
+        <div class="quad-card"><div class="qd-ic">⚠️</div><b>방전 신호 알아차리기</b><p>집에 와도 쉰 것 같지 않은 날이 이어지면 공간을 점검해 보세요. ${getAvoidItems(t).slice(0,2).map(krText).join(', ')||'내 결과 맞지 않는 요소'} 같은 요소가 시야와 동선에 쌓여 있지 않은지 확인하는 것이 시작이에요.</p></div>
+        <div class="quad-card"><div class="qd-ic">🛒</div><b>쇼핑과 배치에서의 활용</b><p>구매 전에 위의 어울림 기준과 아래 소재·조명 사전을 함께 확인하세요. 디자인이 끌려도 소재와 빛이 내 기준과 어긋나면 만족은 오래가지 않습니다.</p></div>
+        <div class="quad-card"><div class="qd-ic">🤝</div><b>함께 사는 사람과</b><p>유형이 다른 가족과 살더라도, 나의 회복 코너 한 곳은 협상 없이 확보하는 것이 서로에게 좋아요. 자세한 조율법은 아래 섹션에 담았습니다.</p></div>
+      </div>
+    </div>
+
+    <div class="analysis-block" data-anchor id="sec-dict" data-toc-label="소재·조명 사전">
+      <div class="ab-tag">📚 소재·조명 사전</div>
+      <div class="ab-title">쇼핑 중 마주칠 용어를 내 기준으로 번역했어요</div>
+      <div class="dict-row"><div class="dict-k">색온도 (K)</div><div class="dict-v">2700~3000K는 노을에 가까운 전구색, 4000K 이상은 사무실에 가까운 주백색·주광색. 저녁 휴식 공간에는 3000K 이하가 대체로 편안해요.</div></div>
+      <div class="dict-row"><div class="dict-k">간접조명</div><div class="dict-v">광원이 직접 보이지 않게 벽·천장에 반사시키는 방식. 눈부심이 없어 자극에 민감한 분들에게 특히 좋아요.</div></div>
+      <div class="dict-row"><div class="dict-k">디머 (밝기 조절)</div><div class="dict-v">시간대에 따라 빛의 양을 바꾸는 스위치·전구. 하나의 조명으로 낮과 밤의 모드를 오갈 수 있어요.</div></div>
+      <div class="dict-row"><div class="dict-k">흡음 vs 차음</div><div class="dict-v">흡음은 울림을 줄이는 것(러그·커튼·패브릭), 차음은 소리를 막는 것(문틈 가스켓·두꺼운 문). 체감을 바꾸는 건 보통 흡음이 먼저예요.</div></div>
+      <div class="dict-row"><div class="dict-k">무광 vs 유광</div><div class="dict-v">무광은 빛 반사가 적어 시각 자극을 줄이고, 유광은 공간을 또렷하고 화사하게 만들어요. 내 팔레트와 자극 민감도에 맞춰 고르세요.</div></div>
+      <div class="dict-row"><div class="dict-k">히든 vs 오픈 수납</div><div class="dict-v">시야 비우기 욕구가 강하면 문·뚜껑으로 가려지는 히든 수납을, 애장품을 보며 충전되는 유형이면 오픈 수납을 우선하세요.</div></div>
+      <div class="dict-row" style="border-bottom:none"><div class="dict-k">패브릭 소재군</div><div class="dict-v">면 고밀도, 워싱 린넨, 모달, 부클레는 촉감이 부드럽고 소리를 흡수해요. 침구·소파는 디자인보다 소재 표기를 먼저 확인하는 습관이 실패를 줄입니다.</div></div>
     </div>
 
     ${(()=>{
@@ -4743,6 +4881,21 @@ function renderResult(t,scores){
       </div>`;
     })()}
 
+    <div class="analysis-block" data-anchor id="sec-feedback" data-toc-label="30일 피드백 체크">
+      <div class="ab-tag">✅ 30일 후, 나에게 보내는 피드백</div>
+      <div class="ab-title">한 달 뒤 돌아와 체크해 보세요</div>
+      <p style="font-size:.82rem;color:var(--gray);margin-bottom:12px;line-height:1.7">리포트의 처방이 실제로 작동했는지 확인하는 체크리스트예요. 달력에 알림을 맞춰 두고, 5개 이상이면 처방이 잘 맞고 있는 거예요.</p>
+      <label class="fb-item"><input type="checkbox"><span>집에 오면 긴장이 풀린다고 느끼는 날이 많아졌다</span></label>
+      <label class="fb-item"><input type="checkbox"><span>쉬는 자리에서 보이는 미처리 물건이 줄었다</span></label>
+      <label class="fb-item"><input type="checkbox"><span>저녁 시간의 조명이 내게 맞게 바뀌었다</span></label>
+      <label class="fb-item"><input type="checkbox"><span>잠드는 데 걸리는 시간이 짧아졌다</span></label>
+      <label class="fb-item"><input type="checkbox"><span>나만의 회복 코너가 생겼고, 실제로 사용한다</span></label>
+      <label class="fb-item"><input type="checkbox"><span>집 때문에 예민해지는 일이 줄었다</span></label>
+      <label class="fb-item"><input type="checkbox"><span>가구·소품을 살 때 소재와 조명 기준을 먼저 본다</span></label>
+      <label class="fb-item" style="border-bottom:none"><input type="checkbox"><span>주말에 집에서 보내는 시간이 아깝지 않다</span></label>
+      <p style="font-size:.76rem;color:var(--gray);margin-top:12px;line-height:1.7">체크가 4개 이하라면 실패가 아니라 데이터예요. 핵심 욕구 1순위 하나만 남기고 나머지 실천을 잠시 멈춘 뒤, 그 하나에 2주를 더 써보세요. 그래도 변화가 없다면 재검사로 지도를 갱신하는 것을 권해요.</p>
+    </div>
+
     ${chapterDivider('05','Chapter 05 · 예산과 관계','예산과 함께 살기','돈 쓰는 비율 · 가격대별 · 컬러 · 같이 살 때')}
 
     <div class="analysis-block" data-anchor id="sec-budget" data-toc-label="돈 쓰는 비율">
@@ -4787,6 +4940,15 @@ function renderResult(t,scores){
       <p style="font-size:.85rem;color:#4A4A5A;line-height:1.8;margin-bottom:12px">같이 사는 사람도 진단해보세요. 유형이 같으면 편한 지점이 비슷하고, 다르면 어떤 공간을 각자에게 맞춰 나눌지 정하기 쉬워요.</p>
       <p style="font-size:.78rem;color:var(--gray);margin-bottom:10px">공간 취향을 맞추기 쉬운 유형:</p>
       <div class="compat-row">${compatChips}</div>
+    </div>
+
+    <div class="analysis-block" data-anchor id="sec-pledge" data-toc-label="나의 공간 다짐" style="background:transparent;border:none;padding:0;box-shadow:none">
+      <div class="pledge-card">
+        <div class="pl-t">나의 공간 다짐</div>
+        <div class="pl-s">리포트를 덮기 전에, 한 문장만 남겨 보세요.<br>계절이 바뀔 때마다 이 문장을 다시 꺼내 보게 될 거예요.</div>
+        <div class="pledge-line">"이 집에서 나는,<div class="pl-blank"></div><div style="text-align:right">하고 싶다."</div></div>
+        <div class="pl-s" style="margin:16px 0 0">공간이 바뀌기 전에, 나를 먼저 아는 것.<br>이 리포트는 끝이 아니라 기준입니다.</div>
+      </div>
     </div>
 
     <!-- PDF 다운로드 & 인스타 카드 -->
