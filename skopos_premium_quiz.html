@@ -1129,7 +1129,7 @@ html{scroll-behavior:smooth}
       <div class="feat"><div class="feat-icon">❌</div><div class="feat-title">구매 실패 방지 리스트</div><div class="feat-desc">내 유형이 사면 후회하는 것들</div></div>
       <div class="feat"><div class="feat-icon">💰</div><div class="feat-title">예산 배분 가이드</div><div class="feat-desc">가구·조명·소품·패브릭 최적 비율</div></div>
       <div class="feat"><div class="feat-icon">🎨</div><div class="feat-title">컬러 팔레트 4색</div><div class="feat-desc">내 유형에 맞는 정확한 공간 팔레트</div></div>
-      <div class="feat"><div class="feat-icon">💑</div><div class="feat-title">10페이지 PDF 리포트</div><div class="feat-desc">계절별 가이드까지 , 1년 내내 펼쳐보는 정밀 보고서</div></div>
+      <div class="feat"><div class="feat-icon">💑</div><div class="feat-title">21페이지 PDF 리포트</div><div class="feat-desc">계절별 가이드까지 , 1년 내내 펼쳐보는 정밀 보고서</div></div>
     </div>
 
     <div class="price-box">
@@ -3702,13 +3702,11 @@ function renderScale(q){
 }
 
 function renderChoice(q){
-  const icons=['🏠','🌿','🎨','✨','🛋️','📚','💡','🔲'];
   return`<div class="q-num">Q${cur+1} · ${SECS[q.s].label}</div>
   <div class="q-insight">${q.s===0?'🧠 감각 처리':q.s===1?'📐 공간 구조':q.s===2?'🏺 소품 취향':q.s===3?'🎨 컬러·소재':q.s===4?'☕ 라이프스타일':q.s===5?'🏡 관계 욕구':q.s===6?'✨ 자아표현':'🌙 회복 욕구'}</div>
   <h2 class="qtitle">${q.t}</h2>
   <div class="choice-opts">
     ${q.o.map((o,i)=>`<button class="choice-opt" data-i="${i}" onclick="selectOpt(${i})">
-      <span class="choice-icon">${icons[i]||'○'}</span>
       <div class="choice-body"><div class="choice-label">${o.l}</div></div>
       <div class="choice-check"><div class="choice-check-inner"></div></div>
     </button>`).join('')}
@@ -5787,7 +5785,7 @@ async function downloadPDF(){
   const btn = document.getElementById('pdfBtn');
   btn.disabled = true;
   const isMobileEnv = isMobile();
-  btn.innerHTML = isMobileEnv ? '⏳ PDF 생성 중... (1~2분)' : '⏳ PDF 생성 중... (60~90초)';
+  btn.innerHTML = isMobileEnv ? '⏳ PDF 생성 중... (2~3분)' : '⏳ PDF 생성 중... (90~120초)';
   toast(isMobileEnv
     ? 'PDF를 만들고 있어요. 화면을 끄지 말고 잠시 기다려주세요.'
     : 'PDF를 생성하고 있어요. 잠시 기다려주세요.', 5000);
@@ -5802,6 +5800,7 @@ async function downloadPDF(){
     const secColors = ['#E91E8C','#FF9800','#7CB342','#29B6F6','#AB47BC','#FF7043','#26A69A','#5C6BC0'];
     const budgetColors = ['#E91E8C','#FF9800','#7CB342','#29B6F6'];
     const today = new Date().toLocaleDateString('ko-KR');
+    const PDF_TOTAL = 21; // 총 페이지 수 (확장 완전판)
 
     // ── 페이지별 HTML 생성 함수 ──────────────────────────────
     function makeContainer(innerHtml){
@@ -5878,7 +5877,7 @@ async function downloadPDF(){
         <div class="pdf-cover-desc">${krText(t.desc||'').substring(0,120)}...</div>
         <div class="pdf-cover-keys">${keysHtml}</div>
         <div class="pdf-cover-footer">
-          <div class="pdf-cover-footer-l">진단일: ${today} · 144문항 정밀 분석</div>
+          <div class="pdf-cover-footer-l">진단일: ${today} · 144문항 · ${PDF_TOTAL}페이지 정밀 리포트</div>
           <div class="pdf-cover-footer-r">skopos.kr</div>
         </div>
       </div>
@@ -5886,7 +5885,104 @@ async function downloadPDF(){
     let c1 = makeContainer(coverHtml);
     const img1 = await capturePage(c1.firstChild);
     document.body.removeChild(c1);
-    await addPage(img1, 1, 13);
+    await addPage(img1, 1, PDF_TOTAL);
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // PAGE 2 , 🆕 SDTI 소개 + 리포트의 네 가지 언어
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    const conceptCards = [
+      {icon:'🌊', name:'공간 욕구', en:'Space Desire', body:'공간에 대해, 의식하든 못하든 강하게 끌리는 마음이에요. 욕구는 취향보다 깊은 층에 있어서 유행이 바뀌어도 잘 변하지 않아요. 욕구가 충족되는 공간에서 사람은 빠르게 회복됩니다.'},
+      {icon:'🗣️', name:'공간 언어', en:'Space Language', body:'욕구를 실제 공간으로 번역한 결과물이에요. 소재, 조명, 색, 배치, 수납 방식이 모두 공간 언어입니다. 같은 욕구라도 집의 조건에 따라 다른 공간 언어로 표현될 수 있어요.'},
+      {icon:'🧭', name:'공간 욕구 유형', en:'Space Type', body:'8개 영역 점수의 조합으로 나타나는 당신의 공간 성향이에요. 6개의 큰 그룹 아래 모두 12가지 유형이 있습니다. 유형은 당신을 규정하는 틀이 아니라, 선택을 빠르게 만드는 나침반이에요.'},
+      {icon:'📏', name:'욕구와 현실의 간격', en:'Gap', body:'내 욕구와 지금 집의 상태 사이 간격이에요. 간격이 큰 영역이 나를 조용히 지치게 하는 영역입니다. 이 리포트의 처방은 그 간격을 좁히는 순서로 설계되어 있어요.'},
+    ].map(c=>`
+      <div style="background:#FAFAFC;border:1px solid #EEEEF4;border-radius:14px;padding:20px 22px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <span style="font-size:22px">${c.icon}</span>
+          <div>
+            <div style="font-size:15px;font-weight:800;color:#1A1A2E">${c.name}</div>
+            <div style="font-size:10px;letter-spacing:.08em;color:#9AA0B4;text-transform:uppercase">${c.en}</div>
+          </div>
+        </div>
+        <div style="font-size:12.5px;line-height:1.75;color:#4A4E63">${c.body}</div>
+      </div>`).join('');
+
+    const pIntroHtml = `<div class="pdf-page"><div class="pdf-inner">
+      ${innerHeader(2,PDF_TOTAL)}
+      <div class="pdf-section-tag">ABOUT SDTI</div>
+      <div class="pdf-section-title">SDTI는 무엇을 측정하나요?</div>
+      <div class="pdf-section-sub">SDTI(Space Desire Type Inventory)는 "어떤 집이 예쁜가"가 아니라 "어떤 공간에서 내가 회복되는가"를 측정하는 검사예요. 사람마다 자극을 처리하는 방식, 안전하다고 느끼는 조건, 머물고 싶어지는 공간의 조건이 다릅니다. SDTI는 이 보이지 않는 차이를 8개 욕구 영역으로 측정하고, 12가지 공간 욕구 유형으로 구조화합니다.</div>
+
+      <div style="display:flex;align-items:stretch;gap:10px;margin:6px 0 22px">
+        <div style="flex:1;background:#F3F1FB;border-radius:12px;padding:16px;text-align:center">
+          <div style="font-size:12px;font-weight:800;color:#5C4FD3;margin-bottom:6px">공간 욕구</div>
+          <div style="font-size:11px;color:#6B7086;line-height:1.6">8개 영역으로 측정되는<br>나의 타고난 공간 성향</div>
+        </div>
+        <div style="align-self:center;font-size:18px;font-weight:800;color:#C9A96E">×</div>
+        <div style="flex:1;background:#F1F7F3;border-radius:12px;padding:16px;text-align:center">
+          <div style="font-size:12px;font-weight:800;color:#2E8B57;margin-bottom:6px">공간 환경</div>
+          <div style="font-size:11px;color:#6B7086;line-height:1.6">지금 내가 사는 집의<br>실제 조건</div>
+        </div>
+        <div style="align-self:center;font-size:18px;font-weight:800;color:#C9A96E">=</div>
+        <div style="flex:1;background:#FBF4EA;border-radius:12px;padding:16px;text-align:center">
+          <div style="font-size:12px;font-weight:800;color:#B07D3C;margin-bottom:6px">회복과 몰입</div>
+          <div style="font-size:11px;color:#6B7086;line-height:1.6">맞으면 충전기,<br>어긋나면 방전기</div>
+        </div>
+      </div>
+
+      <div class="pdf-section-tag">FOUR CONCEPTS</div>
+      <div class="pdf-section-title">이 리포트의 네 가지 언어</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px">${conceptCards}</div>
+
+      <div class="pdf-insight" style="margin-top:20px">
+        <div class="pdf-insight-icon">📚</div>
+        <div class="pdf-insight-text">SDTI는 환경심리학의 주의회복이론, 조망과 은신 이론, 감각 민감도 연구, 긍정심리학의 웰빙 이론을 참고해 설계되었으며, 검사 문항·해석 체계와 검사 엔진은 한국저작권위원회에 정식 등록된 검사 도구입니다.</div>
+      </div>
+    </div></div>`;
+    let cN1 = makeContainer(pIntroHtml);
+    const imgN1 = await capturePage(cN1.firstChild);
+    document.body.removeChild(cN1);
+    await addPage(imgN1, 2, PDF_TOTAL);
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // PAGE 3 , 🆕 12가지 유형 지도 + 나의 자리
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    const groupOrder = [];
+    TYPES.forEach(tp=>{ if(!groupOrder.includes(tp.groupName)) groupOrder.push(tp.groupName); });
+    const typeMapRows = groupOrder.map(gn=>{
+      const pair = TYPES.filter(tp=>tp.groupName===gn);
+      const chips = pair.map(tp=>{
+        const me = tp.id===t.id;
+        return `<div style="flex:1;display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:10px;${me?'background:#1A1040;color:#fff;box-shadow:0 2px 8px rgba(26,16,64,.25)':'background:#FAFAFC;border:1px solid #EEEEF4;color:#3A3E53'}">
+          <span style="font-size:17px">${tp.emoji}</span>
+          <span style="font-size:12.5px;font-weight:${me?'800':'600'}">${krText(tp.plain)}${me?' · 나':''}</span>
+        </div>`;
+      }).join('');
+      return `<div style="display:flex;align-items:center;gap:10px;margin-bottom:9px">
+        <div style="width:112px;flex:none;font-size:11.5px;font-weight:800;color:#6B7086">${krText(gn)}</div>
+        <div style="flex:1;display:flex;gap:8px">${chips}</div>
+      </div>`;
+    }).join('');
+    const siblingType = TYPES.find(tp=>tp.groupName===t.groupName && tp.id!==t.id);
+
+    const pMapHtml = `<div class="pdf-page"><div class="pdf-inner">
+      ${innerHeader(3,PDF_TOTAL)}
+      <div class="pdf-section-tag">TYPE MAP</div>
+      <div class="pdf-section-title">12가지 유형 지도, 그리고 나의 자리</div>
+      <div class="pdf-section-sub">SDTI의 12가지 유형은 6개의 큰 그룹 아래 각각 두 가지 유형으로 나뉘어요. 당신은 <strong>${krText(t.groupName)}</strong> 그룹의 <strong>${krText(t.plain)}</strong>입니다.</div>
+      <div style="margin:10px 0 20px">${typeMapRows}</div>
+      ${siblingType?`<div class="pdf-behavior-box">
+        <div class="pdf-behavior-text">같은 그룹의 <strong>${krText(siblingType.plain)}</strong>과(와)는 큰 뿌리를 공유하지만, 그 뿌리가 공간에서 드러나는 방식이 달라요. 유형 이름이 비슷해 보여도 8개 영역 점수의 조합이 다르면 맞는 처방도 달라집니다. 다음 페이지부터는 12가지 중에서도 ${krText(t.plain)}에게 맞춘 분석과 처방만 담았어요.</div>
+      </div>`:''}
+      <div class="pdf-insight" style="margin-top:18px">
+        <div class="pdf-insight-icon">🤝</div>
+        <div class="pdf-insight-text">유형 지도는 함께 사는 사람을 이해하는 데에도 쓰여요. 가족이나 동거인의 유형이 나와 어디쯤 떨어져 있는지 보이면, 취향 논쟁이 욕구 이해로 바뀝니다. 유형 조율 가이드는 18페이지에서 다룹니다.</div>
+      </div>
+    </div></div>`;
+    let cN2 = makeContainer(pMapHtml);
+    const imgN2 = await capturePage(cN2.firstChild);
+    document.body.removeChild(cN2);
+    await addPage(imgN2, 3, PDF_TOTAL);
 
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     // PAGE 2 , 8영역 레이더 바 차트 + 행동패턴
@@ -5915,7 +6011,7 @@ async function downloadPDF(){
     const bpShort = bpText.split('\n\n').slice(0,3).join('\n\n');
 
     const p2Html = `<div class="pdf-page"><div class="pdf-inner">
-      ${innerHeader(2,13)}
+      ${innerHeader(4,PDF_TOTAL)}
       <div class="pdf-section-tag">SECTION 01</div>
       <div class="pdf-section-title">한눈에 보는 8가지 공간 성향</div>
       <div class="pdf-section-sub">8가지 영역에서 어느 쪽이 더 뚜렷한 욕구인지 5단계로 보여드려요. 높고 낮음에 좋고 나쁨은 없어요. 모두 당신의 고유한 색이에요.</div>
@@ -5933,7 +6029,7 @@ async function downloadPDF(){
     let c2 = makeContainer(p2Html);
     const img2 = await capturePage(c2.firstChild);
     document.body.removeChild(c2);
-    await addPage(img2, 2, 13);
+    await addPage(img2, 4, PDF_TOTAL);
 
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     // PAGE 3 , 🆕 나만 갖고 있는 3가지 인사이트
@@ -5961,7 +6057,7 @@ async function downloadPDF(){
         </div>`;
 
       const p3Html = `<div class="pdf-page"><div class="pdf-inner">
-        ${innerHeader(3,13)}
+        ${innerHeader(5,PDF_TOTAL)}
         <div class="pdf-section-tag">SECTION 03</div>
         <div class="pdf-section-title">나만의 공간 포인트 3가지</div>
         <div class="pdf-section-sub">${krText(t.plain)}에게 잘 맞는 점, 조금만 챙기면 더 편해지는 점, 그리고 의외로 잘 어울리는 팁을 정리했어요. 자기 이해와 인테리어 선택에 모두 적용할 수 있는 핵심 코드예요.</div>
@@ -5975,7 +6071,7 @@ async function downloadPDF(){
       let c3a = makeContainer(p3Html);
       const img3a = await capturePage(c3a.firstChild);
       document.body.removeChild(c3a);
-      await addPage(img3a, 3, 13);
+      await addPage(img3a, 5, PDF_TOTAL);
     } else {
       // 그룹 매핑이 없는 경우 빈 페이지 방지를 위해 다음 페이지로 진행
       // (모든 12개 유형이 6개 그룹에 매핑되어 있으므로 실제로는 항상 들어옴)
@@ -5996,12 +6092,12 @@ async function downloadPDF(){
       const insight = getSectionInsight(item.sec.key, item.val);
       if(!insight) continue;
       const scale = getScoreScale(item.val);
-      const pageNum = 4 + rankIdx; // 4, 5, 6
+      const pageNum = 6 + rankIdx; // 6, 7, 8
       const rankLabel = ['첫 번째','두 번째','세 번째'][rankIdx];
       const rankBadge = ['#1','#2','#3'][rankIdx];
 
       const topPageHtml = `<div class="pdf-page"><div class="pdf-inner">
-        ${innerHeader(pageNum, 13)}
+        ${innerHeader(pageNum, PDF_TOTAL)}
 
         <div class="pdf-top-rank" style="background:${item.color}">${rankBadge} 핵심 욕구</div>
         <div class="pdf-section-tag" style="color:${item.color}">SECTION 0${3+rankIdx+1} · TOP ${rankIdx+1}</div>
@@ -6049,7 +6145,7 @@ async function downloadPDF(){
       let cTop = makeContainer(topPageHtml);
       const imgTop = await capturePage(cTop.firstChild);
       document.body.removeChild(cTop);
-      await addPage(imgTop, pageNum, 13);
+      await addPage(imgTop, pageNum, PDF_TOTAL);
     }
 
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -6062,7 +6158,7 @@ async function downloadPDF(){
           <div class="pdf-psyche-inner">
             <div class="pdf-psyche-header">
               <div class="pdf-psyche-brand">SKOPOS · SDTI 정밀 검사 리포트</div>
-              <div class="pdf-psyche-pagenum">07 / 13</div>
+              <div class="pdf-psyche-pagenum">09 / ${PDF_TOTAL}</div>
             </div>
             <div class="pdf-psyche-tag">🧬 SPACE PSYCHOLOGY</div>
             <div class="pdf-psyche-title">왜 이런 공간이<br><em>편하게 느껴질까요?</em></div>
@@ -6093,8 +6189,46 @@ async function downloadPDF(){
       let c4psy = makeContainer(p4PsyHtml);
       const img4psy = await capturePage(c4psy.firstChild);
       document.body.removeChild(c4psy);
-      await addPage(img4psy, 7, 13);
+      await addPage(img4psy, 9, PDF_TOTAL);
     }
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // PAGE 10 , 🆕 해석 주의사항 + 자주 묻는 질문
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    const principles = [
+      {no:'원칙 1', title:'유형은 규정이 아니라 경향이에요', body:`${krText(t.plain)}이라고 해서 다른 스타일의 공간을 즐기면 안 되는 것이 아니에요. 유형은 금지 목록이 아니라, 내 에너지가 어디에서 차오르고 어디에서 새는지 알려주는 사용 설명서에 가깝습니다.`},
+      {no:'원칙 2', title:'점수는 우열이 아니라 강도예요', body:'어떤 영역의 점수가 낮다는 것은 그 능력이 부족하다는 뜻이 아니라, 집이라는 공간에서는 그 욕구의 우선순위가 낮다는 뜻이에요. 낮은 점수는 고쳐야 할 약점이 아닙니다.'},
+      {no:'원칙 3', title:'욕구는 삶의 단계에 따라 변해요', body:'이사, 결혼, 출산, 독립 같은 공간 전환기에는 욕구 구조가 재편되곤 합니다. 큰 전환기를 지난 뒤에는 재검사로 나의 지도를 갱신해 보세요.'},
+    ].map(pr=>`<div style="background:#FAFAFC;border:1px solid #EEEEF4;border-radius:12px;padding:16px 20px;margin-bottom:10px">
+      <div style="font-size:10.5px;font-weight:800;letter-spacing:.08em;color:#C9A96E;margin-bottom:5px">${pr.no}</div>
+      <div style="font-size:14px;font-weight:800;color:#1A1A2E;margin-bottom:6px">${pr.title}</div>
+      <div style="font-size:12px;line-height:1.75;color:#4A4E63">${pr.body}</div>
+    </div>`).join('');
+
+    const faqs = [
+      {q:'두 유형 사이에 있는 것 같아요', a:'자연스러운 일이에요. 유형은 가장 강한 결을 대표로 보여주는 것이고, 4페이지의 8개 영역 프로파일이 유형 이름보다 언제나 더 정확합니다. 경계에 있다면 두 유형의 처방 중 끌리는 쪽을 먼저 실험해 보세요.'},
+      {q:'가족과 유형이 달라요', a:'다른 것이 정상이에요. 18페이지의 조율 가이드를 함께 읽어 보세요. 상대의 결과지가 있다면 두 지도를 겹쳐 보는 것이 가장 빠른 대화법입니다.'},
+      {q:'결과가 매번 조금씩 다르게 나올 수 있나요', a:'그날의 컨디션과 상황에 따라 응답이 달라질 수 있어요. 다만 핵심 욕구 상위권은 대체로 안정적으로 유지됩니다. 큰 변화가 느껴진다면 삶의 조건이 바뀌었다는 신호일 수 있어요.'},
+    ].map(f=>`<div style="margin-bottom:12px">
+      <div style="font-size:13px;font-weight:800;color:#1A1A2E;margin-bottom:4px">Q. ${f.q}</div>
+      <div style="font-size:12px;line-height:1.75;color:#4A4E63;padding-left:2px">${f.a}</div>
+    </div>`).join('');
+
+    const pGuideHtml = `<div class="pdf-page"><div class="pdf-inner">
+      ${innerHeader(10,PDF_TOTAL)}
+      <div class="pdf-section-tag">HOW TO READ</div>
+      <div class="pdf-section-title">해석 주의사항과 자주 묻는 질문</div>
+      <div class="pdf-section-sub">이 리포트를 오래, 바르게 쓰기 위한 세 가지 원칙이에요. 뒤의 처방들을 읽기 전에 한 번만 짚고 가세요.</div>
+      ${principles}
+      <div style="margin-top:18px">
+        <div class="pdf-section-tag">FAQ</div>
+        <div style="margin-top:10px">${faqs}</div>
+      </div>
+    </div></div>`;
+    let cN3 = makeContainer(pGuideHtml);
+    const imgN3 = await capturePage(cN3.firstChild);
+    document.body.removeChild(cN3);
+    await addPage(imgN3, 10, PDF_TOTAL);
 
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     // PAGE 5 , 공간별 소품 처방 (기존 PAGE 3)
@@ -6112,8 +6246,8 @@ async function downloadPDF(){
     const bpRest = bpText.split('\n\n').slice(3,6).join('\n\n');
 
     const p3Html = `<div class="pdf-page"><div class="pdf-inner">
-      ${innerHeader(8,13)}
-      <div class="pdf-section-tag">SECTION 04</div>
+      ${innerHeader(11,PDF_TOTAL)}
+      <div class="pdf-section-tag">SECTION 07</div>
       <div class="pdf-section-title">공간별 소품 처방</div>
       <div class="pdf-section-sub">내 유형에 맞게 거실·침실·주방·서재를 꾸미는 구체적인 방법이에요.</div>
       <div class="pdf-rooms">${roomsHtml2}</div>
@@ -6127,7 +6261,39 @@ async function downloadPDF(){
     let c3 = makeContainer(p3Html);
     const img3 = await capturePage(c3.firstChild);
     document.body.removeChild(c3);
-    await addPage(img3, 8, 13);
+    await addPage(img3, 11, PDF_TOTAL);
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // PAGE 12 , 🆕 소재·조명 사전
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    const dictRows = [
+      {k:'색온도 (K)', v:'조명 빛의 색을 나타내는 수치예요. 2700~3000K는 노을에 가까운 전구색, 4000K 이상은 사무실에 가까운 주백색·주광색입니다. 저녁 휴식 공간에는 3000K 이하가 대체로 편안해요.'},
+      {k:'간접조명', v:'광원이 직접 보이지 않게 벽이나 천장에 빛을 반사시키는 방식이에요. 눈부심이 없어 자극에 민감한 분들에게 특히 좋고, 공간의 분위기를 가장 쉽게 바꾸는 도구입니다.'},
+      {k:'디머 (밝기 조절)', v:'시간대에 따라 빛의 양을 바꾸는 스위치나 전구예요. 하나의 조명으로 낮의 모드와 밤의 모드를 오갈 수 있습니다.'},
+      {k:'흡음 vs 차음', v:'흡음은 울림을 줄이는 것(러그·커튼·패브릭), 차음은 소리를 막는 것(문틈 가스켓·두꺼운 문)이에요. 체감을 바꾸는 건 보통 흡음이 먼저입니다.'},
+      {k:'무광(매트) vs 유광', v:'무광 마감은 빛 반사가 적어 시각 자극을 줄이고, 유광(하이글로시)은 공간을 또렷하고 화사하게 만들어요. 내 유형의 팔레트와 자극 민감도에 맞춰 고르세요.'},
+      {k:'히든 수납 vs 오픈 수납', v:'문과 뚜껑으로 내용물이 가려지는 수납과, 꺼내 보이는 수납이에요. 시야 비우기 욕구가 강하면 히든을, 애장품을 보며 충전되는 유형이면 오픈을 우선하세요.'},
+      {k:'패브릭 소재군', v:'면 고밀도, 워싱 린넨, 모달, 부클레는 촉감이 부드럽고 소리를 흡수해요. 피부에 닿는 침구·소파에서는 디자인보다 소재 표기를 먼저 확인하는 습관이 실패를 줄입니다.'},
+    ].map((r,i)=>`<div style="display:flex;gap:14px;padding:12px 4px;border-bottom:1px solid #F0F0F5">
+      <div style="width:168px;flex:none;font-size:12.5px;font-weight:800;color:#1A1A2E">${r.k}</div>
+      <div style="flex:1;font-size:11.5px;line-height:1.7;color:#4A4E63">${r.v}</div>
+    </div>`).join('');
+
+    const pDictHtml = `<div class="pdf-page"><div class="pdf-inner">
+      ${innerHeader(12,PDF_TOTAL)}
+      <div class="pdf-section-tag">SECTION 08</div>
+      <div class="pdf-section-title">소재·조명 사전</div>
+      <div class="pdf-section-sub">쇼핑 중에 마주칠 용어들을 공간 욕구의 기준으로 번역해 둔 사전이에요. 제품명이 아니라 소재와 수치를 보는 습관이 실패 없는 소비를 만듭니다.</div>
+      <div style="margin-top:4px">${dictRows}</div>
+      <div class="pdf-insight" style="margin-top:20px">
+        <div class="pdf-insight-icon">💡</div>
+        <div class="pdf-insight-text"><strong>활용법:</strong> 가구나 소품을 고를 때 이 페이지를 펼쳐두고, 상세 페이지의 소재·마감·색온도 표기를 위 기준과 대조해 보세요. ${krText(t.plain)}의 추천 키워드는 20페이지의 체크리스트와 함께 보면 더 정확해집니다.</div>
+      </div>
+    </div></div>`;
+    let cN4 = makeContainer(pDictHtml);
+    const imgN4 = await capturePage(cN4.firstChild);
+    document.body.removeChild(cN4);
+    await addPage(imgN4, 12, PDF_TOTAL);
 
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     // PAGE 6 — 🆕 30 / 60 / 90일 액션 플랜
@@ -6144,8 +6310,8 @@ async function downloadPDF(){
       `).join('');
 
       const p6Html = `<div class="pdf-page"><div class="pdf-inner">
-        ${innerHeader(9,13)}
-        <div class="pdf-section-tag">SECTION 05</div>
+        ${innerHeader(13,PDF_TOTAL)}
+        <div class="pdf-section-tag">SECTION 09</div>
         <div class="pdf-section-title">30 / 60 / 90일 액션 플랜</div>
         <div class="pdf-section-sub">한 번에 바꾸려 하지 마세요. 작은 변화 → 중간 투자 → 큰 결정 순서로, 가장 적은 비용과 후회로 ${krText(t.plain)} 공간을 완성하는 방법이에요.</div>
         <div class="pdf-timeline">${timelineHtml}</div>
@@ -6158,7 +6324,7 @@ async function downloadPDF(){
       let c6 = makeContainer(p6Html);
       const img6 = await capturePage(c6.firstChild);
       document.body.removeChild(c6);
-      await addPage(img6, 9, 13);
+      await addPage(img6, 13, PDF_TOTAL);
     }
 
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -6203,8 +6369,8 @@ async function downloadPDF(){
       }).join('');
 
       const p7Html = `<div class="pdf-page"><div class="pdf-inner">
-        ${innerHeader(10,13)}
-        <div class="pdf-section-tag">SECTION 06</div>
+        ${innerHeader(14,PDF_TOTAL)}
+        <div class="pdf-section-tag">SECTION 10</div>
         <div class="pdf-section-title">계절별 공간 변화 가이드</div>
         <div class="pdf-section-sub">같은 ${krText(t.plain)} 공간도 계절마다 강조하는 부분이 달라야 해요. 1년 내내 이 페이지를 펼쳐보며 계절 전환을 준비하세요.</div>
         <div class="pdf-season-grid">${seasonsHtml}</div>
@@ -6212,7 +6378,7 @@ async function downloadPDF(){
       let c7 = makeContainer(p7Html);
       const img7 = await capturePage(c7.firstChild);
       document.body.removeChild(c7);
-      await addPage(img7, 10, 13);
+      await addPage(img7, 14, PDF_TOTAL);
     }
 
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -6240,8 +6406,8 @@ async function downloadPDF(){
       </div>`).join('');
 
     const p4Html = `<div class="pdf-page"><div class="pdf-inner">
-      ${innerHeader(11,13)}
-      <div class="pdf-section-tag">SECTION 07</div>
+      ${innerHeader(15,PDF_TOTAL)}
+      <div class="pdf-section-tag">SECTION 11</div>
       <div class="pdf-section-title">잘 맞는 요소 vs 덜 맞을 수 있는 요소</div>
       <div class="pdf-section-sub">구매 전 한 번 살펴보세요. 좋고 나쁨이 아니라 내 집에서 오래 봐도 편한지 확인하는 기준이에요.</div>
       <div class="pdf-match-grid">
@@ -6255,7 +6421,7 @@ async function downloadPDF(){
         </div>
       </div>
       <div style="margin-top:28px">
-        <div class="pdf-section-tag">SECTION 08</div>
+        <div class="pdf-section-tag">SECTION 12</div>
         <div class="pdf-section-title">인테리어 예산 배분 가이드</div>
         <div class="pdf-section-sub">내 유형에서 만족도가 높은 투자 비율이에요. 어디에 먼저 예산을 써야 할지 정할 때 참고하세요.</div>
         <div style="margin-top:8px">${budgetHtml}</div>
@@ -6264,7 +6430,7 @@ async function downloadPDF(){
     let c4 = makeContainer(p4Html);
     const img4 = await capturePage(c4.firstChild);
     document.body.removeChild(c4);
-    await addPage(img4, 11, 13);
+    await addPage(img4, 15, PDF_TOTAL);
 
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     // PAGE 8 , 🆕 예산대별 쇼핑 가이드
@@ -6284,8 +6450,8 @@ async function downloadPDF(){
       `).join('');
 
       const p8Html = `<div class="pdf-page"><div class="pdf-inner">
-        ${innerHeader(12,13)}
-        <div class="pdf-section-tag">SECTION 09</div>
+        ${innerHeader(16,PDF_TOTAL)}
+        <div class="pdf-section-tag">SECTION 13</div>
         <div class="pdf-section-title">예산별 시작 가이드</div>
         <div class="pdf-section-sub">가격대별로 가장 효과적인 ${krText(t.plain)} 추천 아이템을 정리했어요. 1만 원부터 시작해 천천히 늘려가셔도 충분합니다.</div>
         <div class="pdf-shopping-grid">${tiersHtml}</div>
@@ -6298,8 +6464,110 @@ async function downloadPDF(){
       let c8 = makeContainer(p8Html);
       const img8 = await capturePage(c8.firstChild);
       document.body.removeChild(c8);
-      await addPage(img8, 12, 13);
+      await addPage(img8, 16, PDF_TOTAL);
     }
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // PAGE 17 , 🆕 유형 활용 가이드 4분면
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    const useKeys = ((t.keys&&t.keys.length)?t.keys:[]).slice(0,3).map(krText).join(', ');
+    const useAvoid = getAvoidItems(t).slice(0,2).map(krText).join(', ');
+    const useCompatNames = getTypeField(t,'compat').map(id=>TYPE_MAP[id]).filter(Boolean).map(ct=>krText(ct.plain)).join(', ');
+    const quadrants = [
+      {icon:'🔋', title:'내가 살아나는 공간', body:`${useKeys||'내 취향의 요소들'}이(가) 중심이 되는 공간에서 당신은 짧게 쉬어도 깊게 회복돼요. 집에 들어선 첫 30초의 느낌이 그 기준입니다.`},
+      {icon:'⚠️', title:'방전 신호 알아차리기', body:`집에 와도 쉰 것 같지 않은 날이 이어지면 공간을 점검해 보세요. ${useAvoid||'내 결과 맞지 않는 요소'} 같은 요소가 시야와 동선에 쌓여 있지 않은지 확인하는 것이 시작이에요.`},
+      {icon:'🛒', title:'쇼핑과 배치에서의 활용', body:'구매 전에 15페이지의 어울림 기준과 12페이지의 소재·조명 사전을 함께 확인하세요. 디자인이 끌려도 소재와 빛이 내 기준과 어긋나면 만족은 오래가지 않습니다.'},
+      {icon:'🤝', title:'함께 사는 사람과', body:`${useCompatNames?`${useCompatNames} 유형과는 결이 잘 맞는 편이에요. `:''}유형이 다른 가족과 살더라도, 나의 회복 코너 한 곳은 협상 없이 확보하는 것이 서로에게 좋습니다. 자세한 조율법은 다음 페이지에 담았어요.`},
+    ].map(qd=>`<div style="background:#FAFAFC;border:1px solid #EEEEF4;border-radius:14px;padding:20px 22px">
+      <div style="font-size:22px;margin-bottom:8px">${qd.icon}</div>
+      <div style="font-size:14px;font-weight:800;color:#1A1A2E;margin-bottom:7px">${qd.title}</div>
+      <div style="font-size:12px;line-height:1.75;color:#4A4E63">${qd.body}</div>
+    </div>`).join('');
+
+    const pUseHtml = `<div class="pdf-page"><div class="pdf-inner">
+      ${innerHeader(17,PDF_TOTAL)}
+      <div class="pdf-section-tag">SECTION 14</div>
+      <div class="pdf-section-title">결과를 일상에서 쓰는 네 가지 장면</div>
+      <div class="pdf-section-sub">리포트는 읽고 덮는 것이 아니라 생활의 기준으로 쓰는 것이에요. ${krText(t.plain)}의 결과를 네 가지 장면으로 요약했어요.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px">${quadrants}</div>
+      <div class="pdf-insight" style="margin-top:20px">
+        <div class="pdf-insight-icon">📌</div>
+        <div class="pdf-insight-text"><strong>한 가지만 기억한다면:</strong> 공간이 바뀌기 전에 나를 먼저 아는 것. 무엇을 사고 어떻게 배치할지 망설여질 때마다 이 네 장면으로 돌아오세요.</div>
+      </div>
+    </div></div>`;
+    let cN5 = makeContainer(pUseHtml);
+    const imgN5 = await capturePage(cN5.firstChild);
+    document.body.removeChild(cN5);
+    await addPage(imgN5, 17, PDF_TOTAL);
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // PAGE 18 , 🆕 함께 사는 사람과: 유형 조율 가이드
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    const adjustCards = [
+      {icon:'🗺️', title:'먼저, 서로의 지도를 꺼내 놓기', body:'취향 논쟁은 끝이 없지만 욕구 이해는 빠르게 합의에 닿아요. 상대도 검사를 받아 두 결과지를 나란히 놓으면, "왜 저러지"가 "저 사람은 저기서 충전되는구나"로 바뀝니다.'},
+      {icon:'🧩', title:'공용 공간과 개인 공간의 규칙 분리', body:'거실·주방 같은 공용 공간은 함께 정한 규칙으로, 각자의 방과 코너는 각자의 규칙으로 운영하세요. 모든 공간을 하나의 기준으로 맞추려는 순간 갈등이 시작됩니다.'},
+      {icon:'🛟', title:'회복 코너는 협상 불가 구역으로', body:'서로의 유형이 아무리 달라도, 각자 한 곳씩의 회복 코너는 보장해 주세요. 의자 하나와 조명 하나면 충분합니다. 이 작은 합의가 집 전체의 평화를 지킵니다.'},
+      {icon:'💬', title:'오해를 줄이는 문장 만들기', body:'"같이 있기 싫은 게 아니라, 충전 방식이 달라." 비난이 아니라 욕구의 언어로 말하면 상대도 자신의 욕구로 답하게 돼요. 두 리포트의 핵심 욕구 페이지를 서로 바꿔 읽어보는 것도 좋은 방법입니다.'},
+    ].map(ac=>`<div style="display:flex;gap:14px;background:#FAFAFC;border:1px solid #EEEEF4;border-radius:12px;padding:16px 20px;margin-bottom:10px">
+      <div style="font-size:20px;flex:none">${ac.icon}</div>
+      <div>
+        <div style="font-size:13.5px;font-weight:800;color:#1A1A2E;margin-bottom:5px">${ac.title}</div>
+        <div style="font-size:12px;line-height:1.75;color:#4A4E63">${ac.body}</div>
+      </div>
+    </div>`).join('');
+
+    const compatChipsP18 = getTypeField(t,'compat').map(id=>{
+      const ct = TYPE_MAP[id];
+      return ct ? `<div class="pdf-compat-chip">${ct.emoji} ${krText(ct.plain)}</div>` : '';
+    }).join('');
+
+    const pTogetherHtml = `<div class="pdf-page"><div class="pdf-inner">
+      ${innerHeader(18,PDF_TOTAL)}
+      <div class="pdf-section-tag">SECTION 15</div>
+      <div class="pdf-section-title">함께 사는 사람과: 유형 조율 가이드</div>
+      <div class="pdf-section-sub">집은 혼자만의 공간이 아닐 때 더 어려워요. ${krText(t.plain)}인 당신이 다른 유형의 사람과 살 때 쓸 수 있는 조율의 원칙을 담았어요.</div>
+      ${adjustCards}
+      ${compatChipsP18?`<div style="margin-top:14px">
+        <div class="pdf-section-tag">나와 결이 잘 맞는 유형</div>
+        <div class="pdf-compat" style="margin-top:10px">${compatChipsP18}</div>
+      </div>`:''}
+    </div></div>`;
+    let cN6 = makeContainer(pTogetherHtml);
+    const imgN6 = await capturePage(cN6.firstChild);
+    document.body.removeChild(cN6);
+    await addPage(imgN6, 18, PDF_TOTAL);
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // PAGE 19 , 🆕 30일 후, 나에게 보내는 피드백
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    const fbItems = [
+      '집에 오면 긴장이 풀린다고 느끼는 날이 많아졌다',
+      '쉬는 자리에서 보이는 미처리 물건이 줄었다',
+      '저녁 시간의 조명이 내게 맞게 바뀌었다',
+      '잠드는 데 걸리는 시간이 짧아졌다',
+      '나만의 회복 코너가 생겼고, 실제로 사용한다',
+      '집 때문에 예민해지는 일이 줄었다',
+      '가구·소품을 살 때 소재와 조명 기준을 먼저 본다',
+      '주말에 집에서 보내는 시간이 아깝지 않다',
+    ].map(item=>`<div style="display:flex;align-items:center;gap:12px;padding:11px 4px;border-bottom:1px solid #F0F0F5">
+      <div style="width:18px;height:18px;flex:none;border:2px solid #C9A96E;border-radius:5px"></div>
+      <div style="font-size:12.5px;color:#3A3E53">${item}</div>
+    </div>`).join('');
+
+    const pFeedbackHtml = `<div class="pdf-page"><div class="pdf-inner">
+      ${innerHeader(19,PDF_TOTAL)}
+      <div class="pdf-section-tag">SECTION 16</div>
+      <div class="pdf-section-title">30일 후, 나에게 보내는 피드백</div>
+      <div class="pdf-section-sub">리포트의 처방이 실제로 작동했는지 확인하는 페이지예요. 한 달 뒤 달력에 알림을 맞춰 두고 돌아와 체크해 보세요. 5개 이상이면 처방이 잘 맞고 있는 거예요.</div>
+      <div style="margin:6px 0 18px">${fbItems}</div>
+      <div class="pdf-behavior-box">
+        <div class="pdf-behavior-text">체크가 4개 이하라면 실패가 아니라 데이터예요. 핵심 욕구 1순위(6페이지) 하나만 남기고 나머지 실천을 잠시 멈춘 뒤, 그 하나에 2주를 더 써보세요. 그래도 변화가 없다면 욕구 구조가 변했을 수 있으니 재검사로 지도를 갱신하는 것을 권해요.</div>
+      </div>
+    </div></div>`;
+    let cN7 = makeContainer(pFeedbackHtml);
+    const imgN7 = await capturePage(cN7.firstChild);
+    document.body.removeChild(cN7);
+    await addPage(imgN7, 19, PDF_TOTAL);
 
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     // PAGE 9 , 컬러 팔레트 + 궁합 + 체크리스트 (뒷표지)
@@ -6318,21 +6586,21 @@ async function downloadPDF(){
     }).join('') || '<div class="pdf-compat-chip">✨ 자신만의 고유한 길</div>';
 
     const p5Html = `<div class="pdf-page"><div class="pdf-inner">
-      ${innerHeader(13,13)}
-      <div class="pdf-section-tag">SECTION 10</div>
+      ${innerHeader(20,PDF_TOTAL)}
+      <div class="pdf-section-tag">SECTION 17</div>
       <div class="pdf-section-title">나의 공간 컬러 팔레트</div>
       <div class="pdf-section-sub">이 색들을 기준으로 고르면 실패 확률이 줄어듭니다. 가장 큰 면적(벽·소파)엔 첫 번째, 포인트(소품·쿠션)엔 세 번째 색을 추천해요.</div>
       <div class="pdf-palette">${paletteHtml}</div>
 
       <div style="margin-top:32px">
-        <div class="pdf-section-tag">SECTION 11</div>
+        <div class="pdf-section-tag">SECTION 18</div>
         <div class="pdf-section-title">함께 사는 사람과의 유형 궁합</div>
         <div class="pdf-section-sub">같이 사는 분도 진단해보세요. 유형이 같으면 편한 지점이 비슷하고, 다르면 어떤 공간을 각자에게 맞춰 나눌지 정하기 쉬워요.</div>
         <div class="pdf-compat">${compatHtml||'<div class="pdf-compat-chip">진단 후 확인 가능</div>'}</div>
       </div>
 
       <div style="margin-top:32px">
-        <div class="pdf-section-tag">SECTION 12</div>
+        <div class="pdf-section-tag">SECTION 19</div>
         <div class="pdf-section-title">사기 전에 한 번 더 보는 체크리스트</div>
         <div class="pdf-behavior-box" style="margin-top:8px">
           <div class="pdf-behavior-text">사기 전에 한 번만 체크해보세요.
@@ -6356,7 +6624,31 @@ async function downloadPDF(){
     let c5 = makeContainer(p5Html);
     const img5 = await capturePage(c5.firstChild);
     document.body.removeChild(c5);
-    await addPage(img5, 13, 13);
+    await addPage(img5, 20, PDF_TOTAL);
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // PAGE 21 , 🆕 나의 공간 다짐 + 뒤표지
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    const pBackHtml = `<div class="pdf-page" style="padding:0">
+      <div style="background:linear-gradient(145deg,#0F0F1A 0%,#1A1040 60%,#0F0F1A 100%);width:100%;min-height:1123px;display:flex;flex-direction:column;justify-content:center;padding:90px 72px;box-sizing:border-box;position:relative">
+        <div style="font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:rgba(201,169,110,.8);font-weight:700;margin-bottom:48px">SKOPOS · SDTI REPORT</div>
+        <div style="font-size:30px;font-weight:800;color:#fff;line-height:1.4;margin-bottom:28px">나의 공간 다짐</div>
+        <div style="font-size:14px;color:rgba(255,255,255,.65);line-height:1.9;margin-bottom:44px">리포트를 덮기 전에, 한 문장만 남겨 보세요.<br>계절이 바뀔 때마다 이 문장을 다시 꺼내 보게 될 거예요.</div>
+        <div style="border:1px solid rgba(201,169,110,.35);border-radius:16px;padding:40px 36px;margin-bottom:60px">
+          <div style="font-size:17px;color:rgba(255,255,255,.9);line-height:2.2">"이 집에서 나는,</div>
+          <div style="border-bottom:1px solid rgba(255,255,255,.25);height:44px;margin:8px 0 10px"></div>
+          <div style="font-size:17px;color:rgba(255,255,255,.9);text-align:right">하고 싶다."</div>
+        </div>
+        <div style="font-size:14.5px;color:rgba(255,255,255,.8);line-height:1.9;margin-bottom:40px">공간이 바뀌기 전에, 나를 먼저 아는 것.<br>이 리포트는 끝이 아니라 기준입니다.<br>이사, 결혼, 새로운 시작 앞에서 언제든 다시 꺼내 보세요.</div>
+        <div style="border-top:1px solid rgba(255,255,255,.1);padding-top:24px">
+          <div style="font-size:10.5px;color:rgba(255,255,255,.45);line-height:1.9">SDTI는 검사 엔진과 문항·해석 체계가 한국저작권위원회에 정식 등록된 검사 도구입니다.<br>검사 엔진 등록 제 C-2026-029862 호 (컴퓨터프로그램저작물) · 검사지(문항·해석 체계) 등록 제 C-2026-031790 호 (어문저작물)<br>© 2026 SKOPOS 스코포스 · 본 검사지의 무단 복제·배포·상업적 이용을 금합니다 · skopos.kr</div>
+        </div>
+      </div>
+    </div>`;
+    let cN8 = makeContainer(pBackHtml);
+    const imgN8 = await capturePage(cN8.firstChild);
+    document.body.removeChild(cN8);
+    await addPage(imgN8, 21, PDF_TOTAL);
 
     // ── 저장 (iOS·Android·Desktop 모두 호환) ────────────────
     const filename = `SKOPOS_${t.plain}_정밀진단리포트_${today.replace(/\. /g,'-').replace('.','')}.pdf`;
@@ -6522,35 +6814,15 @@ function _initPremiumGate(){
     });
   }
 
-  // ═══ 공개 열람 (로그인 불필요) ═══════════════════════════
-  // 마이페이지에서 PDF 재다운로드 요청
-  if(p.get('pdf') === '1' && p.get('r')){
-    try{
-      const id = decodeURIComponent(atob(p.get('r')));
-      const type = TYPE_MAP[id];
-      if(type){
-        resultType = type;
-        const scores={};
-        SECS.forEach(s=>{ scores[s.label]=getSectionScore(type, {}, s, 55); });
-        renderResult(type, scores);
-        show('sr');
-        setTimeout(async()=>{
-          document.querySelectorAll('.r-bar-fill').forEach(b=>b.style.width=b.dataset.val+'%');
-          document.querySelectorAll('.budget-fill').forEach(b=>b.style.width=b.dataset.val+'%');
-          if(resultType) renderSpaceRefs(resultType);
-          setTimeout(()=>downloadPDF(), 1200);
-        }, 500);
-      }
-    }catch(e){ console.warn('PDF 복원 오류:', e); }
-    watchAuthPassive();
-    return;
-  }
-  // 공유된 결과 링크 열람
+  // ═══ 결과 열람 (?r= / ?pdf=1&r=): 로그인 + 결제 이력 확인 후에만 렌더 ═══
+  // (결제 없이 URL 파라미터만으로 유료 결과·PDF가 열리던 우회 경로 차단)
   if(p.get('r')){
-    try{
-      const id   = decodeURIComponent(atob(p.get('r')));
-      const type = TYPE_MAP[id];
-      if(type){
+    const wantPdf = p.get('pdf') === '1';
+    const renderSharedResult = ()=>{
+      try{
+        const id   = decodeURIComponent(atob(p.get('r')));
+        const type = TYPE_MAP[id];
+        if(!type) return false;
         resultType = type;
         const scores = {};
         SECS.forEach(s => { scores[s.label] = getSectionScore(type, {}, s, 55); });
@@ -6560,10 +6832,34 @@ function _initPremiumGate(){
           document.querySelectorAll('.r-bar-fill').forEach(b=>{ b.style.width=b.dataset.val+'%'; });
           document.querySelectorAll('.budget-fill').forEach(b=>{ b.style.width=b.dataset.val+'%'; });
           if(resultType) renderSpaceRefs(resultType);
-        }, 400);
-      }
-    }catch(e){ console.warn('결과 복원 오류:', e); }
-    watchAuthPassive();
+          if(wantPdf) setTimeout(()=>downloadPDF(), 1200);
+        }, wantPdf ? 500 : 400);
+        return true;
+      }catch(e){ console.warn('결과 복원 오류:', e); return false; }
+    };
+    if(window.SkoposAuth){
+      SkoposAuth.guard({
+        subtitle:'검사 결과는 <strong>로그인 후</strong> 확인할 수 있어요.<br>결제하신 계정으로 로그인해 주세요.',
+        async onReady(user){
+          _authed = true;
+          applyLoggedInUser(user);
+          const entitled = await checkEntitlement(user);
+          if(entitled){
+            unlockPayGate();
+            if(!renderSharedResult()){
+              toast('결과 정보를 불러오지 못했어요. 결제 게이트로 이동합니다.', 2600);
+              show('sp');
+            }
+          }else{
+            try{ trackEvent('result_view_blocked', {reason:'no_entitlement'}); }catch(e){}
+            toast('정밀 검사 결과는 결제 후 확인할 수 있어요. 결제 페이지로 이동합니다.', 2600);
+            setTimeout(()=>{ window.location.href = 'payment.html'; }, 1800);
+          }
+        }
+      });
+    }else{
+      console.warn('SkoposAuth 모듈이 로드되지 않았습니다.');
+    }
     return;
   }
 
