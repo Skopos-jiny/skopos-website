@@ -206,6 +206,19 @@ nav{position:sticky;top:0;left:0;right:0;z-index:200;height:60px;display:flex;al
 #sl{text-align:center;background:linear-gradient(135deg,#0F0F1A,#1E1040)}
 .ld-icon{font-size:3rem;margin-bottom:20px;animation:spin 3s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
+/* 스코포스 로고 모션 (분석 중 화면) */
+.ld-logo{position:relative;width:132px;height:132px;margin:0 auto 26px}
+.ld-sonar{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(255,255,255,.35);animation:ldSonar 2.6s ease-out infinite}
+.ld-sonar.s2{animation-delay:1.3s}
+@keyframes ldSonar{0%{transform:scale(.72);opacity:.85}70%{opacity:.15}100%{transform:scale(1.55);opacity:0}}
+.ld-mark{position:absolute;inset:14px;width:104px;height:104px;filter:drop-shadow(0 10px 28px rgba(0,0,0,.45))}
+.ld-disc{transform-origin:50px 50px;animation:ldSpin 7s linear infinite}
+@keyframes ldSpin{to{transform:rotate(360deg)}}
+.ld-target{transform-origin:50px 50px;animation:ldPulse 2.2s ease-in-out infinite}
+@keyframes ldPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.09)}}
+.ld-dot{transform-origin:50px 50px;animation:ldBlink 1.1s ease-in-out infinite}
+@keyframes ldBlink{0%,100%{opacity:1}50%{opacity:.45}}
+@media (prefers-reduced-motion: reduce){.ld-disc,.ld-target,.ld-dot,.ld-sonar{animation:none}}
 .ld-title{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;color:#fff;margin-bottom:10px}
 .ld-sub{font-size:.82rem;color:rgba(255,255,255,.5);line-height:1.7}
 .ld-stages{display:flex;gap:8px;margin-top:28px;flex-wrap:wrap;justify-content:center}
@@ -1237,7 +1250,27 @@ html{scroll-behavior:smooth}
 
 <!-- 로딩 -->
 <div id="sl" class="screen">
-  <div class="ld-icon">🔬</div>
+  <div class="ld-logo" aria-hidden="true">
+    <span class="ld-sonar"></span>
+    <span class="ld-sonar s2"></span>
+    <svg class="ld-mark" viewBox="0 0 100 100">
+      <g class="ld-disc">
+        <path d="M50 50 L50 0 A50 50 0 0 1 85.36 85.36 Z" fill="#F5A623"/>
+        <path d="M50 50 L85.36 85.36 A50 50 0 0 1 14.64 85.36 Z" fill="#8BC34A"/>
+        <path d="M50 50 L14.64 85.36 A50 50 0 0 1 50 0 Z" fill="#D6246E"/>
+      </g>
+      <g class="ld-target">
+        <circle cx="50" cy="50" r="27" fill="none" stroke="#fff" stroke-width="5.5"/>
+        <line x1="50" y1="23" x2="50" y2="11" stroke="#fff" stroke-width="5.5" stroke-linecap="round"/>
+        <line x1="50" y1="77" x2="50" y2="89" stroke="#fff" stroke-width="5.5" stroke-linecap="round"/>
+        <line x1="23" y1="50" x2="11" y2="50" stroke="#fff" stroke-width="5.5" stroke-linecap="round"/>
+        <line x1="77" y1="50" x2="89" y2="50" stroke="#fff" stroke-width="5.5" stroke-linecap="round"/>
+        <circle cx="50" cy="50" r="19" fill="#2AA7DF"/>
+        <circle cx="50" cy="50" r="8.5" fill="#fff"/>
+        <circle class="ld-dot" cx="50" cy="50" r="4.6" fill="#2AA7DF"/>
+      </g>
+    </svg>
+  </div>
   <h2 class="ld-title" id="ldTitle">SDTI 공간 욕구 분석 중</h2>
   <p class="ld-sub">144개 응답을 8개 영역으로 심층 분석해<br>나의 공간 욕구 유형을 정밀하게 매칭하고 있어요</p>
   <div class="ld-stages" id="ldstages">
