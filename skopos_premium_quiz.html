@@ -59,7 +59,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Cormorant+Garamond:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --pink:#E91E8C;--orange:#FF9800;--green:#7CB342;--blue:#29B6F6;
+  --pink:#E91E8C;--orange:#D9935B;--green:#9AA38B;--blue:#8CA3C3;
   --dark:#0F0F1A;--mid:#2A2A3C;--gray:#8890A4;
   --bg:#F7F8FC;--white:#fff;
   --gold:#C9A96E;--gold-lt:#E8D5B0;
@@ -236,11 +236,11 @@ nav{position:sticky;top:0;left:0;right:0;z-index:200;height:60px;display:flex;al
 .dict-v{flex:1;font-size:.74rem;color:#4A4E63;line-height:1.65}
 .fb-item{display:flex;align-items:center;gap:10px;padding:9px 2px;border-bottom:1px solid #F0F0F5;font-size:.8rem;color:#3A3E53}
 .fb-item input{width:17px;height:17px;accent-color:#E91E8C;flex:none}
-.pledge-card{background:linear-gradient(145deg,#0F0F1A,#1A1040);border-radius:16px;padding:28px 22px;color:#fff;text-align:center}
-.pledge-card .pl-t{font-family:'Cormorant Garamond',serif;font-size:1.3rem;margin-bottom:8px}
-.pledge-card .pl-s{font-size:.75rem;color:rgba(255,255,255,.6);line-height:1.7;margin-bottom:16px}
-.pledge-line{border:1px solid rgba(201,169,110,.4);border-radius:12px;padding:18px 16px;font-size:.85rem;color:rgba(255,255,255,.9);text-align:left}
-.pledge-line .pl-blank{border-bottom:1px solid rgba(255,255,255,.3);height:26px;margin:6px 8px}
+.pledge-card{background:linear-gradient(150deg,#FFF9F3,#FCE7F0);border:1px solid #F6E3EC;border-radius:16px;padding:28px 22px;color:#1A1A2E;text-align:center}
+.pledge-card .pl-t{font-family:'Cormorant Garamond',serif;font-size:1.3rem;margin-bottom:8px;font-weight:600}
+.pledge-card .pl-s{font-size:.75rem;color:#6B7086;line-height:1.7;margin-bottom:16px}
+.pledge-line{border:1px solid rgba(176,125,60,.45);background:rgba(255,255,255,.65);border-radius:12px;padding:18px 16px;font-size:.85rem;color:#2E3348;text-align:left}
+.pledge-line .pl-blank{border-bottom:1px solid rgba(46,51,72,.3);height:26px;margin:6px 8px}
 @media (max-width:560px){.concept-grid,.quad-grid{grid-template-columns:1fr}.rg-formula{flex-direction:column}.typemap-group{width:72px}}
 
 /* ── LOADING ── */
@@ -272,11 +272,11 @@ nav{position:sticky;top:0;left:0;right:0;z-index:200;height:60px;display:flex;al
 .rw{max-width:780px;width:100%;margin:0 auto}
 
 /* 결과 헤더 */
-.r-hero{background:linear-gradient(135deg,#0F0F1A,#1E1040);border-radius:24px;padding:36px;margin-bottom:24px;position:relative;overflow:hidden;text-align:center}
-.r-hero::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;border-radius:50%;background:var(--pink);opacity:.1}
-.r-hero-tag{font-size:.6rem;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.r-hero{background:linear-gradient(150deg,#FFF9F3,#FCE7F0);border:1px solid #F6E3EC;border-radius:24px;padding:36px;margin-bottom:24px;position:relative;overflow:hidden;text-align:center}
+.r-hero::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;border-radius:50%;background:var(--pink);opacity:.07}
+.r-hero-tag{font-size:.6rem;letter-spacing:.25em;text-transform:uppercase;color:#B07D3C;margin-bottom:12px}
 .r-emoji{font-size:3.5rem;margin-bottom:10px;display:block}
-.r-type-name{font-family:'Cormorant Garamond',serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:300;color:#fff;line-height:1.2;margin-bottom:8px}
+.r-type-name{font-family:'Cormorant Garamond',serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:300;color:#1A1A2E;line-height:1.2;margin-bottom:8px}
 
 /* 2줄 시각 위계 — 수식어(위, 작게) + 강조어+유형(아래, 크게) */
 .r-type-name-2lines{
@@ -293,7 +293,7 @@ nav{position:sticky;top:0;left:0;right:0;z-index:200;height:60px;display:flex;al
   font-family:'Noto Sans KR','Nunito',sans-serif;
   font-size:clamp(.95rem, 2vw, 1.2rem);
   font-weight:500;
-  color:rgba(255,255,255,.72);
+  color:#6B7086;
   letter-spacing:-.01em;
   line-height:1.5;
   word-break:keep-all;
@@ -302,8 +302,8 @@ nav{position:sticky;top:0;left:0;right:0;z-index:200;height:60px;display:flex;al
   display:block;
   font-family:'Cormorant Garamond','Noto Sans KR',serif;
   font-size:clamp(1.9rem, 4.2vw, 2.9rem);
-  font-weight:400;
-  color:#fff;
+  font-weight:500;
+  color:#1A1A2E;
   letter-spacing:-.02em;
   line-height:1.25;
   word-break:keep-all;
@@ -323,10 +323,10 @@ nav{position:sticky;top:0;left:0;right:0;z-index:200;height:60px;display:flex;al
   .r-type-name-2lines .r-type-main{font-size:1.5rem}
 }
 
-.r-type-plain{font-size:.78rem;font-weight:700;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px}
-.r-desc{font-size:.9rem;color:rgba(255,255,255,.65);line-height:1.85;max-width:520px;margin:0 auto 20px}
+.r-type-plain{font-size:.78rem;font-weight:700;color:#B07D3C;letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px}
+.r-desc{font-size:.9rem;color:#55596E;line-height:1.85;max-width:520px;margin:0 auto 20px}
 .r-keys{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
-.r-key{border:1px solid rgba(201,169,110,.3);padding:4px 13px;font-size:.68rem;color:var(--gold);border-radius:4px}
+.r-key{border:1px solid rgba(176,125,60,.35);background:rgba(255,255,255,.6);padding:4px 13px;font-size:.68rem;color:#8A6B3C;border-radius:4px}
 
 /* 레이더 차트 */
 .radar-section{background:var(--white);border-radius:var(--radius);padding:28px;margin-bottom:20px;box-shadow:var(--sh)}
@@ -452,8 +452,8 @@ nav{position:sticky;top:0;left:0;right:0;z-index:200;height:60px;display:flex;al
 .insights-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:6px}
 .insight-card{position:relative;padding:18px 16px;border-radius:14px;background:var(--bg);border:1px solid rgba(0,0,0,.05);transition:transform .25s var(--ez),box-shadow .25s var(--ez)}
 .insight-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.06)}
-.insight-card.strength{border-top:3px solid #7CB342;background:linear-gradient(180deg,rgba(124,179,66,.04),var(--bg))}
-.insight-card.caution{border-top:3px solid #FF9800;background:linear-gradient(180deg,rgba(255,152,0,.04),var(--bg))}
+.insight-card.strength{border-top:3px solid #9AA38B;background:linear-gradient(180deg,rgba(124,179,66,.04),var(--bg))}
+.insight-card.caution{border-top:3px solid #D9935B;background:linear-gradient(180deg,rgba(255,152,0,.04),var(--bg))}
 .insight-card.surprise{border-top:3px solid var(--pink);background:linear-gradient(180deg,rgba(233,30,140,.04),var(--bg))}
 .insight-icon{font-size:1.4rem;margin-bottom:10px;line-height:1}
 .insight-label{font-size:.6rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;margin-bottom:8px}
@@ -467,31 +467,31 @@ nav{position:sticky;top:0;left:0;right:0;z-index:200;height:60px;display:flex;al
 }
 
 /* ── 심리학적 뿌리 (학문 카드) ── */
-.psyche-block{background:linear-gradient(145deg,#0F0F1A,#1A1040);border-radius:var(--radius);padding:28px;margin-bottom:16px;color:#fff;position:relative;overflow:hidden}
+.psyche-block{background:linear-gradient(150deg,#FBF4EA,#F6EBDD);border:1px solid #F0E4D2;border-radius:var(--radius);padding:28px;margin-bottom:16px;color:#2E3348;position:relative;overflow:hidden}
 .psyche-block::before{content:'';position:absolute;top:-60px;right:-40px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(201,169,110,.12),transparent 70%);pointer-events:none}
 .psyche-block::after{content:'';position:absolute;bottom:-50px;left:-30px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(233,30,140,.1),transparent 70%);pointer-events:none}
-.psyche-tag{position:relative;z-index:1;font-size:.6rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
-.psyche-theory{position:relative;z-index:1;font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:400;color:#fff;line-height:1.3;margin-bottom:4px}
-.psyche-theory em{color:var(--gold);font-style:normal}
-.psyche-theory-en{position:relative;z-index:1;font-size:.72rem;color:rgba(201,169,110,.7);font-style:italic;margin-bottom:18px;font-weight:500}
-.psyche-section{position:relative;z-index:1;margin-top:18px;padding-top:18px;border-top:1px solid rgba(255,255,255,.08)}
-.psyche-section-label{font-size:.62rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;display:flex;align-items:center;gap:6px}
-.psyche-section-label::before{content:'';width:14px;height:1px;background:var(--gold)}
-.psyche-section-body{font-size:.85rem;color:rgba(255,255,255,.75);line-height:1.85}
-.psyche-section-body strong{color:#fff;font-weight:700}
+.psyche-tag{position:relative;z-index:1;font-size:.6rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#B07D3C;margin-bottom:10px}
+.psyche-theory{position:relative;z-index:1;font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:500;color:#2E3348;line-height:1.3;margin-bottom:4px}
+.psyche-theory em{color:#B07D3C;font-style:normal}
+.psyche-theory-en{position:relative;z-index:1;font-size:.72rem;color:#B99B6B;font-style:italic;margin-bottom:18px;font-weight:500}
+.psyche-section{position:relative;z-index:1;margin-top:18px;padding-top:18px;border-top:1px solid rgba(138,115,99,.18)}
+.psyche-section-label{font-size:.62rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:#B07D3C;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.psyche-section-label::before{content:'';width:14px;height:1px;background:#B07D3C}
+.psyche-section-body{font-size:.85rem;color:#55596E;line-height:1.85}
+.psyche-section-body strong{color:#2E3348;font-weight:700}
 
 /* ── 30/60/90일 액션 플랜 (타임라인) ── */
 .timeline-wrap{position:relative;padding-left:32px;margin-top:8px}
-.timeline-wrap::before{content:'';position:absolute;left:11px;top:6px;bottom:6px;width:2px;background:linear-gradient(180deg,#7CB342,#29B6F6,var(--pink));border-radius:1px}
+.timeline-wrap::before{content:'';position:absolute;left:11px;top:6px;bottom:6px;width:2px;background:linear-gradient(180deg,#9AA38B,#8CA3C3,var(--pink));border-radius:1px}
 .timeline-item{position:relative;padding:0 0 22px 0}
 .timeline-item:last-child{padding-bottom:0}
 .timeline-dot{position:absolute;left:-32px;top:0;width:24px;height:24px;border-radius:50%;background:var(--white);border:3px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:.55rem;font-weight:900;letter-spacing:.02em;z-index:1}
-.timeline-item:nth-child(1) .timeline-dot{color:#7CB342}
-.timeline-item:nth-child(2) .timeline-dot{color:#29B6F6}
+.timeline-item:nth-child(1) .timeline-dot{color:#9AA38B}
+.timeline-item:nth-child(2) .timeline-dot{color:#8CA3C3}
 .timeline-item:nth-child(3) .timeline-dot{color:var(--pink)}
 .timeline-day{display:inline-block;font-size:.62rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding:3px 10px;border-radius:50px;margin-bottom:8px;color:#fff}
-.timeline-item:nth-child(1) .timeline-day{background:#7CB342}
-.timeline-item:nth-child(2) .timeline-day{background:#29B6F6}
+.timeline-item:nth-child(1) .timeline-day{background:#9AA38B}
+.timeline-item:nth-child(2) .timeline-day{background:#8CA3C3}
 .timeline-item:nth-child(3) .timeline-day{background:var(--pink)}
 .timeline-title{font-size:.98rem;font-weight:800;color:var(--dark);margin-bottom:6px;line-height:1.35}
 .timeline-desc{font-size:.83rem;color:#4A4A5A;line-height:1.85}
@@ -521,7 +521,7 @@ nav{position:sticky;top:0;left:0;right:0;z-index:200;height:60px;display:flex;al
 .season-sub-btn{padding:11px 22px;background:linear-gradient(135deg,var(--pink),#FF6B9D);color:#fff;border:none;border-radius:50px;font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:800;cursor:pointer;transition:all .25s;box-shadow:0 4px 14px rgba(233,30,140,.25);white-space:nowrap;flex-shrink:0}
 .season-sub-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(233,30,140,.35)}
 .season-sub-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
-.season-sub-btn.subscribed{background:linear-gradient(135deg,#7CB342,#9CCC65);box-shadow:0 4px 14px rgba(124,179,66,.25)}
+.season-sub-btn.subscribed{background:linear-gradient(135deg,#9AA38B,#9CCC65);box-shadow:0 4px 14px rgba(124,179,66,.25)}
 .season-sub-btn.subscribed:hover{box-shadow:0 6px 20px rgba(124,179,66,.35)}
 
 /* 구독 모달 (이메일 입력) */
@@ -559,10 +559,10 @@ nav{position:sticky;top:0;left:0;right:0;z-index:200;height:60px;display:flex;al
 .seasonal-tab.active{background:var(--white);color:var(--dark);box-shadow:0 2px 8px rgba(0,0,0,.06)}
 .seasonal-tab-icon{font-size:1.1rem;line-height:1}
 .seasonal-tab-label{font-size:.72rem;letter-spacing:.04em}
-.seasonal-tab.active.spring{color:#7CB342}
-.seasonal-tab.active.summer{color:#29B6F6}
-.seasonal-tab.active.autumn{color:#FF7043}
-.seasonal-tab.active.winter{color:#5C6BC0}
+.seasonal-tab.active.spring{color:#9AA38B}
+.seasonal-tab.active.summer{color:#8CA3C3}
+.seasonal-tab.active.autumn{color:#DE8E6F}
+.seasonal-tab.active.winter{color:#8B8BC2}
 .seasonal-tab.current::after{content:'NOW';position:absolute;top:2px;right:4px;font-size:.55rem;background:var(--pink);color:#fff;padding:1px 5px;border-radius:50px;font-weight:800;letter-spacing:.05em}
 .seasonal-tab{position:relative}
 
@@ -1050,8 +1050,8 @@ html{scroll-behavior:smooth}
 .pdf-top-tip-label{font-size:11px;font-weight:800;letter-spacing:.05em;margin-bottom:6px}
 .pdf-top-tip-text{font-size:11.5px;color:#3A3A4A;line-height:1.85;font-weight:500}
 .pdf-top-tip-text strong{color:#0F0F1A;font-weight:700}
-.pdf-insight-card.strength{border-top-color:#7CB342;background:#F4F9EC}
-.pdf-insight-card.caution{border-top-color:#FF9800;background:#FDF6E8}
+.pdf-insight-card.strength{border-top-color:#9AA38B;background:#F4F9EC}
+.pdf-insight-card.caution{border-top-color:#D9935B;background:#FDF6E8}
 .pdf-insight-card.surprise{border-top-color:#E91E8C;background:#FCEEF4}
 .pdf-insight-icon-emoji{font-size:18px;margin-bottom:8px;line-height:1}
 .pdf-insight-label{font-size:9px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;margin-bottom:6px}
@@ -1083,16 +1083,16 @@ html{scroll-behavior:smooth}
 
 /* ── PDF 신규: 30/60/90일 액션 플랜 ── */
 .pdf-timeline{position:relative;padding-left:36px;margin-top:8px}
-.pdf-timeline::before{content:'';position:absolute;left:13px;top:8px;bottom:8px;width:2px;background:linear-gradient(180deg,#7CB342,#29B6F6,#E91E8C);border-radius:1px}
+.pdf-timeline::before{content:'';position:absolute;left:13px;top:8px;bottom:8px;width:2px;background:linear-gradient(180deg,#9AA38B,#8CA3C3,#E91E8C);border-radius:1px}
 .pdf-timeline-item{position:relative;padding-bottom:22px;break-inside:avoid}
 .pdf-timeline-item:last-child{padding-bottom:0}
 .pdf-timeline-dot{position:absolute;left:-36px;top:0;width:28px;height:28px;border-radius:50%;background:#fff;border:3px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:900;letter-spacing:.01em}
-.pdf-timeline-item:nth-child(1) .pdf-timeline-dot{color:#7CB342}
-.pdf-timeline-item:nth-child(2) .pdf-timeline-dot{color:#29B6F6}
+.pdf-timeline-item:nth-child(1) .pdf-timeline-dot{color:#9AA38B}
+.pdf-timeline-item:nth-child(2) .pdf-timeline-dot{color:#8CA3C3}
 .pdf-timeline-item:nth-child(3) .pdf-timeline-dot{color:#E91E8C}
 .pdf-timeline-day{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:50px;margin-bottom:8px;color:#fff}
-.pdf-timeline-item:nth-child(1) .pdf-timeline-day{background:#7CB342}
-.pdf-timeline-item:nth-child(2) .pdf-timeline-day{background:#29B6F6}
+.pdf-timeline-item:nth-child(1) .pdf-timeline-day{background:#9AA38B}
+.pdf-timeline-item:nth-child(2) .pdf-timeline-day{background:#8CA3C3}
 .pdf-timeline-item:nth-child(3) .pdf-timeline-day{background:#E91E8C}
 .pdf-timeline-title{font-size:14px;font-weight:800;color:#0F0F1A;margin-bottom:5px;line-height:1.35}
 .pdf-timeline-desc{font-size:11.5px;color:#3D3D5C;line-height:1.8}
@@ -1681,13 +1681,13 @@ function getScoreScale(score){
 
 const SECS=[
   {key:'sensory', label:'빛·소리·촉감 민감도', legacyLabel:'감각·자극 처리', sub:'밝기·소음·소재가 편안함에 주는 영향',  color:'#E91E8C', icon:'🧠'},
-  {key:'spatial', label:'동선·정리 욕구', legacyLabel:'공간·구조 욕구', sub:'수납·가구 배치·이동 동선에 대한 선호', color:'#FF9800', icon:'📐'},
-  {key:'objects', label:'소품·살림 취향', legacyLabel:'소품·오브제 취향',sub:'집 안 물건을 고르고 놓는 기준',   color:'#7CB342', icon:'🏺'},
-  {key:'color',   label:'색감·소재 취향', legacyLabel:'컬러·소재 언어', sub:'색·질감·패턴을 느끼는 방식',    color:'#29B6F6', icon:'🎨'},
-  {key:'life',    label:'집에서 보내는 시간', legacyLabel:'라이프스타일',   sub:'집에서 쉬고 일하고 먹는 생활 패턴',   color:'#AB47BC', icon:'☕'},
-  {key:'social',  label:'함께 사는 방식', legacyLabel:'관계·소속 욕구', sub:'가족·파트너·손님과 공간을 나누는 방식',    color:'#FF7043', icon:'🏡'},
-  {key:'identity',label:'나를 드러내는 취향', legacyLabel:'자아표현·정체성',sub:'집에 나다운 분위기를 담는 방식',       color:'#26A69A', icon:'✨'},
-  {key:'restore', label:'쉼·회복 욕구', legacyLabel:'회복·안정 욕구', sub:'집에서 에너지를 되찾는 방식',     color:'#5C6BC0', icon:'🌙'},
+  {key:'spatial', label:'동선·정리 욕구', legacyLabel:'공간·구조 욕구', sub:'수납·가구 배치·이동 동선에 대한 선호', color:'#D9935B', icon:'📐'},
+  {key:'objects', label:'소품·살림 취향', legacyLabel:'소품·오브제 취향',sub:'집 안 물건을 고르고 놓는 기준',   color:'#9AA38B', icon:'🏺'},
+  {key:'color',   label:'색감·소재 취향', legacyLabel:'컬러·소재 언어', sub:'색·질감·패턴을 느끼는 방식',    color:'#8CA3C3', icon:'🎨'},
+  {key:'life',    label:'집에서 보내는 시간', legacyLabel:'라이프스타일',   sub:'집에서 쉬고 일하고 먹는 생활 패턴',   color:'#B388B5', icon:'☕'},
+  {key:'social',  label:'함께 사는 방식', legacyLabel:'관계·소속 욕구', sub:'가족·파트너·손님과 공간을 나누는 방식',    color:'#DE8E6F', icon:'🏡'},
+  {key:'identity',label:'나를 드러내는 취향', legacyLabel:'자아표현·정체성',sub:'집에 나다운 분위기를 담는 방식',       color:'#7FA99B', icon:'✨'},
+  {key:'restore', label:'쉼·회복 욕구', legacyLabel:'회복·안정 욕구', sub:'집에서 에너지를 되찾는 방식',     color:'#8B8BC2', icon:'🌙'},
 ];
 
 // ═══════════════════════════════════════
@@ -2535,7 +2535,7 @@ function getAvoidItems(type){
 // ═══════════════════════════════════════
 const TYPES=[
   {id:'sanctuary_deep',
-   name:'집에 오면 [[hl]]조용히 긴장을 풀고 싶은[[/hl]] 유형',
+   name:'집에 오면 일단 [[hl]]아무 소리 없이 쉬고 싶은[[/hl]] 유형',
    plain:'고요한 회복형',
    emoji:'🌙',
    group:'sanctuary',groupName:'조용한 회복형',
@@ -2547,7 +2547,7 @@ const TYPES=[
    weight:{sensory_low:1, restore:1, light:1}},
 
   {id:'sanctuary_zen',
-   name:'비울수록 [[hl]]마음이 가벼워지는[[/hl]] 유형',
+   name:'물건을 버릴 때마다 [[hl]]속이 다 시원해지는[[/hl]] 유형',
    plain:'비움 추구형',
    emoji:'🤍',
    group:'sanctuary',groupName:'조용한 회복형',
@@ -2559,7 +2559,7 @@ const TYPES=[
    weight:{blank:1, solo:1, restore:1}},
 
   {id:'nature_forest',
-   name:'식물 없으면 [[hl]]뭔가 허전한[[/hl]] 유형',
+   name:'집에 초록이 있어야 [[hl]]숨통이 트이는[[/hl]] 유형',
    plain:'초록 충전형',
    emoji:'🌿',
    group:'nature',groupName:'자연 친화형',
@@ -2571,7 +2571,7 @@ const TYPES=[
    weight:{natural_n:1, open:1, light:1}},
 
   {id:'nature_earth',
-   name:'손으로 만든 것에서 [[hl]]따뜻함을 느끼는[[/hl]] 유형',
+   name:'매끈한 새것보다 [[hl]]손때 묻은 온기가 좋은[[/hl]] 유형',
    plain:'핸드메이드 감성형',
    emoji:'🪴',
    group:'nature',groupName:'자연 친화형',
@@ -2583,7 +2583,7 @@ const TYPES=[
    weight:{earth:1, material:1, quality:1}},
 
   {id:'luxe_royal',
-   name:'좋은 소재와 마감에 [[hl]]마음이 가는[[/hl]] 유형',
+   name:'하나를 사도 [[hl]]제대로 된 것을 사야 하는[[/hl]] 유형',
    plain:'품격 감각형',
    emoji:'✨',
    group:'luxe',groupName:'감각적 심미형',
@@ -2595,7 +2595,7 @@ const TYPES=[
    weight:{luxe:1, quality:1, aesthetic:1}},
 
   {id:'luxe_gallery',
-   name:'집 안에도 [[hl]]전시처럼 머무는 장면이 필요한[[/hl]] 유형',
+   name:'예쁜 공간을 보면 [[hl]]그냥 지나치지 못하는[[/hl]] 유형',
    plain:'갤러리 큐레이터형',
    emoji:'🖼️',
    group:'luxe',groupName:'감각적 심미형',
@@ -2607,7 +2607,7 @@ const TYPES=[
    weight:{display:1, art:1, aesthetic:1}},
 
   {id:'artistic_wild',
-   name:'내 집에 [[hl]]내 취향이 분명히 보여야 하는[[/hl]] 유형',
+   name:'남들 다 사는 건 [[hl]]왠지 사기 싫은[[/hl]] 유형',
    plain:'개성 표현형',
    emoji:'🎨',
    group:'artistic',groupName:'나만의 스타일형',
@@ -2619,7 +2619,7 @@ const TYPES=[
    weight:{bold:1, free:1, art:1}},
 
   {id:'artistic_indie',
-   name:'오래된 것에서 [[hl]]아름다움을 발견하는[[/hl]] 유형',
+   name:'새것보다 [[hl]]이야기가 있는 물건에 끌리는[[/hl]] 유형',
    plain:'빈티지 스토리형',
    emoji:'🕰️',
    group:'artistic',groupName:'나만의 스타일형',
@@ -2631,7 +2631,7 @@ const TYPES=[
    weight:{vintage:1, story:1, identity:1}},
 
   {id:'minimal_pure',
-   name:'물건을 덜어낼수록 [[hl]]마음이 맑아지는[[/hl]] 유형',
+   name:'책상 위가 깨끗해야 [[hl]]머릿속도 맑아지는[[/hl]] 유형',
    plain:'순수 미니멀형',
    emoji:'◻️',
    group:'minimal',groupName:'깔끔 정돈형',
@@ -2643,7 +2643,7 @@ const TYPES=[
    weight:{visual:2, function:1}},
 
   {id:'minimal_grid',
-   name:'가구와 수납이 [[hl]]제자리에 있을 때 편한[[/hl]] 유형',
+   name:'물건이 제자리에 없으면 [[hl]]어쩐지 신경 쓰이는[[/hl]] 유형',
    plain:'구조·정렬 추구형',
    emoji:'⬛',
    group:'minimal',groupName:'깔끔 정돈형',
@@ -2655,7 +2655,7 @@ const TYPES=[
    weight:{grid:1, organised:1, function:1}},
 
   {id:'cozy_hearth',
-   name:'따뜻하고 폭신한 것에서 [[hl]]하루가 풀리는[[/hl]] 유형',
+   name:'푹신한 소파에 파묻혀야 [[hl]]진짜 쉬는 것 같은[[/hl]] 유형',
    plain:'포근한 회복형',
    emoji:'🛋️',
    group:'cozy',groupName:'따뜻한 안정형',
@@ -2667,7 +2667,7 @@ const TYPES=[
    weight:{warmth:1, cozy:1, intimacy:1}},
 
   {id:'cozy_family',
-   name:'사람이 모일 때 [[hl]]집이 더 따뜻해지는[[/hl]] 유형',
+   name:'집에 사람이 모여야 [[hl]]비로소 집 같다고 느끼는[[/hl]] 유형',
    plain:'함께하는 공간형',
    emoji:'🏡',
    group:'cozy',groupName:'따뜻한 안정형',
@@ -3115,39 +3115,39 @@ const GROUP_PSYCHOLOGY={
 // ═══════════════════════════════════════════════════════
 const GROUP_BUDGET_GUIDE={
   sanctuary:[
-    {tier:'가볍게 시작',price:'1만~3만 원',color:'#7CB342',items:['따뜻한 전구색 LED 전구 2~3개','무향 또는 은은한 섬유탈취 룸스프레이','부드러운 면·린넨 쿠션 커버 1점']},
-    {tier:'집 분위기 바꾸기',price:'5만~15만 원',color:'#29B6F6',items:['암막 커튼 또는 빛가림 커튼 한 세트','침대 옆에 두는 작은 무드등','뚜껑 있는 패브릭 수납함 3~4개']},
-    {tier:'눈에 보이는 변화',price:'20만~50만 원',color:'#FF9800',items:['거실 한쪽에 두는 스탠드 조명','발끝이 편한 단모 러그','작은 원목 협탁 또는 사이드 테이블']},
+    {tier:'가볍게 시작',price:'1만~3만 원',color:'#9AA38B',items:['따뜻한 전구색 LED 전구 2~3개','무향 또는 은은한 섬유탈취 룸스프레이','부드러운 면·린넨 쿠션 커버 1점']},
+    {tier:'집 분위기 바꾸기',price:'5만~15만 원',color:'#8CA3C3',items:['암막 커튼 또는 빛가림 커튼 한 세트','침대 옆에 두는 작은 무드등','뚜껑 있는 패브릭 수납함 3~4개']},
+    {tier:'눈에 보이는 변화',price:'20만~50만 원',color:'#D9935B',items:['거실 한쪽에 두는 스탠드 조명','발끝이 편한 단모 러그','작은 원목 협탁 또는 사이드 테이블']},
     {tier:'오래 쓰는 투자',price:'100만 원~',color:'#E91E8C',items:['몸을 감싸주는 1인용 안락의자','창 전체 암막 커튼 맞춤 제작','문 달린 수납장 또는 침대 하부 수납 가구']},
   ],
   nature:[
-    {tier:'가볍게 시작',price:'1만~3만 원',color:'#7CB342',items:['스킨답서스·스투키처럼 키우기 쉬운 화분','원목 도마 또는 나무 트레이 1점','라탄 컵받침·우드 코스터 세트']},
-    {tier:'집 분위기 바꾸기',price:'5만~15만 원',color:'#29B6F6',items:['몬스테라·고무나무 같은 중형 화분','라탄 바구니 2~3개','토분에 담은 작은 식물 세트']},
-    {tier:'눈에 보이는 변화',price:'20만~50만 원',color:'#FF9800',items:['거실용 황마·면 러그','원목 사이드 테이블','우드 블라인드 또는 대나무 발']},
+    {tier:'가볍게 시작',price:'1만~3만 원',color:'#9AA38B',items:['스킨답서스·스투키처럼 키우기 쉬운 화분','원목 도마 또는 나무 트레이 1점','라탄 컵받침·우드 코스터 세트']},
+    {tier:'집 분위기 바꾸기',price:'5만~15만 원',color:'#8CA3C3',items:['몬스테라·고무나무 같은 중형 화분','라탄 바구니 2~3개','토분에 담은 작은 식물 세트']},
+    {tier:'눈에 보이는 변화',price:'20만~50만 원',color:'#D9935B',items:['거실용 황마·면 러그','원목 사이드 테이블','우드 블라인드 또는 대나무 발']},
     {tier:'오래 쓰는 투자',price:'100만 원~',color:'#E91E8C',items:['원목 식탁 또는 원목 벤치','대형 화분으로 만드는 거실 초록 코너','베이지·아이보리 패브릭 소파']},
   ],
   luxe:[
-    {tier:'가볍게 시작',price:'3만~10만 원',color:'#7CB342',items:['황동색 손잡이 또는 작은 금속 트레이','대리석 무늬 코스터·받침 세트','벨벳 쿠션 커버 1~2점']},
-    {tier:'집 분위기 바꾸기',price:'15만~40만 원',color:'#29B6F6',items:['고급스러운 패브릭 커튼 한 세트','액자 조명 또는 작은 스포트 조명','세라믹·대리석 느낌 큰 트레이']},
-    {tier:'눈에 보이는 변화',price:'50만~150만 원',color:'#FF9800',items:['호텔식 쉬폰+암막 이중 커튼','거실 포인트 아트 프린트','대리석 무늬 또는 세라믹 사이드 테이블']},
+    {tier:'가볍게 시작',price:'3만~10만 원',color:'#9AA38B',items:['황동색 손잡이 또는 작은 금속 트레이','대리석 무늬 코스터·받침 세트','벨벳 쿠션 커버 1~2점']},
+    {tier:'집 분위기 바꾸기',price:'15만~40만 원',color:'#8CA3C3',items:['고급스러운 패브릭 커튼 한 세트','액자 조명 또는 작은 스포트 조명','세라믹·대리석 느낌 큰 트레이']},
+    {tier:'눈에 보이는 변화',price:'50만~150만 원',color:'#D9935B',items:['호텔식 쉬폰+암막 이중 커튼','거실 포인트 아트 프린트','대리석 무늬 또는 세라믹 사이드 테이블']},
     {tier:'오래 쓰는 투자',price:'300만 원~',color:'#E91E8C',items:['가죽 또는 우드 포인트 체어','간접조명·레일조명 전체 정비','원목마루 보수 또는 포인트 벽 마감']},
   ],
   artistic:[
-    {tier:'가볍게 시작',price:'1만~5만 원',color:'#7CB342',items:['좋아하는 포스터와 얇은 액자 1~2개','빈티지 소품 또는 오래된 책 한 권','색감 있는 패턴 쿠션 커버']},
-    {tier:'집 분위기 바꾸기',price:'5만~20만 원',color:'#29B6F6',items:['벽 한쪽에 액자 4~6개로 작은 갤러리 만들기','패턴 러그 또는 컬러 발매트','중고·빈티지 스탠드 조명 1점']},
-    {tier:'눈에 보이는 변화',price:'20만~80만 원',color:'#FF9800',items:['전월세도 가능한 포인트 시트지·벽지','작가 포스터 또는 리미티드 프린트','빈티지 의자 또는 작은 수납장']},
+    {tier:'가볍게 시작',price:'1만~5만 원',color:'#9AA38B',items:['좋아하는 포스터와 얇은 액자 1~2개','빈티지 소품 또는 오래된 책 한 권','색감 있는 패턴 쿠션 커버']},
+    {tier:'집 분위기 바꾸기',price:'5만~20만 원',color:'#8CA3C3',items:['벽 한쪽에 액자 4~6개로 작은 갤러리 만들기','패턴 러그 또는 컬러 발매트','중고·빈티지 스탠드 조명 1점']},
+    {tier:'눈에 보이는 변화',price:'20만~80만 원',color:'#D9935B',items:['전월세도 가능한 포인트 시트지·벽지','작가 포스터 또는 리미티드 프린트','빈티지 의자 또는 작은 수납장']},
     {tier:'오래 쓰는 투자',price:'150만 원~',color:'#E91E8C',items:['내 취향 색감의 패브릭 소파','갤러리 월 조명까지 완성하기','오래 모을 수 있는 빈티지 가구 한 점']},
   ],
   minimal:[
-    {tier:'가볍게 시작',price:'1만~5만 원',color:'#7CB342',items:['화이트·투명 수납함으로 자잘한 물건 정리','무지 머그와 흰색 식기 세트','책상 위를 비워주는 케이블 정리함']},
-    {tier:'집 분위기 바꾸기',price:'10만~30만 원',color:'#29B6F6',items:['문 달린 수납장 또는 낮은 서랍장','얇은 블랙·우드 프레임 액자','아이보리·라이트그레이 무지 커튼']},
-    {tier:'눈에 보이는 변화',price:'30만~100만 원',color:'#FF9800',items:['모듈형 수납장 또는 책장','상판이 깔끔한 사이드 테이블','라인이 단순한 식탁 의자 2개']},
+    {tier:'가볍게 시작',price:'1만~5만 원',color:'#9AA38B',items:['화이트·투명 수납함으로 자잘한 물건 정리','무지 머그와 흰색 식기 세트','책상 위를 비워주는 케이블 정리함']},
+    {tier:'집 분위기 바꾸기',price:'10만~30만 원',color:'#8CA3C3',items:['문 달린 수납장 또는 낮은 서랍장','얇은 블랙·우드 프레임 액자','아이보리·라이트그레이 무지 커튼']},
+    {tier:'눈에 보이는 변화',price:'30만~100만 원',color:'#D9935B',items:['모듈형 수납장 또는 책장','상판이 깔끔한 사이드 테이블','라인이 단순한 식탁 의자 2개']},
     {tier:'오래 쓰는 투자',price:'200만 원~',color:'#E91E8C',items:['붙박이장·시스템장으로 수납 통일','아이보리·연그레이 패브릭 소파','벽지·바닥재를 밝고 차분한 톤으로 교체']},
   ],
   cozy:[
-    {tier:'가볍게 시작',price:'1만~3만 원',color:'#7CB342',items:['보송한 쿠션 커버 2개','따뜻한 향의 캔들 또는 디퓨저','무릎에 덮기 좋은 니트 담요']},
-    {tier:'집 분위기 바꾸기',price:'5만~20만 원',color:'#29B6F6',items:['발이 폭신한 거실 러그','갓이 있는 패브릭 스탠드 조명','코듀로이·면 쿠션 세트']},
-    {tier:'눈에 보이는 변화',price:'20만~70만 원',color:'#FF9800',items:['포근한 1인용 패브릭 의자','원목 식탁 또는 둥근 티테이블','침대 머리맡 패브릭 헤드쿠션']},
+    {tier:'가볍게 시작',price:'1만~3만 원',color:'#9AA38B',items:['보송한 쿠션 커버 2개','따뜻한 향의 캔들 또는 디퓨저','무릎에 덮기 좋은 니트 담요']},
+    {tier:'집 분위기 바꾸기',price:'5만~20만 원',color:'#8CA3C3',items:['발이 폭신한 거실 러그','갓이 있는 패브릭 스탠드 조명','코듀로이·면 쿠션 세트']},
+    {tier:'눈에 보이는 변화',price:'20만~70만 원',color:'#D9935B',items:['포근한 1인용 패브릭 의자','원목 식탁 또는 둥근 티테이블','침대 머리맡 패브릭 헤드쿠션']},
     {tier:'오래 쓰는 투자',price:'200만 원~',color:'#E91E8C',items:['온 가족이 앉기 편한 패브릭 소파','4~6인용 원목 다이닝 테이블','쿠션감 좋은 패브릭 침대 프레임']},
   ],
 };
@@ -4457,7 +4457,7 @@ function renderResult(t,scores){
   if(rwEl) rwEl.innerHTML = '';
   document.querySelectorAll('#pdfContainer').forEach(el=>{ try{ el.remove(); }catch(e){} });
 
-  const secColors=['#E91E8C','#FF9800','#7CB342','#29B6F6','#AB47BC','#FF7043','#26A69A','#5C6BC0'];
+  const secColors=['#E91E8C','#D9935B','#9AA38B','#8CA3C3','#B388B5','#DE8E6F','#7FA99B','#8B8BC2'];
   // 컬러 팔레트 칩 — 폴백 적용
   const paletteData = getTypeField(t,'palette');
   const palChips=paletteData.map(c=>`<div class="palette-chip" style="background:${c}" title="${c}"></div>`).join('');
@@ -4468,7 +4468,7 @@ function renderResult(t,scores){
     return ct?`<div class="compat-chip">${ct.emoji} ${krText(ct.plain)}</div>`:'';
   }).join('') || '<div class="compat-chip">✨ 자신만의 고유한 길</div>';
   // 예산 배분 — 폴백 적용
-  const budgetColors=['#E91E8C','#FF9800','#7CB342','#29B6F6'];
+  const budgetColors=['#E91E8C','#D9935B','#9AA38B','#8CA3C3'];
   const budgetData = getTypeField(t,'budget');
   const budgetItems=Object.entries(budgetData).map(([k,v],i)=>`
     <div class="budget-row">
@@ -4515,9 +4515,9 @@ function renderResult(t,scores){
       <div class="ab-title">이 리포트를 읽는 법</div>
       <p style="font-size:.82rem;color:var(--gray);line-height:1.7;margin-bottom:4px">SDTI는 "어떤 집이 예쁜가"가 아니라 "어떤 공간에서 내가 회복되는가"를 측정하는 검사예요. 보이지 않는 공간 욕구를 8개 영역으로 측정하고, 12가지 유형으로 구조화합니다.</p>
       <div class="rg-formula">
-        <div class="rg-f" style="background:#F3F1FB"><b style="color:#5C4FD3">공간 욕구</b><span>8개 영역으로 측정되는<br>타고난 공간 성향</span></div>
+        <div class="rg-f" style="background:#FBEFF5"><b style="color:#C2186B">공간 욕구</b><span>8개 영역으로 측정되는<br>타고난 공간 성향</span></div>
         <div class="rg-op">×</div>
-        <div class="rg-f" style="background:#F1F7F3"><b style="color:#2E8B57">공간 환경</b><span>지금 내가 사는 집의<br>실제 조건</span></div>
+        <div class="rg-f" style="background:#F5F1EA"><b style="color:#8A7363">공간 환경</b><span>지금 내가 사는 집의<br>실제 조건</span></div>
         <div class="rg-op">=</div>
         <div class="rg-f" style="background:#FBF4EA"><b style="color:#B07D3C">회복과 몰입</b><span>맞으면 충전기,<br>어긋나면 방전기</span></div>
       </div>
@@ -5119,7 +5119,7 @@ let _instaCardDataUrl = null; // 캡처된 이미지 dataURL 저장
 // 카드 디자인 HTML 생성
 // , 1080×1080 컨테이너 안에 핵심 결과 요약만 압축적으로 표시
 function buildInstaCardHTML(t, scores, userName){
-  const secColors=['#E91E8C','#FF9800','#7CB342','#29B6F6','#AB47BC','#FF7043','#26A69A','#5C6BC0'];
+  const secColors=['#E91E8C','#D9935B','#9AA38B','#8CA3C3','#B388B5','#DE8E6F','#7FA99B','#8B8BC2'];
   const cleanText = (s)=>String(s||'')
     .replace(/\[\[hl\]\]|\[\[\/hl\]\]|\[\[em\]\]|\[\[\/em\]\]/g,'')
     .replace(/<[^>]+>/g,'')
@@ -5170,7 +5170,7 @@ function buildInstaCardHTML(t, scores, userName){
       <!-- 상단 브랜드 영역 -->
       <div style="position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;flex:0 0 auto">
         <div style="display:flex;align-items:center;gap:12px">
-          <div style="width:52px;height:52px;border-radius:50%;background:conic-gradient(#E91E8C 0 25%,#FF9800 0 50%,#7CB342 0 75%,#29B6F6 0 100%);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 22px rgba(0,0,0,.24)">
+          <div style="width:52px;height:52px;border-radius:50%;background:conic-gradient(#E91E8C 0 25%,#D9935B 0 50%,#9AA38B 0 75%,#8CA3C3 0 100%);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 22px rgba(0,0,0,.24)">
             <div style="width:26px;height:26px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;color:#0F0F1A;font-size:14px;font-weight:900">S</div>
           </div>
           <div>
@@ -5409,7 +5409,7 @@ async function _renderInstaCardCanvas(t, scores, userName){
     .trim();
 
   // ── 데이터 준비 ──
-  const secColors = ['#E91E8C','#FF9800','#7CB342','#29B6F6','#AB47BC','#FF7043','#26A69A','#5C6BC0'];
+  const secColors = ['#E91E8C','#D9935B','#9AA38B','#8CA3C3','#B388B5','#DE8E6F','#7FA99B','#8B8BC2'];
   const top3 = SECS.map((sec,i)=>({
     label: krText(sec.label),
     val:   getSectionScore(t, scores, sec, 50),
@@ -5474,7 +5474,7 @@ async function _renderInstaCardCanvas(t, scores, userName){
   // ══════ 4. 상단 로고 (4분할 원) ══════
   const logoX = 48 + 26, logoY = 48 + 26, logoR = 26;
   // 4분할 콘 그라데이션을 4개 원호로 그리기
-  const colors4 = ['#E91E8C','#FF9800','#7CB342','#29B6F6'];
+  const colors4 = ['#E91E8C','#D9935B','#9AA38B','#8CA3C3'];
   for(let i=0; i<4; i++){
     ctx.beginPath();
     ctx.moveTo(logoX, logoY);
@@ -5992,8 +5992,8 @@ async function downloadPDF(){
     const {jsPDF} = window.jspdf;
     const pdf = new jsPDF({orientation:'portrait', unit:'px', format:[794,1123], hotfixes:['px_scaling']});
     const t = resultType;
-    const secColors = ['#E91E8C','#FF9800','#7CB342','#29B6F6','#AB47BC','#FF7043','#26A69A','#5C6BC0'];
-    const budgetColors = ['#E91E8C','#FF9800','#7CB342','#29B6F6'];
+    const secColors = ['#E91E8C','#D9935B','#9AA38B','#8CA3C3','#B388B5','#DE8E6F','#7FA99B','#8B8BC2'];
+    const budgetColors = ['#E91E8C','#D9935B','#9AA38B','#8CA3C3'];
     const today = new Date().toLocaleDateString('ko-KR');
     const PDF_TOTAL = 21; // 총 페이지 수 (확장 완전판)
 
@@ -6109,13 +6109,13 @@ async function downloadPDF(){
       <div class="pdf-section-sub">SDTI(Space Desire Type Inventory)는 "어떤 집이 예쁜가"가 아니라 "어떤 공간에서 내가 회복되는가"를 측정하는 검사예요. 사람마다 자극을 처리하는 방식, 안전하다고 느끼는 조건, 머물고 싶어지는 공간의 조건이 다릅니다. SDTI는 이 보이지 않는 차이를 8개 욕구 영역으로 측정하고, 12가지 공간 욕구 유형으로 구조화합니다.</div>
 
       <div style="display:flex;align-items:stretch;gap:10px;margin:6px 0 22px">
-        <div style="flex:1;background:#F3F1FB;border-radius:12px;padding:16px;text-align:center">
-          <div style="font-size:12px;font-weight:800;color:#5C4FD3;margin-bottom:6px">공간 욕구</div>
+        <div style="flex:1;background:#FBEFF5;border-radius:12px;padding:16px;text-align:center">
+          <div style="font-size:12px;font-weight:800;color:#C2186B;margin-bottom:6px">공간 욕구</div>
           <div style="font-size:11px;color:#6B7086;line-height:1.6">8개 영역으로 측정되는<br>나의 타고난 공간 성향</div>
         </div>
         <div style="align-self:center;font-size:18px;font-weight:800;color:#C9A96E">×</div>
-        <div style="flex:1;background:#F1F7F3;border-radius:12px;padding:16px;text-align:center">
-          <div style="font-size:12px;font-weight:800;color:#2E8B57;margin-bottom:6px">공간 환경</div>
+        <div style="flex:1;background:#F5F1EA;border-radius:12px;padding:16px;text-align:center">
+          <div style="font-size:12px;font-weight:800;color:#8A7363;margin-bottom:6px">공간 환경</div>
           <div style="font-size:11px;color:#6B7086;line-height:1.6">지금 내가 사는 집의<br>실제 조건</div>
         </div>
         <div style="align-self:center;font-size:18px;font-weight:800;color:#C9A96E">=</div>
@@ -6528,10 +6528,10 @@ async function downloadPDF(){
     const seasonalData = (typeof GROUP_SEASONAL !== 'undefined') && GROUP_SEASONAL[t.group];
     if(seasonalData){
       const SEASONS_PDF = [
-        {id:'spring', label:'봄',   icon:'🌸', color:'#7CB342'},
-        {id:'summer', label:'여름', icon:'☀️', color:'#29B6F6'},
-        {id:'autumn', label:'가을', icon:'🍂', color:'#FF7043'},
-        {id:'winter', label:'겨울', icon:'❄️', color:'#5C6BC0'},
+        {id:'spring', label:'봄',   icon:'🌸', color:'#9AA38B'},
+        {id:'summer', label:'여름', icon:'☀️', color:'#8CA3C3'},
+        {id:'autumn', label:'가을', icon:'🍂', color:'#DE8E6F'},
+        {id:'winter', label:'겨울', icon:'❄️', color:'#8B8BC2'},
       ];
       // PDF는 정적이므로 4계절을 모두 한 페이지에 2×2 그리드로 표시
       const seasonsHtml = SEASONS_PDF.map(s => {
