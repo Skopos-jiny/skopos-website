@@ -38,7 +38,7 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
   }
 
   try {
-    const res = await fetch('/.netlify/functions/naver-auth', {
+    const res = await fetch('https://rgbukqphcqptnfeqipfn.supabase.co/functions/v1/naver-auth', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
