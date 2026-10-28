@@ -8,6 +8,16 @@ import { process, serveNetlifyHandler } from './adapter.ts';
 
 const BASE_AMOUNT = 29900;
 const ORDER_NAME = 'SKOPOS SDTI 정밀 검사';
+// 커플 패키지: 2인 정밀 검사 + 커플 비교 리포트
+const COUPLE_AMOUNT = 49900;
+const COUPLE_ORDER_NAME = 'SKOPOS SDTI 커플 패키지 (2인)';
+
+function makeCoupleCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let c = '';
+  for (let i = 0; i < 6; i++) c += chars[Math.floor(Math.random() * chars.length)];
+  return c;
+}
 const SITE_ORIGIN = 'https://skopos.kr';
 
 function json(statusCode, body) {
@@ -139,7 +149,9 @@ const handler = async (event) => {
   }
 
   try {
-    const { imp_uid, merchant_uid, amount, coupon_code, name, email, phone, user_id } = JSON.parse(event.body || '{}');
+    const { imp_uid, merchant_uid, amount, coupon_code, name, email, phone, user_id, plan } = JSON.parse(event.body || '{}');
+    const isCouple = plan === 'couple';
+    const baseAmount = isCouple ? COUPLE_AMOUNT : BASE_AMOUNT;
     if (!imp_uid) return json(400, { success: false, message: 'imp_uid가 없습니다.' });
 
     const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
@@ -182,6 +194,11 @@ const handler = async (event) => {
     // 토큰 없는 레거시 경로에서 미검증(또는 생략된) user_id 로
     // per_user_limit 검사를 우회하는 것을 차단한다.
     // 결제는 이미 확정된 상태이므로 거부 시 자동 취소를 동반한다.
+    if (isCouple && (!auth.verified || String(coupon_code || '').trim())) {
+      await cancelPayment(accessToken, imp_uid, '커플 패키지 조건 불충족(로그인 필요·쿠폰 불가)');
+      return json(400, { success: false, message: '커플 패키지는 로그인 후 쿠폰 없이 결제할 수 있어요. 결제를 자동 취소했습니다.' });
+    }
+
     if (String(coupon_code || '').trim() && !auth.verified) {
       console.error('Coupon payment without verified user:', imp_uid, coupon_code);
       await cancelPayment(accessToken, imp_uid, '쿠폰 결제 로그인 검증 실패');
@@ -192,7 +209,7 @@ const handler = async (event) => {
     // 반드시 자동 취소해야 한다 (돈만 빠지고 기록·이용권이 없는 상태 방지)
     let couponResult;
     try {
-      couponResult = await getValidCoupon(sb, coupon_code, BASE_AMOUNT, resolvedUserId);
+      couponResult = await getValidCoupon(sb, coupon_code, baseAmount, resolvedUserId);
     } catch (couponErr) {
       console.error('Coupon revalidation failed after payment:', imp_uid, couponErr.message);
       await cancelPayment(accessToken, imp_uid, '쿠폰 검증 실패: ' + couponErr.message);
@@ -226,7 +243,7 @@ const handler = async (event) => {
       buyer_phone: phone || payment.buyer_tel || '',
       status: 'paid',
       paid_at: new Date(payment.paid_at * 1000).toISOString(),
-      order_name: ORDER_NAME,
+      order_name: isCouple ? COUPLE_ORDER_NAME : ORDER_NAME,
     };
 
     let supabasePaymentId = null;
@@ -285,8 +302,26 @@ const handler = async (event) => {
       console.error('Airtable insert failed:', atEx);
     }
 
+    // 커플 패키지: 파트너 초대 코드 발급
+    let coupleCode = null;
+    if (isCouple && resolvedUserId) {
+      const { data: existing } = await sb.from('couples').select('code').eq('imp_uid', imp_uid).maybeSingle();
+      if (existing?.code) {
+        coupleCode = existing.code;
+      } else {
+        for (let i = 0; i < 5 && !coupleCode; i++) {
+          const code = makeCoupleCode();
+          const { error: cErr } = await sb.from('couples').insert([{ code, owner_id: resolvedUserId, imp_uid, merchant_uid }]);
+          if (!cErr) coupleCode = code;
+          else console.error('couples insert failed:', cErr.message);
+        }
+      }
+    }
+
     return json(200, {
       success: true,
+      plan: isCouple ? 'couple' : 'single',
+      couple_code: coupleCode,
       imp_uid,
       amount: payment.amount,
       original_amount: couponResult.original_amount,
