@@ -58,6 +58,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Cormorant+Garamond:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
+.couple-banner{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:16px auto 0;max-width:720px;padding:16px 20px;border-radius:16px;background:linear-gradient(135deg,#FDF0F6,#FBF6EC);border:1.5px solid rgba(233,30,140,.25);text-decoration:none;color:#0F0F1A}
+.couple-banner .cb-tag{font-size:.72rem;font-weight:800;color:#fff;background:#E91E8C;border-radius:50px;padding:4px 10px}
+.couple-banner .cb-msg{flex:1;min-width:200px;font-size:.88rem;font-weight:600;line-height:1.5}
+.couple-banner .cb-go{font-size:.85rem;font-weight:800;color:#E91E8C}
 :root{
   --pink:#E91E8C;--orange:#FF9800;--green:#7CB342;--blue:#29B6F6;
   --dark:#0F0F1A;--mid:#2A2A3C;--gray:#8890A4;
@@ -3915,8 +3919,10 @@ function runResult(){
     trackEvent('premium_quiz_complete',{result_type:type.id,paid:isPaid});
     try{ window.SkoposTrack && SkoposTrack.event('premium_quiz_complete',{result_type:type.id}); }catch(e){}
     saveResult(type.id);
+    saveScores(type.id, scores);
     renderResult(type,scores);
     show('sr');
+    setTimeout(()=>{ try{ showCoupleBanner(); }catch(e){} }, 1500);
     setTimeout(()=>document.querySelectorAll('.r-bar-fill').forEach(b=>{b.style.width=b.dataset.val+'%';}),400);
     setTimeout(()=>document.querySelectorAll('.budget-fill').forEach(b=>{b.style.width=b.dataset.val+'%';}),600);
     // 목차 스캔 + 스티키 TOC 활성화
@@ -4988,6 +4994,37 @@ function getShareUrl(){
     return url.toString();
   }catch(e){return window.location.href;}
 }
+// ── 커플 패키지: 8영역 점수 저장 + 비교 리포트 안내 ──
+async function saveScores(typeId, scores){
+  try{
+    if(!window.SkoposAuth) return;
+    const sb = await SkoposAuth.getClient();
+    const { data:{ session } } = await sb.auth.getSession();
+    if(!session) return;
+    const clean = {};
+    SECS.forEach(s=>{ const v = scores?.[s.label]; if(typeof v==='number') clean[s.key]=Math.round(v); });
+    const { error } = await sb.from('premium_results').insert([{ user_id: session.user.id, result_type: typeId, scores: clean }]);
+    if(error) console.warn('premium_results 저장 오류:', error);
+  }catch(e){ console.warn('premium_results 저장 실패:', e); }
+}
+async function showCoupleBanner(){
+  if(!window.SkoposAuth) return;
+  const sb = await SkoposAuth.getClient();
+  const { data:{ session } } = await sb.auth.getSession();
+  if(!session) return;
+  const res = await fetch('https://rgbukqphcqptnfeqipfn.supabase.co/functions/v1/couple',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token},body:JSON.stringify({action:'status'})});
+  const j = await res.json();
+  if(!j.success || !j.couple) return;
+  const c = j.couple;
+  const msg = c.partner_done ? '두 분 모두 검사를 마쳤어요. 커플 비교 리포트를 확인해 보세요.' : (c.paired ? (c.partner_name||'파트너')+'님의 검사가 끝나면 커플 비교 리포트가 열려요.' : '함께할 분께 초대 링크를 보내 주세요. 두 분 결과를 비교해 드려요.');
+  const el = document.createElement('a');
+  el.href = 'couple.html';
+  el.className = 'couple-banner';
+  el.innerHTML = '<span class="cb-tag">커플 패키지</span><span class="cb-msg">'+msg+'</span><span class="cb-go">'+(c.partner_done?'리포트 보기':'확인하기')+' →</span>';
+  const rw = document.getElementById('rw');
+  if(rw && !document.querySelector('.couple-banner')) rw.insertBefore(el, rw.firstChild);
+}
+
 async function saveResult(id){
   // 1. 세션스토리지 저장
   try{ sessionStorage.setItem('skopos_premium_result', id); }catch(e){}

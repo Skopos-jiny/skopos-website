@@ -27,6 +27,12 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
 .step.done .step-num{background:#8890A4;border-color:#8890A4;color:#fff}
 .step.active .step-num{background:#E91E8C;border-color:#E91E8C;color:#fff}
 .step-line{flex:1;height:1.5px;background:rgba(0,0,0,.08);margin:0 8px}
+.plan-pick{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.plan-opt{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:14px 14px 12px;border-radius:14px;border:1.5px solid #E4E7EF;background:#fff;cursor:pointer;text-align:left;font-family:inherit}
+.plan-opt.sel{border-color:#E91E8C;background:#FDF0F6}
+.plan-opt .po-name{font-size:.8rem;font-weight:700;color:#0F0F1A;line-height:1.35}
+.plan-opt .po-price{font-size:1rem;font-weight:900;color:#E91E8C}
+.plan-opt .po-badge{position:absolute;top:-9px;right:10px;font-size:.65rem;font-weight:800;color:#fff;background:#E91E8C;border-radius:50px;padding:2px 8px}
 .card{background:#fff;border-radius:20px;padding:28px;box-shadow:0 4px 24px rgba(0,0,0,.07)}
 .card-title{font-size:1.1rem;font-weight:800;color:#0F0F1A;margin-bottom:6px}
 .card-sub{font-size:.82rem;color:#8890A4;margin-bottom:24px;line-height:1.6}
@@ -136,12 +142,16 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
         <div><div class="user-name" id="userName">로딩 중...</div><div class="user-email" id="userEmail"></div></div>
         <button class="btn-logout-sm" onclick="logout()">로그아웃</button>
       </div>
-      <div class="prod-box">
-        <div class="prod-name">SKOPOS SDTI 정밀 검사</div>
-        <div class="prod-desc">SDTI 144문항 · 12가지 욕구 유형 · 8영역 분석<br>소품 처방 + 컬러 팔레트 + 21페이지 PDF 리포트</div>
-        <div class="price-row"><span class="price-label">기본 금액</span><span class="price-val">₩29,900</span></div>
+      <div class="plan-pick" id="planPick">
+        <button type="button" class="plan-opt sel" data-plan="single" onclick="setPlan('single')"><span class="po-name">1인 정밀 검사</span><span class="po-price">₩29,900</span></button>
+        <button type="button" class="plan-opt" data-plan="couple" onclick="setPlan('couple')"><span class="po-badge">커플</span><span class="po-name">2인 + 커플 리포트</span><span class="po-price">₩49,900</span></button>
       </div>
-      <div class="coupon-box">
+      <div class="prod-box">
+        <div class="prod-name" id="prodName">SKOPOS SDTI 정밀 검사</div>
+        <div class="prod-desc" id="prodDesc">SDTI 144문항 · 12가지 욕구 유형 · 8영역 분석<br>소품 처방 + 컬러 팔레트 + 21페이지 PDF 리포트</div>
+        <div class="price-row"><span class="price-label">기본 금액</span><span class="price-val" id="prodPrice">₩29,900</span></div>
+      </div>
+      <div class="coupon-box" id="couponBox">
         <label class="coupon-label" for="couponCode">쿠폰 코드</label>
         <div class="coupon-row">
           <input type="text" id="couponCode" placeholder="쿠폰 코드를 입력하세요" autocomplete="off">
@@ -156,7 +166,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
       </div>
       <div class="alert error" id="payAlert"></div>
       <button class="btn-pay" id="payBtn" onclick="requestPay()">신용카드로 결제하기 ₩29,900</button>
-      <div class="pay-notice">1회 결제 · 영구 열람 · 언제든 다시 확인 가능<br>결제 완료 후 즉시 진단이 시작됩니다</div>
+      <div class="pay-notice" id="payNotice">1회 결제 · 영구 열람 · 언제든 다시 확인 가능<br>결제 완료 후 즉시 진단이 시작됩니다</div>
       <div class="badge-row"><span class="badge">🔒 NHN KCP 안전결제</span><span class="badge">포트원 V1</span><span class="badge">SSL 보안</span></div>
     </div>
   </div>
@@ -171,7 +181,10 @@ const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
 IMP.init(IMP_CODE);
 let currentUser = null;
-const BASE_AMOUNT = 29900;
+const PLAN_PRICES = { single: 29900, couple: 49900 };
+let currentPlan = (new URLSearchParams(location.search).get('plan') === 'couple') ? 'couple' : 'single';
+try{ if(new URLSearchParams(location.search).get('imp_uid') && sessionStorage.getItem('skopos_plan')==='couple') currentPlan='couple'; }catch(e){}
+let BASE_AMOUNT = PLAN_PRICES[currentPlan];
 let appliedCoupon = null;
 let priceState = {
   original_amount: BASE_AMOUNT,
@@ -180,6 +193,23 @@ let priceState = {
   coupon_code: '',
 };
 
+function setPlan(p){
+  currentPlan = (p==='couple') ? 'couple' : 'single';
+  BASE_AMOUNT = PLAN_PRICES[currentPlan];
+  document.querySelectorAll('.plan-opt').forEach(b=>b.classList.toggle('sel', b.dataset.plan===currentPlan));
+  const couple = currentPlan==='couple';
+  document.getElementById('prodName').textContent = couple ? 'SKOPOS SDTI 커플 패키지 (2인)' : 'SKOPOS SDTI 정밀 검사';
+  document.getElementById('prodDesc').innerHTML = couple
+    ? '두 분 각자 정밀 검사(144문항) + 각자 21페이지 PDF 리포트<br>두 분 결과를 나란히 비교하는 <strong>커플 비교 리포트</strong> · 초대 링크로 파트너 연결'
+    : 'SDTI 144문항 · 12가지 욕구 유형 · 8영역 분석<br>소품 처방 + 컬러 팔레트 + 21페이지 PDF 리포트';
+  document.getElementById('prodPrice').textContent = formatWon(BASE_AMOUNT);
+  document.getElementById('couponBox').style.display = couple ? 'none' : '';
+  document.getElementById('payNotice').innerHTML = couple
+    ? '결제 후 파트너 초대 링크가 발급돼요 · 파트너는 링크로 로그인하면 바로 검사 가능<br>1회 결제 · 영구 열람 (커플 패키지는 쿠폰과 함께 쓸 수 없어요)'
+    : '1회 결제 · 영구 열람 · 언제든 다시 확인 가능<br>결제 완료 후 즉시 진단이 시작됩니다';
+  if(couple){ try{ document.getElementById('couponCode').value=''; showCouponMessage('',''); document.getElementById('couponMsg').className='coupon-msg'; }catch(e){} }
+  resetCoupon();
+}
 function toast(msg,dur=2800){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),dur);}
 
 // 서버 함수 호출용 헤더: 로그인 세션의 JWT 를 첨부해 서버가 사용자를 검증할 수 있게 함
@@ -303,7 +333,7 @@ async function logout(){await sb.auth.signOut();currentUser=null;setStep(1);show
 function requestPay(){
   if(!currentUser){showAlert('payAlert','로그인이 필요합니다');setStep(1);showPanel('panelLogin');return;}
   // 최종 금액 0원(100% 할인 쿠폰): 카드 결제 없이 서버에서 무료 발급 처리
-  if(priceState.final_amount <= 0){
+  if(priceState.final_amount <= 0 && currentPlan!=='couple'){
     redeemFreeCoupon();
     return;
   }
@@ -317,9 +347,10 @@ function requestPay(){
   sessionStorage.setItem('skopos_buyer_email',email);
   sessionStorage.setItem('skopos_coupon_code',priceState.coupon_code||'');
   sessionStorage.setItem('skopos_expected_amount',String(priceState.final_amount));
+  sessionStorage.setItem('skopos_plan',currentPlan);
   IMP.request_pay({
     pg:'kcp',pay_method:'card',merchant_uid:merchantUid,
-    name:'SKOPOS SDTI 정밀 검사',amount:priceState.final_amount,
+    name: currentPlan==='couple' ? 'SKOPOS SDTI 커플 패키지 (2인)' : 'SKOPOS SDTI 정밀 검사',amount:priceState.final_amount,
     buyer_name:name,buyer_email:email,buyer_tel:'',
     // 주의: href 를 그대로 쓰면 이전 시도의 imp_uid/imp_success 파라미터가
     // 남아 있어 재시도 복귀 시 첫 번째(옛) 파라미터를 읽어 성공 결제를
@@ -372,13 +403,14 @@ async function verifyAndStart(impUid,merchantUid,name,email){
   try{
     const couponCode=priceState.coupon_code||sessionStorage.getItem('skopos_coupon_code')||'';
     const expectedAmount=Number(sessionStorage.getItem('skopos_expected_amount')||priceState.final_amount||BASE_AMOUNT);
-    const res=await fetch('https://rgbukqphcqptnfeqipfn.supabase.co/functions/v1/verify-payment',{method:'POST',headers:await authHeaders(),body:JSON.stringify({imp_uid:impUid,merchant_uid:merchantUid,amount:expectedAmount,coupon_code:couponCode,name,email,user_id:currentUser?.id||''})});
+    const res=await fetch('https://rgbukqphcqptnfeqipfn.supabase.co/functions/v1/verify-payment',{method:'POST',headers:await authHeaders(),body:JSON.stringify({imp_uid:impUid,merchant_uid:merchantUid,amount:expectedAmount,coupon_code:couponCode,name,email,user_id:currentUser?.id||'',plan:currentPlan})});
     const result=await res.json();
-    if(result.success){sessionStorage.setItem('skopos_paid','1');try{ window.SkoposTrack && SkoposTrack.event('purchase',{value:expectedAmount,coupon_code:couponCode,order_id:merchantUid,user_id:currentUser?.id||null}); }catch(e){}window.location.href='skopos_premium_quiz.html?paid=1';}
+    if(result.success){sessionStorage.setItem('skopos_paid','1');try{ window.SkoposTrack && SkoposTrack.event('purchase',{value:expectedAmount,coupon_code:couponCode,order_id:merchantUid,user_id:currentUser?.id||null}); }catch(e){}if(result.plan==='couple'){window.location.href='couple.html?new=1';}else{window.location.href='skopos_premium_quiz.html?paid=1';}}
     else{showAlert('payAlert','결제 검증 실패: '+(result.message||'관리자에게 문의해 주세요'));document.getElementById('payBtn').disabled=false;updatePriceView();setStep(2);}
   }catch(err){showAlert('payAlert','결제 검증 서버에 연결하지 못했습니다. 관리자에게 문의해 주세요.');document.getElementById('payBtn').disabled=false;updatePriceView();setStep(2);}
 }
 
+try{ setPlan(currentPlan); }catch(e){}
 window.addEventListener('load',async()=>{
   const params=new URLSearchParams(window.location.search);
   if(!params.get('imp_uid')){ try{ window.SkoposTrack && SkoposTrack.event('checkout_view',{value:BASE_AMOUNT}); }catch(e){} }

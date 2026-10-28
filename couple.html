@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>커플 공간 리포트 | SKOPOS 스코포스</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="skopos-auth.js"></script>
+<style>
+:root{--pink:#E91E8C;--pink2:#DC1478;--a:#E91E8C;--b:#2F80ED;--dark:#0F0F1A;--mid:#3A3A4C;--gray:#8890A4;--line:#ECEAF2;--cream:#FBF6EC;--bg:#F7F8FC}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Sans KR','Apple SD Gothic Neo',sans-serif;background:var(--bg);color:var(--dark);-webkit-font-smoothing:antialiased;line-height:1.6}
+nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.95);backdrop-filter:blur(14px);border-bottom:1px solid rgba(0,0,0,.06);height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 20px}
+.logo{font-weight:900;font-size:1.05rem;color:var(--dark);text-decoration:none}.logo span{color:var(--pink)}
+.nav-r{font-size:.8rem;color:var(--gray);text-decoration:none}
+.wrap{max-width:760px;margin:0 auto;padding:28px 16px 80px}
+.card{background:#fff;border-radius:20px;padding:26px 22px;box-shadow:0 4px 24px rgba(0,0,0,.06);margin-bottom:18px}
+.eyebrow{display:inline-block;font-size:.72rem;font-weight:800;color:#fff;background:var(--pink);border-radius:50px;padding:4px 12px;margin-bottom:12px}
+h1{font-size:1.55rem;font-weight:900;letter-spacing:-.03em;line-height:1.35}
+h2{font-size:1.15rem;font-weight:900;letter-spacing:-.02em;margin-bottom:6px}
+.sub{color:var(--mid);font-size:.92rem;margin-top:8px}
+.muted{color:var(--gray);font-size:.82rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:14px;padding:14px 20px;font-weight:800;font-size:.95rem;cursor:pointer;text-decoration:none;font-family:inherit}
+.btn-p{background:var(--pink);color:#fff}.btn-s{background:#F1EFF6;color:var(--dark)}
+.btn-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.code-box{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;padding:14px 16px;border:2px dashed rgba(233,30,140,.35);border-radius:14px;background:#FDF0F6}
+.code-box b{font-size:1.4rem;letter-spacing:.18em}
+.steps{list-style:none;margin-top:14px}
+.steps li{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:.92rem}
+.steps li:last-child{border:0}
+.dot{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:900;flex:none;background:#EEE;color:#999}
+.dot.ok{background:var(--pink);color:#fff}
+.alert{display:none;margin-top:12px;padding:12px 14px;border-radius:12px;background:#FFF1F1;color:#C62828;font-size:.85rem}
+.alert.show{display:block}
+/* report */
+.hero{background:linear-gradient(135deg,#1A1A2E,#3A2350);color:#fff}
+.hero .sub{color:#D9D0EA}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
+.pcard{border-radius:16px;padding:16px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15)}
+.pcard .who{font-size:.75rem;font-weight:800;letter-spacing:.04em}
+.pcard .who.a{color:#FF8CC6}.pcard .who.b{color:#8EC1FF}
+.pcard .em{font-size:1.9rem;margin:6px 0 2px}
+.pcard .tn{font-size:1.02rem;font-weight:900}
+.pcard .tl{font-size:.8rem;color:#D9D0EA;margin-top:4px;line-height:1.5}
+.legend{display:flex;gap:14px;font-size:.78rem;font-weight:700;margin:10px 0 4px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.dom{padding:14px 0;border-bottom:1px solid var(--line)}
+.dom:last-child{border:0}
+.dom-h{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
+.dom-n{font-weight:800;font-size:.92rem}
+.chip{font-size:.7rem;font-weight:800;border-radius:50px;padding:3px 9px}
+.chip.same{background:#E8F5E9;color:#2E7D32}.chip.mid{background:#FFF4E0;color:#E65100}.chip.far{background:#FDE7F1;color:var(--pink2)}
+.bar{display:flex;align-items:center;gap:8px;margin:4px 0}
+.bar .nm{width:56px;font-size:.72rem;color:var(--gray);flex:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar .tr{flex:1;height:10px;background:#F1EFF6;border-radius:6px;overflow:hidden}
+.bar .fl{height:100%;border-radius:6px}
+.bar .v{width:28px;text-align:right;font-size:.75rem;font-weight:800}
+.ins{border-radius:16px;padding:16px;margin-top:12px;background:var(--cream)}
+.ins h3{font-size:.98rem;font-weight:900;margin-bottom:6px}
+.ins p{font-size:.88rem;color:var(--mid)}
+.ins .tip{margin-top:8px;padding-top:8px;border-top:1px dashed #E3D7C1;font-size:.86rem}
+.ins .tip b{color:var(--pink2)}
+.rooms{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.room{border:1px solid var(--line);border-radius:14px;padding:14px}
+.room b{display:block;font-size:.88rem;margin-bottom:4px}
+.room span{font-size:.82rem;color:var(--mid)}
+.q{display:flex;gap:10px;padding:12px 0;border-bottom:1px solid var(--line);font-size:.9rem}
+.q:last-child{border:0}
+.q .qn{font-weight:900;color:var(--pink)}
+.foot{text-align:center;font-size:.75rem;color:var(--gray);margin-top:20px;line-height:1.7}
+.loading{text-align:center;padding:60px 0;color:var(--gray)}
+@media (max-width:520px){.pair,.rooms{grid-template-columns:1fr}h1{font-size:1.35rem}}
+@media print{nav,.no-print{display:none!important}body{background:#fff}.card{box-shadow:none;border:1px solid #eee;break-inside:avoid}.hero{-webkit-print-color-adjust:exact;print-color-adjust:exact}.wrap{padding:0}}
+</style>
+<script src="/skopos-track.js" defer></script>
+</head>
+<body>
+<nav><a class="logo" href="index.html">SKO<span>POS</span></a><a class="nav-r" href="mypage.html">마이페이지</a></nav>
+<div class="wrap" id="app"><div class="loading">불러오는 중...</div></div>
+
+<script>
+const FN = 'https://rgbukqphcqptnfeqipfn.supabase.co/functions/v1/couple';
+const SECS = [
+  {key:'sensory', label:'빛·소리·촉감 민감도'},
+  {key:'spatial', label:'동선·정리 욕구'},
+  {key:'objects', label:'소품·살림 취향'},
+  {key:'color',   label:'색감·소재 취향'},
+  {key:'life',    label:'집에서 보내는 시간'},
+  {key:'social',  label:'함께 사는 방식'},
+  {key:'identity',label:'나를 드러내는 취향'},
+  {key:'restore', label:'쉼·회복 욕구'},
+];
+const TYPES = {
+  sanctuary_deep:{n:'고요한 회복형',e:'🌙',g:'sanctuary',l:'집에 오면 조용히 긴장을 풀고 싶은 유형'},
+  sanctuary_zen:{n:'비움 추구형',e:'🤍',g:'sanctuary',l:'비울수록 마음이 가벼워지는 유형'},
+  nature_forest:{n:'초록 충전형',e:'🌿',g:'nature',l:'식물 없으면 뭔가 허전한 유형'},
+  nature_earth:{n:'핸드메이드 감성형',e:'🪴',g:'nature',l:'손으로 만든 것에서 따뜻함을 느끼는 유형'},
+  luxe_royal:{n:'품격 감각형',e:'✨',g:'luxe',l:'좋은 소재와 마감에 마음이 가는 유형'},
+  luxe_gallery:{n:'갤러리 큐레이터형',e:'🖼️',g:'luxe',l:'집 안에도 전시처럼 머무는 장면이 필요한 유형'},
+  artistic_wild:{n:'개성 표현형',e:'🎨',g:'artistic',l:'내 집에 내 취향이 분명히 보여야 하는 유형'},
+  artistic_indie:{n:'빈티지 스토리형',e:'🕰️',g:'artistic',l:'오래된 것에서 아름다움을 발견하는 유형'},
+  minimal_pure:{n:'순수 미니멀형',e:'◻️',g:'minimal',l:'물건을 덜어낼수록 마음이 맑아지는 유형'},
+  minimal_grid:{n:'구조·정렬 추구형',e:'⬛',g:'minimal',l:'가구와 수납이 제자리에 있을 때 편한 유형'},
+  cozy_hearth:{n:'포근한 회복형',e:'🛋️',g:'cozy',l:'따뜻하고 폭신한 것에서 하루가 풀리는 유형'},
+  cozy_family:{n:'함께하는 공간형',e:'🏡',g:'cozy',l:'사람이 모일 때 집이 더 따뜻해지는 유형'},
+};
+const GROUP = {sanctuary:'안식',nature:'자연',luxe:'품격',artistic:'표현',minimal:'질서',cozy:'온기'};
+// 영역별 해석: hi=점수 높은 쪽 경향, lo=낮은 쪽 경향, scene=부딪히기 쉬운 장면, tip=조율 방법, room=먼저 합의할 공간
+const DOM = {
+  sensory:{hi:'밝기·소음·촉감에 예민해 자극이 쌓이면 쉽게 지쳐요',lo:'웬만한 소리와 빛에는 크게 신경 쓰지 않아요',scene:'저녁에 거실 조명 밝기, TV 소리 크기를 두고 한쪽만 계속 불편해할 수 있어요',tip:'조명을 디머나 간접등으로 나눠 단계 조절이 되게 하고, 예민한 쪽 자리에 러그·패브릭으로 소리를 흡수해 주세요',room:'거실 조명과 침실'},
+  spatial:{hi:'물건이 제자리에 있어야 마음이 놓이고 동선이 막히면 답답해요',lo:'조금 흐트러져 있어도 생활에 지장이 없다고 느껴요',scene:'현관·식탁 위에 물건이 쌓이는 순간 한쪽은 스트레스, 다른 쪽은 "나중에 치우면 되지"가 돼요',tip:'모든 곳을 같은 기준으로 맞추지 말고 "항상 비워 둘 곳"과 "편하게 둬도 되는 곳"을 지도처럼 나눠 정해 보세요',room:'현관·식탁·수납'},
+  objects:{hi:'의미 있는 소품과 살림이 눈에 보여야 집 같다고 느껴요',lo:'꼭 필요한 물건만 있으면 충분하다고 느껴요',scene:'선반 위 소품을 두고 "예쁘다"와 "짐이다"로 평가가 갈릴 수 있어요',tip:'소품은 정해진 한두 구역(선반 한 칸, 벽 한 면)에 모아 연출하고, 그 밖의 표면은 비워 두는 규칙이 잘 맞아요',room:'거실 선반과 벽면'},
+  color:{hi:'색과 질감, 소재가 주는 분위기에 크게 반응해요',lo:'색감보다는 쓰임새와 관리 편의를 먼저 봐요',scene:'소파·커튼 색을 고를 때 한쪽은 분위기, 한쪽은 관리 편의를 기준으로 오래 결정을 못 할 수 있어요',tip:'큰 면적(벽·바닥·큰 가구)은 무난한 베이스로 합의하고, 쿠션·조명·패브릭 같은 작은 면적에서 취향을 표현해 주세요',room:'소파·커튼·침구'},
+  life:{hi:'집에서 쉬고 먹고 일하는 시간이 길어 생활 동선이 중요해요',lo:'집은 주로 자고 씻는 곳에 가까워요',scene:'집에 머무는 시간이 다르면 책상·주방 같은 생활 공간에 투자할 우선순위가 엇갈려요',tip:'집에 오래 있는 쪽의 생활 거점(작업 코너, 주방 동선)을 먼저 갖추고 예산은 사용 시간에 비례해 나눠 보세요',room:'주방과 작업 공간'},
+  social:{hi:'함께 있는 시간과 손님 초대에서 집의 의미를 느껴요',lo:'집은 사람보다 나를 위한 공간이길 바라요',scene:'주말 손님 초대, 거실 소파 배치를 두고 "모이는 집"과 "숨는 집"이 부딪힐 수 있어요',tip:'모이는 거실과 별도로 문을 닫을 수 있는 혼자만의 코너를 하나 지정해, 두 욕구가 같은 집 안에서 공존하게 해 주세요',room:'거실 배치와 손님 동선'},
+  identity:{hi:'집에 나다운 취향이 분명히 드러나야 편해요',lo:'튀는 것보다 무난하고 익숙한 분위기가 편해요',scene:'포인트 가구·아트워크를 들일 때 "우리 집답다"와 "너무 튄다"로 갈릴 수 있어요',tip:'각자 "내 취향 존"을 한 곳씩 정해 그 안에서는 서로 간섭하지 않는 방식이 갈등을 줄여요',room:'포인트 벽과 개인 코너'},
+  restore:{hi:'집에서 혼자 충분히 쉬어야 에너지가 돌아와요',lo:'쉬는 방식이 유연해 어디서든 비교적 잘 쉬어요',scene:'퇴근 후 바로 대화하고 싶은 쪽과 일단 혼자 쉬고 싶은 쪽의 타이밍이 어긋날 수 있어요',tip:'"회복 시간 30분" 같은 신호를 정해 두고, 회복이 중요한 쪽의 자리(침실 구석, 1인 체어)를 먼저 확보해 주세요',room:'침실과 1인 휴식 자리'},
+};
+
+const app = document.getElementById('app');
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let token = null;
+
+async function call(action, extra){
+  const r = await fetch(FN,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify(Object.assign({action},extra||{}))});
+  return r.json();
+}
+function inviteUrl(code){ return location.origin + '/couple.html?invite=' + encodeURIComponent(code); }
+async function share(){
+  const code=window.__couple&&window.__couple.code, my=window.__couple&&window.__couple.my_name;
+  const url = inviteUrl(code);
+  const text = (my?my+'님이 ':'')+'SKOPOS 커플 공간 검사에 초대했어요. 링크로 로그인하면 정밀 검사를 바로 시작할 수 있어요.';
+  try{ if(navigator.share){ await navigator.share({title:'SKOPOS 커플 검사 초대',text,url}); return; } }catch(e){ return; }
+  try{ await navigator.clipboard.writeText(url); alert('초대 링크를 복사했어요. 함께할 분께 보내 주세요.'); }catch(e){ prompt('아래 링크를 복사해 보내 주세요', url); }
+}
+
+function viewNone(msg){
+  app.innerHTML = `<div class="card"><span class="eyebrow">커플 패키지</span><h1>두 사람의 공간 욕구를<br>나란히 비교해 보세요</h1>
+  <p class="sub">각자 정밀 검사(144문항)를 마치면 8개 영역을 나란히 놓고 비슷한 점, 부딪히기 쉬운 점, 먼저 합의할 공간을 정리해 드려요.</p>
+  ${msg?`<div class="alert show">${esc(msg)}</div>`:''}
+  <div class="btn-row"><a class="btn btn-p" href="payment.html?plan=couple">커플 패키지 49,900원 (2인)</a><a class="btn btn-s" href="index.html">홈으로</a></div>
+  <p class="muted" style="margin-top:12px">초대 링크를 받으셨다면 링크로 다시 들어와 주세요.</p></div>`;
+}
+
+function viewProgress(c, isNew){
+  window.__couple = c;
+  const partner = c.partner_name || '파트너';
+  app.innerHTML = `<div class="card"><span class="eyebrow">커플 패키지</span>
+  <h1>${isNew?'결제가 완료됐어요!<br>':''}두 분 모두 검사를 마치면<br>커플 리포트가 열려요</h1>
+  ${c.role==='owner' && !c.paired ? `<p class="sub">아래 초대 링크를 함께할 분께 보내 주세요. 링크로 로그인하면 별도 결제 없이 정밀 검사를 시작할 수 있어요.</p>
+   <div class="code-box"><div><div class="muted">초대 코드</div><b>${esc(c.code)}</b></div><button class="btn btn-p" onclick="share()">초대 링크 보내기</button></div>` : ''}
+  <ul class="steps">
+    <li><span class="dot ok">1</span>커플 패키지 ${c.role==='owner'?'결제':'연결'} 완료</li>
+    <li><span class="dot ${c.paired?'ok':''}">2</span>${c.paired?esc(partner)+'님 연결 완료':'파트너 연결 대기 중'}</li>
+    <li><span class="dot ${c.my_done?'ok':''}">3</span>내 정밀 검사 ${c.my_done?'완료':'전'}</li>
+    <li><span class="dot ${c.partner_done?'ok':''}">4</span>${esc(partner)}님 정밀 검사 ${c.partner_done?'완료':'전'}</li>
+  </ul>
+  <div class="btn-row">${!c.my_done?`<a class="btn btn-p" href="skopos_premium_quiz.html">내 정밀 검사 시작하기</a>`:''}
+  ${c.paired?'':`<button class="btn btn-s" onclick="share()">초대 링크 다시 보내기</button>`}
+  <button class="btn btn-s" onclick="location.reload()">상태 새로고침</button></div>
+  <p class="muted" style="margin-top:12px">이미 정밀 검사를 하셨더라도 커플 비교에는 이번 패키지로 진행한 검사 결과가 쓰여요. 비교용 점수가 없으면 검사를 한 번 더 진행해 주세요.</p></div>`;
+}
+
+function band(d){ return d<=8?['same','비슷해요']:d<=17?['mid','조금 달라요']:['far','많이 달라요']; }
+
+function viewReport(r){
+  const A=r.me, B=r.partner;
+  const an=A.name||'나', bn=B.name||'파트너';
+  const ta=TYPES[A.type]||{n:A.type,e:'🏠',g:'',l:''}, tb=TYPES[B.type]||{n:B.type,e:'🏠',g:'',l:''};
+  const rows = SECS.map(s=>{const a=Number(A.scores?.[s.key]||0), b=Number(B.scores?.[s.key]||0);return {s,a,b,d:Math.abs(a-b)};});
+  const diffs = rows.slice().sort((x,y)=>y.d-x.d);
+  const top = diffs.filter(x=>x.d>=9).slice(0,3);
+  const common = rows.filter(x=>x.a>=65&&x.b>=65).sort((x,y)=>(y.a+y.b)-(x.a+x.b)).slice(0,2);
+  const closest = rows.slice().sort((x,y)=>x.d-y.d).slice(0,2);
+  const sameType = A.type===B.type, sameGroup = ta.g && ta.g===tb.g;
+  const pairLine = sameType ? `두 분은 같은 <b>${esc(ta.n)}</b>이에요. 원하는 집의 방향이 같아 결정이 빠른 대신, 둘 다 약한 부분은 집에서도 비어 있기 쉬워요.`
+    : sameGroup ? `두 분은 같은 <b>${esc(GROUP[ta.g])}</b> 계열 안에서 결이 조금 다른 조합이에요. 큰 방향은 맞고 디테일에서 취향이 갈려요.`
+    : `<b>${esc(GROUP[ta.g]||'')}</b> 계열과 <b>${esc(GROUP[tb.g]||'')}</b> 계열의 조합이에요. 집에서 채우고 싶은 것이 서로 달라, 미리 역할을 나누면 오히려 서로 부족한 부분을 채워 줄 수 있어요.`;
+  const who = x => x.a>=x.b ? [an,bn] : [bn,an];
+
+  app.innerHTML = `
+  <div class="card hero"><span class="eyebrow">커플 공간 리포트</span>
+    <h1>${esc(an)}님 × ${esc(bn)}님의<br>공간 욕구 비교</h1>
+    <p class="sub">${pairLine}</p>
+    <div class="pair">
+      <div class="pcard"><div class="who a">${esc(an)}</div><div class="em">${ta.e}</div><div class="tn">${esc(ta.n)}</div><div class="tl">${esc(ta.l)}</div></div>
+      <div class="pcard"><div class="who b">${esc(bn)}</div><div class="em">${tb.e}</div><div class="tn">${esc(tb.n)}</div><div class="tl">${esc(tb.l)}</div></div>
+    </div>
+  </div>
+
+  <div class="card"><h2>8개 영역 나란히 보기</h2><p class="muted">점수는 우열이 아니라 그 욕구가 얼마나 강한지를 뜻해요.</p>
+    <div class="legend"><span><i style="background:var(--a)"></i>${esc(an)}</span><span><i style="background:var(--b)"></i>${esc(bn)}</span></div>
+    ${rows.map(x=>{const [c,t]=band(x.d);return `<div class="dom"><div class="dom-h"><span class="dom-n">${esc(x.s.label)}</span><span class="chip ${c}">${t}</span></div>
+      <div class="bar"><span class="nm">${esc(an)}</span><span class="tr"><span class="fl" style="display:block;width:${x.a}%;background:var(--a)"></span></span><span class="v">${x.a}</span></div>
+      <div class="bar"><span class="nm">${esc(bn)}</span><span class="tr"><span class="fl" style="display:block;width:${x.b}%;background:var(--b)"></span></span><span class="v">${x.b}</span></div></div>`;}).join('')}
+  </div>
+
+  <div class="card"><h2>우리 집의 공통 기반</h2><p class="muted">두 분이 비슷하게 원하는 영역은 결정이 쉬운 출발점이에요.</p>
+    ${(common.length?common:closest).map(x=>`<div class="ins"><h3>${esc(x.s.label)}</h3><p>${common.length?'두 분 모두 이 욕구가 강해요. ':'두 분의 점수가 가장 가까운 영역이에요. '}${esc(DOM[x.s.key].room)}부터 함께 고르면 합의가 빨라요.</p></div>`).join('')}
+  </div>
+
+  <div class="card"><h2>부딪히기 쉬운 영역</h2><p class="muted">차이가 큰 순서예요. 누가 맞고 틀린 게 아니라, 집에 바라는 것이 다른 지점이에요.</p>
+    ${top.length?top.map(x=>{const [h,l]=who(x);return `<div class="ins"><h3>${esc(x.s.label)} <span class="chip far">차이 ${x.d}</span></h3>
+      <p><b>${esc(h)}</b>님은 ${esc(DOM[x.s.key].hi)}. <b>${esc(l)}</b>님은 ${esc(DOM[x.s.key].lo)}.</p>
+      <p style="margin-top:6px">${esc(DOM[x.s.key].scene)}.</p>
+      <div class="tip"><b>조율 팁</b> ${esc(DOM[x.s.key].tip)}.</div></div>`;}).join('')
+    :`<div class="ins"><h3>큰 차이가 없어요</h3><p>8개 영역 모두 차이가 크지 않은 조합이에요. 대신 두 분 다 약한 영역은 집에서도 놓치기 쉬우니 아래 합의 순서를 참고해 주세요.</p></div>`}
+  </div>
+
+  <div class="card"><h2>먼저 합의할 공간</h2><p class="muted">차이가 큰 영역과 연결된 공간부터 정하면 나머지 결정이 쉬워져요.</p>
+    <div class="rooms">${diffs.slice(0,4).map((x,i)=>`<div class="room"><b>${i+1}. ${esc(DOM[x.s.key].room)}</b><span>${esc(x.s.label)} 차이 ${x.d}</span></div>`).join('')}</div>
+  </div>
+
+  <div class="card"><h2>함께 나눠 볼 대화 3가지</h2>
+    <div class="q"><span class="qn">01</span><span>${esc((top[0]||diffs[0]).s.label)} 영역에서, 지금 집에서 가장 불편했던 순간은 언제였나요?</span></div>
+    <div class="q"><span class="qn">02</span><span>각자 "이것만은 꼭 지키고 싶은 공간 한 곳"을 고른다면 어디인가요?</span></div>
+    <div class="q"><span class="qn">03</span><span>다음 한 달 안에 둘이 함께 바꿔 볼 수 있는 가장 작은 변화는 무엇일까요?</span></div>
+  </div>
+
+  <div class="btn-row no-print"><button class="btn btn-p" onclick="window.print()">PDF로 저장하기</button><a class="btn btn-s" href="mypage.html">내 결과 다시 보기</a></div>
+  <p class="foot">SDTI 결과는 경향을 보여 주는 참고 자료예요. 두 분의 대화를 위한 출발점으로 활용해 주세요.<br>© SKOPOS · 검사 문항과 결과 콘텐츠는 한국저작권위원회에 저작권 등록된 스코포스의 창작물입니다</p>`;
+  try{ window.SkoposTrack && SkoposTrack.event('couple_report_view',{}); }catch(e){}
+}
+
+async function main(user){
+  try{
+    const sbc = await SkoposAuth.getClient();
+    const { data:{ session } } = await sbc.auth.getSession();
+    token = session && session.access_token;
+    if(!token){ viewNone('로그인 정보를 확인하지 못했어요. 새로고침 해주세요.'); return; }
+    const p = new URLSearchParams(location.search);
+    let invite = (p.get('invite')||'').toUpperCase();
+    try{ if(invite) sessionStorage.setItem('skopos_invite', invite); else invite = sessionStorage.getItem('skopos_invite')||''; }catch(e){}
+    let joinMsg = '';
+    if(invite){
+      const j = await call('join',{code:invite});
+      try{ sessionStorage.removeItem('skopos_invite'); }catch(e){}
+      if(j.success){ try{ window.SkoposTrack && SkoposTrack.event('couple_join',{}); }catch(e){} try{ history.replaceState({},'',location.pathname); }catch(e){} }
+      else joinMsg = j.message || '초대 코드를 확인하지 못했어요.';
+    }
+    const st = await call('report');
+    if(!st.success){ viewNone(st.message); return; }
+    if(!st.couple){ viewNone(joinMsg); return; }
+    if(st.ready){ viewReport(st); return; }
+    viewProgress(st.couple, p.get('new')==='1');
+  }catch(e){ console.error(e); viewNone('잠시 후 다시 시도해 주세요.'); }
+}
+
+window.addEventListener('DOMContentLoaded',()=>{
+  if(!window.SkoposAuth){ viewNone('로그인 모듈을 불러오지 못했어요. 새로고침 해주세요.'); return; }
+  SkoposAuth.guard({
+    subtitle:'커플 리포트는 <strong>로그인 후</strong> 확인할 수 있어요.<br>초대 링크로 오셨다면 로그인하면 바로 연결돼요.',
+    onReady:(u)=>main(u)
+  });
+});
+</script>
+</body>
+</html>
