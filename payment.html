@@ -2,6 +2,10 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>정밀 진단 시작 | SKOPOS 스코포스</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
@@ -220,7 +224,7 @@ async function applyCoupon(){
   if(!code){resetCoupon();showCouponMessage('쿠폰 코드를 입력해주세요.','error');return;}
   btn.disabled=true;btn.textContent='확인';
   try{
-    const res=await fetch('https://rgbukqphcqptnfeqipfn.supabase.co/functions/v1/validate-coupon',{method:'POST',headers:await authHeaders(),body:JSON.stringify({coupon_code:code,amount:BASE_AMOUNT,user_id:currentUser?.id||''})});
+    const res=await fetch('/.netlify/functions/validate-coupon',{method:'POST',headers:await authHeaders(),body:JSON.stringify({coupon_code:code,amount:BASE_AMOUNT,user_id:currentUser?.id||''})});
     const result=await res.json();
     if(!res.ok||!result.success){
       resetCoupon();
@@ -340,7 +344,7 @@ async function redeemFreeCoupon(){
   const name=currentUser.user_metadata?.full_name||currentUser.email?.split('@')[0]||'';
   const email=currentUser.email||'';
   try{
-    const res=await fetch('https://rgbukqphcqptnfeqipfn.supabase.co/functions/v1/redeem-free-coupon',{method:'POST',headers:await authHeaders(),body:JSON.stringify({coupon_code:priceState.coupon_code,name,email})});
+    const res=await fetch('/.netlify/functions/redeem-free-coupon',{method:'POST',headers:await authHeaders(),body:JSON.stringify({coupon_code:priceState.coupon_code,name,email})});
     const result=await res.json();
     if(result.success){
       sessionStorage.setItem('skopos_paid','1');
@@ -366,7 +370,7 @@ async function verifyAndStart(impUid,merchantUid,name,email){
   try{
     const couponCode=priceState.coupon_code||sessionStorage.getItem('skopos_coupon_code')||'';
     const expectedAmount=Number(sessionStorage.getItem('skopos_expected_amount')||priceState.final_amount||BASE_AMOUNT);
-    const res=await fetch('https://rgbukqphcqptnfeqipfn.supabase.co/functions/v1/verify-payment',{method:'POST',headers:await authHeaders(),body:JSON.stringify({imp_uid:impUid,merchant_uid:merchantUid,amount:expectedAmount,coupon_code:couponCode,name,email,user_id:currentUser?.id||''})});
+    const res=await fetch('/.netlify/functions/verify-payment',{method:'POST',headers:await authHeaders(),body:JSON.stringify({imp_uid:impUid,merchant_uid:merchantUid,amount:expectedAmount,coupon_code:couponCode,name,email,user_id:currentUser?.id||''})});
     const result=await res.json();
     if(result.success){sessionStorage.setItem('skopos_paid','1');window.location.href='skopos_premium_quiz.html?paid=1';}
     else{showAlert('payAlert','결제 검증 실패: '+(result.message||'관리자에게 문의해 주세요'));document.getElementById('payBtn').disabled=false;updatePriceView();setStep(2);}
