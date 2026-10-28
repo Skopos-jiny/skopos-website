@@ -743,6 +743,7 @@ nav{position:fixed;top:46px;left:0;right:0;z-index:200;height:60px;display:flex;
 .hl{color:var(--pink);font-style:normal;font-weight:700;}
 em{font-style:normal;}
 </style>
+<script src="/skopos-track.js" defer></script>
 </head>
 <body>
 <nav aria-label="주 메뉴">
@@ -2041,6 +2042,7 @@ function runResult(){
     saveResult(type, sub); // 유형 ID 저장
     try{sessionStorage.removeItem('skopos_unlocked');}catch(e){}
     // GA 이벤트 — 진단 완료
+    try{ window.SkoposTrack && SkoposTrack.event('free_quiz_complete', { result_type: type.id }); }catch(e){}
     trackEvent('quiz_complete', {
       result_type: type.id,
       result_sub: sub ? sub.sub : '',

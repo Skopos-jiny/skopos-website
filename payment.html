@@ -88,6 +88,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
 .panel{display:none}
 .panel.active{display:block}
 </style>
+<script src="/skopos-track.js" defer></script>
 </head>
 <body>
 <nav>
@@ -348,6 +349,7 @@ async function redeemFreeCoupon(){
     const result=await res.json();
     if(result.success){
       sessionStorage.setItem('skopos_paid','1');
+      try{ window.SkoposTrack && SkoposTrack.event('free_redeem',{value:0,coupon_code:priceState.coupon_code,order_id:(priceState.coupon_code||'')+'_'+(currentUser?.id||''),user_id:currentUser?.id||null}); }catch(e){}
       toast('✅ 무료 이용권이 발급됐어요!',1500);
       setStep(3);
       window.location.href='skopos_premium_quiz.html?paid=1';
@@ -372,13 +374,14 @@ async function verifyAndStart(impUid,merchantUid,name,email){
     const expectedAmount=Number(sessionStorage.getItem('skopos_expected_amount')||priceState.final_amount||BASE_AMOUNT);
     const res=await fetch('https://rgbukqphcqptnfeqipfn.supabase.co/functions/v1/verify-payment',{method:'POST',headers:await authHeaders(),body:JSON.stringify({imp_uid:impUid,merchant_uid:merchantUid,amount:expectedAmount,coupon_code:couponCode,name,email,user_id:currentUser?.id||''})});
     const result=await res.json();
-    if(result.success){sessionStorage.setItem('skopos_paid','1');window.location.href='skopos_premium_quiz.html?paid=1';}
+    if(result.success){sessionStorage.setItem('skopos_paid','1');try{ window.SkoposTrack && SkoposTrack.event('purchase',{value:expectedAmount,coupon_code:couponCode,order_id:merchantUid,user_id:currentUser?.id||null}); }catch(e){}window.location.href='skopos_premium_quiz.html?paid=1';}
     else{showAlert('payAlert','결제 검증 실패: '+(result.message||'관리자에게 문의해 주세요'));document.getElementById('payBtn').disabled=false;updatePriceView();setStep(2);}
   }catch(err){showAlert('payAlert','결제 검증 서버에 연결하지 못했습니다. 관리자에게 문의해 주세요.');document.getElementById('payBtn').disabled=false;updatePriceView();setStep(2);}
 }
 
 window.addEventListener('load',async()=>{
   const params=new URLSearchParams(window.location.search);
+  if(!params.get('imp_uid')){ try{ window.SkoposTrack && SkoposTrack.event('checkout_view',{value:BASE_AMOUNT}); }catch(e){} }
   const impUid=params.get('imp_uid'),merchantUid=params.get('merchant_uid'),impSuccess=params.get('imp_success');
   // 복귀 파라미터는 1회 소비 후 URL 에서 제거 (재시도·새로고침 시 오판 방지)
   if(impUid){

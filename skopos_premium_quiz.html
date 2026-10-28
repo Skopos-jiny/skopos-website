@@ -1145,6 +1145,7 @@ html{scroll-behavior:smooth}
 <!-- 결제는 payment.html 로 일원화되어 포트원 SDK 는 이 페이지에서 제거됨 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
+<script src="/skopos-track.js" defer></script>
 </head>
 
 <body>
@@ -3912,6 +3913,7 @@ function runResult(){
     const{type,scores}=compute();
     resultType=type;
     trackEvent('premium_quiz_complete',{result_type:type.id,paid:isPaid});
+    try{ window.SkoposTrack && SkoposTrack.event('premium_quiz_complete',{result_type:type.id}); }catch(e){}
     saveResult(type.id);
     renderResult(type,scores);
     show('sr');
