@@ -1,0 +1,7 @@
+# Cloudflare Pages 리다이렉트 (netlify.toml 의 [[redirects]] 와 동일)
+/selinhaja          /  301
+/selinhaja.html     /  301
+/goodpartner        /  301
+/goodpartner.html   /  301
+/PriceInformation   /  301
+/PriceInformation.html /  301
