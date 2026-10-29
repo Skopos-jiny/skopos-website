@@ -144,7 +144,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
       </div>
       <div class="plan-pick" id="planPick">
         <button type="button" class="plan-opt sel" data-plan="single" onclick="setPlan('single')"><span class="po-name">1인 정밀 검사</span><span class="po-price">₩29,900</span></button>
-        <button type="button" class="plan-opt" data-plan="couple" onclick="setPlan('couple')"><span class="po-badge">커플</span><span class="po-name">2인 + 커플 리포트</span><span class="po-price">₩49,900</span></button>
+        <button type="button" class="plan-opt" data-plan="couple" onclick="setPlan('couple')"><span class="po-badge">커플</span><span class="po-name">2인 + 커플 결과지</span><span class="po-price">₩49,900</span></button>
       </div>
       <div class="prod-box">
         <div class="prod-name" id="prodName">SKOPOS SDTI 정밀 검사</div>
@@ -198,14 +198,14 @@ function setPlan(p){
   BASE_AMOUNT = PLAN_PRICES[currentPlan];
   document.querySelectorAll('.plan-opt').forEach(b=>b.classList.toggle('sel', b.dataset.plan===currentPlan));
   const couple = currentPlan==='couple';
-  document.getElementById('prodName').textContent = couple ? 'SKOPOS SDTI 커플 패키지 (2인)' : 'SKOPOS SDTI 정밀 검사';
+  document.getElementById('prodName').textContent = couple ? 'SKOPOS SDTI 커플 진단 (2인)' : 'SKOPOS SDTI 정밀 검사';
   document.getElementById('prodDesc').innerHTML = couple
     ? '두 분 각자 정밀 검사(144문항) + 각자 21페이지 PDF 리포트<br>두 분 결과를 나란히 비교하는 <strong>커플 비교 리포트</strong> · 초대 링크로 파트너 연결'
     : 'SDTI 144문항 · 12가지 욕구 유형 · 8영역 분석<br>소품 처방 + 컬러 팔레트 + 21페이지 PDF 리포트';
   document.getElementById('prodPrice').textContent = formatWon(BASE_AMOUNT);
   document.getElementById('couponBox').style.display = couple ? 'none' : '';
   document.getElementById('payNotice').innerHTML = couple
-    ? '결제 후 파트너 초대 링크가 발급돼요 · 파트너는 링크로 로그인하면 바로 검사 가능<br>1회 결제 · 영구 열람 (커플 패키지는 쿠폰과 함께 쓸 수 없어요)'
+    ? '결제 후 파트너 초대 링크가 발급돼요 · 파트너는 링크로 로그인하면 바로 검사 가능<br>1회 결제 · 영구 열람 (커플 진단은 쿠폰과 함께 쓸 수 없어요)'
     : '1회 결제 · 영구 열람 · 언제든 다시 확인 가능<br>결제 완료 후 즉시 진단이 시작됩니다';
   if(couple){ try{ document.getElementById('couponCode').value=''; showCouponMessage('',''); document.getElementById('couponMsg').className='coupon-msg'; }catch(e){} }
   resetCoupon();
@@ -350,7 +350,7 @@ function requestPay(){
   sessionStorage.setItem('skopos_plan',currentPlan);
   IMP.request_pay({
     pg:'kcp',pay_method:'card',merchant_uid:merchantUid,
-    name: currentPlan==='couple' ? 'SKOPOS SDTI 커플 패키지 (2인)' : 'SKOPOS SDTI 정밀 검사',amount:priceState.final_amount,
+    name: currentPlan==='couple' ? 'SKOPOS SDTI 커플 진단 (2인)' : 'SKOPOS SDTI 정밀 검사',amount:priceState.final_amount,
     buyer_name:name,buyer_email:email,buyer_tel:'',
     // 주의: href 를 그대로 쓰면 이전 시도의 imp_uid/imp_success 파라미터가
     // 남아 있어 재시도 복귀 시 첫 번째(옛) 파라미터를 읽어 성공 결제를

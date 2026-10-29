@@ -333,22 +333,22 @@ async function share(){
 }
 
 function viewNone(msg){
-  app.innerHTML = `<div class="card"><span class="eyebrow">커플 패키지</span><h1>두 사람의 공간 욕구를<br>나란히 비교해 보세요</h1>
+  app.innerHTML = `<div class="card"><span class="eyebrow">커플 진단</span><h1>두 사람의 공간 욕구를<br>나란히 비교해 보세요</h1>
   <p class="sub">각자 정밀 검사(144문항)를 마치면 8개 영역을 나란히 놓고 비슷한 점, 부딪히기 쉬운 점, 먼저 합의할 공간을 정리해 드려요.</p>
   ${msg?`<div class="alert show">${esc(msg)}</div>`:''}
-  <div class="btn-row"><a class="btn btn-p" href="payment.html?plan=couple">커플 패키지 49,900원 (2인)</a><a class="btn btn-s" href="index.html">홈으로</a></div>
+  <div class="btn-row"><a class="btn btn-p" href="payment.html?plan=couple">커플 진단 49,900원 (2인)</a><a class="btn btn-s" href="index.html">홈으로</a></div>
   <p class="muted" style="margin-top:12px">초대 링크를 받으셨다면 링크로 다시 들어와 주세요.</p></div>`;
 }
 
 function viewProgress(c, isNew){
   window.__couple = c;
   const partner = c.partner_name || '파트너';
-  app.innerHTML = `<div class="card"><span class="eyebrow">커플 패키지</span>
-  <h1>${isNew?'결제가 완료됐어요!<br>':''}두 분 모두 검사를 마치면<br>커플 리포트가 열려요</h1>
+  app.innerHTML = `<div class="card"><span class="eyebrow">커플 진단</span>
+  <h1>${isNew?'결제가 완료됐어요!<br>':''}두 분 모두 검사를 마치면<br>결과지 2부가 발급돼요</h1>
   ${c.role==='owner' && !c.paired ? `<p class="sub">아래 초대 링크를 함께할 분께 보내 주세요. 링크로 로그인하면 별도 결제 없이 정밀 검사를 시작할 수 있어요.</p>
    <div class="code-box"><div><div class="muted">초대 코드</div><b>${esc(c.code)}</b></div><button class="btn btn-p" onclick="share()">초대 링크 보내기</button></div>` : ''}
   <ul class="steps">
-    <li><span class="dot ok">1</span>커플 패키지 ${c.role==='owner'?'결제':'연결'} 완료</li>
+    <li><span class="dot ok">1</span>커플 진단 ${c.role==='owner'?'결제':'연결'} 완료</li>
     <li><span class="dot ${c.paired?'ok':''}">2</span>${c.paired?esc(partner)+'님 연결 완료':'파트너 연결 대기 중'}</li>
     <li><span class="dot ${c.my_done?'ok':''}">3</span>내 정밀 검사 ${c.my_done?'완료':'전'}</li>
     <li><span class="dot ${c.partner_done?'ok':''}">4</span>${esc(partner)}님 정밀 검사 ${c.partner_done?'완료':'전'}</li>
@@ -356,7 +356,7 @@ function viewProgress(c, isNew){
   <div class="btn-row">${!c.my_done?`<a class="btn btn-p" href="skopos_premium_quiz.html">내 정밀 검사 시작하기</a>`:''}
   ${c.paired?'':`<button class="btn btn-s" onclick="share()">초대 링크 다시 보내기</button>`}
   <button class="btn btn-s" onclick="location.reload()">상태 새로고침</button></div>
-  <p class="muted" style="margin-top:12px">이미 정밀 검사를 하셨더라도 커플 비교에는 이번 패키지로 진행한 검사 결과가 쓰여요. 비교용 점수가 없으면 검사를 한 번 더 진행해 주세요.</p></div>`;
+  <p class="muted" style="margin-top:12px">이미 정밀 검사를 하셨더라도 커플 비교에는 커플 진단으로 진행한 검사 결과가 쓰여요. 비교용 점수가 없으면 검사를 한 번 더 진행해 주세요.</p></div>`;
 }
 
 function band(d){ return d<=8?['same','비슷해요']:d<=17?['mid','조금 달라요']:['far','많이 달라요']; }
@@ -662,6 +662,8 @@ function viewReport(r){
   <section class="doc" data-doc="couple" id="coupleDoc">${coupleHTML()}</section>
   <p class="foot">SDTI 결과는 경향을 보여 주는 참고 자료예요. 두 분의 대화를 위한 출발점으로 활용해 주세요.<br>© SKOPOS · SDTI 검사 문항·해석 체계와 검사 엔진은 한국저작권위원회에 정식 등록되어 법적으로 보호받고 있습니다</p>`;
   setDoc(location.hash==='#couple'?'couple':'personal');
+  const dl=new URLSearchParams(location.search).get('dl');
+  if(dl==='personal'||dl==='couple') setTimeout(()=>printDoc(dl), 800);
   try{ window.SkoposTrack && SkoposTrack.event('couple_report_view',{}); }catch(e){}
 }
 
@@ -693,7 +695,7 @@ async function main(user){
 window.addEventListener('DOMContentLoaded',()=>{
   if(!window.SkoposAuth){ viewNone('로그인 모듈을 불러오지 못했어요. 새로고침 해주세요.'); return; }
   SkoposAuth.guard({
-    subtitle:'커플 리포트는 <strong>로그인 후</strong> 확인할 수 있어요.<br>초대 링크로 오셨다면 로그인하면 바로 연결돼요.',
+    subtitle:'커플 결과지는 <strong>로그인 후</strong> 확인할 수 있어요.<br>초대 링크로 오셨다면 로그인하면 바로 연결돼요.',
     onReady:(u)=>main(u)
   });
 });

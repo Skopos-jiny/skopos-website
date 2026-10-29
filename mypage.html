@@ -75,6 +75,21 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
 .pay-right{text-align:right;flex-shrink:0;margin-left:12px}
 .pay-amount{font-size:.9rem;font-weight:800;color:#0F0F1A;margin-bottom:3px}
 .pay-status{display:inline-block;font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:50px;background:rgba(3,199,90,.1);color:#027a35}
+.pay-status.free{background:rgba(233,30,140,.08);color:#C2185B}.pay-status.cancel{background:rgba(0,0,0,.06);color:#8890A4}.pay-status.wait{background:#FFF4E0;color:#B26A00}
+.pay-link{font-size:.68rem;font-weight:800;color:#E91E8C;margin-left:6px;text-decoration:none;white-space:nowrap}
+/* 커플 진단 */
+.couple-card{border:1.5px solid rgba(233,30,140,.25);background:linear-gradient(160deg,#FFF5FA,#fff 60%);border-radius:16px;padding:18px;margin-bottom:16px}
+.cc-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.cc-tag{font-size:.64rem;font-weight:800;color:#fff;background:linear-gradient(135deg,#7E57C2,#DC1478);border-radius:50px;padding:3px 10px}
+.cc-code{font-size:.68rem;color:#8890A4;font-weight:700;letter-spacing:.04em}
+.cc-title{font-size:1.02rem;font-weight:900;color:#0F0F1A;margin:8px 0 2px}
+.cc-step{font-size:.76rem;color:#8890A4}.cc-step.ok{color:#027a35;font-weight:700}
+.cc-docs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.cc-doc{background:#fff;border:1px solid rgba(0,0,0,.07);border-radius:12px;padding:12px}
+.cc-doc b{display:block;font-size:.8rem;color:#0F0F1A}.cc-doc span{display:block;font-size:.7rem;color:#8890A4;margin:2px 0 10px}
+.cc-btns{display:flex;gap:6px;flex-wrap:wrap}
+.cc-btns a{text-decoration:none}
+@media(max-width:500px){.cc-docs{grid-template-columns:1fr}}
 
 /* 빈 상태 */
 .empty{text-align:center;padding:36px 0}
@@ -133,6 +148,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
 
   <!-- 검사 결과 패널 -->
   <div class="panel active" id="panelResults">
+    <div id="coupleArea"></div>
     <div id="resultsArea"><div class="loading"><div class="spinner"></div>불러오는 중...</div></div>
   </div>
 
@@ -155,18 +171,18 @@ let currentUser = null;
 
 // ── 유형 정보 ────────────────────────────────────────────────
 const TYPE_INFO = {
-  'sanctuary_deep': {name:'완전 차단형',      emoji:'🌙'},
-  'sanctuary_zen':  {name:'비움 추구형',       emoji:'🤍'},
-  'nature_forest':  {name:'초록 충전형',       emoji:'🌿'},
-  'nature_earth':   {name:'핸드메이드 감성형', emoji:'🪴'},
-  'luxe_royal':     {name:'품격 추구형',       emoji:'✨'},
-  'luxe_gallery':   {name:'갤러리 큐레이터형', emoji:'🖼️'},
-  'artistic_bold':  {name:'개성 폭발형',       emoji:'🎨'},
-  'artistic_vintage':{name:'빈티지 스토리형',  emoji:'🕰️'},
-  'minimal_empty':  {name:'극도 미니멀형',     emoji:'◻️'},
-  'minimal_grid':   {name:'구조·정렬 추구형',  emoji:'⬛'},
-  'cozy_warm':      {name:'포근함 최우선형',   emoji:'🛋️'},
-  'cozy_family':    {name:'함께하는 공간형',   emoji:'🏡'},
+  'sanctuary_deep': {name:'고요한 회복형',      emoji:'🌙'},
+  'sanctuary_zen':  {name:'비움 추구형',        emoji:'🤍'},
+  'nature_forest':  {name:'초록 충전형',        emoji:'🌿'},
+  'nature_earth':   {name:'핸드메이드 감성형',  emoji:'🪴'},
+  'luxe_royal':     {name:'품격 감각형',        emoji:'✨'},
+  'luxe_gallery':   {name:'갤러리 큐레이터형',  emoji:'🖼️'},
+  'artistic_wild':  {name:'개성 표현형',        emoji:'🎨'},
+  'artistic_indie': {name:'빈티지 스토리형',    emoji:'🕰️'},
+  'minimal_pure':   {name:'순수 미니멀형',      emoji:'◻️'},
+  'minimal_grid':   {name:'구조·정렬 추구형',   emoji:'⬛'},
+  'cozy_hearth':    {name:'포근한 회복형',      emoji:'🛋️'},
+  'cozy_family':    {name:'함께하는 공간형',    emoji:'🏡'},
 };
 
 // ── 탭 전환 ──────────────────────────────────────────────────
@@ -208,7 +224,7 @@ function toast(msg, dur=2800){
   else{badgeEl.textContent='이메일 가입';badgeEl.className='profile-badge badge-email';}
 
   // 병렬 로드
-  await Promise.all([renderResults(session.user), renderPayments(session.user)]);
+  await Promise.all([renderResults(session.user), renderPayments(session.user), renderCouple(session)]);
 })();
 
 // ── 검사 결과 렌더링 ─────────────────────────────────────────
@@ -271,15 +287,46 @@ function makeResultCard(r){
 }
 
 // ── 결제 내역 렌더링 ─────────────────────────────────────────
+async function fetchPayments(user){
+  return sb.from('payments')
+    .select('*')
+    .or(`user_id.eq.${user.id},buyer_email.eq.${user.email}`)
+    .order('created_at', { ascending: false });
+}
+function payLabel(p){
+  const st = String(p.status||'').toLowerCase();
+  if(st==='paid') return ['결제완료','ok'];
+  if(st==='free') return [p.pg==='couple'?'커플 초대 이용권':'무료 이용권','free'];
+  if(st==='cancelled'||st==='canceled'||st==='refunded') return ['결제취소','cancel'];
+  return ['처리중','wait'];
+}
+function payName(p){
+  const n = p.order_name || 'SDTI 정밀 검사';
+  if(/커플/.test(n)) return n.replace('SKOPOS SDTI ','').replace('커플 패키지','커플 진단').replace('(파트너 이용권)','· 파트너 이용권');
+  return n.replace('SKOPOS SDTI ','SDTI ');
+}
+function payMethod(p){
+  if(p.pg==='FREE_COUPON') return '쿠폰'+(p.coupon_code?` (${p.coupon_code})`:'');
+  if(p.pg==='couple') return '커플 진단 초대';
+  return p.pg || '카드 결제';
+}
 async function renderPayments(user){
   const area = document.getElementById('paymentsArea');
-  const { data, error } = await sb
-    .from('payments')
-    .select('*')
-    .or(`buyer_email.eq.${user.email},user_id.eq.${user.id}`)
-    .order('paid_at', { ascending: false });
-
-  if(error || !data || data.length === 0){
+  let { data, error } = await fetchPayments(user);
+  if(error){
+    // 로그인 세션 갱신 후 한 번 더 시도
+    try{ await sb.auth.refreshSession(); ({ data, error } = await fetchPayments(user)); }catch(e){}
+  }
+  if(error){
+    console.warn('결제 내역 조회 오류:', error);
+    area.innerHTML = `<div class="empty">
+      <div class="empty-icon">⚠️</div>
+      <div class="empty-text">결제 내역을 불러오지 못했어요<br>잠시 후 다시 시도해 주세요</div>
+      <button class="btn-cta" style="border:0;cursor:pointer;font-family:inherit" onclick="location.reload()">다시 불러오기</button>
+    </div>`;
+    return;
+  }
+  if(!data || data.length === 0){
     area.innerHTML = `<div class="empty">
       <div class="empty-icon">💳</div>
       <div class="empty-text">아직 결제 내역이 없어요<br>SDTI 정밀 검사로 더 깊이 알아보세요</div>
@@ -290,16 +337,20 @@ async function renderPayments(user){
 
   area.innerHTML = `<div>
     ${data.map(p=>{
-      const date = new Date(p.paid_at || p.created_at).toLocaleDateString('ko-KR');
-      const time = new Date(p.paid_at || p.created_at).toLocaleTimeString('ko-KR', {hour:'2-digit',minute:'2-digit'});
+      const at = new Date(p.paid_at || p.created_at);
+      const date = at.toLocaleDateString('ko-KR');
+      const time = at.toLocaleTimeString('ko-KR', {hour:'2-digit',minute:'2-digit'});
+      const amt = Number(p.final_amount ?? p.amount ?? 0);
+      const [lb, cls] = payLabel(p);
+      const isCouple = /커플/.test(p.order_name||'') || p.pg==='couple';
       return `<div class="pay-item">
         <div class="pay-left">
-          <div class="pay-name">${p.order_name||'SKOPOS SDTI 정밀 검사'}</div>
-          <div class="pay-detail">${date} ${time} · ${p.pg||'NHN KCP'} · 주문번호: ${(p.merchant_uid||p.imp_uid||'').slice(-12)}</div>
+          <div class="pay-name">${payName(p)}${isCouple?' <a class="pay-link" href="couple.html">결과지 보기</a>':''}</div>
+          <div class="pay-detail">${date} ${time} · ${payMethod(p)} · 주문번호 ${(p.merchant_uid||p.imp_uid||'').slice(-12)}</div>
         </div>
         <div class="pay-right">
-          <div class="pay-amount">₩${(p.amount||29900).toLocaleString()}</div>
-          <span class="pay-status">${p.status==='paid'||p.status==='PAID'?'결제완료':'처리중'}</span>
+          <div class="pay-amount">${amt>0?'₩'+amt.toLocaleString():'무료'}</div>
+          <span class="pay-status ${cls}">${lb}</span>
         </div>
       </div>`;
     }).join('')}
@@ -307,6 +358,30 @@ async function renderPayments(user){
   <div style="margin-top:16px;padding:12px 14px;background:#F7F8FC;border-radius:10px;font-size:.74rem;color:#8890A4;line-height:1.7">
     💡 결제 관련 문의: contact@skopos.kr · 환불은 결제일로부터 7일 이내 미이용 시 가능
   </div>`;
+}
+
+// ── 커플 진단 결과지 ─────────────────────────────────────────
+async function renderCouple(session){
+  const area = document.getElementById('coupleArea');
+  try{
+    const r = await fetch(SUPABASE_URL + '/functions/v1/couple', {method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token}, body:JSON.stringify({action:'status'})});
+    const j = await r.json();
+    if(!j.success || !j.couple) return;
+    const c = j.couple, my = c.my_name || '나', pt = c.partner_name || '파트너';
+    const ready = c.my_done && c.partner_done;
+    const step = !c.paired ? '파트너 초대를 기다리고 있어요' : !c.my_done ? '내 정밀 검사를 진행해 주세요' : !c.partner_done ? `${pt}님의 정밀 검사를 기다리고 있어요` : '결과지 2부가 발급됐어요';
+    area.innerHTML = `<div class="couple-card">
+      <div class="cc-top"><span class="cc-tag">커플 진단</span><span class="cc-code">초대 코드 ${c.code}</span></div>
+      <div class="cc-title">${my}님 × ${c.paired?pt+'님':'파트너'}</div>
+      <div class="cc-step ${ready?'ok':''}">${step}</div>
+      ${ready ? `<div class="cc-docs">
+        <div class="cc-doc"><b>결과지 1 · 개인 결과지</b><span>나의 8개 영역 프로파일과 공간 처방</span>
+          <div class="cc-btns"><a class="btn-sm btn-view" href="couple.html#personal">보기</a><a class="btn-sm btn-pdf" href="couple.html?dl=personal" target="_blank" rel="noopener">📄 PDF 저장</a></div></div>
+        <div class="cc-doc"><b>결과지 2 · 커플 솔루션 결과지</b><span>두 사람 비교와 공간별 솔루션</span>
+          <div class="cc-btns"><a class="btn-sm btn-view" href="couple.html#couple">보기</a><a class="btn-sm btn-pdf" href="couple.html?dl=couple" target="_blank" rel="noopener">📄 PDF 저장</a></div></div>
+      </div>` : `<div class="cc-btns" style="margin-top:12px"><a class="btn-sm btn-view" href="couple.html">진행 상황 보기</a></div>`}
+    </div>`;
+  }catch(e){ console.warn('커플 정보 조회 오류:', e); }
 }
 
 // ── PDF 재다운로드 ───────────────────────────────────────────
