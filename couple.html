@@ -125,12 +125,155 @@ h2{font-size:1.15rem;font-weight:900;letter-spacing:-.02em;margin-bottom:6px}
 .chk input{width:18px;height:18px;accent-color:var(--pink);vertical-align:-3px;margin-right:6px}
 @media (max-width:520px){.sum{grid-template-columns:repeat(2,1fr)}.room-row{grid-template-columns:1fr;gap:6px}.tabs{top:62px}.ptype .em{width:54px;height:54px;font-size:2.1rem}}
 @media print{.tabs,.who-sw{display:none!important}.doc[hidden]{display:none!important}.sum div,.lv,.chip,.tr1 span,.fl,.room-row .rn span,.plan li::before{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+
+/* ── A4 출력용 결과지 (PDF 저장 시에만 사용) ── */
+#printArea{display:none}
+@page a4sheet{size:A4;margin:0}
+#printArea *{margin:0;padding:0;box-sizing:border-box}
+#printArea{font-family:"Noto Sans KR","Apple SD Gothic Neo",sans-serif;color:var(--ink);font-size:9.6pt;line-height:1.6;word-break:keep-all;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+#printArea{--ink:#1A1A2E;--sub:#55526A;--mute:#8B879C;--line:#E7E3EC;--soft:#F7F5F2;--a:#D6246E;--a-t:#FBE3EE;--b:#4A5FC1;--b-t:#E4E8F8;--ok:#2E7D5B;--ok-t:#E3F2EA;--mid:#C26A12;--mid-t:#FBEEDC;--far:#C2185B;--far-t:#FBE3EE}
+#printArea .page{width:210mm;height:297mm;background:#fff;margin:8mm auto;padding:16mm 16mm 14mm;position:relative;overflow:hidden;display:flex;flex-direction:column}
+#printArea .hd{display:flex;justify-content:space-between;align-items:center;font-size:7.6pt;color:var(--mute);letter-spacing:.04em;padding-bottom:3.2mm;border-bottom:.3mm solid var(--ink);margin-bottom:7mm}
+#printArea .hd .brand{font-weight:900;color:var(--ink);letter-spacing:.02em;font-size:9pt}
+#printArea .hd .brand i{font-style:normal;color:var(--a)}
+#printArea .hd .dn{font-weight:700;color:var(--ink)}
+#printArea .ft{margin-top:auto;padding-top:3mm;border-top:.2mm solid var(--line);display:flex;justify-content:space-between;font-size:7pt;color:var(--mute)}
+#printArea .sample{position:absolute;top:6mm;right:16mm;font-size:6.8pt;font-weight:800;letter-spacing:.14em;color:#fff;background:var(--ink);padding:1mm 2.6mm;border-radius:1mm}
+#printArea .sec{margin-bottom:7mm}
+#printArea .sec-t{display:flex;align-items:baseline;gap:3mm;margin-bottom:3.5mm}
+#printArea .sec-t .no{font-size:8pt;font-weight:900;color:var(--a);letter-spacing:.08em}
+#printArea .sec-t h2{font-size:13pt;font-weight:900;letter-spacing:-.02em}
+#printArea .sec-t p{font-size:8pt;color:var(--mute);margin-left:auto}
+#printArea .eyebrow{font-size:8pt;font-weight:800;letter-spacing:.2em;color:var(--a)}
+#printArea .title{font-size:25pt;font-weight:900;letter-spacing:-.03em;line-height:1.28;margin:3mm 0 4mm}
+#printArea .title .x{color:var(--mute);font-weight:400;margin:0 1.5mm}
+#printArea .lead{font-size:10pt;color:var(--sub);max-width:150mm}
+#printArea .lead b{color:var(--ink)}
+#printArea .duo{display:grid;grid-template-columns:1fr 1fr;gap:5mm;margin:8mm 0 7mm}
+#printArea .pc{border-radius:3mm;padding:5mm 5.5mm;border:.3mm solid var(--line);position:relative}
+#printArea .pc.a{background:linear-gradient(180deg,var(--a-t),#fff 70%)}
+#printArea .pc.b{background:linear-gradient(180deg,var(--b-t),#fff 70%)}
+#printArea .pc .nm{font-size:8pt;font-weight:800;letter-spacing:.06em}
+#printArea .pc.a .nm{color:var(--a)}
+#printArea .pc.b .nm{color:var(--b)}
+#printArea .pc .em{font-size:20pt;line-height:1;margin:3mm 0 2mm}
+#printArea .pc .tn{font-size:14pt;font-weight:900;letter-spacing:-.02em}
+#printArea .pc .tl{font-size:8.6pt;color:var(--sub);margin-top:1mm}
+#printArea .pc .gp{display:inline-block;margin-top:3mm;font-size:7.4pt;font-weight:700;color:var(--sub);background:#fff;border:.25mm solid var(--line);border-radius:5mm;padding:.6mm 2.6mm}
+#printArea .kpi{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;border:.3mm solid var(--line);border-radius:3mm;overflow:hidden}
+#printArea .kpi div{padding:4.5mm 4mm;border-right:.3mm solid var(--line)}
+#printArea .kpi div:last-child{border:0}
+#printArea .kpi b{display:block;font-size:20pt;font-weight:900;line-height:1.1;font-variant-numeric:tabular-nums}
+#printArea .kpi span{font-size:7.8pt;color:var(--mute);font-weight:700}
+#printArea .kpi .g b{color:var(--ok)}
+#printArea .kpi .o b{color:var(--mid)}
+#printArea .kpi .p b{color:var(--far)}
+#printArea .note{font-size:7.8pt;color:var(--mute);margin-top:2.5mm}
+#printArea .how{margin-top:auto;margin-bottom:6mm;background:var(--soft);border-radius:3mm;padding:5mm 6mm;display:grid;grid-template-columns:repeat(3,1fr);gap:5mm}
+#printArea .how h4{font-size:8.6pt;font-weight:900;margin-bottom:1mm}
+#printArea .how p{font-size:8pt;color:var(--sub)}
+#printArea .how .n{font-size:7.4pt;font-weight:900;color:var(--a);letter-spacing:.1em;margin-bottom:1mm}
+#printArea .legend{display:flex;gap:5mm;font-size:8pt;font-weight:700;margin-bottom:2mm}
+#printArea .legend i{display:inline-block;width:3mm;height:3mm;border-radius:.8mm;margin-right:1.5mm;vertical-align:-.4mm}
+#printArea .cmp{width:100%;border-collapse:collapse}
+#printArea .cmp th{font-size:7.4pt;color:var(--mute);font-weight:700;text-align:left;padding:0 0 2mm;border-bottom:.3mm solid var(--ink)}
+#printArea .cmp td{padding:2.7mm 0;border-bottom:.2mm solid var(--line);vertical-align:middle}
+#printArea .cmp .lb{width:38mm;font-weight:800;font-size:9pt}
+#printArea .cmp .bars{padding-right:5mm}
+#printArea .bar{display:flex;align-items:center;gap:2mm;height:4mm}
+#printArea .bar .tr{flex:1;height:2.4mm;background:#F1EFF4;border-radius:2mm;overflow:hidden}
+#printArea .bar .fl{display:block;height:100%;border-radius:2mm}
+#printArea .bar .v{width:7mm;text-align:right;font-size:8pt;font-weight:800;font-variant-numeric:tabular-nums}
+#printArea .cmp .df{width:14mm;text-align:center;font-weight:900;font-size:10pt;font-variant-numeric:tabular-nums}
+#printArea .cmp .jd{width:22mm;text-align:right}
+#printArea .chip{display:inline-block;font-size:7.4pt;font-weight:800;border-radius:5mm;padding:.6mm 2.4mm}
+#printArea .chip.same{background:var(--ok-t);color:var(--ok)}
+#printArea .chip.mid{background:var(--mid-t);color:var(--mid)}
+#printArea .chip.far{background:var(--far-t);color:var(--far)}
+#printArea .base{display:grid;grid-template-columns:1fr 1fr;gap:4mm}
+#printArea .box{background:var(--soft);border-radius:3mm;padding:4.5mm 5mm}
+#printArea .box h4{font-size:10pt;font-weight:900;margin-bottom:1.2mm}
+#printArea .box p{font-size:8.6pt;color:var(--sub)}
+#printArea .box .sc{font-size:7.6pt;color:var(--mute);font-weight:700;margin-bottom:1mm}
+#printArea .cf{border:.3mm solid var(--line);border-radius:3mm;padding:5mm 5.5mm;margin-bottom:4.5mm}
+#printArea .cf-h{display:flex;align-items:center;gap:3mm;margin-bottom:3mm}
+#printArea .cf-h .n{width:7mm;height:7mm;border-radius:50%;background:var(--ink);color:#fff;font-weight:900;font-size:9pt;display:grid;place-items:center;flex:none}
+#printArea .cf-h h3{font-size:12pt;font-weight:900;letter-spacing:-.02em}
+#printArea .cf-h .chip{margin-left:auto}
+#printArea .two{display:grid;grid-template-columns:1fr 1fr;gap:3mm;margin-bottom:3mm}
+#printArea .two div{border-radius:2mm;padding:3mm 3.5mm;font-size:8.6pt;color:var(--sub)}
+#printArea .two .a{background:var(--a-t)}
+#printArea .two .b{background:var(--b-t)}
+#printArea .two b{display:block;font-size:7.8pt;margin-bottom:.6mm}
+#printArea .two .a b{color:var(--a)}
+#printArea .two .b b{color:var(--b)}
+#printArea .kv{display:grid;grid-template-columns:20mm 1fr;gap:1.6mm 3mm;font-size:8.8pt}
+#printArea .kv dt{font-weight:900;font-size:8pt;color:var(--mute);padding-top:.3mm}
+#printArea .kv dd{color:var(--ink)}
+#printArea .kv dt.s{color:var(--a)}
+#printArea .rt{width:100%;border-collapse:collapse;font-size:8.5pt}
+#printArea .rt th{font-size:7.4pt;color:var(--mute);font-weight:700;text-align:left;padding:0 3mm 2mm 0;border-bottom:.3mm solid var(--ink)}
+#printArea .rt td{padding:3mm 3mm 3mm 0;border-bottom:.2mm solid var(--line);vertical-align:top;color:var(--sub)}
+#printArea .rt td:first-child{font-weight:900;color:var(--ink);width:30mm}
+#printArea .rt td b{color:var(--ink)}
+#printArea .rt .pri{display:inline-grid;place-items:center;width:5mm;height:5mm;border-radius:50%;background:var(--a);color:#fff;font-size:7pt;margin-right:2mm;vertical-align:.2mm}
+#printArea .plan{display:grid;grid-template-columns:repeat(4,1fr);gap:3mm}
+#printArea .wk{border-top:1mm solid var(--a);background:var(--soft);border-radius:0 0 2.5mm 2.5mm;padding:3.5mm 3.5mm 4mm}
+#printArea .wk:last-child{border-color:var(--b)}
+#printArea .wk .w{font-size:7.4pt;font-weight:900;letter-spacing:.1em;color:var(--mute)}
+#printArea .wk h4{font-size:9.6pt;font-weight:900;margin:1mm 0}
+#printArea .wk p{font-size:8pt;color:var(--sub)}
+#printArea .chk{list-style:none}
+#printArea .chk li{display:flex;gap:3mm;align-items:flex-start;padding:2.8mm 0;border-bottom:.2mm solid var(--line);font-size:9pt}
+#printArea .chk .bx{width:4mm;height:4mm;border:.35mm solid var(--ink);border-radius:.8mm;flex:none;margin-top:.6mm}
+#printArea .qs{counter-reset:q}
+#printArea .qs .q{display:grid;grid-template-columns:9mm 1fr;padding:3mm 0 0;font-size:9.4pt;font-weight:700}
+#printArea .qs .q span:first-child{font-weight:900;color:var(--a)}
+#printArea .lines{margin:2mm 0 2mm 9mm}
+#printArea .lines i{display:block;height:7mm;border-bottom:.2mm dashed #CFCAD8}
+#printArea .sign{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5mm;margin-top:4mm;font-size:8pt;color:var(--mute)}
+#printArea .sign div{border-bottom:.3mm solid var(--ink);padding-bottom:6mm}
+#printArea .disc{font-size:7.4pt;color:var(--mute);margin-top:4mm;line-height:1.6}
+@media print{
+  body.a4{background:#fff}
+  body.a4 nav,body.a4 #app{display:none!important}
+  body.a4 #printArea{display:block}
+  #printArea .page{page:a4sheet;margin:0;break-after:page;box-shadow:none}
+  #printArea .page:last-child{break-after:auto}
+}
+#printArea .eyebrow{display:block;background:none;padding:0;border-radius:0;margin:0}
+#printArea .q{border:0;gap:0}
+#printArea .legend{margin-top:0}
+#printArea .bar{margin:0}
+#printArea .pf{width:100%;border-collapse:collapse}
+#printArea .pf th{font-size:7.4pt;color:var(--mute);font-weight:700;text-align:left;padding:0 0 2mm;border-bottom:.3mm solid var(--ink)}
+#printArea .pf td{padding:2.6mm 0;border-bottom:.2mm solid var(--line);vertical-align:top}
+#printArea .pf .lb{width:36mm;font-weight:800;font-size:9pt}
+#printArea .pf .bars{width:52mm;padding-right:5mm;padding-top:3mm}
+#printArea .pf .lv{width:16mm}
+#printArea .pf .it{font-size:8.4pt;color:var(--sub)}
+#printArea .lvc{display:inline-block;font-size:7.4pt;font-weight:800;border-radius:5mm;padding:.6mm 2.4mm}
+#printArea .lvc.hi{background:var(--a-t);color:var(--far)}#printArea .lvc.mid{background:#F1EFF4;color:var(--sub)}#printArea .lvc.lo{background:var(--b-t);color:var(--b)}
+#printArea .ptc{display:flex;gap:6mm;align-items:center;border:.3mm solid var(--line);border-radius:3mm;padding:6mm;margin:6mm 0 7mm}
+#printArea .ptc .em{font-size:28pt;width:20mm;height:20mm;border-radius:4mm;display:grid;place-items:center;flex:none}
+#printArea .ptc .nm{font-size:8pt;font-weight:800;letter-spacing:.06em}
+#printArea .ptc .tn{font-size:18pt;font-weight:900;letter-spacing:-.02em;line-height:1.3}
+#printArea .ptc .tl{font-size:9pt;color:var(--sub)}
+#printArea .rx{border:.3mm solid var(--line);border-radius:3mm;padding:5mm 5.5mm;margin-bottom:4mm}
+#printArea .rx h3{font-size:11.5pt;font-weight:900;display:flex;align-items:center;gap:3mm;margin-bottom:1.5mm}
+#printArea .rx h3 .n{width:6.5mm;height:6.5mm;border-radius:50%;background:var(--ink);color:#fff;font-size:8.5pt;display:grid;place-items:center}
+#printArea .rx h3 .lvc{margin-left:auto}
+#printArea .rx p{font-size:8.8pt;color:var(--sub)}
+#printArea .rx .tip{margin-top:2.5mm;padding-top:2.5mm;border-top:.2mm dashed var(--line);font-size:8.8pt;color:var(--ink)}
+#printArea .rx .tip b{color:var(--a);margin-right:2mm}
+
 @media print{nav,.no-print{display:none!important}body{background:#fff}.card{box-shadow:none;border:1px solid #eee;margin-bottom:12px}.dom,.ins,.room-row,.q,.chk li,.plan li,.pair,.sum,.sheet-h,.hero{break-inside:avoid}h2{break-after:avoid}.hero{-webkit-print-color-adjust:exact;print-color-adjust:exact}.wrap{padding:0}}
 </style>
 <script src="/skopos-track.js" defer></script>
 </head>
 <body>
 <nav><a class="logo" href="index.html">SKO<span>POS</span></a><a class="nav-r" href="mypage.html">마이페이지</a></nav>
+<div id="printArea" aria-hidden="true"></div>
 <div class="wrap" id="app"><div class="loading">불러오는 중...</div></div>
 
 <script>
@@ -251,7 +394,6 @@ function setDoc(doc){
   try{ history.replaceState({},'',location.pathname+'#'+doc); }catch(e){}
   window.scrollTo({top:0,behavior:'smooth'});
 }
-function printDoc(doc){ setDoc(doc); setTimeout(()=>window.print(), 250); }
 function setPerson(w){ personWho = w; document.getElementById('personalDoc').innerHTML = personalHTML(w); }
 
 function personalHTML(w){
@@ -380,6 +522,132 @@ function coupleHTML(){
   <div class="btn-row no-print"><button class="btn btn-p" onclick="printDoc('couple')">커플 솔루션 결과지 PDF 저장</button><button class="btn btn-s" onclick="setDoc('personal')">개인 결과지 보기</button></div>`;
 }
 
+// ── A4 출력용 결과지 (PDF 저장 시 사용) ──
+const A4_COPY = '© SKOPOS · SDTI 검사 문항·해석 체계와 검사 엔진은 한국저작권위원회에 정식 등록되어 법적으로 보호받고 있습니다';
+function a4Page(n, total, docName, docNo, who, body){
+  return `<section class="page"><div class="hd"><span class="brand">SKO<i>POS</i></span><span class="dn">${docName}</span><span>${esc(docNo)} · 발급일 ${today()}</span></div>${body}<div class="ft"><span>${who}</span><span>${A4_COPY}</span><span>${n} / ${total}</span></div></section>`;
+}
+function a4Bar(v,c){ return `<div class="bar"><span class="tr"><span class="fl" style="width:${v}%;background:${c}"></span></span><span class="v">${v}</span></div>`; }
+
+function a4Couple(){
+  const r=RPT, A=r.A, B=r.B, an=esc(r.an), bn=esc(r.bn), ta=r.ta, tb=r.tb;
+  const rows=SECS.map(s=>{const a=Number(A.scores?.[s.key]||0),b=Number(B.scores?.[s.key]||0);return{s,a,b,d:Math.abs(a-b)};});
+  const byKey={}; rows.forEach(x=>byKey[x.s.key]=x);
+  const diffs=rows.slice().sort((x,y)=>y.d-x.d);
+  const topD=diffs.filter(x=>x.d>=9).slice(0,3);
+  const common=rows.filter(x=>x.a>=65&&x.b>=65).sort((x,y)=>(y.a+y.b)-(x.a+x.b)).slice(0,2);
+  const baseList=common.length?common:rows.slice().sort((x,y)=>x.d-y.d).slice(0,2);
+  const avg=Math.round(rows.reduce((s,x)=>s+x.d,0)/rows.length);
+  const cnt={same:0,mid:0,far:0}; rows.forEach(x=>cnt[band(x.d)[0]]++);
+  const who=x=>x.a>=x.b?[an,bn]:[bn,an];
+  const pairLine=A.type===B.type?`두 분은 같은 <b>${esc(ta.n)}</b>이에요. 원하는 집의 방향이 같아 결정이 빠른 대신, 둘 다 약한 부분은 집에서도 비어 있기 쉬워요.`
+    :(ta.g&&ta.g===tb.g)?`두 분은 같은 <b>${esc(GROUP[ta.g])}</b> 계열 안에서 결이 조금 다른 조합이에요. 큰 방향은 맞고 디테일에서 취향이 갈려요.`
+    :`<b>${esc(GROUP[ta.g]||'')}</b> 계열과 <b>${esc(GROUP[tb.g]||'')}</b> 계열의 조합이에요. 집에서 채우고 싶은 것이 서로 달라, 미리 역할을 나누면 오히려 서로 부족한 부분을 채워 줄 수 있어요.`;
+  const rooms=ROOMS.map(rm=>{const ds=rm.d.map(k=>byKey[k]);return{rm,base:ds.slice().sort((x,y)=>(y.a+y.b)-(x.a+x.b))[0],gap:ds.slice().sort((x,y)=>y.d-x.d)[0]};}).sort((x,y)=>y.gap.d-x.gap.d);
+  const docNo='SKOPOS-CP-'+r.code+'-'+ymd(), W=`${an}님 × ${bn}님`, T=5, N='커플 솔루션 결과지';
+  const g=k=>esc(GROUP[k]||'');
+  let h='';
+  h+=a4Page(1,T,N,docNo,W,`
+   <div class="eyebrow">COUPLE SPACE SOLUTION</div>
+   <h1 class="title">${an}님<span class="x">×</span>${bn}님의<br>공간 솔루션</h1>
+   <p class="lead">${pairLine}</p>
+   <div class="duo">
+    <div class="pc a"><div class="nm">${an}</div><div class="em">${ta.e}</div><div class="tn">${esc(ta.n)}</div><div class="tl">${esc(ta.l)}</div>${ta.g?`<span class="gp">${g(ta.g)} 계열</span>`:''}</div>
+    <div class="pc b"><div class="nm">${bn}</div><div class="em">${tb.e}</div><div class="tn">${esc(tb.n)}</div><div class="tl">${esc(tb.l)}</div>${tb.g?`<span class="gp">${g(tb.g)} 계열</span>`:''}</div>
+   </div>
+   <div class="sec"><div class="sec-t"><span class="no">SUMMARY</span><h2>한눈에 보는 요약</h2></div>
+    <div class="kpi"><div><b>${avg}점</b><span>8개 영역 평균 차이</span></div><div class="g"><b>${cnt.same}</b><span>비슷해요</span></div><div class="o"><b>${cnt.mid}</b><span>조금 달라요</span></div><div class="p"><b>${cnt.far}</b><span>많이 달라요</span></div></div>
+    <p class="note">영역별 점수 차이 8점 이하는 비슷해요, 9~17점은 조금 달라요, 18점 이상은 많이 달라요로 구분했어요. 점수는 우열이 아니라 욕구의 세기를 뜻해요.</p>
+   </div>
+   <div class="how">
+    <div><div class="n">STEP 1</div><h4>나란히 보기</h4><p>2쪽에서 8개 영역을 비교하고 공통 기반을 확인해요.</p></div>
+    <div><div class="n">STEP 2</div><h4>차이 이해하기</h4><p>3쪽에서 부딪히기 쉬운 영역과 솔루션을 함께 읽어요.</p></div>
+    <div><div class="n">STEP 3</div><h4>함께 정하기</h4><p>4~5쪽의 공간별 플랜과 체크리스트로 실천해요.</p></div>
+   </div>`);
+  h+=a4Page(2,T,N,docNo,W,`
+   <div class="sec"><div class="sec-t"><span class="no">01</span><h2>8개 영역 나란히 보기</h2><p>차이가 큰 영역일수록 미리 대화가 필요해요</p></div>
+    <div class="legend"><span><i style="background:var(--a)"></i>${an}</span><span><i style="background:var(--b)"></i>${bn}</span></div>
+    <table class="cmp"><thead><tr><th>영역</th><th>점수</th><th style="text-align:center">차이</th><th style="text-align:right">판정</th></tr></thead><tbody>
+    ${rows.map(x=>{const[c,t]=band(x.d);return`<tr><td class="lb">${esc(x.s.label)}</td><td class="bars">${a4Bar(x.a,'var(--a)')}${a4Bar(x.b,'var(--b)')}</td><td class="df">${x.d}</td><td class="jd"><span class="chip ${c}">${t}</span></td></tr>`;}).join('')}
+    </tbody></table>
+   </div>
+   <div class="sec"><div class="sec-t"><span class="no">02</span><h2>우리 집의 공통 기반</h2><p>결정이 쉬운 출발점</p></div>
+    <div class="base" style="${baseList.length<2?'grid-template-columns:1fr':''}">${baseList.map(x=>`<div class="box"><div class="sc">${an} ${x.a} · ${bn} ${x.b}</div><h4>${esc(x.s.label)}</h4><p>${common.length?'두 분 모두 이 욕구가 강해요.':'두 분의 점수가 가장 가까운 영역이에요.'} ${esc(DOM[x.s.key].room)}부터 함께 고르면 합의가 빨라요.</p></div>`).join('')}</div>
+   </div>`);
+  h+=a4Page(3,T,N,docNo,W,`
+   <div class="sec-t"><span class="no">03</span><h2>부딪히기 쉬운 영역과 솔루션</h2><p>누가 맞고 틀린 게 아니라, 바라는 것이 다른 지점이에요</p></div>
+   ${topD.length?topD.map((x,i)=>{const[hn,ln]=who(x);const aHi=x.a>=x.b;const d=DOM[x.s.key];return`<div class="cf"><div class="cf-h"><span class="n">${i+1}</span><h3>${esc(x.s.label)}</h3><span class="chip far">차이 ${x.d}점</span></div>
+    <div class="two"><div class="a"><b>${an} ${x.a}점</b>${esc(aHi?d.hi:d.lo)}.</div><div class="b"><b>${bn} ${x.b}점</b>${esc(aHi?d.lo:d.hi)}.</div></div>
+    <dl class="kv"><dt>이런 장면</dt><dd>${esc(d.scene)}.</dd><dt class="s">솔루션</dt><dd>${esc(d.tip)}.</dd><dt>역할 나누기</dt><dd>이 욕구가 더 강한 ${hn}님이 기준안을 먼저 내고, ${ln}님은 예산과 관리 측면에서 조정해 주세요.</dd></dl></div>`;}).join('')
+   :`<div class="box"><h4>큰 차이가 없어요</h4><p>8개 영역 모두 차이가 크지 않은 조합이에요. 대신 두 분 다 약한 영역은 집에서도 놓치기 쉬우니 4쪽의 공간별 플랜을 참고해 주세요.</p></div>`}`);
+  h+=a4Page(4,T,N,docNo,W,`
+   <div class="sec"><div class="sec-t"><span class="no">04</span><h2>공간별 솔루션 플랜</h2><p>조율이 더 필요한 공간부터</p></div>
+    <table class="rt"><thead><tr><th>공간</th><th>함께 원하는 것</th><th>조율 포인트</th></tr></thead><tbody>
+    ${rooms.map((x,i)=>{const[hn]=who(x.gap);return`<tr><td><span class="pri">${i+1}</span>${esc(x.rm.n)}</td><td><b>${esc(x.base.s.label)}</b> (${x.base.a}·${x.base.b})<br>${esc(PT[x.base.s.key])}.</td><td>${x.gap.d>=9?`<b>${esc(x.gap.s.label)} 차이 ${x.gap.d}</b><br>${esc(DOM[x.gap.s.key].tip)}. 기준안은 ${hn}님이 먼저.`:'큰 이견이 없어요. 함께 원하는 것에 집중하세요.'}</td></tr>`;}).join('')}
+    </tbody></table>
+   </div>
+   <div class="sec" style="margin-bottom:0"><div class="sec-t"><span class="no">05</span><h2>30일 실천 플랜</h2></div>
+    <div class="plan">${rooms.slice(0,3).map((x,i)=>`<div class="wk"><div class="w">WEEK ${i+1}</div><h4>${esc(x.rm.n)}</h4><p>${x.gap.d>=9?esc(x.gap.s.label)+' 기준을 정하고 작은 변화 하나를 바로 실행해요.':esc(x.base.s.label)+'을 살리는 소품이나 배치 하나를 함께 골라요.'}</p></div>`).join('')}
+    <div class="wk"><div class="w">WEEK 4</div><h4>함께 점검</h4><p>바꾼 공간에서 편해진 점과 아직 불편한 점을 하나씩 이야기해요.</p></div></div>
+   </div>`);
+  h+=a4Page(5,T,N,docNo,W,`
+   <div class="sec"><div class="sec-t"><span class="no">06</span><h2>합의 체크리스트</h2><p>정한 것을 하나씩 체크해 보세요</p></div>
+    <ul class="chk">${(topD.length?topD:diffs.slice(0,2)).map(x=>`<li><span class="bx"></span>${esc(DOM[x.s.key].room)}에서 지킬 기준 한 가지를 함께 정했어요</li>`).join('')}
+    <li><span class="bx"></span>각자 "내 취향 존"을 한 곳씩 정했어요</li><li><span class="bx"></span>혼자 쉬고 싶을 때 쓰는 신호를 정했어요</li><li><span class="bx"></span>한 달 뒤 다시 이야기할 날짜를 정했어요</li></ul>
+   </div>
+   <div class="sec"><div class="sec-t"><span class="no">07</span><h2>함께 나눠 볼 대화</h2><p>답을 적어 두면 한 달 뒤 비교하기 좋아요</p></div>
+    <div class="qs">
+     <div class="q"><span>Q1</span><span>${esc((topD[0]||diffs[0]).s.label)} 영역에서, 지금 집에서 가장 불편했던 순간은 언제였나요?</span></div><div class="lines"><i></i><i></i></div>
+     <div class="q"><span>Q2</span><span>각자 "이것만은 꼭 지키고 싶은 공간 한 곳"을 고른다면 어디인가요?</span></div><div class="lines"><i></i><i></i></div>
+     <div class="q"><span>Q3</span><span>다음 한 달 안에 둘이 함께 바꿔 볼 수 있는 가장 작은 변화는 무엇일까요?</span></div><div class="lines"><i></i><i></i></div>
+    </div>
+   </div>
+   <div class="sign"><div>다시 이야기할 날짜</div><div>${an}</div><div>${bn}</div></div>
+   <p class="disc">SDTI 결과는 공간 욕구의 경향을 보여 주는 참고 자료이며, 두 분의 대화를 위한 출발점으로 활용해 주세요.</p>`);
+  return h;
+}
+
+function a4Personal(w){
+  const r=RPT, P=w==='me'?r.A:r.B, O=w==='me'?r.B:r.A;
+  const pn=esc(w==='me'?r.an:r.bn), on=esc(w==='me'?r.bn:r.an), t=w==='me'?r.ta:r.tb;
+  const col = w==='me'?'var(--a)':'var(--b)', tint = w==='me'?'var(--a-t)':'var(--b-t)';
+  const seq=(r.role==='owner')===(w==='me')?'1':'2';
+  const docNo='SKOPOS-PR-'+r.code+'-'+seq, N='개인 결과지', W=`${pn}님`, T=2;
+  const rows=SECS.map(s=>({s,v:Number(P.scores?.[s.key]||0),o:Number(O.scores?.[s.key]||0)}));
+  const top3=rows.slice().sort((x,y)=>y.v-x.v).slice(0,3);
+  const low=rows.slice().sort((x,y)=>x.v-y.v)[0];
+  const far=rows.slice().sort((x,y)=>Math.abs(y.v-y.o)-Math.abs(x.v-x.o))[0];
+  let h='';
+  h+=a4Page(1,T,N,docNo,W,`
+   <div class="eyebrow">PERSONAL SPACE PROFILE</div>
+   <h1 class="title" style="font-size:22pt">${pn}님의 공간 욕구 프로파일</h1>
+   <div class="ptc" style="background:linear-gradient(180deg,${tint},#fff 75%)"><div class="em" style="background:#fff">${t.e}</div><div><div class="nm" style="color:${col}">공간 욕구 유형</div><div class="tn">${esc(t.n)}</div><div class="tl">${esc(t.l)}${t.g?` · ${esc(GROUP[t.g])} 계열`:''}</div></div></div>
+   <div class="sec" style="margin-bottom:0"><div class="sec-t"><span class="no">01</span><h2>8개 영역 프로파일</h2><p>강함 70 이상 · 보통 50~69 · 약함 50 미만</p></div>
+    <table class="pf"><thead><tr><th>영역</th><th>점수</th><th>수준</th><th>해석</th></tr></thead><tbody>
+    ${rows.map(x=>{const[c,lb]=level(x.v);const txt=x.v>=60?DOM[x.s.key].hi:x.v<50?DOM[x.s.key].lo:'상황에 따라 유연하게 반응하는 편이에요';return`<tr><td class="lb">${esc(x.s.label)}</td><td class="bars">${a4Bar(x.v,col)}</td><td class="lv"><span class="lvc ${c}">${lb}</span></td><td class="it">${esc(txt)}.</td></tr>`;}).join('')}
+    </tbody></table>
+   </div>`);
+  h+=a4Page(2,T,N,docNo,W,`
+   <div class="sec"><div class="sec-t"><span class="no">02</span><h2>핵심 욕구 TOP 3와 공간 처방</h2><p>욕구가 강한 영역부터 채우면 만족이 빠르게 올라가요</p></div>
+    ${top3.map((x,i)=>`<div class="rx"><h3><span class="n">${i+1}</span>${esc(x.s.label)}<span class="lvc hi">${x.v}점</span></h3><p>${esc(DOM[x.s.key].hi)}.</p><div class="tip"><b>처방</b>${esc(PT[x.s.key])}.</div></div>`).join('')}
+   </div>
+   <div class="sec"><div class="sec-t"><span class="no">03</span><h2>상대적으로 덜 중요한 영역</h2></div>
+    <div class="box"><h4>${esc(low.s.label)} · ${low.v}점</h4><p>이 영역은 예산과 에너지를 아껴도 괜찮은 곳이에요. 다만 함께 사는 분에게는 중요할 수 있어요.</p></div>
+   </div>
+   <div class="sec"><div class="sec-t"><span class="no">04</span><h2>${on}님과 가장 다른 점</h2></div>
+    <div class="box"><h4>${esc(far.s.label)} · ${pn} ${far.v}점 / ${on} ${far.o}점</h4><p>두 분 사이에서 차이가 가장 큰 영역이에요. 어떻게 맞춰 갈지는 커플 솔루션 결과지에 정리했어요.</p></div>
+   </div>
+   <p class="disc" style="margin-top:auto;margin-bottom:4mm">SDTI 결과는 공간 욕구의 경향을 보여 주는 참고 자료예요. 전체 해석과 공간별 추천은 정밀 리포트에서 확인할 수 있어요.</p>`);
+  return h;
+}
+function printDoc(doc){
+  setDoc(doc);
+  const pa=document.getElementById('printArea');
+  if(pa && RPT){ pa.innerHTML = doc==='couple' ? a4Couple() : a4Personal(personWho); document.body.classList.add('a4'); }
+  setTimeout(()=>window.print(), 300);
+}
+window.addEventListener('afterprint',()=>{ document.body.classList.remove('a4'); });
+
 function viewReport(r){
   const A=r.me, B=r.partner, c=r.couple||{};
   RPT = { A, B, an:A.name||'나', bn:B.name||'파트너',
@@ -392,7 +660,7 @@ function viewReport(r){
   </div>
   <section class="doc" data-doc="personal" id="personalDoc">${personalHTML('me')}</section>
   <section class="doc" data-doc="couple" id="coupleDoc">${coupleHTML()}</section>
-  <p class="foot">SDTI 결과는 경향을 보여 주는 참고 자료예요. 두 분의 대화를 위한 출발점으로 활용해 주세요.<br>© SKOPOS · 검사 문항과 결과 콘텐츠는 한국저작권위원회에 저작권 등록된 스코포스의 창작물입니다</p>`;
+  <p class="foot">SDTI 결과는 경향을 보여 주는 참고 자료예요. 두 분의 대화를 위한 출발점으로 활용해 주세요.<br>© SKOPOS · SDTI 검사 문항·해석 체계와 검사 엔진은 한국저작권위원회에 정식 등록되어 법적으로 보호받고 있습니다</p>`;
   setDoc(location.hash==='#couple'?'couple':'personal');
   try{ window.SkoposTrack && SkoposTrack.event('couple_report_view',{}); }catch(e){}
 }
