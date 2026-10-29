@@ -511,9 +511,10 @@ nav.scrolled{background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border-
 .step-desc{font-size:.88rem;color:var(--gray);line-height:1.75}
 
 /* ── TIERS ── */
-.tier-wrap{display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:880px;margin:0 auto}
-.tier{border-radius:24px;padding:38px;transition:transform .25s}
-.tier.premium{padding:56px 38px 38px}
+.tier-wrap{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;max-width:1180px;margin:0 auto;align-items:stretch}
+.tier{display:flex;flex-direction:column}.tier .tier-feats{flex:1}.tier .tier-tag{align-self:flex-start}
+.tier{border-radius:24px;padding:38px 32px 34px;transition:transform .25s}
+.tier.premium,.tier.couple{padding:62px 32px 34px}
 .tier:hover{transform:translateY(-4px)}
 .tier.free{background:var(--white);box-shadow:var(--sh);border:1.5px solid rgba(0,0,0,.05)}
 .tier.premium{background:linear-gradient(145deg,#12122A,#1E1040);box-shadow:var(--sh-lg);position:relative;overflow:hidden}
@@ -543,6 +544,17 @@ nav.scrolled{background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border-
 .tier.free .tier-btn:hover{box-shadow:0 10px 32px rgba(220,20,120,.45);transform:translateY(-2px)}
 .tier.premium .tier-btn{background:linear-gradient(135deg,var(--orange),#FFB74D);color:var(--dark);box-shadow:0 6px 20px rgba(240,160,20,.35)}
 .tier.premium .tier-btn:hover{box-shadow:0 10px 32px rgba(240,160,20,.5);transform:translateY(-2px)}
+/* 커플 진단 카드 */
+.tier.couple{background:linear-gradient(160deg,#FFF5FA,#FFFFFF 55%);border:1.5px solid rgba(220,20,120,.28);box-shadow:var(--sh);position:relative;overflow:hidden}
+.tier.couple::before{content:'';position:absolute;top:-70px;right:-70px;width:200px;height:200px;border-radius:50%;background:var(--pink);opacity:.06}
+.tier.couple .popular{background:linear-gradient(135deg,#7E57C2,#DC1478)}
+.tier.couple .tier-tag{background:var(--pink-lt);color:var(--pink)}
+.tier.couple .tier-feat{color:var(--mid)}
+.tier.couple .tier-feat-ic{background:var(--pink-lt);color:var(--pink)}
+.tier.couple .tier-btn{background:linear-gradient(135deg,var(--pink),#FF6B9D);color:#fff;box-shadow:0 6px 20px rgba(220,20,120,.3)}
+.tier.couple .tier-btn:hover{box-shadow:0 10px 32px rgba(220,20,120,.45);transform:translateY(-2px)}
+.tier-was{font-size:.95rem;font-weight:700;color:var(--gray);text-decoration:line-through;margin-left:8px;vertical-align:middle}
+@media(max-width:1024px){.tier-wrap{grid-template-columns:1fr;max-width:520px}}
 .popular{position:absolute;top:20px;left:20px;right:20px;background:linear-gradient(135deg,var(--pink),#FF6B9D);color:#fff;font-size:.7rem;font-weight:800;padding:6px 12px;border-radius:50px;z-index:1;text-align:center;letter-spacing:-.005em;box-shadow:0 4px 14px rgba(220,20,120,.35)}
 
 /* ── TYPES ── */
@@ -1128,7 +1140,23 @@ em{font-style:normal}
           <div class="tier-feat"><div class="tier-feat-ic">✦</div><span>PDF 리포트 이메일 발송</span></div>
         </div>
         <a class="tier-btn" href="skopos_premium_quiz.html">정밀 진단 ₩29,900 →</a>
-        <a class="tier-couple" href="payment.html?plan=couple"><b>커플 패키지 ₩49,900</b><span>2인 정밀 검사 + 두 사람 비교 리포트 →</span></a>
+      </div>
+      <div class="tier couple">
+        <div class="popular">♥ 둘이 함께하면 ₩9,900 할인</div>
+        <div class="tier-tag">커플</div>
+        <div class="tier-name">커플 진단</div>
+        <div class="tier-price"><sub>₩</sub>49,900<span class="tier-was">₩59,800</span></div>
+        <div class="tier-note">2인 정밀 진단 · 1인당 ₩24,950</div>
+        <div class="tier-divider"></div>
+        <div class="tier-feats">
+          <div class="tier-feat"><div class="tier-feat-ic">♥</div><span>두 사람 모두 정밀 진단 (각 144문항)</span></div>
+          <div class="tier-feat"><div class="tier-feat-ic">♥</div><span>초대 링크로 파트너 연결</span></div>
+          <div class="tier-feat"><div class="tier-feat-ic">♥</div><span>8개 영역 두 사람 비교 그래프</span></div>
+          <div class="tier-feat"><div class="tier-feat-ic">♥</div><span>가장 많이 다른 영역 TOP 3 + 갈등 장면·팁</span></div>
+          <div class="tier-feat"><div class="tier-feat-ic">♥</div><span>먼저 합의할 공간 · 대화 질문 3가지</span></div>
+          <div class="tier-feat"><div class="tier-feat-ic">♥</div><span>커플 리포트 PDF 저장</span></div>
+        </div>
+        <a class="tier-btn" href="payment.html?plan=couple">커플 진단 ₩49,900 →</a>
       </div>
     </div>
   </div>
