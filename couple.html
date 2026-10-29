@@ -7,7 +7,7 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/manifest.json">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>커플 공간 리포트 | SKOPOS 스코포스</title>
+<title>커플 결과지 | SKOPOS 스코포스</title>
 <meta name="robots" content="noindex">
 <meta name="description" content="함께 사는 집, 서로 원하는 공간은 다를 수 있어요. 두 사람 모두 SDTI 정밀 검사를 마치면 8개 영역을 나란히 비교하고, 먼저 합의할 공간과 대화 질문을 알려드려요.">
 <meta property="og:type" content="website">
@@ -92,6 +92,39 @@ h2{font-size:1.15rem;font-weight:900;letter-spacing:-.02em;margin-bottom:6px}
 .foot{text-align:center;font-size:.75rem;color:var(--gray);margin-top:20px;line-height:1.7}
 .loading{text-align:center;padding:60px 0;color:var(--gray)}
 @media (max-width:520px){.pair,.rooms{grid-template-columns:1fr}h1{font-size:1.35rem}}
+/* 결과지 2부 발급 */
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;position:sticky;top:66px;z-index:20}
+.tab{border:1.5px solid var(--line);background:#fff;border-radius:16px;padding:12px 10px;font-family:inherit;font-weight:900;font-size:.95rem;color:var(--mid);cursor:pointer;text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.04)}
+.tab small{display:block;font-size:.68rem;font-weight:800;color:var(--gray);letter-spacing:.06em;margin-bottom:2px}
+.tab.on{border-color:var(--pink);color:var(--dark);background:#FDF0F6}.tab.on small{color:var(--pink)}
+.tab:focus-visible,.sw:focus-visible{outline:2px solid var(--pink);outline-offset:2px}
+.meta{display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;font-size:.72rem;font-weight:700;color:var(--gray);border-bottom:1px dashed var(--line);padding-bottom:10px;margin-bottom:14px;letter-spacing:.02em}
+.meta span:first-child{color:var(--pink);font-weight:900}
+.meta.light{color:#BFB4D6;border-color:rgba(255,255,255,.18)}.meta.light span:first-child{color:#FF8CC6}
+.who-sw{display:inline-flex;background:#F1EFF6;border-radius:50px;padding:4px;gap:4px;margin-bottom:16px}
+.sw{border:0;background:none;border-radius:50px;padding:7px 14px;font-family:inherit;font-weight:800;font-size:.82rem;color:var(--mid);cursor:pointer}
+.sw.on{background:#fff;color:var(--dark);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.ptype{display:flex;gap:16px;align-items:center}.ptype .em{font-size:2.6rem;width:64px;height:64px;border-radius:18px;background:#FBF6EC;display:grid;place-items:center;flex:none}
+.lv{font-size:.7rem;font-weight:800;border-radius:50px;padding:3px 9px}.lv.hi{background:#FDE7F1;color:var(--pink2)}.lv.mid{background:#F1EFF6;color:var(--mid)}.lv.lo{background:#EEF4FB;color:#3B6FB6}
+.tr1{height:10px;background:#F1EFF6;border-radius:6px;overflow:hidden}.tr1 span{display:block;height:100%;border-radius:6px}
+.dt{font-size:.84rem;color:var(--mid);margin-top:6px}
+.ins.soft{background:#F6F5FA}
+.link-card{border:1.5px solid rgba(233,30,140,.25)}
+.sum{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.sum div{background:#F7F6FB;border-radius:14px;padding:12px 8px;text-align:center}
+.sum b{display:block;font-size:1.4rem;font-weight:900}.sum span{font-size:.72rem;color:var(--gray);font-weight:700}
+.sum b.g{color:#2E7D32}.sum b.o{color:#E65100}.sum b.p{color:var(--pink2)}
+.room-row{display:grid;grid-template-columns:150px 1fr;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}.room-row:last-child{border:0}
+.rn{font-weight:900;font-size:.95rem;display:flex;gap:8px;align-items:flex-start}.rn span{width:22px;height:22px;border-radius:50%;background:var(--pink);color:#fff;font-size:.72rem;display:grid;place-items:center;flex:none;margin-top:1px}
+.rb p{font-size:.86rem;color:var(--mid);margin-bottom:6px}.rb p:last-child{margin:0}.rb b{color:var(--dark)}
+.plan{list-style:none;counter-reset:none;margin-top:6px}
+.plan li{display:flex;flex-direction:column;padding:12px 0 12px 16px;border-left:3px solid #F3D3E3;margin-left:6px;position:relative}
+.plan li::before{content:"";position:absolute;left:-7px;top:16px;width:11px;height:11px;border-radius:50%;background:var(--pink)}
+.plan b{font-size:.92rem}.plan span{font-size:.85rem;color:var(--mid)}
+.chk{list-style:none;margin-top:8px}.chk li{padding:10px 0;border-bottom:1px solid var(--line);font-size:.9rem}.chk li:last-child{border:0}
+.chk input{width:18px;height:18px;accent-color:var(--pink);vertical-align:-3px;margin-right:6px}
+@media (max-width:520px){.sum{grid-template-columns:repeat(2,1fr)}.room-row{grid-template-columns:1fr;gap:6px}.tabs{top:62px}.ptype .em{width:54px;height:54px;font-size:2.1rem}}
+@media print{.tabs,.who-sw{display:none!important}.doc[hidden]{display:none!important}.sum div,.lv,.chip,.tr1 span,.fl,.room-row .rn span,.plan li::before{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
 @media print{nav,.no-print{display:none!important}body{background:#fff}.card{box-shadow:none;border:1px solid #eee;break-inside:avoid}.hero{-webkit-print-color-adjust:exact;print-color-adjust:exact}.wrap{padding:0}}
 </style>
 <script src="/skopos-track.js" defer></script>
@@ -185,24 +218,105 @@ function viewProgress(c, isNew){
 
 function band(d){ return d<=8?['same','비슷해요']:d<=17?['mid','조금 달라요']:['far','많이 달라요']; }
 
-function viewReport(r){
-  const A=r.me, B=r.partner;
-  const an=A.name||'나', bn=B.name||'파트너';
-  const ta=TYPES[A.type]||{n:A.type,e:'🏠',g:'',l:''}, tb=TYPES[B.type]||{n:B.type,e:'🏠',g:'',l:''};
+// 개인 결과지 처방 (욕구가 강한 영역에 대한 집 안 처방)
+const PT = {
+  sensory:'디머·간접 조명과 암막 커튼으로 빛을 단계별로 조절하고, 러그와 패브릭으로 소리를 흡수해 주세요',
+  spatial:'현관·식탁처럼 늘 비워 둘 곳을 정하고, 문 달린 수납으로 물건이 눈에 덜 보이게 해 주세요',
+  objects:'의미 있는 소품은 선반 한 칸이나 벽 한 면에 모아 작은 전시 구역을 만들어 주세요',
+  color:'벽·바닥은 차분한 베이스로 두고 쿠션·커튼·조명 갓에서 좋아하는 색과 질감을 더해 주세요',
+  life:'오래 머무는 자리(식탁, 작업 코너)에 좋은 의자와 조명을 먼저 투자해 주세요',
+  social:'여럿이 앉을 수 있는 거실·식탁 배치와 손님용 여분 좌석을 마련해 두세요',
+  identity:'내 취향이 드러나는 포인트 가구나 작품 하나를 정해 집의 중심에 두세요',
+  restore:'문을 닫을 수 있는 침실이나 1인 체어 자리를 회복 전용 공간으로 지정해 주세요',
+};
+// 공간별 솔루션: 각 공간에 영향을 주는 영역
+const ROOMS = [
+  {n:'거실', d:['social','sensory','objects','identity']},
+  {n:'침실', d:['restore','sensory','color']},
+  {n:'주방·식탁', d:['life','spatial','social']},
+  {n:'현관·수납', d:['spatial','objects']},
+  {n:'개인 코너·작업 공간', d:['identity','restore','life']},
+];
+function level(v){ return v>=70?['hi','강함']:v>=50?['mid','보통']:['lo','약함']; }
+function today(){ const d=new Date(); return d.getFullYear()+'. '+(d.getMonth()+1)+'. '+d.getDate()+'.'; }
+function ymd(){ const d=new Date(); return ''+d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0'); }
+function b64(s){ try{ return btoa(encodeURIComponent(s)); }catch(e){ return ''; } }
+
+let RPT = null;   // 리포트 데이터
+let personWho = 'me';
+
+function setDoc(doc){
+  document.querySelectorAll('.doc').forEach(el=>el.hidden = el.dataset.doc!==doc);
+  document.querySelectorAll('.tab').forEach(el=>{ const on=el.dataset.doc===doc; el.classList.toggle('on',on); el.setAttribute('aria-selected',on?'true':'false'); });
+  try{ history.replaceState({},'',location.pathname+'#'+doc); }catch(e){}
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function printDoc(doc){ setDoc(doc); setTimeout(()=>window.print(), 250); }
+function setPerson(w){ personWho = w; document.getElementById('personalDoc').innerHTML = personalHTML(w); }
+
+function personalHTML(w){
+  const r = RPT, P = w==='me' ? r.A : r.B, O = w==='me' ? r.B : r.A;
+  const pn = w==='me' ? r.an : r.bn, on = w==='me' ? r.bn : r.an;
+  const t = w==='me' ? r.ta : r.tb;
+  const seq = (r.role==='owner') === (w==='me') ? '1' : '2';
+  const docNo = 'SKOPOS-PR-'+r.code+'-'+seq;
+  const rows = SECS.map(s=>({s, v:Number(P.scores?.[s.key]||0), o:Number(O.scores?.[s.key]||0)}));
+  const top3 = rows.slice().sort((x,y)=>y.v-x.v).slice(0,3);
+  const low = rows.slice().sort((x,y)=>x.v-y.v)[0];
+  const far = rows.slice().sort((x,y)=>Math.abs(y.v-y.o)-Math.abs(x.v-x.o))[0];
+  return `
+  <div class="card sheet-h"><div class="meta"><span>개인 결과지</span><span>발급번호 ${esc(docNo)} · 발급일 ${today()}</span></div>
+    <div class="who-sw no-print" role="group" aria-label="결과지 대상">
+      <button class="sw ${w==='me'?'on':''}" onclick="setPerson('me')">${esc(r.an)}님 (나)</button>
+      <button class="sw ${w==='partner'?'on':''}" onclick="setPerson('partner')">${esc(r.bn)}님</button>
+    </div>
+    <div class="ptype"><div class="em">${t.e}</div><div><div class="muted">${esc(pn)}님의 공간 욕구 유형</div><h1>${esc(t.n)}</h1><p class="sub">${esc(t.l)}${t.g?` · ${esc(GROUP[t.g])} 계열`:''}</p></div></div>
+  </div>
+
+  <div class="card"><h2>8개 영역 프로파일</h2><p class="muted">점수는 우열이 아니라 그 욕구가 얼마나 강한지를 뜻해요.</p>
+    ${rows.map(x=>{const [c,lb]=level(x.v); const txt = x.v>=60 ? DOM[x.s.key].hi : x.v<50 ? DOM[x.s.key].lo : '상황에 따라 유연하게 반응하는 편이에요';
+      return `<div class="dom"><div class="dom-h"><span class="dom-n">${esc(x.s.label)}</span><span class="lv ${c}">${lb} ${x.v}</span></div>
+      <div class="tr1"><span style="width:${x.v}%;background:${w==='me'?'var(--a)':'var(--b)'}"></span></div><p class="dt">${esc(txt)}.</p></div>`;}).join('')}
+  </div>
+
+  <div class="card"><h2>핵심 욕구 TOP 3와 공간 처방</h2><p class="muted">욕구가 강한 영역부터 채우면 집에서 느끼는 만족이 가장 빠르게 올라가요.</p>
+    ${top3.map((x,i)=>`<div class="ins"><h3>${i+1}. ${esc(x.s.label)} <span class="lv hi">${x.v}</span></h3><p>${esc(DOM[x.s.key].hi)}.</p><div class="tip"><b>처방</b> ${esc(PT[x.s.key])}.</div></div>`).join('')}
+    <div class="ins soft"><h3>상대적으로 덜 중요한 영역: ${esc(low.s.label)}</h3><p>이 영역은 예산과 에너지를 아껴도 괜찮은 곳이에요. 다만 함께 사는 분에게는 중요할 수 있어요.</p></div>
+  </div>
+
+  <div class="card link-card"><h2>${esc(on)}님과 가장 다른 점</h2>
+    <p class="sub"><b>${esc(far.s.label)}</b>에서 ${esc(pn)}님 ${far.v}점, ${esc(on)}님 ${far.o}점으로 가장 차이가 커요. 어떻게 맞춰 갈지는 커플 솔루션 결과지에 정리했어요.</p>
+    <div class="btn-row no-print"><button class="btn btn-p" onclick="setDoc('couple')">커플 솔루션 결과지 보기</button>
+    ${w==='me'?`<a class="btn btn-s" href="skopos_premium_quiz.html?r=${b64(P.type)}" target="_blank" rel="noopener">전체 정밀 리포트 열기</a>`:''}</div>
+  </div>
+  <div class="btn-row no-print"><button class="btn btn-p" onclick="printDoc('personal')">개인 결과지 PDF 저장</button></div>`;
+}
+
+function coupleHTML(){
+  const r = RPT, an=r.an, bn=r.bn, ta=r.ta, tb=r.tb, A=r.A, B=r.B;
   const rows = SECS.map(s=>{const a=Number(A.scores?.[s.key]||0), b=Number(B.scores?.[s.key]||0);return {s,a,b,d:Math.abs(a-b)};});
+  const byKey = {}; rows.forEach(x=>byKey[x.s.key]=x);
   const diffs = rows.slice().sort((x,y)=>y.d-x.d);
   const top = diffs.filter(x=>x.d>=9).slice(0,3);
   const common = rows.filter(x=>x.a>=65&&x.b>=65).sort((x,y)=>(y.a+y.b)-(x.a+x.b)).slice(0,2);
   const closest = rows.slice().sort((x,y)=>x.d-y.d).slice(0,2);
+  const avg = Math.round(rows.reduce((s,x)=>s+x.d,0)/rows.length);
+  const cnt = {same:0,mid:0,far:0}; rows.forEach(x=>cnt[band(x.d)[0]]++);
   const sameType = A.type===B.type, sameGroup = ta.g && ta.g===tb.g;
   const pairLine = sameType ? `두 분은 같은 <b>${esc(ta.n)}</b>이에요. 원하는 집의 방향이 같아 결정이 빠른 대신, 둘 다 약한 부분은 집에서도 비어 있기 쉬워요.`
     : sameGroup ? `두 분은 같은 <b>${esc(GROUP[ta.g])}</b> 계열 안에서 결이 조금 다른 조합이에요. 큰 방향은 맞고 디테일에서 취향이 갈려요.`
     : `<b>${esc(GROUP[ta.g]||'')}</b> 계열과 <b>${esc(GROUP[tb.g]||'')}</b> 계열의 조합이에요. 집에서 채우고 싶은 것이 서로 달라, 미리 역할을 나누면 오히려 서로 부족한 부분을 채워 줄 수 있어요.`;
   const who = x => x.a>=x.b ? [an,bn] : [bn,an];
-
-  app.innerHTML = `
-  <div class="card hero"><span class="eyebrow">커플 공간 리포트</span>
-    <h1>${esc(an)}님 × ${esc(bn)}님의<br>공간 욕구 비교</h1>
+  const rooms = ROOMS.map(rm=>{
+    const ds = rm.d.map(k=>byKey[k]);
+    const base = ds.slice().sort((x,y)=>(y.a+y.b)-(x.a+x.b))[0];
+    const gap = ds.slice().sort((x,y)=>y.d-x.d)[0];
+    return {rm, base, gap};
+  }).sort((x,y)=>y.gap.d-x.gap.d);
+  const docNo = 'SKOPOS-CP-'+r.code+'-'+ymd();
+  return `
+  <div class="card hero"><div class="meta light"><span>커플 솔루션 결과지</span><span>발급번호 ${esc(docNo)} · 발급일 ${today()}</span></div>
+    <h1>${esc(an)}님 × ${esc(bn)}님의<br>공간 솔루션</h1>
     <p class="sub">${pairLine}</p>
     <div class="pair">
       <div class="pcard"><div class="who a">${esc(an)}</div><div class="em">${ta.e}</div><div class="tn">${esc(ta.n)}</div><div class="tl">${esc(ta.l)}</div></div>
@@ -210,9 +324,14 @@ function viewReport(r){
     </div>
   </div>
 
-  <div class="card"><h2>8개 영역 나란히 보기</h2><p class="muted">점수는 우열이 아니라 그 욕구가 얼마나 강한지를 뜻해요.</p>
+  <div class="card"><h2>한눈에 보는 요약</h2>
+    <div class="sum"><div><b>${avg}점</b><span>8개 영역 평균 차이</span></div><div><b class="g">${cnt.same}</b><span>비슷해요</span></div><div><b class="o">${cnt.mid}</b><span>조금 달라요</span></div><div><b class="p">${cnt.far}</b><span>많이 달라요</span></div></div>
+    <p class="muted" style="margin-top:10px">차이가 8점 이하면 비슷해요, 9~17점은 조금 달라요, 18점 이상은 많이 달라요로 구분했어요.</p>
+  </div>
+
+  <div class="card"><h2>8개 영역 나란히 보기</h2>
     <div class="legend"><span><i style="background:var(--a)"></i>${esc(an)}</span><span><i style="background:var(--b)"></i>${esc(bn)}</span></div>
-    ${rows.map(x=>{const [c,t]=band(x.d);return `<div class="dom"><div class="dom-h"><span class="dom-n">${esc(x.s.label)}</span><span class="chip ${c}">${t}</span></div>
+    ${rows.map(x=>{const [c,t]=band(x.d);return `<div class="dom"><div class="dom-h"><span class="dom-n">${esc(x.s.label)}</span><span class="chip ${c}">${t} · 차이 ${x.d}</span></div>
       <div class="bar"><span class="nm">${esc(an)}</span><span class="tr"><span class="fl" style="display:block;width:${x.a}%;background:var(--a)"></span></span><span class="v">${x.a}</span></div>
       <div class="bar"><span class="nm">${esc(bn)}</span><span class="tr"><span class="fl" style="display:block;width:${x.b}%;background:var(--b)"></span></span><span class="v">${x.b}</span></div></div>`;}).join('')}
   </div>
@@ -221,16 +340,36 @@ function viewReport(r){
     ${(common.length?common:closest).map(x=>`<div class="ins"><h3>${esc(x.s.label)}</h3><p>${common.length?'두 분 모두 이 욕구가 강해요. ':'두 분의 점수가 가장 가까운 영역이에요. '}${esc(DOM[x.s.key].room)}부터 함께 고르면 합의가 빨라요.</p></div>`).join('')}
   </div>
 
-  <div class="card"><h2>부딪히기 쉬운 영역</h2><p class="muted">차이가 큰 순서예요. 누가 맞고 틀린 게 아니라, 집에 바라는 것이 다른 지점이에요.</p>
-    ${top.length?top.map(x=>{const [h,l]=who(x);return `<div class="ins"><h3>${esc(x.s.label)} <span class="chip far">차이 ${x.d}</span></h3>
+  <div class="card"><h2>부딪히기 쉬운 영역과 솔루션</h2><p class="muted">차이가 큰 순서예요. 누가 맞고 틀린 게 아니라, 집에 바라는 것이 다른 지점이에요.</p>
+    ${top.length?top.map((x,i)=>{const [h,l]=who(x);return `<div class="ins"><h3>${i+1}. ${esc(x.s.label)} <span class="chip far">차이 ${x.d}</span></h3>
       <p><b>${esc(h)}</b>님은 ${esc(DOM[x.s.key].hi)}. <b>${esc(l)}</b>님은 ${esc(DOM[x.s.key].lo)}.</p>
-      <p style="margin-top:6px">${esc(DOM[x.s.key].scene)}.</p>
-      <div class="tip"><b>조율 팁</b> ${esc(DOM[x.s.key].tip)}.</div></div>`;}).join('')
-    :`<div class="ins"><h3>큰 차이가 없어요</h3><p>8개 영역 모두 차이가 크지 않은 조합이에요. 대신 두 분 다 약한 영역은 집에서도 놓치기 쉬우니 아래 합의 순서를 참고해 주세요.</p></div>`}
+      <p style="margin-top:6px"><b>이런 장면에서</b> ${esc(DOM[x.s.key].scene)}.</p>
+      <div class="tip"><b>솔루션</b> ${esc(DOM[x.s.key].tip)}.</div>
+      <div class="tip"><b>역할 나누기</b> 이 욕구가 더 강한 ${esc(h)}님이 기준안을 먼저 내고, ${esc(l)}님은 예산·관리 측면에서 조정해 주세요.</div></div>`;}).join('')
+    :`<div class="ins"><h3>큰 차이가 없어요</h3><p>8개 영역 모두 차이가 크지 않은 조합이에요. 대신 두 분 다 약한 영역은 집에서도 놓치기 쉬우니 아래 공간별 솔루션을 참고해 주세요.</p></div>`}
   </div>
 
-  <div class="card"><h2>먼저 합의할 공간</h2><p class="muted">차이가 큰 영역과 연결된 공간부터 정하면 나머지 결정이 쉬워져요.</p>
-    <div class="rooms">${diffs.slice(0,4).map((x,i)=>`<div class="room"><b>${i+1}. ${esc(DOM[x.s.key].room)}</b><span>${esc(x.s.label)} 차이 ${x.d}</span></div>`).join('')}</div>
+  <div class="card"><h2>공간별 솔루션 플랜</h2><p class="muted">조율이 더 필요한 공간부터 정리했어요.</p>
+    ${rooms.map((x,i)=>{const [h,l]=who(x.gap); return `<div class="room-row"><div class="rn"><span>${i+1}</span>${esc(x.rm.n)}</div><div class="rb">
+      <p><b>함께 원하는 것</b> ${esc(x.base.s.label)} (두 분 ${x.base.a}·${x.base.b}점). ${esc(PT[x.base.s.key])}.</p>
+      ${x.gap.d>=9?`<p><b>조율 포인트</b> ${esc(x.gap.s.label)} 차이 ${x.gap.d}점. ${esc(DOM[x.gap.s.key].tip)}. 기준안은 ${esc(h)}님이 먼저 내 주세요.</p>`:`<p><b>조율 포인트</b> 큰 이견이 없는 공간이에요. 함께 원하는 것에 집중하세요.</p>`}
+    </div></div>`;}).join('')}
+  </div>
+
+  <div class="card"><h2>30일 실천 플랜</h2>
+    <ol class="plan">
+      ${rooms.slice(0,3).map((x,i)=>`<li><b>${i+1}주차 · ${esc(x.rm.n)}</b><span>${x.gap.d>=9?esc(x.gap.s.label)+' 기준을 정하고 작은 변화 하나를 바로 실행해 보세요.':esc(x.base.s.label)+'을 살리는 소품이나 배치 하나를 함께 골라 보세요.'}</span></li>`).join('')}
+      <li><b>4주차 · 함께 점검</b><span>바꾼 공간에서 각자 편해진 점과 아직 불편한 점을 한 가지씩 이야기해 보세요.</span></li>
+    </ol>
+  </div>
+
+  <div class="card"><h2>합의 체크리스트</h2><p class="muted">하나씩 체크하며 함께 정해 보세요.</p>
+    <ul class="chk">
+      ${(top.length?top:diffs.slice(0,2)).map(x=>`<li><label><input type="checkbox"> ${esc(DOM[x.s.key].room)}에서 지킬 기준 한 가지를 함께 정했어요</label></li>`).join('')}
+      <li><label><input type="checkbox"> 각자 "내 취향 존"을 한 곳씩 정했어요</label></li>
+      <li><label><input type="checkbox"> 혼자 쉬고 싶을 때 쓰는 신호를 정했어요</label></li>
+      <li><label><input type="checkbox"> 한 달 뒤 다시 이야기할 날짜를 정했어요</label></li>
+    </ul>
   </div>
 
   <div class="card"><h2>함께 나눠 볼 대화 3가지</h2>
@@ -238,11 +377,26 @@ function viewReport(r){
     <div class="q"><span class="qn">02</span><span>각자 "이것만은 꼭 지키고 싶은 공간 한 곳"을 고른다면 어디인가요?</span></div>
     <div class="q"><span class="qn">03</span><span>다음 한 달 안에 둘이 함께 바꿔 볼 수 있는 가장 작은 변화는 무엇일까요?</span></div>
   </div>
+  <div class="btn-row no-print"><button class="btn btn-p" onclick="printDoc('couple')">커플 솔루션 결과지 PDF 저장</button><button class="btn btn-s" onclick="setDoc('personal')">개인 결과지 보기</button></div>`;
+}
 
-  <div class="btn-row no-print"><button class="btn btn-p" onclick="window.print()">PDF로 저장하기</button><a class="btn btn-s" href="mypage.html">내 결과 다시 보기</a></div>
+function viewReport(r){
+  const A=r.me, B=r.partner, c=r.couple||{};
+  RPT = { A, B, an:A.name||'나', bn:B.name||'파트너',
+    ta:TYPES[A.type]||{n:A.type,e:'🏠',g:'',l:''}, tb:TYPES[B.type]||{n:B.type,e:'🏠',g:'',l:''},
+    code:c.code||'', role:c.role||'owner' };
+  app.innerHTML = `
+  <div class="tabs no-print" role="tablist" aria-label="결과지 선택">
+    <button class="tab" role="tab" data-doc="personal" onclick="setDoc('personal')"><small>결과지 1</small>개인 결과지</button>
+    <button class="tab" role="tab" data-doc="couple" onclick="setDoc('couple')"><small>결과지 2</small>커플 솔루션 결과지</button>
+  </div>
+  <section class="doc" data-doc="personal" id="personalDoc">${personalHTML('me')}</section>
+  <section class="doc" data-doc="couple" id="coupleDoc">${coupleHTML()}</section>
   <p class="foot">SDTI 결과는 경향을 보여 주는 참고 자료예요. 두 분의 대화를 위한 출발점으로 활용해 주세요.<br>© SKOPOS · 검사 문항과 결과 콘텐츠는 한국저작권위원회에 저작권 등록된 스코포스의 창작물입니다</p>`;
+  setDoc(location.hash==='#couple'?'couple':'personal');
   try{ window.SkoposTrack && SkoposTrack.event('couple_report_view',{}); }catch(e){}
 }
+
 
 async function main(user){
   try{
