@@ -164,4 +164,59 @@
   }
 
   w.SkoposTrack = { event: event, attr: attr, anonId: function () { return anon; } };
+
+  // ── 카카오톡 채널 연동: 문의 버튼 + 결과 화면 채널 추가 카드 ──
+  var KAKAO = { friend:'https://pf.kakao.com/_dtGjX/friend', chat:'https://pf.kakao.com/_dtGjX/chat' };
+  function kakaoClick(kind, where){
+    try{ if(typeof w.gtag==='function') w.gtag('event','kakao_'+kind,{placement:where, page:w.location.pathname}); }catch(e){}
+    try{ if(w.fbq) w.fbq('trackCustom','KakaoChannel',{kind:kind, placement:where}); }catch(e){}
+  }
+  w.SkoposKakaoClick = kakaoClick;
+  function injectKakao(){
+    var path = w.location.pathname.replace(/\.html$/,'').replace(/\/$/,'') || '/index';
+    if(/naver/.test(path)) return;
+    var st = d.createElement('style');
+    st.textContent = '.skk-fab{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:900;display:flex;align-items:center;gap:7px;background:#FEE500;color:#191919;font:800 .82rem/1 "Noto Sans KR",sans-serif;padding:12px 16px 12px 13px;border-radius:50px;box-shadow:0 6px 20px rgba(0,0,0,.18);text-decoration:none}'
+      + '.skk-fab svg{width:20px;height:20px;flex:none}.skk-fab:hover{transform:translateY(-2px)}'
+      + '@media print{.skk-fab,.skk-card{display:none!important}}'
+      + '.skk-card{width:100%;max-width:780px;margin:24px auto 0;border-radius:20px;background:#FFFBE0;border:1.5px solid #F5E27A;padding:20px 20px 18px;display:flex;gap:14px;align-items:flex-start;font-family:"Noto Sans KR",sans-serif;text-align:left;box-sizing:border-box}'
+      + '.skk-card .ic{width:44px;height:44px;border-radius:12px;background:#FEE500;display:grid;place-items:center;flex:none}.skk-card .ic svg{width:26px;height:26px}'
+      + '.skk-card b{display:block;font-size:1rem;font-weight:900;color:#191919;margin-bottom:4px}.skk-card p{margin:0;font-size:.84rem;color:#5A5440;line-height:1.6}'
+      + '.skk-card .bt{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.skk-card .bt a{font-size:.82rem;font-weight:800;border-radius:50px;padding:10px 16px;text-decoration:none}'
+      + '.skk-card .bt .y{background:#FEE500;color:#191919}.skk-card .bt .w{background:#fff;color:#191919;border:1px solid #E8DC9A}';
+    d.head.appendChild(st);
+    var ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#191919" d="M12 3C6.48 3 2 6.58 2 11c0 2.83 1.86 5.32 4.66 6.74l-.95 3.49c-.08.3.26.54.52.37l4.15-2.75c.53.06 1.07.09 1.62.09 5.52 0 10-3.58 10-8S17.52 3 12 3z"/></svg>';
+    // 1) 떠 있는 카톡 문의 버튼: 소개·마이페이지·결제·커플 화면에만 (검사 진행 화면은 제외)
+    if(/^\/(index|mypage|payment|couple|skopos_sample_result)$/.test(path)){
+      var a = d.createElement('a');
+      a.className='skk-fab'; a.href=KAKAO.chat; a.target='_blank'; a.rel='noopener';
+      a.setAttribute('aria-label','카카오톡으로 문의하기');
+      a.innerHTML = ICON + '<span>카톡 문의</span>';
+      a.addEventListener('click', function(){ kakaoClick('chat','fab'); });
+      d.body.appendChild(a);
+    }
+    // 2) 검사 결과 화면 하단: 채널 추가 카드
+    var sr = d.getElementById('sr'), rw = d.getElementById('rw');
+    if(sr && rw){
+      var place = function(){
+        if(!sr.classList.contains('active') || !rw.children.length) return;
+        var ex = rw.querySelector('.skk-card');
+        if(ex){ if(rw.lastElementChild!==ex) rw.appendChild(ex); return; }
+        var c = d.createElement('div');
+        c.className='skk-card';
+        c.innerHTML = '<div class="ic">'+ICON+'</div><div><b>카카오톡 채널 추가하고 결과 다시 보기</b>'
+          + '<p>채널을 추가하면 결과를 다시 확인하는 방법, 공간 가이드와 혜택 소식을 카카오톡으로 받아보실 수 있어요. 궁금한 점도 채팅으로 편하게 물어보세요.</p>'
+          + '<div class="bt"><a class="y" href="'+KAKAO.friend+'" target="_blank" rel="noopener" data-k="friend">채널 추가하기</a><a class="w" href="'+KAKAO.chat+'" target="_blank" rel="noopener" data-k="chat">카톡으로 문의하기</a></div></div>';
+        c.addEventListener('click', function(e){ var t=e.target.closest('a[data-k]'); if(t) kakaoClick(t.getAttribute('data-k'),'result'); });
+        rw.appendChild(c);
+      };
+      try{
+        new MutationObserver(place).observe(sr,{attributes:true,attributeFilter:['class']});
+        new MutationObserver(function(){ setTimeout(place,300); }).observe(rw,{childList:true});
+      }catch(e){}
+      place();
+    }
+  }
+  if(d.readyState==='loading') d.addEventListener('DOMContentLoaded', injectKakao); else injectKakao();
+
 })(window, document);
