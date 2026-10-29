@@ -327,7 +327,7 @@ function inviteUrl(code){ return location.origin + '/couple.html?invite=' + enco
 async function share(){
   const code=window.__couple&&window.__couple.code, my=window.__couple&&window.__couple.my_name;
   const url = inviteUrl(code);
-  const text = (my?my+'님이 ':'')+'SKOPOS 커플 공간 검사에 초대했어요. 링크로 로그인하면 정밀 검사를 바로 시작할 수 있어요.';
+  const text = (my?my+'님이 ':'')+'SKOPOS 커플 진단에 초대했어요. 링크로 로그인하거나, 결제 화면에서 초대 코드 '+code+' 를 입력하면 정밀 검사를 바로 시작할 수 있어요.';
   try{ if(navigator.share){ await navigator.share({title:'SKOPOS 커플 검사 초대',text,url}); return; } }catch(e){ return; }
   try{ await navigator.clipboard.writeText(url); alert('초대 링크를 복사했어요. 함께할 분께 보내 주세요.'); }catch(e){ prompt('아래 링크를 복사해 보내 주세요', url); }
 }
@@ -337,7 +337,7 @@ function viewNone(msg){
   <p class="sub">각자 정밀 검사(144문항)를 마치면 8개 영역을 나란히 놓고 비슷한 점, 부딪히기 쉬운 점, 먼저 합의할 공간을 정리해 드려요.</p>
   ${msg?`<div class="alert show">${esc(msg)}</div>`:''}
   <div class="btn-row"><a class="btn btn-p" href="payment.html?plan=couple">커플 진단 49,900원 (2인)</a><a class="btn btn-s" href="index.html">홈으로</a></div>
-  <p class="muted" style="margin-top:12px">초대 링크를 받으셨다면 링크로 다시 들어와 주세요.</p></div>`;
+  <p class="muted" style="margin-top:12px">초대를 받으셨다면 받은 링크로 다시 들어오시거나, <a href="payment.html?plan=couple" style="color:var(--pink);font-weight:800">결제 화면에서 6자리 초대 코드</a>를 입력해 주세요.</p></div>`;
 }
 
 function viewProgress(c, isNew){
@@ -345,7 +345,7 @@ function viewProgress(c, isNew){
   const partner = c.partner_name || '파트너';
   app.innerHTML = `<div class="card"><span class="eyebrow">커플 진단</span>
   <h1>${isNew?'결제가 완료됐어요!<br>':''}두 분 모두 검사를 마치면<br>결과지 2부가 발급돼요</h1>
-  ${c.role==='owner' && !c.paired ? `<p class="sub">아래 초대 링크를 함께할 분께 보내 주세요. 링크로 로그인하면 별도 결제 없이 정밀 검사를 시작할 수 있어요.</p>
+  ${c.role==='owner' && !c.paired ? `<p class="sub">아래 초대 링크나 6자리 코드를 함께할 분께 보내 주세요. 링크로 로그인하거나 결제 화면에서 코드를 입력하면 별도 결제 없이 정밀 검사를 시작할 수 있어요.</p>
    <div class="code-box"><div><div class="muted">초대 코드</div><b>${esc(c.code)}</b></div><button class="btn btn-p" onclick="share()">초대 링크 보내기</button></div>` : ''}
   <ul class="steps">
     <li><span class="dot ok">1</span>커플 진단 ${c.role==='owner'?'결제':'연결'} 완료</li>

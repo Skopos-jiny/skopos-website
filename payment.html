@@ -58,6 +58,12 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
 .price-row{display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding-top:12px;border-top:1px solid rgba(0,0,0,.06)}
 .price-label{font-size:.82rem;color:#8890A4}
 .price-val{font-size:1.4rem;font-weight:900;color:#E91E8C}
+.invite-box{display:none;margin:16px 0 18px;padding:14px;border:1.5px dashed rgba(126,87,194,.45);border-radius:12px;background:linear-gradient(160deg,#F6F1FF,#fff 70%)}
+.invite-box.show{display:block}
+.invite-box .coupon-label{color:#5E35B1}
+.invite-box .ib-sub{font-size:.72rem;color:#8890A4;margin:-4px 0 10px;line-height:1.55}
+.invite-box .btn-coupon{width:auto;padding:0 14px;background:#5E35B1}
+.invite-link{display:block;margin:-6px 0 14px;text-align:right;font-size:.74rem;font-weight:700;color:#5E35B1;background:none;border:0;cursor:pointer;font-family:inherit;width:100%}
 .coupon-box{margin:16px 0 18px;padding:14px;border:1px solid rgba(233,30,140,.16);border-radius:12px;background:#fff}
 .coupon-label{display:block;font-size:.76rem;font-weight:800;color:#3D3D5C;margin-bottom:8px}
 .coupon-row{display:flex;gap:8px}
@@ -146,10 +152,20 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
         <button type="button" class="plan-opt sel" data-plan="single" onclick="setPlan('single')"><span class="po-name">1인 정밀 검사</span><span class="po-price">₩29,900</span></button>
         <button type="button" class="plan-opt" data-plan="couple" onclick="setPlan('couple')"><span class="po-badge">커플</span><span class="po-name">2인 + 커플 결과지</span><span class="po-price">₩49,900</span></button>
       </div>
+      <button type="button" class="invite-link" id="inviteLink" onclick="openInvite()">파트너에게 초대 코드를 받으셨나요? →</button>
       <div class="prod-box">
         <div class="prod-name" id="prodName">SKOPOS SDTI 정밀 검사</div>
         <div class="prod-desc" id="prodDesc">SDTI 144문항 · 12가지 욕구 유형 · 8영역 분석<br>소품 처방 + 컬러 팔레트 + 21페이지 PDF 리포트</div>
         <div class="price-row"><span class="price-label">기본 금액</span><span class="price-val" id="prodPrice">₩29,900</span></div>
+      </div>
+      <div class="invite-box" id="inviteBox">
+        <label class="coupon-label" for="inviteCode">커플 진단 초대 코드</label>
+        <p class="ib-sub">파트너가 이미 커플 진단을 결제했다면, 받은 6자리 초대 코드를 입력해 결제 없이 바로 시작할 수 있어요.</p>
+        <div class="coupon-row">
+          <input type="text" id="inviteCode" placeholder="예: 6GYZ94" maxlength="6" autocomplete="off">
+          <button class="btn-coupon" id="inviteBtn" type="button" onclick="joinWithInvite()">코드로 시작</button>
+        </div>
+        <div class="coupon-msg" id="inviteMsg"></div>
       </div>
       <div class="coupon-box" id="couponBox">
         <label class="coupon-label" for="couponCode">쿠폰 코드</label>
@@ -200,16 +216,39 @@ function setPlan(p){
   const couple = currentPlan==='couple';
   document.getElementById('prodName').textContent = couple ? 'SKOPOS SDTI 커플 진단 (2인)' : 'SKOPOS SDTI 정밀 검사';
   document.getElementById('prodDesc').innerHTML = couple
-    ? '두 분 각자 정밀 검사(144문항) + 각자 21페이지 PDF 리포트<br>두 분 결과를 나란히 비교하는 <strong>커플 비교 리포트</strong> · 초대 링크로 파트너 연결'
+    ? '두 분 각자 정밀 검사(144문항) + 각자 21페이지 PDF 리포트<br><strong>개인 결과지 + 커플 솔루션 결과지</strong> 2부 발급 · 초대 링크나 코드로 파트너 연결'
     : 'SDTI 144문항 · 12가지 욕구 유형 · 8영역 분석<br>소품 처방 + 컬러 팔레트 + 21페이지 PDF 리포트';
   document.getElementById('prodPrice').textContent = formatWon(BASE_AMOUNT);
   document.getElementById('couponBox').style.display = couple ? 'none' : '';
+  document.getElementById('inviteBox').classList.toggle('show', couple);
+  document.getElementById('inviteLink').style.display = couple ? 'none' : '';
   document.getElementById('payNotice').innerHTML = couple
-    ? '결제 후 파트너 초대 링크가 발급돼요 · 파트너는 링크로 로그인하면 바로 검사 가능<br>1회 결제 · 영구 열람 (커플 진단은 쿠폰과 함께 쓸 수 없어요)'
+    ? '결제 후 파트너 초대 링크와 6자리 코드가 발급돼요 · 파트너는 링크로 들어오거나 이 화면에서 코드를 입력하면 바로 검사 가능<br>1회 결제 · 영구 열람 (커플 진단은 쿠폰과 함께 쓸 수 없어요)'
     : '1회 결제 · 영구 열람 · 언제든 다시 확인 가능<br>결제 완료 후 즉시 진단이 시작됩니다';
   if(couple){ try{ document.getElementById('couponCode').value=''; showCouponMessage('',''); document.getElementById('couponMsg').className='coupon-msg'; }catch(e){} }
   resetCoupon();
 }
+function openInvite(){ setPlan('couple'); const el=document.getElementById('inviteCode'); try{ el.scrollIntoView({behavior:'smooth',block:'center'}); el.focus(); }catch(e){} }
+function inviteMsg(text,type){ const el=document.getElementById('inviteMsg'); el.textContent=text; el.className='coupon-msg'+(text?' show '+(type||''):''); }
+async function joinWithInvite(){
+  const input=document.getElementById('inviteCode'), btn=document.getElementById('inviteBtn');
+  const code=String(input.value||'').trim().toUpperCase().replace(/[^A-Z0-9]/g,'');
+  input.value=code;
+  if(!/^[A-Z0-9]{6}$/.test(code)){ inviteMsg('초대 코드 6자리를 확인해 주세요.','error'); return; }
+  const h=await authHeaders();
+  if(!h.Authorization){ inviteMsg('로그인 후 이용할 수 있어요.','error'); return; }
+  btn.disabled=true; btn.textContent='확인 중...'; inviteMsg('','');
+  try{
+    const r=await fetch(SUPABASE_URL+'/functions/v1/couple',{method:'POST',headers:h,body:JSON.stringify({action:'join',code})});
+    const j=await r.json();
+    if(!j.success){ inviteMsg(j.message||'초대 코드를 확인하지 못했어요.','error'); return; }
+    try{ window.SkoposTrack && SkoposTrack.event('couple_join',{}); }catch(e){}
+    inviteMsg('파트너와 연결됐어요. 커플 진단 화면으로 이동합니다.','ok');
+    setTimeout(()=>{ window.location.href='couple.html'; }, 900);
+  }catch(e){ inviteMsg('잠시 후 다시 시도해 주세요.','error'); }
+  finally{ btn.disabled=false; btn.textContent='코드로 시작'; }
+}
+document.addEventListener('keydown',e=>{ if(e.key==='Enter' && e.target && e.target.id==='inviteCode'){ e.preventDefault(); joinWithInvite(); } });
 function toast(msg,dur=2800){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),dur);}
 
 // 서버 함수 호출용 헤더: 로그인 세션의 JWT 를 첨부해 서버가 사용자를 검증할 수 있게 함
@@ -411,6 +450,7 @@ async function verifyAndStart(impUid,merchantUid,name,email){
 }
 
 try{ setPlan(currentPlan); }catch(e){}
+try{ const iv=(new URLSearchParams(location.search).get('invite')||'').toUpperCase(); if(/^[A-Z0-9]{6}$/.test(iv)){ setPlan('couple'); document.getElementById('inviteCode').value=iv; } }catch(e){}
 window.addEventListener('load',async()=>{
   const params=new URLSearchParams(window.location.search);
   if(!params.get('imp_uid')){ try{ window.SkoposTrack && SkoposTrack.event('checkout_view',{value:BASE_AMOUNT}); }catch(e){} }
