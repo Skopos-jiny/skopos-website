@@ -1141,6 +1141,57 @@ html{scroll-behavior:smooth}
 .q-user-badge-dot{width:6px;height:6px;border-radius:50%;background:#03C75A;flex-shrink:0}
 .r-user-greeting{font-size:.78rem;color:rgba(255,255,255,.5);margin-bottom:8px;display:block}
 
+/* ── 보상 설문 (유료 검사 직후, 선택) ── */
+#srv{background:var(--bg);justify-content:flex-start;padding-top:48px}
+.rv{max-width:460px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+.rv-offer{background:linear-gradient(160deg,#0F0F1A,#1E1040);border-radius:24px;padding:28px 22px;color:#fff;text-align:center}
+.rv-offer .rv-ldt{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:1.6rem;margin:0 0 4px}
+.rv-offer .rv-lds{font-size:.8rem;color:rgba(255,255,255,.55);margin:0}
+.rv-card{background:#fff;color:var(--dark);border-radius:20px;padding:20px 18px;text-align:left;margin-top:20px;display:flex;flex-direction:column;gap:10px}
+.rv-card h3{margin:0;font-size:1.08rem;line-height:1.45;font-weight:800}
+.rv-card h3 em{color:var(--pink);font-style:normal}
+.rv-card ul{margin:0;padding:0 0 0 18px;font-size:.82rem;color:#55586A;line-height:1.7}
+.rv-card .rv-fine{font-size:.72rem;color:var(--gray);margin:0}
+.rv-ic{width:44px;height:44px;border-radius:12px;background:#FFF3F9;display:grid;place-items:center}
+.rv-top{display:flex;justify-content:space-between;align-items:center;font-size:.75rem;color:var(--gray);font-weight:700}
+.rv-bar{height:3px;background:rgba(15,15,26,.06);border-radius:3px}
+.rv-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--pink),#FF6B9D);border-radius:3px;transition:width .3s}
+.rv-tag{font-size:.68rem;font-weight:800;letter-spacing:.18em;color:var(--pink)}
+.rv-q{font-size:1.15rem;font-weight:800;line-height:1.45;margin:0}
+.rv-sub{font-size:.8rem;color:var(--gray);margin:-4px 0 4px}
+.rv-h{font-size:.86rem;font-weight:700;margin:8px 0 0}
+.rv-opts{display:flex;flex-direction:column;gap:8px}
+.rv-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.rv-opt{background:#fff;border:1.5px solid rgba(0,0,0,.07);border-radius:14px;padding:13px 14px;display:flex;align-items:center;gap:12px;font-family:inherit;font-size:.9rem;color:var(--dark);text-align:left;cursor:pointer;width:100%}
+.rv-grid .rv-opt{padding:11px 12px;font-size:.84rem}
+.rv-mk{width:18px;height:18px;border-radius:50%;border:1.5px solid #C9CCD8;flex:none;display:grid;place-items:center}
+.rv-opt.multi .rv-mk{border-radius:5px}
+.rv-opt.sel{border-color:var(--pink);background:#FFF3F9}
+.rv-opt.sel .rv-mk{border-color:var(--pink);background:var(--pink)}
+.rv-opt.sel .rv-mk::after{content:"";width:6px;height:6px;border-radius:50%;background:#fff}
+.rv-opt.multi.sel .rv-mk::after{width:8px;height:4px;border-radius:0;background:none;border:2px solid #fff;border-top:0;border-right:0;transform:rotate(-45deg) translate(1px,-1px)}
+.rv select,.rv input[type=tel]{width:100%;font-family:inherit;font-size:.92rem;padding:12px;border-radius:12px;border:1.5px solid rgba(0,0,0,.1);background:#fff;color:var(--dark)}
+.rv-chk{display:flex;gap:10px;align-items:flex-start;background:#fff;border:1.5px solid rgba(0,0,0,.07);border-radius:12px;padding:11px 12px;font-size:.84rem;cursor:pointer}
+.rv-chk input{width:18px;height:18px;margin:1px 0 0;accent-color:var(--pink);flex:none}
+.rv-chk.all{font-weight:800;border-color:rgba(233,30,140,.25)}
+.rv-req{color:var(--pink);font-weight:800}.rv-optl{color:var(--gray);font-weight:800}
+.rv details{font-size:.76rem;color:#55586A;margin-top:4px}
+.rv details summary{cursor:pointer;color:var(--gray)}
+.rv details table{width:100%;border-collapse:collapse;margin-top:6px}
+.rv details td{border-top:1px solid #ECEDF3;padding:4px 2px;vertical-align:top}
+.rv details td:first-child{width:62px;color:var(--gray)}
+.rv-foot{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.rv-btn{width:100%;padding:16px;border:none;border-radius:50px;font-family:'Nunito',sans-serif;font-weight:800;font-size:.98rem;color:#fff;background:linear-gradient(135deg,var(--pink),#FF6B9D);box-shadow:0 6px 20px rgba(233,30,140,.3);cursor:pointer}
+.rv-btn[disabled]{background:#D5D7E0;box-shadow:none;cursor:not-allowed}
+.rv-skip{background:none;border:none;font-family:inherit;font-size:.82rem;color:var(--gray);text-decoration:underline;cursor:pointer;padding:6px}
+.rv-offer .rv-skip{color:rgba(255,255,255,.7)}
+.rv-err{font-size:.8rem;color:#D6246E;margin:0}
+.rv-done{text-align:center;padding:40px 10px}
+.rv-done h3{font-size:1.2rem;margin:14px 0 6px;font-weight:800}
+.rv-done p{font-size:.86rem;color:#55586A;margin:0;line-height:1.7}
+.rv-opt:focus-visible,.rv-btn:focus-visible,.rv-skip:focus-visible,.rv-chk:focus-within{outline:2px solid var(--pink);outline-offset:2px}
+.rv-note{background:#fff;border:1.5px solid rgba(233,30,140,.2);border-radius:16px;padding:14px 16px;margin-bottom:16px;font-size:.84rem;color:#55586A;line-height:1.6}
+.rv-note b{color:var(--dark)}
 </style>
 <!-- Supabase SDK -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" defer></script>
@@ -1326,6 +1377,11 @@ html{scroll-behavior:smooth}
     <div class="ld-stage" id="ldst7">🌙 회복 욕구</div>
     <div class="ld-stage" id="ldst8">📊 유형 매칭 중...</div>
   </div>
+</div>
+
+<!-- 보상 설문 (유료 검사 직후, 선택) -->
+<div id="srv" class="screen">
+  <div class="rv" id="rvBox"></div>
 </div>
 
 <!-- 결과 -->
@@ -3921,6 +3977,7 @@ function runResult(){
     saveResult(type.id);
     saveScores(type.id, scores);
     renderResult(type,scores);
+    const reveal = ()=>{
     show('sr');
     setTimeout(()=>{ try{ showCoupleBanner(); }catch(e){} }, 1500);
     setTimeout(()=>document.querySelectorAll('.r-bar-fill').forEach(b=>{b.style.width=b.dataset.val+'%';}),400);
@@ -3928,6 +3985,9 @@ function runResult(){
     // 목차 스캔 + 스티키 TOC 활성화
     setTimeout(()=>{ try{ initTOC(); }catch(e){ console.warn('TOC init error:',e); } }, 300);
     setTimeout(()=>{ try{ checkSeasonSubscription(); }catch(e){} }, 400);
+    };
+    // 유료 검사자에게만 30초 보상 설문을 먼저 제안 (선택, 건너뛰기 가능)
+    rvEligibleQuick().then(ctx=>{ if(ctx) rvStart(ctx, type.id, reveal); else reveal(); }).catch(()=>reveal());
   },stages.length*350+900);
 }
 
@@ -7207,6 +7267,193 @@ if(document.readyState === 'loading'){
 }else{
   _initPremiumGate();
 }
+
+
+// ── 보상 설문 (유료 검사 직후 선택 설문, 커피쿠폰 매월 1~3일 일괄 발송) ──
+// 응답은 intake_responses 테이블에 저장. 제3자 제공 없음, 내부 분석 전용.
+const RV = {
+  SEGS:[
+    {id:'A',name:'신혼',label:'결혼·신혼집을 준비하고 있어요',when:'신혼집 입주는 언제인가요?'},
+    {id:'B',name:'이사',label:'이사를 앞두고 있어요',when:'이사 예정일은 언제인가요?'},
+    {id:'C',name:'리모델링',label:'리모델링·인테리어 공사를 계획 중이에요',when:'공사는 언제쯤 시작하실 예정인가요?'},
+    {id:'D',name:'자취',label:'처음으로 독립·자취를 해요',when:'독립은 언제인가요?'},
+    {id:'E',name:'현거주 개선',label:'지금 사는 집을 더 편하게 바꾸고 싶어요',when:'언제쯤 바꾸실 생각인가요?'},
+    {id:'F',name:'일반',label:'나를 알고 싶어서·재미로요',when:''}
+  ],
+  TIMING:['3개월 이내','3~6개월','6개월~1년','1년 이후','아직 모르겠어요','이미 진행 중·입주했어요'],
+  Q3:{
+    A:[{k:'buy_plan',q:'새로 장만할 계획이 있는 것을 모두 골라주세요',multi:true,o:['대형 가전 (냉장고·세탁기·TV)','주방·생활 가전','침대·소파 등 가구','인테리어 시공','아직 미정']},
+       {k:'appliance_stage',q:'혼수 가전은 어느 단계인가요?',o:['아직 시작 전','알아보는 중','일부 구매','구매 완료']}],
+    B:[{k:'tenure',q:'이사갈 집은 어떤 형태인가요?',o:['매매 (자가)','전세','월세','미정']}],
+    C:[{k:'scope',q:'공사 범위는 어느 정도인가요?',o:['전체','욕실·주방 등 부분','도배·바닥 등 마감만','아직 미정']},
+       {k:'budget',q:'예상 예산은 어느 정도인가요?',o:['1천만원 미만','1천~3천만원','3천~5천만원','5천만원 이상','아직 모르겠어요']}],
+    D:[{k:'home_type',q:'어떤 집에서 지내시나요?',o:['원룸','오피스텔','투룸 이상','셰어하우스·기타']}],
+    E:[{k:'focus_room',q:'가장 바꾸고 싶은 공간은?',o:['거실','침실','주방','욕실','서재·작업 공간','수납']}]
+  },
+  SIDO:['서울특별시','경기도','인천광역시','부산광역시','대구광역시','광주광역시','대전광역시','울산광역시','세종특별자치시','강원특별자치도','충청북도','충청남도','전북특별자치도','전라남도','경상북도','경상남도','제주특별자치도'],
+  SGG:{
+    '서울특별시':['강남구','강동구','강북구','강서구','관악구','광진구','구로구','금천구','노원구','도봉구','동대문구','동작구','마포구','서대문구','서초구','성동구','성북구','송파구','양천구','영등포구','용산구','은평구','종로구','중구','중랑구'],
+    '경기도':['가평군','고양시','과천시','광명시','광주시','구리시','군포시','김포시','남양주시','동두천시','부천시','성남시','수원시','시흥시','안산시','안성시','안양시','양주시','양평군','여주시','연천군','오산시','용인시','의왕시','의정부시','이천시','파주시','평택시','포천시','하남시','화성시'],
+    '인천광역시':['강화군','계양구','남동구','동구','미추홀구','부평구','서구','연수구','옹진군','중구']
+  },
+  SIZES:['10평 미만','10~20평','20~30평','30~40평','40평 이상','모르겠어요'],
+  HOUSE:['혼자','배우자·연인','아이','부모님','반려동물'],
+  st:null, ctx:null, done:null
+};
+function rvEsc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function rvPhoneOk(p){return /^01[016789]\d{7,8}$/.test(String(p||'').replace(/[^0-9]/g,''));}
+
+// 대상: 유료 결제로 정밀 검사를 마친 로그인 회원, 아직 보상 설문에 참여하지 않은 경우
+async function rvEligible(){
+  if(!isPaid || !window.SkoposAuth) return null;
+  try{
+    const sb = await SkoposAuth.getClient();
+    const { data:{ session } } = await sb.auth.getSession();
+    if(!session) return null;
+    const { data, error } = await sb.from('intake_responses').select('id').eq('user_id', session.user.id).eq('source','premium_reward').limit(1);
+    if(error || (data && data.length)) return null;
+    return { sb, session };
+  }catch(e){ return null; }
+}
+function rvEligibleQuick(){
+  return Promise.race([rvEligible(), new Promise(r=>setTimeout(()=>r(null), 2500))]);
+}
+
+function rvStart(ctx, typeId, onDone){
+  RV.ctx = ctx; RV.done = onDone;
+  RV.st = { step:'offer', seg:null, timing:null, q3:{}, sido:'', sgg:'', size:null, house:[], phone:'', c1:false, c2:false, c3:false, typeId, err:'', busy:false };
+  trackEvent('reward_survey_view');
+  show('srv'); rvRender();
+}
+function rvFlow(){ return RV.st.seg==='F' ? ['offer','q1','consent','done'] : ['offer','q1','q2','q3','q4','consent','done']; }
+function rvGo(step){ RV.st.step = step; RV.st.err=''; rvRender(); window.scrollTo({top:0,behavior:'smooth'}); }
+function rvNext(){ const f=rvFlow(), i=f.indexOf(RV.st.step); if(i<f.length-1) rvGo(f[i+1]); }
+function rvBack(){ const f=rvFlow(), i=f.indexOf(RV.st.step); if(i>0) rvGo(f[i-1]); }
+function rvFinish(skipped){
+  if(skipped) trackEvent('reward_survey_skip',{step:RV.st && RV.st.step});
+  const cb = RV.done; RV.done = null;
+  if(cb) cb();
+}
+
+function rvOpt(text, sel, act, multi, extra){
+  return '<button type="button" class="rv-opt'+(multi?' multi':'')+(sel?' sel':'')+'" data-rv="'+act+'" data-v="'+rvEsc(text)+'"'+(extra||'')+' aria-pressed="'+(sel?'true':'false')+'"><span class="rv-mk"></span><span>'+rvEsc(text)+'</span></button>';
+}
+function rvHead(){
+  const f=rvFlow().filter(k=>k!=='offer'&&k!=='done'), i=f.indexOf(RV.st.step);
+  if(i<0) return '';
+  return '<div class="rv-top"><span>SKOPOS 30초 설문</span><span>'+(i+1)+' / '+f.length+'</span></div><div class="rv-bar"><i style="width:'+Math.round((i+1)/f.length*100)+'%"></i></div>';
+}
+const RV_CUP = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E91E8C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h12v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V9z"/><path d="M16 11h1.5a2.5 2.5 0 0 1 0 5H16"/><path d="M8 3v3M12 3v3"/></svg>';
+
+function rvView(){
+  const s = RV.st, seg = RV.SEGS.find(x=>x.id===s.seg);
+  const foot = (label, ok, alt) => '<div class="rv-foot">'+(s.err?'<p class="rv-err">'+rvEsc(s.err)+'</p>':'')+'<button type="button" class="rv-btn" data-rv="next"'+(ok?'':' disabled')+'>'+label+'</button>'+(alt||'<button type="button" class="rv-skip" data-rv="back">이전</button>')+'</div>';
+  if(s.step==='offer') return '<div class="rv-offer"><p class="rv-ldt">결과가 준비됐어요</p><p class="rv-lds">결과를 보기 전에 잠깐만요</p>'+
+    '<div class="rv-card"><div class="rv-ic">'+RV_CUP+'</div><h3>30초 설문에 참여하면<br><em>커피쿠폰을 100% 드려요</em></h3>'+
+    '<ul><li>탭 몇 번이면 끝나는 간단한 4문항이에요 (약 30초)</li><li>커피쿠폰은 다음 달 1~3일 사이에 문자로 보내드려요</li></ul>'+
+    '<p class="rv-fine">설문 참여는 선택이며, 참여하지 않아도 결과는 그대로 보실 수 있어요.</p></div>'+
+    '<div class="rv-foot"><button type="button" class="rv-btn" data-rv="next">30초 참여하고 커피쿠폰 받기</button><button type="button" class="rv-skip" data-rv="skip">건너뛰고 결과 보기</button></div></div>';
+  if(s.step==='q1') return rvHead()+'<div class="rv-tag">QUESTION 1</div><h3 class="rv-q">SDTI 검사를 하신 가장 큰 이유는 무엇인가요?</h3><p class="rv-sub">하나만 골라주세요 · 약 30초면 끝나요</p><div class="rv-opts">'+
+    RV.SEGS.map(x=>rvOpt(x.label, s.seg===x.id, 'seg')).join('')+'</div>'+foot('다음', !!s.seg, '<button type="button" class="rv-skip" data-rv="skip">그만하고 결과 보기</button>');
+  if(s.step==='q2') return rvHead()+'<div class="rv-tag">QUESTION 2</div><h3 class="rv-q">'+rvEsc(seg.when)+'</h3><div class="rv-opts">'+
+    RV.TIMING.map(t=>rvOpt(t, s.timing===t, 'timing')).join('')+'</div>'+foot('다음', !!s.timing);
+  if(s.step==='q3'){
+    const qs = RV.Q3[s.seg]||[];
+    const html = qs.map((q,qi)=>{
+      const cur = s.q3[q.k] || (q.multi?[]:null);
+      return (qi?'<p class="rv-h">'+rvEsc(q.q)+'</p>':'<h3 class="rv-q">'+rvEsc(q.q)+'</h3>'+(q.multi?'<p class="rv-sub">여러 개 고를 수 있어요</p>':''))+
+        '<div class="rv-opts">'+q.o.map(o=>rvOpt(o, q.multi?cur.indexOf(o)>=0:cur===o, 'q3', q.multi, ' data-k="'+q.k+'"')).join('')+'</div>';
+    }).join('');
+    return rvHead()+'<div class="rv-tag">QUESTION 3 · '+rvEsc(seg.name)+'</div>'+html+foot('다음', true, '<button type="button" class="rv-skip" data-rv="next">이 문항 건너뛰기</button>');
+  }
+  if(s.step==='q4'){
+    const sggs = RV.SGG[s.sido]||[];
+    return rvHead()+'<div class="rv-tag">QUESTION 4</div><h3 class="rv-q">어느 지역, 어떤 크기의 집인가요?</h3><p class="rv-sub">'+(s.seg==='A'||s.seg==='B'?'새로 살 집 기준으로':'지금 집 기준으로')+' 알려주세요</p>'+
+      '<div class="rv-grid"><select id="rvSido" aria-label="시·도"><option value="">시·도</option>'+RV.SIDO.map(x=>'<option'+(s.sido===x?' selected':'')+'>'+x+'</option>').join('')+'</select>'+
+      (sggs.length?'<select id="rvSgg" aria-label="시·군·구"><option value="">시·군·구</option>'+sggs.map(x=>'<option'+(s.sgg===x?' selected':'')+'>'+x+'</option>').join('')+'</select>':'<span></span>')+'</div>'+
+      '<p class="rv-h">평형</p><div class="rv-grid">'+RV.SIZES.map(x=>rvOpt(x, s.size===x, 'size')).join('')+'</div>'+
+      '<p class="rv-h">함께 사는 사람 (여러 개 선택)</p><div class="rv-grid">'+RV.HOUSE.map(x=>rvOpt(x, s.house.indexOf(x)>=0, 'house', true)).join('')+'</div>'+
+      foot('다음', true, '<button type="button" class="rv-skip" data-rv="next">이 문항 건너뛰기</button>');
+  }
+  if(s.step==='consent'){
+    const ok = rvPhoneOk(s.phone) && s.c1 && s.c2 && !s.busy;
+    const row = (id, kind, title, rows) => '<label class="rv-chk"><input type="checkbox" id="rv_'+id+'"'+(s[id]?' checked':'')+'><span><span class="'+(kind==='필수'?'rv-req':'rv-optl')+'">['+kind+']</span> <b>'+title+'</b>'+
+      '<details><summary>내용 보기</summary><table>'+rows.map(r=>'<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>').join('')+'</table></details></span></label>';
+    return rvHead()+'<div class="rv-tag">거의 다 왔어요</div><h3 class="rv-q">커피쿠폰을 받을 휴대폰 번호를 알려주세요</h3>'+
+      '<input type="tel" id="rvPhone" inputmode="numeric" autocomplete="tel" placeholder="010-0000-0000" value="'+rvEsc(s.phone)+'" aria-label="휴대폰 번호">'+
+      '<label class="rv-chk all"><input type="checkbox" id="rv_all"'+(s.c1&&s.c2&&s.c3?' checked':'')+'><span>아래 내용에 모두 동의해요</span></label>'+
+      row('c1','필수','쿠폰 발송을 위한 개인정보 수집·이용',[['항목','휴대폰 번호'],['목적','설문 참여 보상 모바일 쿠폰 발송'],['보유','발송 완료 후 3개월 뒤 파기'],['거부 시','쿠폰을 보내드릴 수 없어요. 검사 결과 이용에는 영향이 없어요.']])+
+      row('c2','필수','설문 응답 수집·이용',[['항목','설문 응답, SDTI 유형'],['목적','맞춤 결과·콘텐츠 제공, 서비스 개선, 내부 통계 분석'],['제공','외부에 제공하지 않아요'],['보유','회원 탈퇴 시까지']])+
+      row('c3','선택','맞춤 혜택 안내 수신',[['항목','이름, 휴대폰 번호, 이메일, 설문 응답'],['목적','SKOPOS가 직접 보내는 가전·인테리어 등 혜택 안내 (제휴 할인코드 포함)'],['보유','동의 철회 시까지'],['거부 시','불이익이 없고 쿠폰도 그대로 보내드려요']])+
+      foot(s.busy?'제출 중...':'제출하고 쿠폰 받기', ok);
+  }
+  if(s.step==='done') return '<div class="rv-done"><div class="rv-ic" style="margin:0 auto">'+RV_CUP+'</div><h3>참여해 주셔서 감사해요</h3><p>커피쿠폰은 다음 달 1~3일 사이에<br>'+rvEsc(s.phone)+' 번호로 보내드려요.</p></div>'+
+    '<div class="rv-foot"><button type="button" class="rv-btn" data-rv="result">내 결과 보기</button></div>';
+  return '';
+}
+function rvRender(){ const el=document.getElementById('rvBox'); if(el) el.innerHTML = rvView(); }
+
+async function rvSubmit(){
+  const s = RV.st;
+  if(s.busy) return;
+  if(!rvPhoneOk(s.phone)){ s.err='휴대폰 번호를 확인해 주세요.'; return rvRender(); }
+  if(!s.c1 || !s.c2){ s.err='필수 항목에 동의해 주세요.'; return rvRender(); }
+  s.busy = true; s.err=''; rvRender();
+  let attr = {}; try{ attr = (window.SkoposTrack && SkoposTrack.attr()) || {}; }catch(e){}
+  const last = attr.last||{}, first = attr.first||{};
+  const row = {
+    source:'premium_reward', user_id: RV.ctx.session.user.id,
+    anon_id: (window.SkoposTrack && SkoposTrack.anonId && SkoposTrack.anonId()) || null,
+    purpose: s.seg, timing: s.seg==='F'?null:s.timing, details: s.seg==='F'?{}:s.q3,
+    region_sido: s.sido||null, region_sigungu: s.sgg||null, home_size: s.size, household: s.house.length?s.house:null,
+    result_type: s.typeId, phone: String(s.phone).replace(/[^0-9]/g,''),
+    consent_coupon: s.c1, consent_survey: s.c2, consent_marketing: s.c3, consent_at: new Date().toISOString(),
+    utm_source: last.source||null, utm_medium: last.medium||null, utm_campaign: last.campaign||null, first_source: first.source||null
+  };
+  try{
+    const { error } = await RV.ctx.sb.from('intake_responses').insert([row]);
+    if(error && !/duplicate|unique/i.test(error.message||'')) throw error;
+    trackEvent('reward_survey_submit',{purpose:s.seg});
+    s.busy=false; rvGo('done');
+  }catch(e){
+    console.warn('보상 설문 저장 오류:', e);
+    s.busy=false; s.err='저장 중 문제가 생겼어요. 잠시 후 다시 눌러 주세요.'; rvRender();
+  }
+}
+
+document.addEventListener('click', function(e){
+  const b = e.target.closest('#rvBox [data-rv]'); if(!b || !RV.st) return;
+  const a=b.dataset.rv, v=b.dataset.v, s=RV.st;
+  if(a==='skip') return rvFinish(true);
+  if(a==='result') return rvFinish(false);
+  if(a==='back') return rvBack();
+  if(a==='next'){ if(s.step==='consent') return rvSubmit(); if(s.step==='offer') trackEvent('reward_survey_start'); return rvNext(); }
+  if(a==='seg'){ const n=RV.SEGS.find(x=>x.label===v).id; if(n!==s.seg){ s.seg=n; s.timing=null; s.q3={}; } }
+  if(a==='timing') s.timing=v;
+  if(a==='size') s.size = s.size===v?null:v;
+  if(a==='house'){ const i=s.house.indexOf(v); i>=0?s.house.splice(i,1):s.house.push(v); }
+  if(a==='q3'){
+    const k=b.dataset.k, q=(RV.Q3[s.seg]||[]).find(x=>x.k===k);
+    if(q.multi){ const arr=s.q3[k]||[], j=arr.indexOf(v); j>=0?arr.splice(j,1):arr.push(v); s.q3[k]=arr; } else s.q3[k]=v;
+  }
+  rvRender();
+});
+document.addEventListener('change', function(e){
+  if(!RV.st || !e.target.closest('#rvBox')) return;
+  const t=e.target, s=RV.st;
+  if(t.id==='rvSido'){ s.sido=t.value; s.sgg=''; }
+  else if(t.id==='rvSgg') s.sgg=t.value;
+  else if(t.id==='rv_all'){ s.c1=s.c2=s.c3=t.checked; }
+  else if(/^rv_c[123]$/.test(t.id)) s[t.id.slice(3)]=t.checked;
+  else return;
+  rvRender();
+});
+document.addEventListener('input', function(e){
+  if(!RV.st || e.target.id!=='rvPhone') return;
+  RV.st.phone = e.target.value;
+  const btn = document.querySelector('#rvBox .rv-btn');
+  if(btn) btn.disabled = !(rvPhoneOk(RV.st.phone) && RV.st.c1 && RV.st.c2);
+});
 
 </script>
 </body>
