@@ -8,9 +8,9 @@ import { process, serveNetlifyHandler } from './adapter.ts';
 
 const BASE_AMOUNT = 29900;
 const ORDER_NAME = 'SKOPOS SDTI 정밀 검사';
-// 커플 패키지: 2인 정밀 검사 + 커플 비교 리포트
+// 커플 진단: 2인 정밀 검사 + 커플 결과지 2부
 const COUPLE_AMOUNT = 49900;
-const COUPLE_ORDER_NAME = 'SKOPOS SDTI 커플 패키지 (2인)';
+const COUPLE_ORDER_NAME = 'SKOPOS SDTI 커플 진단 (2인)';
 
 function makeCoupleCode() {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -19,6 +19,19 @@ function makeCoupleCode() {
   return c;
 }
 const SITE_ORIGIN = 'https://skopos.kr';
+
+// 커플 진단 초대 코드: 같은 결제(imp_uid)에 이미 있으면 그대로, 없으면 새로 발급
+async function ensureCoupleCode(sb, impUid, merchantUid, ownerId) {
+  const { data: existing } = await sb.from('couples').select('code').eq('imp_uid', impUid).maybeSingle();
+  if (existing?.code) return existing.code;
+  for (let i = 0; i < 5; i++) {
+    const code = makeCoupleCode();
+    const { error: cErr } = await sb.from('couples').insert([{ code, owner_id: ownerId, imp_uid: impUid, merchant_uid: merchantUid }]);
+    if (!cErr) return code;
+    console.error('couples insert failed:', cErr.message);
+  }
+  return null;
+}
 
 function json(statusCode, body) {
   return {
@@ -163,6 +176,43 @@ const handler = async (event) => {
     }
     const resolvedUserId = auth.userId;
 
+    // 멱등성: 이미 기록된 결제(imp_uid)는 다시 검증·차감·취소하지 않는다.
+    // 새로고침·중복 호출·재전송 때 쿠폰이 두 번 차감되거나, 쿠폰 재검증 실패·금액 불일치로
+    // 이미 정상 처리된 결제가 자동 취소되는 일을 막는다.
+    const { data: existingPay, error: existingErr } = await sb
+      .from('payments')
+      .select('id,user_id,status,order_name,merchant_uid,amount,original_amount,discount_amount,final_amount,coupon_code')
+      .eq('imp_uid', imp_uid)
+      .maybeSingle();
+    if (existingErr) console.error('existing payment lookup failed:', imp_uid, existingErr.message);
+    if (existingPay) {
+      if (existingPay.user_id && resolvedUserId && existingPay.user_id !== resolvedUserId) {
+        console.error('verify-payment: imp_uid already recorded for another user', imp_uid);
+        return json(409, { success: false, message: '이미 다른 계정으로 처리된 결제입니다. 관리자에게 문의해 주세요.' });
+      }
+      if (existingPay.status === 'cancelled') {
+        return json(400, { success: false, message: '취소된 결제입니다.' });
+      }
+      const wasCouple = /커플/.test(existingPay.order_name || '');
+      let existingCode = null;
+      if (wasCouple && existingPay.user_id) {
+        existingCode = await ensureCoupleCode(sb, imp_uid, existingPay.merchant_uid || merchant_uid, existingPay.user_id);
+      }
+      return json(200, {
+        success: true,
+        already: true,
+        plan: wasCouple ? 'couple' : 'single',
+        couple_code: existingCode,
+        imp_uid,
+        amount: existingPay.amount,
+        original_amount: existingPay.original_amount,
+        discount_amount: existingPay.discount_amount,
+        final_amount: existingPay.final_amount,
+        coupon_code: existingPay.coupon_code || '',
+        payment_id: existingPay.id,
+      });
+    }
+
     const tokenRes = await fetch('https://api.iamport.kr/users/getToken', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -195,8 +245,8 @@ const handler = async (event) => {
     // per_user_limit 검사를 우회하는 것을 차단한다.
     // 결제는 이미 확정된 상태이므로 거부 시 자동 취소를 동반한다.
     if (isCouple && (!auth.verified || String(coupon_code || '').trim())) {
-      await cancelPayment(accessToken, imp_uid, '커플 패키지 조건 불충족(로그인 필요·쿠폰 불가)');
-      return json(400, { success: false, message: '커플 패키지는 로그인 후 쿠폰 없이 결제할 수 있어요. 결제를 자동 취소했습니다.' });
+      await cancelPayment(accessToken, imp_uid, '커플 진단 조건 불충족(로그인 필요·쿠폰 불가)');
+      return json(400, { success: false, message: '커플 진단은 로그인 후 쿠폰 없이 결제할 수 있어요. 결제를 자동 취소했습니다.' });
     }
 
     if (String(coupon_code || '').trim() && !auth.verified) {
@@ -253,13 +303,17 @@ const handler = async (event) => {
       .select('id')
       .single();
 
+    // 동시에 두 번 호출되어 다른 요청이 먼저 기록한 경우(imp_uid 중복)는
+    // 쿠폰 차감·외부 기록을 반복하지 않는다
+    const duplicateInsert = !!(sbErr && sbErr.code === '23505');
     if (sbErr) {
-      console.error('Supabase payments insert failed:', sbErr);
+      if (duplicateInsert) console.warn('payments already recorded (concurrent call):', imp_uid);
+      else console.error('Supabase payments insert failed:', sbErr);
     } else {
       supabasePaymentId = sbData?.id || null;
     }
 
-    if (couponResult.coupon) {
+    if (couponResult.coupon && !duplicateInsert) {
       const { error: redemptionError } = await sb.from('coupon_redemptions').insert([{
         coupon_code: couponResult.coupon.code,
         user_id: resolvedUserId || null,
@@ -285,7 +339,7 @@ const handler = async (event) => {
     }
 
     try {
-      if (process.env.AIRTABLE_BASE && process.env.AIRTABLE_TOKEN) {
+      if (!duplicateInsert && process.env.AIRTABLE_BASE && process.env.AIRTABLE_TOKEN) {
         const atRes = await fetch(`https://api.airtable.com/v0/${process.env.AIRTABLE_BASE}/payments`, {
           method: 'POST',
           headers: {
@@ -302,20 +356,10 @@ const handler = async (event) => {
       console.error('Airtable insert failed:', atEx);
     }
 
-    // 커플 패키지: 파트너 초대 코드 발급
+    // 커플 진단: 파트너 초대 코드 발급
     let coupleCode = null;
     if (isCouple && resolvedUserId) {
-      const { data: existing } = await sb.from('couples').select('code').eq('imp_uid', imp_uid).maybeSingle();
-      if (existing?.code) {
-        coupleCode = existing.code;
-      } else {
-        for (let i = 0; i < 5 && !coupleCode; i++) {
-          const code = makeCoupleCode();
-          const { error: cErr } = await sb.from('couples').insert([{ code, owner_id: resolvedUserId, imp_uid, merchant_uid }]);
-          if (!cErr) coupleCode = code;
-          else console.error('couples insert failed:', cErr.message);
-        }
-      }
+      coupleCode = await ensureCoupleCode(sb, imp_uid, merchant_uid, resolvedUserId);
     }
 
     return json(200, {
