@@ -5,3 +5,10 @@
 /goodpartner.html   /  301
 /PriceInformation   /  301
 /PriceInformation.html /  301
+
+# 저장소 관리용 파일은 웹에서 열리지 않게 차단 (서버 코드·설정·내부 메모)
+/README.txt         /  301
+/package.json       /  301
+/netlify.toml       /  301
+/netlify/*          /  301
+/supabase/*         /  301

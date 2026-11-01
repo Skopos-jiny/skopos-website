@@ -1,0 +1,4 @@
+# Cloudflare Pages 응답 헤더
+# 다른 사이트가 skopos.kr 화면을 iframe 으로 감싸 클릭을 유도하는 것(클릭재킹) 방지
+/*
+  X-Frame-Options: SAMEORIGIN

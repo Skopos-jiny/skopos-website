@@ -8,6 +8,15 @@
 <link rel="manifest" href="/manifest.json">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>정밀 진단 시작 | SKOPOS 스코포스</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="SKOPOS SDTI 정밀 검사(144문항, 8개 영역 분석, PDF 리포트)와 커플 진단(2인, 결과지 2부)을 시작하는 화면입니다.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SKOPOS 스코포스">
+<meta property="og:title" content="SKOPOS 정밀 진단 시작하기">
+<meta property="og:description" content="144문항 SDTI 정밀 검사로 나에게 맞는 공간을 찾아보세요. 커플 진단은 두 분의 결과를 비교해 함께 쓰는 공간의 해법을 드려요.">
+<meta property="og:image" content="https://skopos.kr/og-image-v2.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
 <style>
@@ -99,6 +108,23 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .panel{display:none}
 .panel.active{display:block}
+/* 비로그인 방문자용 상품 안내 (광고 유입 대응) */
+.pv{background:#fff;border-radius:16px;padding:20px 20px 18px;margin-bottom:14px;box-shadow:0 2px 14px rgba(15,15,26,.05);border:1px solid rgba(0,0,0,.05)}
+.pv-tag{display:inline-block;font-size:.66rem;font-weight:800;color:#fff;background:#E91E8C;border-radius:50px;padding:3px 10px;margin-bottom:9px;letter-spacing:.02em}
+.pv-name{font-size:1.06rem;font-weight:900;color:#0F0F1A;line-height:1.4;margin-bottom:8px}
+.pv-price{display:flex;align-items:baseline;gap:8px;margin-bottom:14px}
+.pv-price b{font-size:1.5rem;font-weight:900;color:#E91E8C;letter-spacing:-.01em}
+.pv-price span{font-size:.74rem;color:#8890A4}
+.pv-list{list-style:none;margin:0 0 14px;padding:0}
+.pv-list li{position:relative;padding-left:21px;font-size:.81rem;color:#3A3A4A;line-height:1.65;margin-bottom:7px}
+.pv-list li:before{content:'';position:absolute;left:3px;top:8px;width:7px;height:7px;border-radius:50%;background:#E91E8C;opacity:.85}
+.pv-links{display:flex;gap:8px;flex-wrap:wrap}
+.pv-links a{flex:1 1 140px;text-align:center;font-size:.78rem;font-weight:700;padding:11px 10px;border-radius:50px;text-decoration:none;border:1px solid #E4E7EF;color:#0F0F1A;background:#fff}
+.pv-links a.free{background:#F7F8FC;border-color:#E4E7EF;color:#4A4A5A}
+.pv-note{font-size:.7rem;color:#8890A4;margin-top:11px;line-height:1.6;text-align:center}
+.inapp{display:none;background:#FFF8E6;border:1px solid #F0DFA8;border-radius:12px;padding:12px 14px;font-size:.76rem;color:#6B5A20;line-height:1.65;margin-bottom:14px}
+.inapp.show{display:block}
+.inapp b{color:#4A3E12}
 </style>
 <script src="/skopos-track.js" defer></script>
 </head>
@@ -116,11 +142,30 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
     <div class="step" id="step3"><div class="step-num">3</div><span>진단 시작</span></div>
   </div>
 
+  <!-- 비로그인 방문자에게 먼저 보이는 상품 안내 -->
+  <div class="pv" id="preview">
+    <span class="pv-tag" id="pvTag">정밀 검사</span>
+    <div class="pv-name" id="pvName">SKOPOS SDTI 정밀 검사</div>
+    <div class="pv-price"><b id="pvPrice">₩29,900</b><span id="pvSub">1회 결제 · 영구 열람</span></div>
+    <ul class="pv-list" id="pvList"></ul>
+    <div class="pv-links">
+      <a href="skopos_sample_result.html" onclick="if(window.gtag)gtag('event','pay_preview_sample_click')">결과지 샘플 보기</a>
+      <a class="free" href="skopos_quiz.html" onclick="if(window.gtag)gtag('event','pay_preview_free_click')">무료 검사 먼저 하기</a>
+    </div>
+    <div class="pv-note">공간심리학 기반 SDTI · 한국저작권위원회 정식 등록 검사 도구</div>
+  </div>
+
+  <div class="inapp" id="inappNotice">
+    <b>앱 안에서 보고 계신가요?</b><br>
+    인스타그램 앱 내부 화면에서는 카카오·네이버 로그인이 막힐 수 있어요.
+    화면 오른쪽 위 메뉴에서 <b>기본 브라우저로 열기</b>를 선택하시거나, 아래 이메일 로그인을 이용해 주세요.
+  </div>
+
   <!-- 패널 1: 로그인 -->
   <div class="panel active" id="panelLogin">
     <div class="card">
-      <div class="card-title">로그인 후 결제해주세요</div>
-      <div class="card-sub">진단 결과를 저장하고 언제든 다시 확인할 수 있어요.<br>10초면 가입 완료!</div>
+      <div class="card-title">결제 전 로그인이 필요해요</div>
+      <div class="card-sub">결과지를 계정에 저장해 언제든 다시 꺼내볼 수 있어요.<br>카카오로 10초면 시작할 수 있습니다.</div>
       <div class="alert error" id="loginAlert"></div>
       <div class="social-wrap">
         <button class="btn-social btn-kakao" onclick="loginKakao()">
@@ -155,7 +200,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
       <button type="button" class="invite-link" id="inviteLink" onclick="openInvite()">파트너에게 초대 코드를 받으셨나요? →</button>
       <div class="prod-box">
         <div class="prod-name" id="prodName">SKOPOS SDTI 정밀 검사</div>
-        <div class="prod-desc" id="prodDesc">SDTI 144문항 · 12가지 욕구 유형 · 8영역 분석<br>소품 처방 + 컬러 팔레트 + 21페이지 PDF 리포트</div>
+        <div class="prod-desc" id="prodDesc">SDTI 144문항 · 12가지 욕구 유형 · 8영역 분석<br>소품 처방 + 컬러 팔레트 + 22페이지 PDF 리포트</div>
         <div class="price-row"><span class="price-label">기본 금액</span><span class="price-val" id="prodPrice">₩29,900</span></div>
       </div>
       <div class="invite-box" id="inviteBox">
@@ -216,18 +261,50 @@ function setPlan(p){
   const couple = currentPlan==='couple';
   document.getElementById('prodName').textContent = couple ? 'SKOPOS SDTI 커플 진단 (2인)' : 'SKOPOS SDTI 정밀 검사';
   document.getElementById('prodDesc').innerHTML = couple
-    ? '두 분 각자 정밀 검사(144문항) + 각자 21페이지 PDF 리포트<br><strong>개인 결과지 + 커플 솔루션 결과지</strong> 2부 발급 · 초대 링크나 코드로 파트너 연결'
-    : 'SDTI 144문항 · 12가지 욕구 유형 · 8영역 분석<br>소품 처방 + 컬러 팔레트 + 21페이지 PDF 리포트';
+    ? '두 분 각자 정밀 검사(144문항) + 각자 22페이지 PDF 리포트<br><strong>개인 결과지 + 커플 솔루션 결과지</strong> 2부 발급 · 초대 링크나 코드로 파트너 연결'
+    : 'SDTI 144문항 · 12가지 욕구 유형 · 8영역 분석<br>소품 처방 + 컬러 팔레트 + 22페이지 PDF 리포트';
   document.getElementById('prodPrice').textContent = formatWon(BASE_AMOUNT);
   document.getElementById('couponBox').style.display = couple ? 'none' : '';
   document.getElementById('inviteBox').classList.toggle('show', couple);
   document.getElementById('inviteLink').style.display = couple ? 'none' : '';
+  renderPreview(couple);
   document.getElementById('payNotice').innerHTML = couple
     ? '결제 후 파트너 초대 링크와 6자리 코드가 발급돼요 · 파트너는 링크로 들어오거나 이 화면에서 코드를 입력하면 바로 검사 가능<br>1회 결제 · 영구 열람 (커플 진단은 쿠폰과 함께 쓸 수 없어요)'
     : '1회 결제 · 영구 열람 · 언제든 다시 확인 가능<br>결제 완료 후 즉시 진단이 시작됩니다';
   if(couple){ try{ document.getElementById('couponCode').value=''; showCouponMessage('',''); document.getElementById('couponMsg').className='coupon-msg'; }catch(e){} }
   resetCoupon();
 }
+function renderPreview(couple){
+  var el = document.getElementById('preview');
+  if(!el) return;
+  document.getElementById('pvTag').textContent   = couple ? '커플 진단' : '정밀 검사';
+  document.getElementById('pvName').textContent  = couple ? 'SKOPOS SDTI 커플 진단 (2인)' : 'SKOPOS SDTI 정밀 검사';
+  document.getElementById('pvPrice').textContent = couple ? '₩49,900' : '₩29,900';
+  document.getElementById('pvSub').textContent   = couple ? '2인 · 1인당 ₩24,950' : '1회 결제 · 영구 열람';
+  var items = couple
+    ? ['두 분이 각자 144문항 정밀 검사를 진행해요',
+       '개인 결과지와 커플 솔루션 결과지 2부를 발급해 드려요',
+       '8개 영역을 나란히 비교하고, 부딪히기 쉬운 영역 TOP 3와 해법을 알려드려요',
+       '한 분만 결제하면 파트너는 초대 코드로 추가 결제 없이 참여해요',
+       '신혼집·첫 동거·리모델링 전에 가구를 고르기 좋아요']
+    : ['144문항으로 12가지 공간 욕구 유형과 8개 영역을 분석해요',
+       '22페이지 PDF 리포트를 받아 평생 보관할 수 있어요',
+       '거실·침실·주방별 소품 처방과 5색 컬러 팔레트를 드려요',
+       '예산대별 쇼핑 가이드와 30일 실천 플랜이 들어 있어요'];
+  document.getElementById('pvList').innerHTML = items.map(function(t){return '<li>'+t+'</li>';}).join('');
+}
+(function(){
+  try{
+    var ua = navigator.userAgent || '';
+    if(/Instagram|FBAN|FBAV|FB_IAB|KAKAOTALK|NAVER\(inapp/i.test(ua)){
+      var el = document.getElementById('inappNotice');
+      if(el) el.classList.add('show');
+      try{ if(window.gtag) gtag('event','inapp_browser_detected',{page:'payment'}); }catch(e){}
+    }
+  }catch(e){}
+})();
+function hidePreview(){ var el=document.getElementById('preview'); if(el) el.style.display='none'; }
+
 function openInvite(){ setPlan('couple'); const el=document.getElementById('inviteCode'); try{ el.scrollIntoView({behavior:'smooth',block:'center'}); el.focus(); }catch(e){} }
 function inviteMsg(text,type){ const el=document.getElementById('inviteMsg'); el.textContent=text; el.className='coupon-msg'+(text?' show '+(type||''):''); }
 async function joinWithInvite(){
@@ -327,6 +404,7 @@ async function applyCoupon(){
 
 function showPayPanel(user){
   currentUser=user;
+  hidePreview();
   const name=user.user_metadata?.full_name||user.email?.split('@')[0]||'사용자';
   document.getElementById('userAvatar').textContent=name.charAt(0).toUpperCase();
   document.getElementById('userName').textContent=name;
