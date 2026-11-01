@@ -777,6 +777,7 @@ em{font-style:normal;}
     <div style="text-align:center"><div class="sv">12</div><div class="sl">욕구 유형</div></div>
   </div>
   <button class="bstart" onclick="startQuiz()">무료로 시작하기</button>
+  <p class="disc" style="margin-bottom:4px">문항은 로그인 없이 바로 진행하실 수 있어요 · 결과 확인과 저장에만 로그인이 필요합니다</p>
   <p class="disc">현재 무료 제공 중 · 공간심리학 · 환경심리학 · 뇌과학 · 긍정심리학 기반 전문 진단 도구</p>
   <div style="text-align:center">
     <span class="copyright-chip">
@@ -1844,14 +1845,12 @@ function getShareUrl(){
 }
 
 let _authed=false;      // 로그인 확인 여부 (guard onReady 에서 true)
+let _pendingResult=null; // 문항은 마쳤고 로그인 대기 중인 결과
 let _currentUser=null;  // 로그인 사용자
 
 function startQuiz(){
-  // 로그인 안 된 상태에서 진입 시 게이트를 다시 띄우고 차단
-  if(!_authed){
-    if(window.SkoposAuth) SkoposAuth.showGate();
-    return;
-  }
+  // 문항은 로그인 없이 진행 (결과 확인 시점에만 로그인 요청)
+  try{ trackEvent('quiz_start',{authed:_authed}); }catch(e){}
   cur=0;ans={};
   show('sq');
   renderQ();
@@ -2037,22 +2036,50 @@ function runResult(){
   });
   setTimeout(()=>{
     const {type,sub}=compute();
-    resultType=type;
-    resultSub=sub;
-    saveResult(type, sub); // 유형 ID 저장
-    try{sessionStorage.removeItem('skopos_unlocked');}catch(e){}
-    // GA 이벤트 — 진단 완료
-    try{ window.SkoposTrack && SkoposTrack.event('free_quiz_complete', { result_type: type.id }); }catch(e){}
-    trackEvent('quiz_complete', {
+    _pendingResult = {type:type, sub:sub};
+    // 문항 완주 시점 (로그인 여부와 무관): 이탈 지점 파악용
+    trackEvent('quiz_questions_done', {
       result_type: type.id,
-      result_sub: sub ? sub.sub : '',
-      result_plain: sub ? sub.plain : type.plain
+      authed: _authed
     });
-    renderResult(type, sub, true);
-    show('sr');
-    window.scrollTo({top:0,behavior:'smooth'});
-    setTimeout(()=>document.querySelectorAll('.rbar').forEach(b=>b.style.width=b.dataset.val+'%'),400);
+    if(_authed){
+      revealResult();
+    }else{
+      // 결과는 준비됐고, 확인·저장에만 로그인을 요청
+      if(window.SkoposAuth){
+        SkoposAuth.showGate({
+          title:'결과가 준비됐어요',
+          subtitle:'22문항을 모두 마치셨어요.<br>로그인하면 <strong>결과를 바로 확인</strong>하고 계정에 저장해 드려요.',
+          cta:'로그인하고 결과 보기'
+        });
+        try{ trackEvent('quiz_result_gate_shown', {result_type:type.id}); }catch(e){}
+      }else{
+        // 인증 모듈을 못 불러온 경우에는 결과를 막지 않음
+        revealResult();
+      }
+    }
   },(steps.length*.3+.5)*1000);
+}
+
+// 준비된 결과를 실제로 공개 (로그인 완료 후 또는 이미 로그인 상태)
+function revealResult(){
+  if(!_pendingResult) return;
+  const {type, sub} = _pendingResult;
+  _pendingResult = null;
+  resultType=type;
+  resultSub=sub;
+  saveResult(type, sub); // 유형 ID 저장 (로그인 상태면 DB 저장)
+  try{sessionStorage.removeItem('skopos_unlocked');}catch(e){}
+  try{ window.SkoposTrack && SkoposTrack.event('free_quiz_complete', { result_type: type.id }); }catch(e){}
+  trackEvent('quiz_complete', {
+    result_type: type.id,
+    result_sub: sub ? sub.sub : '',
+    result_plain: sub ? sub.plain : type.plain
+  });
+  renderResult(type, sub, true);
+  show('sr');
+  window.scrollTo({top:0,behavior:'smooth'});
+  setTimeout(()=>document.querySelectorAll('.rbar').forEach(b=>b.style.width=b.dataset.val+'%'),400);
 }
 
 // ═══════════════════════════════════════════════════════
@@ -2439,6 +2466,11 @@ window.addEventListener('load',()=>{
     _authed=true;
     _currentUser=user;
     try{ trackEvent('auth_ready',{page:'free_quiz'}); }catch(e){}
+    // 문항을 마치고 로그인을 기다리던 결과가 있으면 바로 공개
+    if(_pendingResult){
+      try{ trackEvent('quiz_result_gate_passed',{}); }catch(e){}
+      revealResult();
+    }
   };
 
   const found=loadSavedResult();
@@ -2460,12 +2492,9 @@ window.addEventListener('load',()=>{
     return;
   }
 
-  // ── 로그인 필수: 로그인 확인 전까지 로그인 게이트 노출 ──
+  // ── 문항은 로그인 없이 진행, 결과 확인 시점에만 게이트 ──
   if(window.SkoposAuth){
-    SkoposAuth.guard({
-      subtitle:'무료 검사는 <strong>로그인 후</strong> 진행할 수 있어요.<br>결과가 계정에 안전하게 저장됩니다.',
-      onReady:onAuthReady
-    });
+    SkoposAuth.guard({ passive:true, onReady:onAuthReady });
   }else{
     console.warn('SkoposAuth 모듈이 로드되지 않았습니다.');
   }

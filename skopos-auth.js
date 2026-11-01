@@ -29,6 +29,7 @@
 
   var _client = null;      // Supabase 클라이언트 싱글턴
   var _gateEl = null;      // 로그인 게이트 DOM 참조
+  var _gateCta = '로그인하고 검사 시작';
 
   // ── Supabase 라이브러리 로드 대기 (defer/CDN 지연 대응) ──
   function libReady() {
@@ -185,6 +186,8 @@
 
     var title = o.title || '';
     var subtitle = o.subtitle || 'SKOPOS 검사는 <strong>로그인 후</strong> 진행할 수 있어요.<br>결과는 안전하게 계정에 저장됩니다.';
+    var cta = o.cta || '로그인하고 검사 시작';
+    _gateCta = cta;
 
     var wrap = document.createElement('div');
     wrap.className = 'sk-gate';
@@ -214,7 +217,7 @@
       + '<div class="sk-panel on" data-panel="login">'
       +   '<div class="sk-field"><label>이메일</label><input type="email" id="skLoginEmail" placeholder="이메일을 입력해주세요" autocomplete="email"></div>'
       +   '<div class="sk-field"><label>비밀번호</label><input type="password" id="skLoginPw" placeholder="비밀번호를 입력해주세요" autocomplete="current-password"></div>'
-      +   '<button type="button" class="sk-submit" id="skLoginBtn">로그인하고 검사 시작</button>'
+      +   '<button type="button" class="sk-submit" id="skLoginBtn">' + escapeHtml(cta) + '</button>'
       + '</div>'
       // 회원가입 패널
       + '<div class="sk-panel" data-panel="signup">'
@@ -291,7 +294,7 @@
           show('err', m.indexOf('Invalid') >= 0 ? '이메일 또는 비밀번호가 올바르지 않습니다'
              : m.indexOf('Email not confirmed') >= 0 ? '이메일 인증이 필요합니다. 받은 편지함을 확인해주세요.'
              : '로그인 오류: ' + m);
-          loginBtn.disabled = false; loginBtn.textContent = '로그인하고 검사 시작';
+          loginBtn.disabled = false; loginBtn.textContent = _gateCta;
         } else {
           // 성공: 정상 경로는 onAuthStateChange(SIGNED_IN) 가 게이트를
           // 닫고 검사 진행. 구독이 없는 엣지는 폴백이 새로고침으로 복구.
@@ -299,7 +302,7 @@
         }
       } catch (e) {
         show('err', '로그인 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
-        loginBtn.disabled = false; loginBtn.textContent = '로그인하고 검사 시작';
+        loginBtn.disabled = false; loginBtn.textContent = _gateCta;
       }
     });
 
