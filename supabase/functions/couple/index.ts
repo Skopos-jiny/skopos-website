@@ -2,7 +2,7 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import { process, serveNetlifyHandler } from './adapter.ts';
 
-// 커플 패키지 API (로그인 필수)
+// 커플 진단 API (로그인 필수)
 //   action 'status' : 내 커플 연결 상태 + 두 사람의 정밀 검사 완료 여부
 //   action 'join'   : 초대 코드로 파트너 연결 + 파트너 정밀 검사 이용권 발급
 //   action 'report' : 두 사람 모두 완료 시 비교 리포트용 결과(유형·8영역 점수) 반환
@@ -57,8 +57,15 @@ const handler = async (event) => {
       if (!/^[A-Z0-9]{6}$/.test(code)) return json(400, { success: false, message: '초대 코드를 확인해 주세요.' });
       const { data: c } = await sb.from('couples').select('*').eq('code', code).maybeSingle();
       if (!c) return json(404, { success: false, message: '존재하지 않는 초대 코드예요.' });
-      if (c.owner_id === me.id) return json(400, { success: false, message: '본인이 결제한 패키지의 초대 코드예요. 함께할 분께 링크를 보내 주세요.' });
+      if (c.owner_id === me.id) return json(400, { success: false, message: '본인이 결제한 커플 진단의 초대 코드예요. 함께할 분께 링크를 보내 주세요.' });
       if (c.partner_id && c.partner_id !== me.id) return json(409, { success: false, message: '이미 다른 분이 연결된 초대 코드예요.' });
+      // 결제가 취소(환불)된 커플 진단의 코드로는 새로 연결·이용권 발급을 하지 않는다
+      if (!c.partner_id && c.imp_uid) {
+        const { data: ownerPay } = await sb.from('payments').select('status').eq('imp_uid', c.imp_uid).maybeSingle();
+        if (ownerPay && ownerPay.status === 'cancelled') {
+          return json(410, { success: false, message: '결제가 취소되어 더 이상 사용할 수 없는 초대 코드예요.' });
+        }
+      }
 
       if (!c.partner_id) {
         const { error: upErr } = await sb.from('couples')
@@ -85,7 +92,7 @@ const handler = async (event) => {
           buyer_phone: '',
           status: 'free',
           paid_at: new Date().toISOString(),
-          order_name: 'SKOPOS SDTI 커플 패키지 (파트너 이용권)',
+          order_name: 'SKOPOS SDTI 커플 진단 (파트너 이용권)',
         }]);
         if (pErr) console.error('partner entitlement insert failed:', pErr.message);
       }
