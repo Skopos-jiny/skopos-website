@@ -108,6 +108,31 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:#0F0F1A;color:#fff;padding:10px 22px;border-radius:50px;font-size:.8rem;font-weight:700;opacity:0;transition:all .3s;z-index:999;pointer-events:none;white-space:nowrap}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
+/* 계정 관리 */
+.account-box{margin-top:28px;padding:18px 20px;border:1px solid #EFE6D8;border-radius:16px;background:#fff}
+.account-box h4{font-size:.86rem;font-weight:900;color:#1A1A2E;margin:0 0 6px}
+.account-box p{font-size:.78rem;color:#8890A4;line-height:1.7;margin:0 0 12px}
+.btn-withdraw{background:none;border:1px solid #E3D9CC;color:#8890A4;padding:8px 16px;border-radius:50px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:inherit}
+.btn-withdraw:hover{border-color:#C44;color:#C44}
+
+/* 탈퇴 모달 */
+.wd-overlay{position:fixed;inset:0;background:rgba(15,15,26,.55);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px}
+.wd-overlay.show{display:flex}
+.wd-card{background:#fff;border-radius:20px;max-width:440px;width:100%;max-height:88vh;overflow-y:auto;padding:26px 24px}
+.wd-card h3{font-size:1.05rem;font-weight:900;margin:0 0 14px;color:#1A1A2E}
+.wd-card h5{font-size:.8rem;font-weight:900;margin:16px 0 6px;color:#1A1A2E}
+.wd-card ul{margin:0;padding-left:18px}
+.wd-card li{font-size:.8rem;color:#5A5A6E;line-height:1.85}
+.wd-note{background:#FBF6EC;border-radius:12px;padding:12px 14px;font-size:.76rem;color:#6B6B80;line-height:1.75;margin-top:14px}
+.wd-label{display:block;font-size:.78rem;font-weight:700;color:#1A1A2E;margin:18px 0 6px}
+.wd-card input,.wd-card select{width:100%;padding:11px 13px;border:1px solid #E3D9CC;border-radius:10px;font-size:.86rem;font-family:inherit;box-sizing:border-box}
+.wd-card input:focus,.wd-card select:focus{outline:none;border-color:#E91E8C}
+.wd-actions{display:flex;gap:8px;margin-top:20px}
+.wd-actions button{flex:1;padding:12px;border-radius:50px;font-size:.86rem;font-weight:700;cursor:pointer;font-family:inherit;border:none}
+.wd-cancel{background:#F3EFE8;color:#5A5A6E}
+.wd-go{background:#C44;color:#fff}
+.wd-go:disabled{opacity:.4;cursor:not-allowed}
+
 /* 패널 */
 .panel{display:none}
 .panel.active{display:block}
@@ -158,6 +183,21 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
     <div id="paymentsArea"><div class="loading"><div class="spinner"></div>불러오는 중...</div></div>
   </div>
 
+  <!-- 계정 관리 -->
+  <div class="account-box">
+    <h4>계정 관리</h4>
+    <p>더 이상 SKOPOS를 이용하지 않으신다면 회원 탈퇴를 신청하실 수 있습니다. 탈퇴 시 검사 결과와 계정 정보는 즉시 삭제되며 복구할 수 없습니다.</p>
+    <button class="btn-withdraw" onclick="openWithdraw()">회원 탈퇴</button>
+  </div>
+
+</div>
+
+<!-- 회원 탈퇴 모달 -->
+<div class="wd-overlay" id="wdOverlay" role="dialog" aria-modal="true" aria-label="회원 탈퇴">
+  <div class="wd-card">
+    <h3>회원 탈퇴</h3>
+    <div id="wdBody"><div class="loading"><div class="spinner"></div>확인 중...</div></div>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -405,6 +445,121 @@ async function logout(){
   await sb.auth.signOut();
   window.location.href = 'login.html';
 }
+
+// ── 회원 탈퇴 ────────────────────────────────────────────────
+const WD_FN = SUPABASE_URL + '/functions/v1/delete-account';
+
+async function wdCall(payload){
+  const { data: sess } = await sb.auth.getSession();
+  const token = sess && sess.session ? sess.session.access_token : '';
+  if(!token){ window.location.href='login.html'; return null; }
+  const res = await fetch(WD_FN, {
+    method:'POST',
+    headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer '+token, 'apikey':SUPABASE_ANON },
+    body: JSON.stringify(payload)
+  });
+  let j={};
+  try{ j = await res.json(); }catch(e){}
+  return { ok: res.ok, data: j };
+}
+
+function closeWithdraw(){
+  document.getElementById('wdOverlay').classList.remove('show');
+}
+
+async function openWithdraw(){
+  const ov = document.getElementById('wdOverlay');
+  const body = document.getElementById('wdBody');
+  body.innerHTML = '<div class="loading"><div class="spinner"></div>확인 중...</div>';
+  ov.classList.add('show');
+  try{ if(window.gtag) gtag('event','withdraw_open'); }catch(e){}
+
+  const r = await wdCall({ action:'preview' });
+  if(!r){ return; }
+  if(!r.ok){
+    body.innerHTML = '<p style="font-size:.84rem;color:#C44">'+((r.data&&r.data.message)||'잠시 후 다시 시도해 주세요.')+'</p>'
+      + '<div class="wd-actions"><button class="wd-cancel" onclick="closeWithdraw()">닫기</button></div>';
+    return;
+  }
+
+  const s = r.data.summary || {};
+  const quizTotal = (s.quiz_results||0) + (s.premium_results||0);
+  const payTotal  = s.payments_total || 0;
+  const coupleAny = (s.couples_owned||0) + (s.couples_joined||0);
+
+  let deleteItems = '<li>계정 정보 (이메일, 로그인 수단)</li>';
+  if(quizTotal) deleteItems += '<li>검사 결과 '+quizTotal+'건 (기초, 정밀)</li>';
+  if(s.intake_responses) deleteItems += '<li>설문 응답 '+s.intake_responses+'건 (휴대폰 번호 포함)</li>';
+  if(s.seasonal_subscriptions) deleteItems += '<li>계절 가이드 구독 정보</li>';
+  if(coupleAny) deleteItems += '<li>커플 진단 연결 정보</li>';
+
+  let keepItems = '';
+  if(payTotal){
+    keepItems = '<h5>법령에 따라 보관되는 항목</h5><ul>'
+      + '<li>결제 기록 '+payTotal+'건: 5년 보관 (전자상거래법 제6조)</li>'
+      + '</ul><div class="wd-note">보관되는 결제 기록은 계정과의 연결이 끊겨 특정 개인을 알아볼 수 없는 상태로 저장되며, 환불 분쟁과 세무 대응 목적 외에는 사용되지 않습니다.</div>';
+  }
+
+  let coupleWarn = '';
+  if(s.couples_owned){
+    coupleWarn = '<div class="wd-note" style="background:#FFF4F4;color:#A33">커플 진단을 결제하신 계정입니다. 탈퇴하시면 함께하신 분의 화면에서도 비교 리포트를 더 이상 보실 수 없게 됩니다.</div>';
+  }
+
+  body.innerHTML =
+    '<h5>즉시 삭제되는 항목</h5><ul>'+deleteItems+'</ul>'
+    + keepItems
+    + coupleWarn
+    + '<label class="wd-label" for="wdReason">탈퇴 사유 (선택)</label>'
+    + '<select id="wdReason">'
+      + '<option value="">선택 안 함</option>'
+      + '<option value="더 이상 필요하지 않음">더 이상 필요하지 않음</option>'
+      + '<option value="검사 결과가 기대와 달랐음">검사 결과가 기대와 달랐음</option>'
+      + '<option value="가격이 부담됨">가격이 부담됨</option>'
+      + '<option value="개인정보가 걱정됨">개인정보가 걱정됨</option>'
+      + '<option value="기타">기타</option>'
+    + '</select>'
+    + '<label class="wd-label" for="wdConfirm">확인을 위해 <b>탈퇴합니다</b> 를 입력해 주세요</label>'
+    + '<input id="wdConfirm" type="text" autocomplete="off" placeholder="탈퇴합니다">'
+    + '<div class="wd-actions">'
+      + '<button class="wd-cancel" onclick="closeWithdraw()">취소</button>'
+      + '<button class="wd-go" id="wdGo" disabled onclick="doWithdraw()">탈퇴하기</button>'
+    + '</div>';
+
+  const input = document.getElementById('wdConfirm');
+  const go = document.getElementById('wdGo');
+  input.addEventListener('input', ()=>{ go.disabled = input.value.trim() !== '탈퇴합니다'; });
+  input.focus();
+}
+
+async function doWithdraw(){
+  const go = document.getElementById('wdGo');
+  const input = document.getElementById('wdConfirm');
+  const reasonEl = document.getElementById('wdReason');
+  go.disabled = true; go.textContent = '처리 중...';
+
+  const r = await wdCall({
+    action:'delete',
+    confirm: input.value.trim(),
+    reason: reasonEl ? reasonEl.value : ''
+  });
+  if(!r) return;
+  if(!r.ok || !r.data.success){
+    go.disabled = false; go.textContent = '탈퇴하기';
+    toast((r.data && r.data.message) || '잠시 후 다시 시도해 주세요.');
+    return;
+  }
+
+  try{ if(window.gtag) gtag('event','withdraw_complete'); }catch(e){}
+  document.getElementById('wdBody').innerHTML =
+    '<p style="font-size:.86rem;color:#5A5A6E;line-height:1.8">탈퇴가 완료되었습니다.<br>그동안 SKOPOS를 이용해 주셔서 감사합니다.</p>'
+    + '<div class="wd-actions"><button class="wd-cancel" onclick="location.href=\'index.html\'">홈으로</button></div>';
+  try{ await sb.auth.signOut(); }catch(e){}
+  setTimeout(()=>{ window.location.href = 'index.html'; }, 3000);
+}
+
+document.getElementById('wdOverlay').addEventListener('click', (e)=>{
+  if(e.target.id === 'wdOverlay') closeWithdraw();
+});
 </script>
 </body>
 </html>
