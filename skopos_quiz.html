@@ -751,6 +751,8 @@ em{font-style:normal;}
 
 /* 글꼴은 두 가지만 씁니다. 제목은 Noto Serif KR, 본문과 버튼은 Noto Sans KR.
    한글과 라틴·숫자가 같은 글꼴로 나오도록 Nunito·Cormorant 는 쓰지 않습니다. */
+.char-name{font-size:1.18rem;font-weight:800;color:var(--pink);margin-top:14px;letter-spacing:-.01em;font-family:'Noto Serif KR',serif}
+.char-sub{font-size:.72rem;font-weight:600;color:var(--gray);margin-top:5px;letter-spacing:.01em}
 .char-box svg,.char-box img{width:100%;height:100%;display:block;object-fit:contain}
 </style>
 <script src="/skopos-track.js" defer></script>
@@ -841,18 +843,18 @@ em{font-style:normal;}
 
 <!-- SVG Characters (separated from script to avoid HTML parser issues) -->
 <div id="svg-store" style="display:none">
-  <div id="svg-s_deep"><img src="/quiz/chars/s_deep.webp" alt="" width="512" height="512" loading="lazy" decoding="async"></div>
-<div id="svg-s_zen"><img src="/quiz/chars/s_zen.webp" alt="" width="512" height="512" loading="lazy" decoding="async"></div>
-<div id="svg-n_forest"><img src="/quiz/chars/n_forest.webp" alt="" width="512" height="512" loading="lazy" decoding="async"></div>
-  <div id="svg-n_earth"><img src="/quiz/chars/n_earth.webp" alt="" width="512" height="512" loading="lazy" decoding="async"></div>
-<div id="svg-l_royal"><img src="/quiz/chars/l_royal.webp" alt="" width="512" height="512" loading="lazy" decoding="async"></div>
-  <div id="svg-l_gallery"><img src="/quiz/chars/l_gallery.webp" alt="" width="512" height="512" loading="lazy" decoding="async"></div>
-<div id="svg-a_wild"><img src="/quiz/chars/a_wild.webp" alt="" width="512" height="512" loading="lazy" decoding="async"></div>
-  <div id="svg-a_indie"><img src="/quiz/chars/a_indie.webp" alt="" width="512" height="512" loading="lazy" decoding="async"></div>
-<div id="svg-m_pure"><img src="/quiz/chars/m_pure.webp" alt="" width="512" height="512" loading="lazy" decoding="async"></div>
-  <div id="svg-m_grid"><img src="/quiz/chars/m_grid.webp" alt="" width="512" height="512" loading="lazy" decoding="async"></div>
-<div id="svg-c_hearth"><img src="/quiz/chars/c_hearth.webp" alt="" width="512" height="512" loading="lazy" decoding="async"></div>
-  <div id="svg-c_family"><img src="/quiz/chars/c_family.webp" alt="" width="512" height="512" loading="lazy" decoding="async"></div>
+  <div id="svg-s_deep"><img src="/quiz/chars/s_deep.webp" alt="포근, 이불 속 치즈 고양이" width="512" height="512" loading="lazy" decoding="async"></div>
+<div id="svg-s_zen"><img src="/quiz/chars/s_zen.webp" alt="다온, 찻잔 든 흰 토끼" width="512" height="512" loading="lazy" decoding="async"></div>
+<div id="svg-n_forest"><img src="/quiz/chars/n_forest.webp" alt="초롱, 몬스테라 잎 우산 개구리" width="512" height="512" loading="lazy" decoding="async"></div>
+  <div id="svg-n_earth"><img src="/quiz/chars/n_earth.webp" alt="도톨, 털실 든 다람쥐" width="512" height="512" loading="lazy" decoding="async"></div>
+<div id="svg-l_royal"><img src="/quiz/chars/l_royal.webp" alt="금결, 왕관 쓴 여우" width="512" height="512" loading="lazy" decoding="async"></div>
+  <div id="svg-l_gallery"><img src="/quiz/chars/l_gallery.webp" alt="지음, 안경 쓴 부엉이" width="512" height="512" loading="lazy" decoding="async"></div>
+<div id="svg-a_wild"><img src="/quiz/chars/a_wild.webp" alt="알록, 붓 든 앵무새" width="512" height="512" loading="lazy" decoding="async"></div>
+  <div id="svg-a_indie"><img src="/quiz/chars/a_indie.webp" alt="필로, 필름 카메라 강아지" width="512" height="512" loading="lazy" decoding="async"></div>
+<div id="svg-m_pure"><img src="/quiz/chars/m_pure.webp" alt="단정, 단정한 펭귄" width="512" height="512" loading="lazy" decoding="async"></div>
+  <div id="svg-m_grid"><img src="/quiz/chars/m_grid.webp" alt="반듯, 자를 든 비버" width="512" height="512" loading="lazy" decoding="async"></div>
+<div id="svg-c_hearth"><img src="/quiz/chars/c_hearth.webp" alt="따숨, 목도리 두른 곰" width="512" height="512" loading="lazy" decoding="async"></div>
+  <div id="svg-c_family"><img src="/quiz/chars/c_family.webp" alt="도란과 오손, 손잡은 수달 둘" width="512" height="512" loading="lazy" decoding="async"></div>
 </div>
 <script>
 // ═══════════════════════════════════════════════════════
@@ -1434,6 +1436,21 @@ const SVG_ID_MAP={
   'minimal_pure'  :'m_pure',   'minimal_grid'   :'m_grid',
   'cozy_hearth'   :'c_hearth', 'cozy_family'    :'c_family',
 };
+const CHAR_META={
+  'sanctuary_deep':{n:'포근', a:'이불 속 치즈 고양이'},
+  'sanctuary_zen' :{n:'다온', a:'찻잔 든 흰 토끼'},
+  'nature_forest' :{n:'초롱', a:'몬스테라 잎 우산 개구리'},
+  'nature_earth'  :{n:'도톨', a:'털실 든 다람쥐'},
+  'luxe_royal'    :{n:'금결', a:'왕관 쓴 여우'},
+  'luxe_gallery'  :{n:'지음', a:'안경 쓴 부엉이'},
+  'artistic_wild' :{n:'알록', a:'붓 든 앵무새'},
+  'artistic_indie':{n:'필로', a:'필름 카메라 강아지'},
+  'minimal_pure'  :{n:'단정', a:'단정한 펭귄'},
+  'minimal_grid'  :{n:'반듯', a:'자를 든 비버'},
+  'cozy_hearth'   :{n:'따숨', a:'목도리 두른 곰'},
+  'cozy_family'   :{n:'도란·오손', a:'손잡은 수달 둘'},
+};
+function charMeta(id){ return CHAR_META[id] || {n:'', a:''}; }
 function makeSVG(id){
   const mapped = SVG_ID_MAP[id] || id;
   const el = document.getElementById('svg-'+mapped);
@@ -1795,6 +1812,7 @@ function renderResult(t, sub, unlocked){
   const subName = sub ? sub.name : t.name;
   const subPlain = sub ? sub.plain : t.plain;
   const charSVG = sub ? makeSVG(sub.sub) : '';
+  const cm = charMeta(sub ? sub.sub : t.id);
 
   document.getElementById('rw').innerHTML=`
     <!-- 유형명 + 키워드 + 캐릭터 -->
@@ -1821,7 +1839,8 @@ function renderResult(t, sub, unlocked){
     <div style="display:flex;flex-direction:column;align-items:center;margin:28px 0 32px">
       <p style="font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gray);font-weight:700;margin-bottom:14px">나의 공간 캐릭터</p>
       <div class="char-box" style="width:168px;height:168px;filter:drop-shadow(0 6px 16px rgba(59,47,69,.12));animation:charIn .8s var(--ez) both">${charSVG}</div>
-      <p style="font-size:.95rem;font-weight:800;color:var(--pink);margin-top:12px;letter-spacing:-.005em">${dec(subPlain)}</p>
+      <p class="char-name">${cm.n}</p>
+      <p class="char-sub">${dec(subPlain)} · ${cm.a}</p>
     </div>
 
     <!-- 취향 프로파일 바 -->
