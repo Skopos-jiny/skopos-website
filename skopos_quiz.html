@@ -1988,7 +1988,8 @@ function getShareText(){
   if(!resultType)return'';
   const url=getShareUrl();
   const plain=resultSub?resultSub.plain:resultType.plain;
-  return `[SKOPOS 공간·소품 취향 진단]\n\n나의 공간 취향 유형: ${plain}\n나에게 맞는 소품·소재: ${resultType.keys.slice(0,3).join(' · ')}\n\n내 결과 보기 👉 ${url}\n\n#스코포스 #공간심리학 #인테리어취향`;
+  const cm=charMeta(resultSub?resultSub.sub:resultType.id);
+  return `[SKOPOS 공간·소품 취향 진단]\n\n나의 공간 취향 유형: ${plain}\n나의 공간 캐릭터: ${cm.n} (${cm.a})\n나에게 맞는 소품·소재: ${resultType.keys.slice(0,3).join(' · ')}\n\n내 결과 보기 👉 ${url}\n\n#스코포스 #공간심리학 #인테리어취향`;
 }
 function copyShareText(){
   const txt=getShareText();
@@ -2021,6 +2022,7 @@ function shareKakao(){
   const plain    = resultSub ? resultSub.plain : (resultType ? resultType.plain : '');
   const keys     = resultType ? resultType.keys.slice(0,3).join(' · ') : '';
   const desc     = resultType ? resultType.desire : '';
+  const cm       = charMeta(resultSub ? resultSub.sub : (resultType ? resultType.id : ''));
   const txt      = getShareText();
 
   // ── 1순위: Kakao.Share SDK ──────────────
@@ -2030,8 +2032,8 @@ function shareKakao(){
       Kakao.Share.sendDefault({
         objectType: 'feed',
         content: {
-          title: '[SKOPOS] ' + plain + ' · SDTI 기초 검사 결과',
-          description: desc + '\n추천 소품: ' + keys,
+          title: '[SKOPOS] ' + plain + ' · 나의 공간 캐릭터 ' + cm.n,
+          description: cm.n + ' (' + cm.a + ')\n' + desc + '\n추천 소품: ' + keys,
           imageUrl: 'https://skopos.kr/og-image-v2.jpg',
           link: {
             mobileWebUrl: shareUrl,
@@ -2050,7 +2052,7 @@ function shareKakao(){
   // ── 2순위: Web Share API (모바일 네이티브 공유 시트) ──
   if(navigator.share){
     navigator.share({
-      title: '[SKOPOS] ' + plain,
+      title: '[SKOPOS] ' + plain + ' · ' + cm.n,
       text: txt,
       url: shareUrl,
     })
