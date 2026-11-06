@@ -2,11 +2,9 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import { process, serveNetlifyHandler } from './adapter.ts';
 
-// netlify/functions/redeem-free-coupon.js
-// 100% 할인(최종 ₩0) 쿠폰 전용 발급 함수.
+// redeem-free-coupon: 100% 할인(최종 ₩0) 쿠폰 전용 발급 함수. (netlify/functions/redeem-free-coupon.js 이전본)
 // PG 결제가 없는 무료 쿠폰을 서버에서 재검증한 뒤, 결제 없이 정밀 검사 이용권을 발급합니다.
 // 클라이언트가 보낸 금액은 신뢰하지 않고 서버가 쿠폰을 다시 계산해 final_amount === 0 만 통과시킵니다.
-
 
 const BASE_AMOUNT = 29900;
 const ORDER_NAME = 'SKOPOS SDTI 정밀 검사';
@@ -131,7 +129,8 @@ const handler = async (event) => {
       .eq('user_id', user_id)
       .in('status', ['paid', 'free'])
       .limit(1);
-    if (!existingErr && existing && existing.length) {
+    if (existingErr) return json(500, { success: false, message: '이용권 확인에 실패했습니다. 잠시 후 다시 시도해 주세요.' });
+    if (existing && existing.length) {
       return json(200, {
         success: true,
         free: true,
@@ -187,28 +186,7 @@ const handler = async (event) => {
     }
     supabasePaymentId = sbData?.id || null;
 
-    const { error: redemptionError } = await sb.from('coupon_redemptions').insert([{
-      coupon_code: couponResult.coupon.code,
-      user_id,
-      imp_uid: null,
-      merchant_uid: merchantUid,
-      original_amount: couponResult.original_amount,
-      discount_amount: couponResult.discount_amount,
-      final_amount: 0,
-    }]);
-
-    if (redemptionError) {
-      console.error('Coupon redemption insert failed (free):', redemptionError);
-    }
-
-    const { error: updateCouponError } = await sb
-      .from('coupons')
-      .update({ used_count: Number(couponResult.coupon.used_count || 0) + 1 })
-      .eq('code', couponResult.coupon.code);
-
-    if (updateCouponError) {
-      console.error('Coupon used_count update failed (free):', updateCouponError);
-    }
+    // payments 트리거가 결제·쿠폰 이력·사용 횟수를 한 트랜잭션으로 기록한다.
 
     try {
       if (process.env.AIRTABLE_BASE && process.env.AIRTABLE_TOKEN) {

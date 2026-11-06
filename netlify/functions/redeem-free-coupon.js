@@ -128,7 +128,8 @@ exports.handler = async (event) => {
       .eq('user_id', user_id)
       .in('status', ['paid', 'free'])
       .limit(1);
-    if (!existingErr && existing && existing.length) {
+    if (existingErr) return json(500, { success: false, message: '이용권 확인에 실패했습니다. 잠시 후 다시 시도해 주세요.' });
+    if (existing && existing.length) {
       return json(200, {
         success: true,
         free: true,
@@ -184,28 +185,7 @@ exports.handler = async (event) => {
     }
     supabasePaymentId = sbData?.id || null;
 
-    const { error: redemptionError } = await sb.from('coupon_redemptions').insert([{
-      coupon_code: couponResult.coupon.code,
-      user_id,
-      imp_uid: null,
-      merchant_uid: merchantUid,
-      original_amount: couponResult.original_amount,
-      discount_amount: couponResult.discount_amount,
-      final_amount: 0,
-    }]);
-
-    if (redemptionError) {
-      console.error('Coupon redemption insert failed (free):', redemptionError);
-    }
-
-    const { error: updateCouponError } = await sb
-      .from('coupons')
-      .update({ used_count: Number(couponResult.coupon.used_count || 0) + 1 })
-      .eq('code', couponResult.coupon.code);
-
-    if (updateCouponError) {
-      console.error('Coupon used_count update failed (free):', updateCouponError);
-    }
+    // Coupon usage is recorded atomically by the payments database trigger.
 
     try {
       if (process.env.AIRTABLE_BASE && process.env.AIRTABLE_TOKEN) {

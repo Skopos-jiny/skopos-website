@@ -149,9 +149,12 @@ async function cancelPayment(accessToken, impUid, reason) {
     if (data.code !== 0) {
       // 취소 실패는 반드시 로그에 남겨 운영자가 수동 환불할 수 있게 한다
       console.error('PortOne cancel rejected:', impUid, reason, JSON.stringify(data));
+      return false;
     }
+    return true;
   } catch (err) {
     console.error('PortOne cancel failed:', impUid, reason, err);
+    return false;
   }
 }
 
@@ -307,36 +310,29 @@ const handler = async (event) => {
     // 쿠폰 차감·외부 기록을 반복하지 않는다
     const duplicateInsert = !!(sbErr && sbErr.code === '23505');
     if (sbErr) {
-      if (duplicateInsert) console.warn('payments already recorded (concurrent call):', imp_uid);
-      else console.error('Supabase payments insert failed:', sbErr);
+      if (duplicateInsert) {
+        const { data: recorded, error: lookupError } = await sb.from('payments')
+          .select('id,user_id,status').eq('imp_uid', imp_uid).maybeSingle();
+        if (lookupError || !recorded || recorded.status !== 'paid' ||
+            recorded.user_id !== (resolvedUserId || null)) {
+          return json(409, { success: false, message: '결제 기록을 확인할 수 없습니다. 관리자에게 문의해 주세요.' });
+        }
+        supabasePaymentId = recorded.id;
+      } else {
+        console.error('Supabase payments insert failed:', sbErr);
+        if (sbErr.code === 'P0001' && couponResult.coupon) {
+          const cancelled = await cancelPayment(accessToken, imp_uid, '쿠폰 사용 한도 또는 유효기간 변경');
+          return json(cancelled ? 400 : 500, { success: false, message: cancelled
+            ? '쿠폰을 사용할 수 없어 결제를 자동 취소했습니다.'
+            : '쿠폰 처리와 결제 취소에 실패했습니다. 관리자에게 결제 내역 확인을 요청해 주세요.' });
+        }
+        return json(500, { success: false, message: '결제 기록 저장에 실패했습니다. 다시 확인해 주세요. 문제가 계속되면 관리자에게 문의해 주세요.' });
+      }
     } else {
       supabasePaymentId = sbData?.id || null;
     }
 
-    if (couponResult.coupon && !duplicateInsert) {
-      const { error: redemptionError } = await sb.from('coupon_redemptions').insert([{
-        coupon_code: couponResult.coupon.code,
-        user_id: resolvedUserId || null,
-        imp_uid,
-        merchant_uid,
-        original_amount: couponResult.original_amount,
-        discount_amount: couponResult.discount_amount,
-        final_amount: couponResult.final_amount,
-      }]);
-
-      if (redemptionError) {
-        console.error('Coupon redemption insert failed:', redemptionError);
-      }
-
-      const { error: updateCouponError } = await sb
-        .from('coupons')
-        .update({ used_count: Number(couponResult.coupon.used_count || 0) + 1 })
-        .eq('code', couponResult.coupon.code);
-
-      if (updateCouponError) {
-        console.error('Coupon used_count update failed:', updateCouponError);
-      }
-    }
+    // payments 트리거가 쿠폰 이력과 사용 횟수를 원자적으로 기록한다.
 
     try {
       if (!duplicateInsert && process.env.AIRTABLE_BASE && process.env.AIRTABLE_TOKEN) {
