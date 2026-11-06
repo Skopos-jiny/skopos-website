@@ -3503,6 +3503,7 @@ let Q_TIME=AGE_TIMES[AGE_DEFAULT]; // 현재 문항 제한 시간(선택에 따�
 const AGE_KEY='skopos_premium_age'; // 연령대 저장 키
 let cur=0,ans={},qTimer=null,timerEl=null,elapsed=0;
 let resultType=null,isPaid=false;
+let resultScores = {};
 let currentUserName = ''; // 로그인한 사용자 이름
 
 // ── 진행 상태 저장/복원 (새로고침 시 이어하기) ──────────────────
@@ -3670,8 +3671,12 @@ function krText(s){
 }
 
 function getSectionScore(type, scores, sec, fallback=50){
-  const bar = type && type.bars ? type.bars : {};
-  return bar[sec.label] || (sec.legacyLabel ? bar[sec.legacyLabel] : null) || scores?.[sec.label] || scores?.[sec.legacyLabel] || fallback;
+  // 개인 응답으로 계산·저장한 점수만 사용한다. 유형별 예시값은 개인 점수가 아니다.
+  for(const key of [sec.key, sec.label, sec.legacyLabel]){
+    const value = scores?.[key];
+    if(typeof value === 'number' && Number.isFinite(value)) return Math.max(0, Math.min(100, value));
+  }
+  return fallback;
 }
 function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));const el=document.getElementById(id);if(el)el.classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
 function toast(msg,dur=2800){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),dur);}
@@ -4542,6 +4547,7 @@ function buildRadarSVG(t,scores){
 }
 
 function renderResult(t,scores){
+  resultScores = {...scores};
   // 결과 컨테이너 명시적 초기화 + PDF 임시 컨테이너 잔류분 정리
   const rwEl = document.getElementById('rw');
   if(rwEl) rwEl.innerHTML = '';
@@ -5089,9 +5095,17 @@ async function saveScores(typeId, scores){
     if(!session) return;
     const clean = {};
     SECS.forEach(s=>{ const v = scores?.[s.label]; if(typeof v==='number') clean[s.key]=Math.round(v); });
-    const { error } = await sb.from('premium_results').insert([{ user_id: session.user.id, result_type: typeId, scores: clean }]);
-    if(error) console.warn('premium_results 저장 오류:', error);
-  }catch(e){ console.warn('premium_results 저장 실패:', e); }
+    const { data, error } = await sb.from('premium_results').insert([{ user_id: session.user.id, result_type: typeId, scores: clean }]).select('id').single();
+    if(error) throw error;
+    if(data?.id && resultType?.id === typeId){
+      const url = new URL(window.location.href);
+      url.searchParams.set('result_id', String(data.id));
+      window.history.replaceState({}, '', url.toString());
+    }
+  }catch(e){
+    console.warn('premium_results 저장 실패:', e);
+    toast('개인 점수 저장에 실패했어요. 화면을 닫기 전에 PDF를 저장하고 관리자에게 문의해 주세요.', 6000);
+  }
 }
 async function showCoupleBanner(){
   if(!window.SkoposAuth) return;
@@ -5117,6 +5131,7 @@ async function saveResult(id){
   // 2. URL 파라미터 저장 (공유용)
   try{
     const url = new URL(window.location.href);
+    url.searchParams.delete('result_id');
     url.searchParams.set('r', btoa(encodeURIComponent(id)));
     window.history.replaceState({}, '', url.toString());
   }catch(e){}
@@ -5455,7 +5470,7 @@ async function openInstaCard(){
 // 전략: Canvas 2D API 직접 렌더링 (안정성·속도·iOS 호환 우위)
 // 폴백: 실패 시 html2canvas 시도
 async function _generateInstaCard(userName){
-  const {scores} = compute();
+  const scores = resultScores;
 
   // 이전 임시 컨테이너 제거 (html2canvas 폴백 대비)
   document.querySelectorAll('#instaCardContainer').forEach(el=>{ try{ el.remove(); }catch(e){} });
@@ -6113,6 +6128,7 @@ async function downloadPDF(){
     const {jsPDF} = window.jspdf;
     const pdf = new jsPDF({orientation:'portrait', unit:'px', format:[794,1123], hotfixes:['px_scaling']});
     const t = resultType;
+    const scores = resultScores;
     // 25p 샘플 스타일: 단일 로즈 톤으로 통일 (웹 화면 색상에는 영향 없음)
     const PINK_GRAD = 'linear-gradient(90deg,#DC1478,#E91E8C)';
     const secColors = Array(8).fill('#DC1478');
@@ -6312,7 +6328,7 @@ async function downloadPDF(){
     // 점수 내림차순 정렬 — 가장 강한 욕구가 위로 (웹 결과지와 일관)
     const pdfRadarSorted = SECS.map((sec,i)=>({
       sec, originalIndex:i,
-      val: getSectionScore(t, {}, sec, 55),
+      val: getSectionScore(t, scores, sec),
       color: secColors[i],
     })).sort((a,b)=>b.val - a.val);
 
@@ -6450,7 +6466,7 @@ async function downloadPDF(){
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     const allSecsForPdf = SECS.map((sec,i)=>({
       sec, originalIndex:i,
-      val: getSectionScore(t, {}, sec, 55),
+      val: getSectionScore(t, scores, sec),
       color: secColors[i],
     }));
     const top3ForPdf = [...allSecsForPdf].sort((a,b)=>b.val - a.val).slice(0, 3);
@@ -7102,7 +7118,7 @@ function retryQuiz(){
   try{ sessionStorage.removeItem('skopos_premium_result'); }catch(e){}
   clearProgress(); // 진행 상태도 삭제
   runResult._running = false; // 결과 실행 플래그 리셋
-  cur=0; ans={}; resultType=null;
+  cur=0; ans={}; resultType=null; resultScores={};
   show('sp');
 }
 
@@ -7182,14 +7198,22 @@ function _initPremiumGate(){
   // (결제 없이 URL 파라미터만으로 유료 결과·PDF가 열리던 우회 경로 차단)
   if(p.get('r')){
     const wantPdf = p.get('pdf') === '1';
-    const renderSharedResult = ()=>{
+    const renderSharedResult = async (user)=>{
       try{
         const id   = decodeURIComponent(atob(p.get('r')));
         const type = TYPE_MAP[id];
         if(!type) return false;
+        const sb = await SkoposAuth.getClient();
+        let query = sb.from('premium_results').select('id,scores').eq('user_id', user.id).eq('result_type', id);
+        const resultId = p.get('result_id');
+        if(resultId && /^\d+$/.test(resultId)) query = query.eq('id', resultId);
+        const {data, error} = await query.order('created_at', {ascending:false}).limit(1);
+        if(error) throw error;
+        const stored = data?.[0]?.scores;
+        // 개인 점수가 없는 과거 결과도 유형 고정값으로 만들어 내지 않는다.
+        if(!stored || !SECS.every(sec=>Number.isFinite(getSectionScore(type, stored, sec, NaN)))) return false;
         resultType = type;
-        const scores = {};
-        SECS.forEach(s => { scores[s.label] = getSectionScore(type, {}, s, 55); });
+        const scores = stored;
         renderResult(type, scores);
         show('sr');
         setTimeout(()=>{
@@ -7210,8 +7234,8 @@ function _initPremiumGate(){
           const entitled = await checkEntitlement(user);
           if(entitled){
             unlockPayGate();
-            if(!renderSharedResult()){
-              toast('결과 정보를 불러오지 못했어요. 결제 게이트로 이동합니다.', 2600);
+            if(!await renderSharedResult(user)){
+              toast('저장된 개인 점수를 불러오지 못했어요. 잠시 후 다시 열거나 검사를 다시 진행해 주세요.', 5000);
               show('sp');
             }
           }else{

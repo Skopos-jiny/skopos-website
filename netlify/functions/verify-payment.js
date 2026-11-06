@@ -235,34 +235,12 @@ exports.handler = async (event) => {
 
     if (sbErr) {
       console.error('Supabase payments insert failed:', sbErr);
+      return json(500, { success: false, message: '결제 기록 저장에 실패했습니다. 관리자에게 문의해 주세요.' });
     } else {
       supabasePaymentId = sbData?.id || null;
     }
 
-    if (couponResult.coupon) {
-      const { error: redemptionError } = await sb.from('coupon_redemptions').insert([{
-        coupon_code: couponResult.coupon.code,
-        user_id: resolvedUserId || null,
-        imp_uid,
-        merchant_uid,
-        original_amount: couponResult.original_amount,
-        discount_amount: couponResult.discount_amount,
-        final_amount: couponResult.final_amount,
-      }]);
-
-      if (redemptionError) {
-        console.error('Coupon redemption insert failed:', redemptionError);
-      }
-
-      const { error: updateCouponError } = await sb
-        .from('coupons')
-        .update({ used_count: Number(couponResult.coupon.used_count || 0) + 1 })
-        .eq('code', couponResult.coupon.code);
-
-      if (updateCouponError) {
-        console.error('Coupon used_count update failed:', updateCouponError);
-      }
-    }
+    // Coupon usage is recorded atomically by the payments database trigger.
 
     try {
       if (process.env.AIRTABLE_BASE && process.env.AIRTABLE_TOKEN) {
