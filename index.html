@@ -283,8 +283,8 @@
   })();
 </script>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Cormorant+Garamond:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700;800;900&family=Noto+Serif+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
 :root{
   /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -331,7 +331,7 @@
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{font-family:'Nunito','Noto Sans KR','Apple SD Gothic Neo',sans-serif;background:var(--bg);color:var(--dark);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var(--bg);color:var(--dark);overflow-x:hidden;-webkit-font-smoothing:antialiased}
 
 /* ── NAV ── */
 nav{position:sticky;top:0;left:0;right:0;z-index:100;padding:0 24px;transition:background .3s;background:var(--bg)}
@@ -343,9 +343,9 @@ nav.scrolled{background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border-
 .nav-logo-txt span{color:var(--pink)}
 .nav-right{display:flex;align-items:center;gap:8px}
 100%{transform:scale(2.6);opacity:0}}
-.nav-ghost{padding:9px 20px;border-radius:50px;font-family:'Nunito','Noto Sans KR','Apple SD Gothic Neo',sans-serif;font-size:.83rem;font-weight:700;text-decoration:none;color:var(--mid);border:1.5px solid rgba(0,0,0,.1);transition:all .2s}
+.nav-ghost{padding:9px 20px;border-radius:50px;font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-size:.83rem;font-weight:700;text-decoration:none;color:var(--mid);border:1.5px solid rgba(0,0,0,.1);transition:all .2s}
 .nav-ghost:hover{border-color:var(--pink);color:var(--pink)}
-.nav-pill{display:flex;flex-direction:column;align-items:center;padding:7px 18px;border-radius:12px;font-family:'Nunito','Noto Sans KR','Apple SD Gothic Neo',sans-serif;text-decoration:none;background:linear-gradient(135deg,var(--pink) 0%,#FF6B9D 100%);color:#fff;box-shadow:0 3px 12px rgba(220,20,120,.28);transition:all .22s;gap:0;line-height:1}
+.nav-pill{display:flex;flex-direction:column;align-items:center;padding:7px 18px;border-radius:12px;font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;text-decoration:none;background:linear-gradient(135deg,var(--pink) 0%,#FF6B9D 100%);color:#fff;box-shadow:0 3px 12px rgba(220,20,120,.28);transition:all .22s;gap:0;line-height:1}
 .nav-pill:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(220,20,120,.38)}
 .nav-pill-label{font-size:.72rem;font-weight:800;letter-spacing:-.01em;opacity:.92}
 .nav-pill-price{font-size:.82rem;font-weight:900;letter-spacing:-.02em;margin-top:2px;display:flex;align-items:center;gap:6px}
@@ -365,7 +365,7 @@ nav.scrolled{background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border-
 .hero-sub{font-size:1.05rem;color:var(--gray);line-height:1.85;margin-bottom:36px;font-weight:500}
 
 .cta-group{display:flex;flex-direction:column;gap:14px;max-width:440px}
-.btn-hero{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:17px 36px;border-radius:50px;font-family:'Nunito','Noto Sans KR','Apple SD Gothic Neo',sans-serif;font-size:1rem;font-weight:800;text-decoration:none;cursor:pointer;border:none;transition:all .25s}
+.btn-hero{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:17px 36px;border-radius:50px;font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-size:1rem;font-weight:800;text-decoration:none;cursor:pointer;border:none;transition:all .25s}
 .btn-hero.primary{background:linear-gradient(135deg,var(--pink),#FF6B9D);color:#fff;box-shadow:0 6px 24px rgba(220,20,120,.35)}
 .btn-hero.primary:hover{transform:translateY(-2px);box-shadow:0 10px 36px rgba(220,20,120,.45)}
 .btn-hero.secondary{background:var(--white);color:var(--dark);border:1.5px solid rgba(0,0,0,.1)}
@@ -408,13 +408,13 @@ nav.scrolled{background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border-
 .bpl-right{
   display:flex;flex-direction:column;align-items:flex-end;gap:1px;flex-shrink:0;position:relative;z-index:1;
 }
-  font-family:'Cormorant Garamond','Noto Serif KR',serif;font-variant-numeric:lining-nums;
+  font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-variant-numeric:lining-nums;
   font-size:.85rem;color:rgba(255,255,255,.7);
   text-decoration:line-through;
   font-weight:500;line-height:1;
 }
 .bpl-price-now{
-  font-family:'Cormorant Garamond','Noto Serif KR',serif;font-variant-numeric:lining-nums;
+  font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-variant-numeric:lining-nums;
   font-size:1.5rem;font-weight:700;color:#fff;
   letter-spacing:-.01em;line-height:1.15;
 }
@@ -538,7 +538,7 @@ nav.scrolled{background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border-
 .tier.premium .tier-feat-ic{background:rgba(240,160,20,.2);color:var(--orange)}
 .tier.free .tier-feat{color:var(--gray)}
 .tier.premium .tier-feat{color:rgba(255,255,255,.78)}
-.tier-btn{display:block;text-align:center;padding:15px;border-radius:50px;font-family:'Nunito','Noto Sans KR','Apple SD Gothic Neo',sans-serif;font-size:.93rem;font-weight:800;text-decoration:none;transition:all .25s;position:relative;z-index:1}
+.tier-btn{display:block;text-align:center;padding:15px;border-radius:50px;font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-size:.93rem;font-weight:800;text-decoration:none;transition:all .25s;position:relative;z-index:1}
 .tier.free .tier-btn{background:linear-gradient(135deg,var(--pink),#FF6B9D);color:#fff;box-shadow:0 6px 20px rgba(220,20,120,.3)}
 .tier.free .tier-btn:hover{box-shadow:0 10px 32px rgba(220,20,120,.45);transform:translateY(-2px)}
 .tier.premium .tier-btn{background:linear-gradient(135deg,var(--orange),#FFB74D);color:var(--dark);box-shadow:0 6px 20px rgba(240,160,20,.35)}
@@ -662,7 +662,7 @@ nav.scrolled{background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border-
 .deliv-num{
   position:absolute;
   top:18px;right:22px;
-  font-family:'Cormorant Garamond','Noto Serif KR',serif;font-variant-numeric:lining-nums;
+  font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-variant-numeric:lining-nums;
   font-size:2rem;font-weight:600;
   color:var(--dc, var(--pink));
   opacity:.25;letter-spacing:-.02em;
@@ -708,7 +708,7 @@ nav.scrolled{background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border-
   color:var(--gray);min-width:80px;
 }
 .vc-value{
-  font-family:'Cormorant Garamond','Noto Serif KR',serif;font-variant-numeric:lining-nums;
+  font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-variant-numeric:lining-nums;
   font-size:1.4rem;font-weight:600;
   color:var(--mid);
 }
@@ -755,7 +755,7 @@ nav.scrolled{background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border-
   box-shadow:0 14px 42px rgba(220,20,120,.36);
 }
 .btn-deliv-price{
-  font-family:'Cormorant Garamond','Noto Serif KR',serif;font-variant-numeric:lining-nums;
+  font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-variant-numeric:lining-nums;
   font-size:1.3rem;font-weight:600;
   padding-left:14px;border-left:1px solid rgba(255,255,255,.3);
 }
@@ -786,7 +786,7 @@ nav.scrolled{background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border-
 
 /* ── SCIENCE ── */
 .sci-grid{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center}
-.sci-quote{font-family:'Cormorant Garamond','Noto Serif KR',serif;font-variant-numeric:lining-nums;font-size:1.9rem;font-weight:300;color:var(--dark);line-height:1.55;margin-bottom:22px;font-style:normal}
+.sci-quote{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-variant-numeric:lining-nums;font-size:1.9rem;font-weight:300;color:var(--dark);line-height:1.55;margin-bottom:22px;font-style:normal}
 .sci-quote strong{color:var(--pink);font-style:normal;font-weight:500}
 .sci-body{font-size:.92rem;color:var(--gray);line-height:1.9}
 .sci-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:36px}
@@ -812,7 +812,7 @@ nav.scrolled{background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border-
 .rv-type{display:inline-block;font-size:.65rem;font-weight:800;letter-spacing:.07em;padding:3px 10px;border-radius:20px;margin-bottom:12px;background:var(--pink-lt);color:var(--pink)}
 .rv-stars{font-size:.9rem;margin-bottom:12px;letter-spacing:2px}
 .rv-text{font-size:.87rem;color:var(--mid);line-height:1.82;margin-bottom:18px;position:relative}
-.rv-text::before{content:'\201C';font-family:'Cormorant Garamond','Noto Serif KR',serif;font-variant-numeric:lining-nums;font-size:3rem;color:var(--pink);opacity:.25;position:absolute;top:-8px;left:-4px;line-height:1}
+.rv-text::before{content:'\201C';font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-variant-numeric:lining-nums;font-size:3rem;color:var(--pink);opacity:.25;position:absolute;top:-8px;left:-4px;line-height:1}
 .rv-text span{position:relative}
 .rv-foot{display:flex;align-items:center;gap:10px}
 .rv-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.82rem;font-weight:700;color:#fff;flex-shrink:0}
@@ -841,7 +841,7 @@ nav.scrolled{background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border-
 .cta-title em{font-style:normal;background:linear-gradient(120deg,var(--pink),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .cta-sub{font-size:1rem;color:var(--gray);margin-bottom:36px;line-height:1.7}
 .cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-.btn-cta{display:inline-flex;align-items:center;gap:8px;padding:16px 36px;border-radius:50px;font-family:'Nunito','Noto Sans KR','Apple SD Gothic Neo',sans-serif;font-size:.96rem;font-weight:800;text-decoration:none;transition:all .25s}
+.btn-cta{display:inline-flex;align-items:center;gap:8px;padding:16px 36px;border-radius:50px;font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-size:.96rem;font-weight:800;text-decoration:none;transition:all .25s}
 .btn-cta.a{background:linear-gradient(135deg,var(--pink),#FF6B9D);color:#fff;box-shadow:0 6px 24px rgba(220,20,120,.35)}
 .btn-cta.a:hover{transform:translateY(-2px);box-shadow:0 10px 36px rgba(220,20,120,.45)}
 .btn-cta.b{background:var(--white);color:var(--dark);border:1.5px solid rgba(0,0,0,.1)}
@@ -980,8 +980,7 @@ em{font-style:normal}
 .faq-body{padding:0 22px 20px 60px;font-size:.88rem;color:var(--gray);line-height:1.85}
 .tier-couple{display:block;margin-top:10px;padding:12px 14px;border-radius:14px;border:1.5px dashed rgba(233,30,140,.45);text-decoration:none;text-align:center;color:inherit}.tier-couple b{display:block;font-size:.92rem;color:#E91E8C}.tier-couple span{font-size:.78rem;opacity:.8}
 
-/* 라틴 세리프(Cormorant)는 기본 숫자가 올드스타일이라 3, 4, 7 이 기준선 아래로 내려갑니다.
-   한글은 Noto Serif KR 로 받아 세리프끼리 짝을 맞추고, 숫자는 아래 선언으로 라이닝 고정합니다. */
+/* 글꼴: 사이트 전체를 Pretendard 한 가지로 통일합니다 (제목·본문·숫자 공통). */
 </style>
 <script src="/skopos-track.js" defer></script>
 </head>

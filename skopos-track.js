@@ -176,10 +176,10 @@
     var path = w.location.pathname.replace(/\.html$/,'').replace(/\/$/,'') || '/index';
     if(/naver/.test(path)) return;
     var st = d.createElement('style');
-    st.textContent = '.skk-fab{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:900;display:flex;align-items:center;gap:7px;background:#FEE500;color:#191919;font:800 .82rem/1 "Noto Sans KR",sans-serif;padding:12px 16px 12px 13px;border-radius:50px;box-shadow:0 6px 20px rgba(0,0,0,.18);text-decoration:none}'
+    st.textContent = '.skk-fab{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:900;display:flex;align-items:center;gap:7px;background:#FEE500;color:#191919;font:800 .82rem/1 "Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,system-ui,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;padding:12px 16px 12px 13px;border-radius:50px;box-shadow:0 6px 20px rgba(0,0,0,.18);text-decoration:none}'
       + '.skk-fab svg{width:20px;height:20px;flex:none}.skk-fab:hover{transform:translateY(-2px)}'
       + '@media print{.skk-fab,.skk-card{display:none!important}}'
-      + '.skk-card{width:100%;max-width:780px;margin:24px auto 0;border-radius:20px;background:#FFFBE0;border:1.5px solid #F5E27A;padding:20px 20px 18px;display:flex;gap:14px;align-items:flex-start;font-family:"Noto Sans KR",sans-serif;text-align:left;box-sizing:border-box}'
+      + '.skk-card{width:100%;max-width:780px;margin:24px auto 0;border-radius:20px;background:#FFFBE0;border:1.5px solid #F5E27A;padding:20px 20px 18px;display:flex;gap:14px;align-items:flex-start;font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,system-ui,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;text-align:left;box-sizing:border-box}'
       + '.skk-card .ic{width:44px;height:44px;border-radius:12px;background:#FEE500;display:grid;place-items:center;flex:none}.skk-card .ic svg{width:26px;height:26px}'
       + '.skk-card b{display:block;font-size:1rem;font-weight:900;color:#191919;margin-bottom:4px}.skk-card p{margin:0;font-size:.84rem;color:#5A5440;line-height:1.6}'
       + '.skk-card .bt{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.skk-card .bt a{font-size:.82rem;font-weight:800;border-radius:50px;padding:10px 16px;text-decoration:none}'

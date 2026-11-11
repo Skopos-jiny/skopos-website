@@ -23,8 +23,8 @@
 <meta property="og:url" content="https://skopos.kr/skopos_sample_result">
 <meta property="og:locale" content="ko_KR">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Cormorant+Garamond:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700;800;900&family=Noto+Serif+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 
 <!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-M6RMFNZ7W3"></script>
@@ -57,7 +57,7 @@
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{font-family:'Nunito','Noto Sans KR','Apple SD Gothic Neo',sans-serif;background:var(--bg);color:var(--dark);overflow-x:hidden;-webkit-font-smoothing:antialiased;line-height:1.6}
+body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var(--bg);color:var(--dark);overflow-x:hidden;-webkit-font-smoothing:antialiased;line-height:1.6}
 
 /* ── 상단 네비 ── */
 .nav-bar{position:sticky;top:0;z-index:100;background:rgba(247,248,252,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
@@ -70,7 +70,7 @@ body{font-family:'Nunito','Noto Sans KR','Apple SD Gothic Neo',sans-serif;backgr
 /* ── 히어로 ── */
 .hero{padding:60px 24px 40px;text-align:center;background:linear-gradient(180deg,var(--bg) 0%,var(--white) 100%)}
 .hero-tag{display:inline-block;padding:6px 16px;background:rgba(220,20,120,.08);color:var(--pink);font-size:.74rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;border-radius:50px;margin-bottom:20px}
-.hero-title{font-family:'Cormorant Garamond','Noto Serif KR',serif;font-variant-numeric:lining-nums;font-size:clamp(1.9rem,4.5vw,2.8rem);font-weight:500;line-height:1.3;letter-spacing:-.02em;color:var(--dark);margin-bottom:18px;word-break:keep-all}
+.hero-title{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-variant-numeric:lining-nums;font-size:clamp(1.9rem,4.5vw,2.8rem);font-weight:500;line-height:1.3;letter-spacing:-.02em;color:var(--dark);margin-bottom:18px;word-break:keep-all}
 .hero-title em{color:var(--pink);font-style:normal;font-weight:600}
 .hero-sub{font-size:1rem;color:var(--gray);line-height:1.85;font-weight:500;max-width:560px;margin:0 auto 28px;word-break:keep-all}
 
@@ -92,8 +92,8 @@ body{font-family:'Nunito','Noto Sans KR','Apple SD Gothic Neo',sans-serif;backgr
 
 /* ── 챕터 구분선 ── */
 .chapter{margin:60px 0 28px;text-align:center}
-.chapter-num{font-family:'Cormorant Garamond','Noto Serif KR',serif;font-variant-numeric:lining-nums;font-size:1rem;color:var(--gold);letter-spacing:.3em;font-weight:500;margin-bottom:6px}
-.chapter-title{font-family:'Cormorant Garamond','Noto Serif KR',serif;font-variant-numeric:lining-nums;font-size:1.7rem;font-weight:500;color:var(--dark);letter-spacing:-.015em}
+.chapter-num{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-variant-numeric:lining-nums;font-size:1rem;color:var(--gold);letter-spacing:.3em;font-weight:500;margin-bottom:6px}
+.chapter-title{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-variant-numeric:lining-nums;font-size:1.7rem;font-weight:500;color:var(--dark);letter-spacing:-.015em}
 .chapter-line{width:60px;height:1px;background:var(--gold);margin:14px auto 0}
 
 /* ── 결과 헤더 카드 (다크) ── */
@@ -108,7 +108,7 @@ body{font-family:'Nunito','Noto Sans KR','Apple SD Gothic Neo',sans-serif;backgr
 .result-hero-tag{position:relative;z-index:1;font-size:.7rem;letter-spacing:.25em;color:var(--gold);font-weight:800;text-transform:uppercase;margin-bottom:14px}
 .result-emoji{position:relative;z-index:1;font-size:3.6rem;display:inline-block;margin-bottom:14px;filter:drop-shadow(0 8px 24px rgba(0,0,0,.3))}
 .result-prefix{position:relative;z-index:1;display:block;font-size:1.05rem;color:rgba(255,255,255,.72);font-weight:500;margin-bottom:8px;letter-spacing:-.01em}
-.result-name{position:relative;z-index:1;font-family:'Cormorant Garamond','Noto Serif KR',serif;font-variant-numeric:lining-nums;font-size:clamp(1.8rem,4.5vw,2.6rem);font-weight:500;line-height:1.25;letter-spacing:-.02em;margin-bottom:14px}
+.result-name{position:relative;z-index:1;font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-variant-numeric:lining-nums;font-size:clamp(1.8rem,4.5vw,2.6rem);font-weight:500;line-height:1.25;letter-spacing:-.02em;margin-bottom:14px}
 .result-name .hl{color:var(--pink-soft);font-weight:600}
 .result-plain{position:relative;z-index:1;font-size:.78rem;font-weight:700;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px}
 .result-desc{position:relative;z-index:1;font-size:.9rem;color:rgba(255,255,255,.7);line-height:1.85;max-width:480px;margin:0 auto 20px;font-weight:500;word-break:keep-all}
@@ -159,7 +159,7 @@ body{font-family:'Nunito','Noto Sans KR','Apple SD Gothic Neo',sans-serif;backgr
   position:absolute;top:18px;right:22px;
   padding:4px 12px;
   background:var(--tc, var(--pink));color:#fff;
-  font-family:'Cormorant Garamond','Noto Serif KR',serif;font-variant-numeric:lining-nums;
+  font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-variant-numeric:lining-nums;
   font-size:1rem;font-weight:700;letter-spacing:.05em;
   border-radius:50px;
 }
@@ -252,7 +252,7 @@ body{font-family:'Nunito','Noto Sans KR','Apple SD Gothic Neo',sans-serif;backgr
   box-shadow:0 12px 36px rgba(220,20,120,.36);
 }
 .locked-price{
-  font-family:'Cormorant Garamond','Noto Serif KR',serif;font-variant-numeric:lining-nums;
+  font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-variant-numeric:lining-nums;
   font-size:1.15rem;font-weight:600;
   padding-left:12px;border-left:1px solid rgba(255,255,255,.32);
 }
@@ -283,7 +283,7 @@ body{font-family:'Nunito','Noto Sans KR','Apple SD Gothic Neo',sans-serif;backgr
 }
 .final-cta::before{content:'';position:absolute;top:-100px;right:-80px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle, rgba(220,20,120,.1), transparent 70%);pointer-events:none}
 .final-cta-tag{position:relative;z-index:1;display:inline-block;padding:6px 16px;background:rgba(220,20,120,.1);color:var(--pink);font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;border-radius:50px;margin-bottom:16px}
-.final-cta-title{position:relative;z-index:1;font-family:'Cormorant Garamond','Noto Serif KR',serif;font-variant-numeric:lining-nums;font-size:clamp(1.7rem,4vw,2.3rem);font-weight:500;line-height:1.35;color:var(--dark);margin-bottom:14px;letter-spacing:-.015em;word-break:keep-all}
+.final-cta-title{position:relative;z-index:1;font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-variant-numeric:lining-nums;font-size:clamp(1.7rem,4vw,2.3rem);font-weight:500;line-height:1.35;color:var(--dark);margin-bottom:14px;letter-spacing:-.015em;word-break:keep-all}
 .final-cta-title em{color:var(--pink);font-style:normal;font-weight:600}
 .final-cta-sub{position:relative;z-index:1;font-size:.95rem;color:var(--mid);line-height:1.8;font-weight:500;margin-bottom:28px;max-width:480px;margin-left:auto;margin-right:auto;word-break:keep-all}
 .final-cta-sub strong{color:var(--pink);font-weight:700}
@@ -294,12 +294,12 @@ body{font-family:'Nunito','Noto Sans KR','Apple SD Gothic Neo',sans-serif;backgr
   margin-bottom:22px;flex-wrap:wrap;
 }
 .price-old{
-  font-family:'Cormorant Garamond','Noto Serif KR',serif;font-variant-numeric:lining-nums;
+  font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-variant-numeric:lining-nums;
   font-size:1.25rem;color:var(--gray);
   text-decoration:line-through;opacity:.6;font-weight:500;
 }
 .price-new{
-  font-family:'Cormorant Garamond','Noto Serif KR',serif;font-variant-numeric:lining-nums;
+  font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-variant-numeric:lining-nums;
   font-size:2.4rem;color:var(--pink);font-weight:700;
   letter-spacing:-.02em;line-height:1;
 }
@@ -323,7 +323,7 @@ body{font-family:'Nunito','Noto Sans KR','Apple SD Gothic Neo',sans-serif;backgr
   box-shadow:0 14px 40px rgba(220,20,120,.36);
 }
 .btn-final-price{
-  font-family:'Cormorant Garamond','Noto Serif KR',serif;font-variant-numeric:lining-nums;
+  font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-variant-numeric:lining-nums;
   font-size:1.2rem;font-weight:700;
   padding-left:12px;border-left:1px solid rgba(255,255,255,.32);
 }
@@ -370,8 +370,7 @@ body{font-family:'Nunito','Noto Sans KR','Apple SD Gothic Neo',sans-serif;backgr
   .pal-color{width:52px;height:52px}
 }
 
-/* 라틴 세리프(Cormorant)는 기본 숫자가 올드스타일이라 3, 4, 7 이 기준선 아래로 내려갑니다.
-   한글은 Noto Serif KR 로 받아 세리프끼리 짝을 맞추고, 숫자는 아래 선언으로 라이닝 고정합니다. */
+/* 글꼴: 사이트 전체를 Pretendard 한 가지로 통일합니다 (제목·본문·숫자 공통). */
 </style>
 <script src="/skopos-track.js" defer></script>
 </head>

@@ -140,7 +140,7 @@
     var css = ''
       + '.sk-gate{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;padding:24px;'
       + 'background:rgba(15,15,26,.72);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);'
-      + 'font-family:"Apple SD Gothic Neo","Noto Sans KR",sans-serif;overflow-y:auto}'
+      + 'font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,system-ui,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;overflow-y:auto}'
       + '.sk-gate *{box-sizing:border-box}'
       + '.sk-card{width:100%;max-width:400px;background:#fff;border-radius:20px;padding:30px 28px;box-shadow:0 12px 48px rgba(0,0,0,.35);animation:skIn .3s ease}'
       + '@keyframes skIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}'
