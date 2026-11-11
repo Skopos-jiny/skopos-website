@@ -1,0 +1,10 @@
+/* Shared SDTI type-to-character map. Keep aligned with the basic quiz. */
+(function(root){
+ 'use strict';
+ const rows=[['sanctuary_deep','s_deep','포근','이불 속 치즈 고양이'],['sanctuary_zen','s_zen','다온','찻잔 든 흰 토끼'],['nature_forest','n_forest','초롱','몬스테라 잎 우산 개구리'],['nature_earth','n_earth','도톨','털실 든 다람쥐'],['luxe_royal','l_royal','금결','왕관 쓴 여우'],['luxe_gallery','l_gallery','지음','안경 쓴 부엉이'],['artistic_wild','a_wild','알록','붓 든 앵무새'],['artistic_indie','a_indie','필로','필름 카메라 강아지'],['minimal_pure','m_pure','단정','단정한 펭귄'],['minimal_grid','m_grid','반듯','자를 든 비버'],['cozy_hearth','c_hearth','따숨','목도리 두른 곰'],['cozy_family','c_family','도란·오손','손잡은 수달 둘']];
+ function get(id){const row=rows.find(r=>r[0]===id||r[1]===id);return row?{id:row[0],src:'/quiz/chars/'+row[1]+'.webp',name:row[2],alt:row[2]+', '+row[3]}:null;}
+ function html(id,size=80){const c=get(id);size=Math.max(24,Math.min(400,Number(size)||80));if(!c)return '<span aria-label="유형 캐릭터 확인 필요" style="font-size:14px">SDTI</span>';return '<img class="sdti-character" src="'+c.src+'" alt="'+c.alt+'" width="'+size+'" height="'+size+'" style="display:inline-block;object-fit:contain;vertical-align:middle;max-width:100%" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><span hidden style="font-size:14px">'+c.name+'</span>';}
+ async function load(id){const c=get(id);if(!c)return null;return new Promise(resolve=>{const img=new Image();const timeout=setTimeout(()=>resolve(null),8000);img.onload=()=>{clearTimeout(timeout);resolve(img)};img.onerror=()=>{clearTimeout(timeout);resolve(null)};img.src=c.src;});}
+ async function ready(element){await Promise.all([...element.querySelectorAll('img.sdti-character')].map(img=>img.complete?Promise.resolve():new Promise(resolve=>{const timer=setTimeout(resolve,8000);const done=()=>{clearTimeout(timer);resolve()};img.addEventListener('load',done,{once:true});img.addEventListener('error',done,{once:true});})));}
+ const api={get,html,load,ready};if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.SkoposCharacters=api;
+})(typeof globalThis!=='undefined'?globalThis:this);

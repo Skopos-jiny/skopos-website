@@ -141,6 +141,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
 <script src="/skopos-track.js" defer></script>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<script src="/skopos-characters.js"></script>
 </head>
 <body>
 
@@ -316,7 +317,7 @@ function makeResultCard(r){
     ? `<button class="btn-sm btn-pdf" onclick="redownloadPDF('${r.result_type}','${r.result_name||t.name}')" title="PDF 리포트 다운로드">📄 PDF 저장</button>`
     : '';
   return `<div class="result-card">
-    <span class="result-emoji">${t.emoji}</span>
+    <span class="result-emoji">${SkoposCharacters.html(r.result_type,64)}</span>
     <div class="result-info">
       <div class="result-type">${t.name}</div>
       <div class="result-meta">${r.quiz_type||'기초'} 검사 · ${date}</div>
