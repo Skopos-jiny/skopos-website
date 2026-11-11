@@ -565,6 +565,10 @@ nav.scrolled{background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border-
 .type-card:hover{transform:translateY(-4px);box-shadow:var(--sh-lg);border-color:var(--tc,var(--pink))}
 .type-card:hover::before{opacity:1}
 .type-emoji{font-size:1.9rem;margin-bottom:10px;line-height:1}
+.type-char{width:68px;height:68px;margin-bottom:10px}
+.type-char img{width:100%;height:100%;display:block;object-fit:contain}
+.type-charname{font-size:.74rem;font-weight:800;color:var(--tc,var(--pink));margin-bottom:3px;letter-spacing:-.01em}
+.type-charname span{font-weight:500;color:var(--gray);margin-left:5px}
 .type-name{font-size:.92rem;font-weight:800;margin-bottom:5px;letter-spacing:-.01em}
 .type-desc{font-size:.77rem;color:var(--gray);line-height:1.5;min-height:2.3em}
 .type-tag{display:inline-block;font-size:.67rem;font-weight:700;padding:3px 10px;border-radius:20px;margin-top:10px;background:var(--tc-bg,var(--pink-lt));color:var(--tc,var(--pink));letter-spacing:-.005em}
@@ -903,6 +907,7 @@ footer{background:var(--dark);color:rgba(255,255,255,.5);padding:52px 24px 36px}
   .type-grid{grid-template-columns:1fr 1fr;gap:10px}
   .type-card{padding:18px 14px}
   .type-emoji{font-size:1.6rem}
+  .type-char{width:58px;height:58px}
   .type-name{font-size:.85rem}
   .type-desc{font-size:.72rem}
   .type-group-legend{gap:6px 10px;padding:12px 14px}
@@ -928,6 +933,9 @@ footer{background:var(--dark);color:rgba(255,255,255,.5);padding:52px 24px 36px}
   .type-grid{grid-template-columns:1fr 1fr;gap:8px}
   .type-card{padding:14px 12px}
   .type-emoji{font-size:1.5rem;margin-bottom:6px}
+  .type-char{width:50px;height:50px;margin-bottom:6px}
+  .type-charname{font-size:.68rem}
+  .type-charname span{display:block;margin-left:0;font-size:.62rem}
   .type-name{font-size:.8rem;margin-bottom:3px}
   .type-desc{font-size:.68rem;min-height:auto}
   .type-tag{font-size:.62rem;padding:2px 8px}
@@ -1172,7 +1180,7 @@ em{font-style:normal}
     <div class="s-head">
       <div class="s-eye">12가지 공간 욕구 유형</div>
       <h2 class="s-title">나는 어떤 공간 유형일까?</h2>
-      <p class="s-sub">하나가 정답은 아니에요. 6개의 큰 그룹 × 각 2가지 결로 나뉘는 <strong>12가지 유형</strong> 중<br>내 결에 가장 가까운 것을 찾아보세요.</p>
+      <p class="s-sub">하나가 정답은 아니에요. 6개의 큰 그룹 × 각 2가지 결로 나뉘는 <strong>12가지 유형</strong>마다<br>나를 닮은 공간 캐릭터가 있어요. 내 결에 가장 가까운 것을 찾아보세요.</p>
     </div>
 
     <!-- 그룹별 라벨 표시용 -->
@@ -1188,7 +1196,8 @@ em{font-style:normal}
     <div class="type-grid">
       <!-- 1. sanctuary_deep — 고요한 회복형 -->
       <a class="type-card" href="skopos_quiz.html" style="--tc:var(--indigo);--tc-bg:rgba(92,107,192,.1)">
-        <div class="type-emoji">🌙</div>
+        <div class="type-char"><img src="quiz/chars/s_deep.webp" alt="포근, 이불 속 치즈 고양이" width="512" height="512" loading="lazy" decoding="async"></div>
+        <div class="type-charname">포근<span>이불 속 치즈 고양이</span></div>
         <div class="type-name">고요한 회복형</div>
         <div class="type-desc">하루 동안 쌓인 자극을 집에서 천천히 내려놓고 싶은 당신</div>
         <div class="type-tag">간접조명 · 방음 · 히든수납</div>
@@ -1196,7 +1205,8 @@ em{font-style:normal}
 
       <!-- 2. sanctuary_zen — 비움 추구형 -->
       <a class="type-card" href="skopos_quiz.html" style="--tc:var(--indigo);--tc-bg:rgba(92,107,192,.1)">
-        <div class="type-emoji">🤍</div>
+        <div class="type-char"><img src="quiz/chars/s_zen.webp" alt="다온, 찻잔 든 흰 토끼" width="512" height="512" loading="lazy" decoding="async"></div>
+        <div class="type-charname">다온<span>찻잔 든 흰 토끼</span></div>
         <div class="type-name">비움 추구형</div>
         <div class="type-desc">물건을 하나 덜어낼 때마다 마음이 홀가분해지는 당신</div>
         <div class="type-tag">미니멀 · 여백 · 자연광</div>
@@ -1204,7 +1214,8 @@ em{font-style:normal}
 
       <!-- 3. nature_forest — 초록 충전형 -->
       <a class="type-card" href="skopos_quiz.html" style="--tc:var(--green);--tc-bg:rgba(140,180,80,.1)">
-        <div class="type-emoji">🌿</div>
+        <div class="type-char"><img src="quiz/chars/n_forest.webp" alt="초롱, 몬스테라 잎 우산 개구리" width="512" height="512" loading="lazy" decoding="async"></div>
+        <div class="type-charname">초롱<span>몬스테라 잎 우산 개구리</span></div>
         <div class="type-name">초록 충전형</div>
         <div class="type-desc">화분 하나로 집의 공기가 달라지는 걸 느끼는 당신</div>
         <div class="type-tag">식물 · 원목 · 라탄</div>
@@ -1212,7 +1223,8 @@ em{font-style:normal}
 
       <!-- 4. nature_earth — 핸드메이드 감성형 -->
       <a class="type-card" href="skopos_quiz.html" style="--tc:var(--green);--tc-bg:rgba(140,180,80,.1)">
-        <div class="type-emoji">🪴</div>
+        <div class="type-char"><img src="quiz/chars/n_earth.webp" alt="도톨, 털실 든 다람쥐" width="512" height="512" loading="lazy" decoding="async"></div>
+        <div class="type-charname">도톨<span>털실 든 다람쥐</span></div>
         <div class="type-name">핸드메이드 감성형</div>
         <div class="type-desc">손자국이 남은 그릇과 자연 소재에 마음이 가는 당신</div>
         <div class="type-tag">테라코타 · 황마 · 도자</div>
@@ -1220,7 +1232,8 @@ em{font-style:normal}
 
       <!-- 5. luxe_royal — 품격 감각형 -->
       <a class="type-card" href="skopos_quiz.html" style="--tc:var(--orange);--tc-bg:rgba(240,160,20,.1)">
-        <div class="type-emoji">✨</div>
+        <div class="type-char"><img src="quiz/chars/l_royal.webp" alt="금결, 왕관 쓴 여우" width="512" height="512" loading="lazy" decoding="async"></div>
+        <div class="type-charname">금결<span>왕관 쓴 여우</span></div>
         <div class="type-name">품격 감각형</div>
         <div class="type-desc">소재 하나, 마감 하나의 차이를 알아보는 당신</div>
         <div class="type-tag">마블 · 황동 · 벨벳</div>
@@ -1228,7 +1241,8 @@ em{font-style:normal}
 
       <!-- 6. luxe_gallery — 갤러리 큐레이터형 -->
       <a class="type-card" href="skopos_quiz.html" style="--tc:var(--orange);--tc-bg:rgba(240,160,20,.1)">
-        <div class="type-emoji">🖼️</div>
+        <div class="type-char"><img src="quiz/chars/l_gallery.webp" alt="지음, 안경 쓴 부엉이" width="512" height="512" loading="lazy" decoding="async"></div>
+        <div class="type-charname">지음<span>안경 쓴 부엉이</span></div>
         <div class="type-name">갤러리 큐레이터형</div>
         <div class="type-desc">집이 한 장면처럼 큐레이션되어야 하는 당신</div>
         <div class="type-tag">아트워크 · 스포트조명</div>
@@ -1236,7 +1250,8 @@ em{font-style:normal}
 
       <!-- 7. artistic_wild — 개성 표현형 -->
       <a class="type-card" href="skopos_quiz.html" style="--tc:#E53935;--tc-bg:rgba(229,57,53,.1)">
-        <div class="type-emoji">🎨</div>
+        <div class="type-char"><img src="quiz/chars/a_wild.webp" alt="알록, 붓 든 앵무새" width="512" height="512" loading="lazy" decoding="async"></div>
+        <div class="type-charname">알록<span>붓 든 앵무새</span></div>
         <div class="type-name">개성 표현형</div>
         <div class="type-desc">트렌드보다 내 취향과 이야기가 중요한 당신</div>
         <div class="type-tag">갤러리월 · 빈티지 믹스</div>
@@ -1244,7 +1259,8 @@ em{font-style:normal}
 
       <!-- 8. artistic_indie — 빈티지 스토리형 -->
       <a class="type-card" href="skopos_quiz.html" style="--tc:#E53935;--tc-bg:rgba(229,57,53,.1)">
-        <div class="type-emoji">🕰️</div>
+        <div class="type-char"><img src="quiz/chars/a_indie.webp" alt="필로, 필름 카메라 강아지" width="512" height="512" loading="lazy" decoding="async"></div>
+        <div class="type-charname">필로<span>필름 카메라 강아지</span></div>
         <div class="type-name">빈티지 스토리형</div>
         <div class="type-desc">시간의 흔적이 담긴 물건에 마음이 가는 당신</div>
         <div class="type-tag">빈티지 · 레이어드</div>
@@ -1252,7 +1268,8 @@ em{font-style:normal}
 
       <!-- 9. minimal_pure — 순수 미니멀형 -->
       <a class="type-card" href="skopos_quiz.html" style="--tc:var(--blue);--tc-bg:rgba(0,140,220,.1)">
-        <div class="type-emoji">◻️</div>
+        <div class="type-char"><img src="quiz/chars/m_pure.webp" alt="단정, 단정한 펭귄" width="512" height="512" loading="lazy" decoding="async"></div>
+        <div class="type-charname">단정<span>단정한 펭귄</span></div>
         <div class="type-name">순수 미니멀형</div>
         <div class="type-desc">비어 있는 카운터와 단정한 선반이 편안한 당신</div>
         <div class="type-tag">올화이트 · 완벽 정돈</div>
@@ -1260,7 +1277,8 @@ em{font-style:normal}
 
       <!-- 10. minimal_grid — 구조·정렬 추구형 -->
       <a class="type-card" href="skopos_quiz.html" style="--tc:var(--blue);--tc-bg:rgba(0,140,220,.1)">
-        <div class="type-emoji">⬛</div>
+        <div class="type-char"><img src="quiz/chars/m_grid.webp" alt="반듯, 자를 든 비버" width="512" height="512" loading="lazy" decoding="async"></div>
+        <div class="type-charname">반듯<span>자를 든 비버</span></div>
         <div class="type-name">구조·정렬 추구형</div>
         <div class="type-desc">가구가 살짝 어긋나 있어도 신경 쓰이는 당신</div>
         <div class="type-tag">블랙스틸 · 모듈수납</div>
@@ -1268,7 +1286,8 @@ em{font-style:normal}
 
       <!-- 11. cozy_hearth — 포근한 회복형 -->
       <a class="type-card" href="skopos_quiz.html" style="--tc:var(--coral);--tc-bg:rgba(255,112,67,.1)">
-        <div class="type-emoji">🛋️</div>
+        <div class="type-char"><img src="quiz/chars/c_hearth.webp" alt="따숨, 목도리 두른 곰" width="512" height="512" loading="lazy" decoding="async"></div>
+        <div class="type-charname">따숨<span>목도리 두른 곰</span></div>
         <div class="type-name">포근한 회복형</div>
         <div class="type-desc">부드럽게 감싸주는 따뜻한 공간이 어울리는 당신</div>
         <div class="type-tag">부클레 · 러그 · 캔들</div>
@@ -1276,7 +1295,8 @@ em{font-style:normal}
 
       <!-- 12. cozy_family — 함께하는 공간형 -->
       <a class="type-card" href="skopos_quiz.html" style="--tc:var(--coral);--tc-bg:rgba(255,112,67,.1)">
-        <div class="type-emoji">🏡</div>
+        <div class="type-char"><img src="quiz/chars/c_family.webp" alt="도란과 오손, 손잡은 수달 둘" width="512" height="512" loading="lazy" decoding="async"></div>
+        <div class="type-charname">도란·오손<span>손잡은 수달 둘</span></div>
         <div class="type-name">함께하는 공간형</div>
         <div class="type-desc">집에 사람이 모일 때 가장 따뜻해지는 당신</div>
         <div class="type-tag">다이닝 · 오픈키친</div>
