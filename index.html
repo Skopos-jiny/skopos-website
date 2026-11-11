@@ -786,9 +786,19 @@ nav.scrolled{background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border-
 
 /* ── SCIENCE ── */
 .sci-grid{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center}
-.sci-quote{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-variant-numeric:lining-nums;font-size:1.9rem;font-weight:300;color:var(--dark);line-height:1.55;margin-bottom:22px;font-style:normal}
-.sci-quote strong{color:var(--pink);font-style:normal;font-weight:500}
-.sci-body{font-size:.92rem;color:var(--gray);line-height:1.9}
+.sci-quote{font-size:1.72rem;font-weight:700;color:var(--dark);line-height:1.5;letter-spacing:-.03em;margin:0 0 26px;font-style:normal;word-break:keep-all}
+.sci-quote strong{color:var(--pink);font-style:normal;font-weight:800}
+.sci-story{background:#fff;border:1px solid rgba(15,15,26,.07);border-radius:18px;padding:24px 26px;box-shadow:0 10px 28px rgba(15,15,26,.05)}
+.sci-story-label{display:inline-block;font-size:.72rem;font-weight:800;color:var(--pink);background:rgba(220,20,120,.07);padding:4px 10px;border-radius:50px;margin-bottom:12px;letter-spacing:.02em}
+.sci-story p{font-size:.9rem;color:var(--gray);line-height:1.85;margin:0;word-break:keep-all}
+.sci-story p strong{color:var(--dark);font-weight:700}
+.sci-chips{display:flex;flex-wrap:wrap;gap:8px;margin:24px 0 14px}
+.sci-chips span{font-size:.78rem;font-weight:700;color:var(--dark);background:rgba(15,15,26,.04);border:1px solid rgba(15,15,26,.07);padding:6px 12px;border-radius:50px}
+.sci-conclude{font-size:.95rem;color:var(--gray);line-height:1.85;margin:0;word-break:keep-all}
+.sci-conclude strong{color:var(--dark);font-weight:700}
+.sci-conclude em{display:block;margin-top:10px;font-style:normal;font-weight:800;color:var(--pink)}
+@media(max-width:600px){.sci-quote{font-size:1.38rem;margin-bottom:20px}.sci-story{padding:20px}.sci-chips{margin-top:20px}}
+.sci-body{font-size:.92rem;color:var(--gray);line-height:1.9;word-break:keep-all}
 .sci-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:36px}
 .sci-card{border-radius:14px;padding:20px;border:1.5px solid;transition:all .25s var(--ez)}
 .sci-card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(15,15,26,.06)}
@@ -798,7 +808,7 @@ nav.scrolled{background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border-
 .sci-card.c4{border-color:rgba(0,140,220,.22);background:rgba(0,140,220,.04)}
 .sci-icon{font-size:1.4rem;margin-bottom:8px}
 .sci-name{font-size:.88rem;font-weight:800;color:var(--dark);margin-bottom:4px;letter-spacing:-.01em}
-.sci-desc{font-size:.77rem;color:var(--gray);line-height:1.5}
+.sci-desc{font-size:.77rem;color:var(--gray);line-height:1.5;word-break:keep-all}
 
 /* ── REVIEWS ── */
 .reviews-marquee{overflow:hidden;margin-top:52px;position:relative}
@@ -1318,17 +1328,22 @@ em{font-style:normal}
       <div>
         <div class="s-eye" style="text-align:left">학문적 근거</div>
         <h2 class="s-title" style="text-align:left;margin-top:12px;margin-bottom:16px">4가지 학문이<br>뒷받침합니다</h2>
-        <p class="sci-body">취향과 욕구를 단순한 느낌이 아닌 과학적 구조로 분석합니다. 환경심리학·공간심리·뇌과학·긍정심리학의 연구 결과를 기반으로 개인의 공간 욕구 구조를 진단합니다.</p>
+        <p class="sci-body">취향과 욕구를 단순한 느낌이 아닌 과학적 구조로 분석합니다. 환경심리학·공간심리학·뇌과학·긍정심리학의 연구 결과를 기반으로 개인의 공간 욕구 구조를 진단합니다.</p>
         <div class="sci-cards">
           <div class="sci-card c1"><div class="sci-icon">🧠</div><div class="sci-name">환경심리학</div><div class="sci-desc">공간이 행동·감정에 미치는 영향</div></div>
           <div class="sci-card c2"><div class="sci-icon">🌿</div><div class="sci-name">공간심리학</div><div class="sci-desc">물리 공간과 심리 상태의 관계</div></div>
           <div class="sci-card c3"><div class="sci-icon">⚡</div><div class="sci-name">뇌과학</div><div class="sci-desc">신경계 감수성과 자극 처리 방식</div></div>
-          <div class="sci-card c4"><div class="sci-icon">💛</div><div class="sci-name">긍정심리학</div><div class="sci-desc">웰빙과 공간 욕구의 플로리시 이론</div></div>
+          <div class="sci-card c4"><div class="sci-icon">💛</div><div class="sci-name">긍정심리학</div><div class="sci-desc">웰빙과 플로리시(번영) 이론</div></div>
         </div>
       </div>
       <div>
-        <p class="sci-quote">"소파를 고르기 전에,<br>조명을 바꾸기 전에,<br><strong>나의 욕구를 먼저 아는 것</strong>이 시작입니다."</p>
-        <p class="sci-body">1955년, 소아마비 백신을 개발한 조나스 솔크 박사는 연구실에서 풀리지 않던 문제의 실마리를 이탈리아 수도원 안뜰에서 발견했습니다. 공간이 달랐기 때문입니다.<br><br>가구 배치, 소품 선택, 조명 색온도, 소재의 질감, 이 모든 결정이 실패하는 이유는 취향을 모르기 때문이 아닙니다. 나의 공간 욕구 구조를 모르기 때문입니다. 스코포스는 그 질문에서 시작합니다.</p>
+        <p class="sci-quote">소파를 고르기 전에,<br>조명을 바꾸기 전에,<br><strong>나의 욕구를 먼저 아는 것</strong>이<br>시작입니다.</p>
+        <div class="sci-story">
+          <span class="sci-story-label">공간이 생각을 바꾼 이야기</span>
+          <p>소아마비 백신을 개발한 <strong>조너스 소크 박사</strong>는 연구가 막혔을 때 이탈리아 아시시의 수도원을 찾았고, 그곳에서 새로운 생각이 열렸다고 회고했습니다. 이 경험은 훗날 <strong>소크 연구소의 건축</strong>으로 이어졌습니다.</p>
+        </div>
+        <div class="sci-chips" aria-hidden="true"><span>가구 배치</span><span>소품 선택</span><span>조명 색온도</span><span>소재의 질감</span></div>
+        <p class="sci-conclude">이런 결정이 자꾸 어긋나는 건 취향이 없어서가 아니라, <strong>나의 공간 욕구 구조를 모르기 때문</strong>입니다.<em>스코포스는 그 질문에서 시작합니다.</em></p>
       </div>
     </div>
   </div>
