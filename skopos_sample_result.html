@@ -58,6 +58,8 @@
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var(--bg);color:var(--dark);overflow-x:hidden;-webkit-font-smoothing:antialiased;line-height:1.6}
+h1,h2,h3,p,small,.result-name,.result-desc,.rx-item{word-break:keep-all;overflow-wrap:break-word}
+@media(max-width:600px){.hero-sub br,.final-cta-sub br{display:none}}
 
 /* ── 상단 네비 ── */
 .nav-bar{position:sticky;top:0;z-index:100;background:rgba(247,248,252,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
@@ -107,6 +109,10 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFo
 .result-hero::after{content:'';position:absolute;bottom:-60px;left:-80px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle, rgba(0,140,220,.12), transparent 72%);pointer-events:none}
 .result-hero-tag{position:relative;z-index:1;font-size:.7rem;letter-spacing:.25em;color:var(--gold);font-weight:800;text-transform:uppercase;margin-bottom:14px}
 .result-emoji{position:relative;z-index:1;font-size:3.6rem;display:inline-block;margin-bottom:14px;filter:drop-shadow(0 8px 24px rgba(0,0,0,.3))}
+.result-char{position:relative;z-index:1;display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.result-char img{width:88px;height:88px;object-fit:contain;filter:drop-shadow(0 10px 22px rgba(0,0,0,.35))}
+.result-char-name{font-size:1.15rem;font-weight:800;color:#fff;letter-spacing:-.01em;line-height:1.3}
+.result-char-name small{display:block;font-size:.74rem;font-weight:600;color:rgba(255,255,255,.62);margin-top:3px}
 .result-prefix{position:relative;z-index:1;display:block;font-size:1.05rem;color:rgba(255,255,255,.72);font-weight:500;margin-bottom:8px;letter-spacing:-.01em}
 .result-name{position:relative;z-index:1;font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-variant-numeric:lining-nums;font-size:clamp(1.8rem,4.5vw,2.6rem);font-weight:500;line-height:1.25;letter-spacing:-.02em;margin-bottom:14px}
 .result-name .hl{color:var(--pink-soft);font-weight:600}
@@ -345,6 +351,7 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFo
   .container{padding:20px 18px 60px}
   .result-hero{padding:36px 22px 30px}
   .result-emoji{font-size:3rem}
+  .result-char img{width:72px;height:72px}
   .scores-card{padding:24px 18px}
   .score-row{gap:10px}
   .score-label{min-width:90px;font-size:.78rem}
@@ -390,7 +397,7 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFo
 <section class="hero">
   <div class="hero-tag">✦ 정밀 검사 결과 샘플</div>
   <h1 class="hero-title">29,900원으로 받는 결과,<br><em>실제로 어떻게 생겼을까요?</em></h1>
-  <p class="hero-sub">결제 전에 어떤 정도의 결과를 받는지 미리 확인하실 수 있도록,<br>실제 검사 결과지의 핵심 부분을 발췌해 샘플로 보여드려요.</p>
+  <p class="hero-sub">결제 전에 어떤 정도의 결과를 받는지 미리 확인하실 수 있도록, <br>실제 검사 결과지의 핵심 부분을 발췌해 샘플로 보여드려요.</p>
   <div class="sample-banner">
     <span class="sample-banner-icon">💡</span>
     <span>아래 샘플은 <strong style="color:var(--pink)">'고요한 회복형'</strong> 결과지의 일부입니다. 실제 검사를 받으시면 본인 유형에 맞춰 모든 항목이 개인화됩니다.</span>
@@ -410,7 +417,7 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFo
   <!-- 결과 히어로 카드 (다크) -->
   <div class="result-hero">
     <div class="result-hero-tag">✦ SDTI 정밀 검사 결과 · 내 집 취향 리포트</div>
-    <span class="result-emoji">🌙</span>
+    <div class="result-char"><img src="quiz/chars/s_deep.webp" alt="포근, 이불 속 치즈 고양이" width="512" height="512" decoding="async"><div class="result-char-name">포근<small>이불 속 치즈 고양이</small></div></div>
     <span class="result-prefix">집에 오면</span>
     <h2 class="result-name"><span class="hl">조용히 긴장을 풀고 싶은</span> 유형</h2>
     <div class="result-plain">고요한 회복형</div>
@@ -436,7 +443,7 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFo
       <span class="score-dots">
         <span class="score-dot filled">●</span><span class="score-dot filled">●</span><span class="score-dot filled">●</span><span class="score-dot filled">●</span><span class="score-dot filled">●</span>
       </span>
-      <span class="score-tier">매우강한</span>
+      <span class="score-tier">매우 강한 욕구</span>
     </div>
     <div class="score-row" style="--dot-color:#E91E8C">
       <span class="score-icon">🧠</span>
@@ -444,7 +451,7 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFo
       <span class="score-dots">
         <span class="score-dot filled">●</span><span class="score-dot filled">●</span><span class="score-dot filled">●</span><span class="score-dot filled">●</span><span class="score-dot empty">○</span>
       </span>
-      <span class="score-tier">뚜렷한</span>
+      <span class="score-tier">뚜렷한 욕구</span>
     </div>
     <div class="score-row" style="--dot-color:#FF9800">
       <span class="score-icon">📐</span>
@@ -452,7 +459,7 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFo
       <span class="score-dots">
         <span class="score-dot filled">●</span><span class="score-dot filled">●</span><span class="score-dot filled">●</span><span class="score-dot filled">●</span><span class="score-dot empty">○</span>
       </span>
-      <span class="score-tier">뚜렷한</span>
+      <span class="score-tier">뚜렷한 욕구</span>
     </div>
     <div class="score-row" style="--dot-color:#29B6F6">
       <span class="score-icon">🎨</span>
@@ -460,7 +467,7 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFo
       <span class="score-dots">
         <span class="score-dot filled">●</span><span class="score-dot filled">●</span><span class="score-dot filled">●</span><span class="score-dot empty">○</span><span class="score-dot empty">○</span>
       </span>
-      <span class="score-tier">균형잡힌</span>
+      <span class="score-tier">균형 잡힌</span>
     </div>
     <div class="score-row" style="--dot-color:#AB47BC">
       <span class="score-icon">☕</span>
@@ -468,7 +475,7 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFo
       <span class="score-dots">
         <span class="score-dot filled">●</span><span class="score-dot filled">●</span><span class="score-dot filled">●</span><span class="score-dot empty">○</span><span class="score-dot empty">○</span>
       </span>
-      <span class="score-tier">균형잡힌</span>
+      <span class="score-tier">균형 잡힌</span>
     </div>
     <div class="score-row" style="--dot-color:#7CB342">
       <span class="score-icon">🏺</span>
@@ -476,7 +483,7 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFo
       <span class="score-dots">
         <span class="score-dot filled">●</span><span class="score-dot filled">●</span><span class="score-dot empty">○</span><span class="score-dot empty">○</span><span class="score-dot empty">○</span>
       </span>
-      <span class="score-tier">은은한</span>
+      <span class="score-tier">은은한 정도</span>
     </div>
     <div class="score-row" style="--dot-color:#26A69A">
       <span class="score-icon">✨</span>
@@ -484,7 +491,7 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFo
       <span class="score-dots">
         <span class="score-dot filled">●</span><span class="score-dot filled">●</span><span class="score-dot empty">○</span><span class="score-dot empty">○</span><span class="score-dot empty">○</span>
       </span>
-      <span class="score-tier">은은한</span>
+      <span class="score-tier">은은한 정도</span>
     </div>
     <div class="score-row" style="--dot-color:#FF7043">
       <span class="score-icon">🏡</span>
@@ -492,7 +499,7 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFo
       <span class="score-dots">
         <span class="score-dot filled">●</span><span class="score-dot empty">○</span><span class="score-dot empty">○</span><span class="score-dot empty">○</span><span class="score-dot empty">○</span>
       </span>
-      <span class="score-tier">잔잔한</span>
+      <span class="score-tier">잔잔한 편</span>
     </div>
   </div>
 
@@ -510,7 +517,7 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFo
       <div class="top-icon">🌙</div>
       <div class="top-label">가장 강한 욕구</div>
       <h3 class="top-title">쉼/회복 욕구</h3>
-      <p class="top-body">하루를 살아내고 집에 돌아왔을 때, 신경계가 완전히 꺼지길 바라는 욕구가 매우 강해요. 단순한 휴식이 아니라 <strong>적극적이고 의도된 회복</strong>이 필요한 결입니다. 외부 자극이 차단된 환경에서, 시간을 잊고 나만의 리듬으로 머물 수 있을 때 가장 깊이 충전됩니다.</p>
+      <p class="top-body">하루를 살아내고 집에 돌아왔을 때, 신경계가 완전히 꺼지길 바라는 욕구가 매우 강해요. 단순한 휴식이 아니라 <strong>적극적이고 의도된 회복</strong>이 필요한 편이에요. 외부 자극이 차단된 환경에서, 시간을 잊고 나만의 리듬으로 머물 수 있을 때 가장 깊이 충전됩니다.</p>
       <div class="top-behavior">
         <span class="top-behavior-label">🔍 일상 행동 패턴</span>
         퇴근 후 거실에 들어서면 가장 먼저 큰 등을 끄고 작은 조명만 켜는 편이에요. 주말에 약속이 두 개 이상이면 부담스럽고, 집에 혼자 머무는 시간을 일주일에 최소 하루는 확보하려고 합니다.
@@ -527,7 +534,7 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFo
       <div class="top-icon">🧠</div>
       <div class="top-label">두 번째 강한 욕구</div>
       <h3 class="top-title">빛/소리 민감도</h3>
-      <p class="top-body">남들보다 빛의 강도, 색온도, 외부 소음에 민감하게 반응합니다. 형광등의 흰빛이 거슬리고, 옆집 발소리나 도로의 차 소리가 신경 쓰여요. 이건 예민함이 아니라 <strong>감각 입력의 해상도가 높은 결</strong>입니다.</p>
+      <p class="top-body">남들보다 빛의 강도, 색온도, 외부 소음에 민감하게 반응합니다. 형광등의 흰빛이 거슬리고, 옆집 발소리나 도로의 차 소리가 신경 쓰여요. 이건 예민함이 아니라 <strong>감각을 섬세하게 받아들이는 성향</strong>이에요.</p>
       <div class="top-behavior">
         <span class="top-behavior-label">🔍 일상 행동 패턴</span>
         카페에 들어가면 자동으로 조명이 어두운 자리부터 찾아요. 호텔에 묵을 때 객실 조명을 모두 한 번 점등해보고, 마음에 안 들면 스탠드만 켜는 편입니다.
@@ -544,14 +551,14 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFo
       <div class="top-icon">📐</div>
       <div class="top-label">세 번째 강한 욕구</div>
       <h3 class="top-title">동선/정리 욕구</h3>
-      <p class="top-body">시야에 물건이 들어오면 '처리해야 할 일'로 인식되어 무의식적인 인지 부하가 발생해요. 카운터에 놓인 영양제 통, 식탁 위 우편물이 거슬리는 결입니다. <strong>물건이 많은 것보다, 보이는 것이 적을 때</strong> 마음이 가장 편해요.</p>
+      <p class="top-body">시야에 물건이 들어오면 '처리해야 할 일'로 인식되어 무의식적인 인지 부하가 발생해요. 카운터에 놓인 영양제 통, 식탁 위 우편물이 유독 눈에 걸리는 편이에요. <strong>물건이 많은 것보다, 보이는 것이 적을 때</strong> 마음이 가장 편해요.</p>
       <div class="top-behavior">
         <span class="top-behavior-label">🔍 일상 행동 패턴</span>
         외출하기 전 카운터를 한 번 닦고 나가는 습관이 있어요. 카페에서도 테이블에 자기 짐을 한 곳에 모아두지 않으면 집중이 잘 안 됩니다.
       </div>
       <div class="top-impl">
         <span class="top-impl-label">💡 인테리어 시사점</span>
-        보관함의 70% 이상이 '닫힌 수납'이어야 편안함을 느낍니다. 오픈 선반보다 문 달린 수납장, 시스템 벽장, 키 큰 팬트리에 투자하세요. 옷장 안에 옷이 많아도 닫혀 있으면 괜찮습니다.
+        수납의 대부분이 '닫힌 수납'일 때 편안함을 느껴요. 오픈 선반보다 문 달린 수납장, 시스템 벽장, 키 큰 팬트리에 투자하세요. 옷장 안에 옷이 많아도 닫혀 있으면 괜찮습니다.
       </div>
     </div>
   </div>
@@ -677,9 +684,10 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFo
           <h3 class="rx-title">예산대별 쇼핑 가이드</h3>
         </div>
         <div class="rx-list">
-          <span class="rx-item">~5만원 추천 8개</span>
-          <span class="rx-item">~30만원 추천 12개</span>
-          <span class="rx-item">~100만원 추천 6개</span>
+          <span class="rx-item">가볍게 시작 · 1만~3만 원</span>
+          <span class="rx-item">분위기 바꾸기 · 5만~15만 원</span>
+          <span class="rx-item">눈에 보이는 변화 · 20만~50만 원</span>
+          <span class="rx-item">오래 쓰는 투자 · 100만 원~</span>
         </div>
       </div>
     </div>
@@ -688,7 +696,7 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFo
     <div class="locked-overlay">
       <div class="locked-icon">🔒</div>
       <h3 class="locked-title">이후 챕터는 정밀 검사로 받으실 수 있어요</h3>
-      <p class="locked-sub">바꾸는 순서, 예산대별 쇼핑 가이드, 계절별 가이드, 인스타 공유 카드까지<br>22페이지 PDF에 모두 담겨 있어요.</p>
+      <p class="locked-sub">바꾸는 순서, 예산대별 쇼핑 가이드, 계절별 공간 변화, 함께 사는 사람과의 조율 가이드까지 22페이지 PDF에 담겨 있어요.</p>
       <a class="locked-cta" href="skopos_premium_quiz.html" onclick="if(window.gtag)gtag('event','sample_to_premium_click',{location:'locked'})">
         <span>정밀 검사 시작하기</span>
         <span class="locked-price">29,900원</span>
@@ -696,43 +704,29 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFo
     </div>
   </div>
 
-  <!-- 결과물 6개 그리드 (받는 것 전체) -->
+  <!-- 결과물 4개 (홈 '정밀 검사로 받는 것'과 동일) -->
   <div style="margin-top:60px">
     <h3 style="text-align:center;font-size:1.1rem;font-weight:800;color:var(--dark);margin-bottom:8px;letter-spacing:-.01em">정밀 검사로 받으시는 것</h3>
-    <p style="text-align:center;font-size:.84rem;color:var(--gray);font-weight:600;margin-bottom:24px">샘플의 내용 + 아래 모든 것이 포함됩니다</p>
+    <p style="text-align:center;font-size:.84rem;color:var(--gray);font-weight:600;margin-bottom:24px">샘플의 내용이 내 유형에 맞춰 모두 개인화됩니다</p>
     <div class="deliv-list">
-      <div class="deliv-item">
-        <span class="deliv-item-icon">📄</span>
-        <div class="deliv-item-text">
-          <strong>22페이지 PDF 리포트</strong>
-          <small>평생 다시 꺼내볼 수 있는 디자인 리포트</small>
-        </div>
-      </div>
       <div class="deliv-item">
         <span class="deliv-item-icon">🎯</span>
         <div class="deliv-item-text">
-          <strong>TOP 3 핵심 욕구 분석</strong>
-          <small>8개 영역 중 가장 강한 3가지 심층 풀이</small>
+          <strong>TOP 3 핵심 욕구 정밀 분석</strong>
+          <small>가장 강한 3가지 욕구의 행동 패턴과 인테리어 시사점</small>
         </div>
       </div>
       <div class="deliv-item">
-        <span class="deliv-item-icon">🍃</span>
+        <span class="deliv-item-icon">📄</span>
         <div class="deliv-item-text">
-          <strong>1년 계절 가이드 구독</strong>
-          <small>봄·여름·가을·겨울 4회 이메일 발송</small>
-        </div>
-      </div>
-      <div class="deliv-item">
-        <span class="deliv-item-icon">✨</span>
-        <div class="deliv-item-text">
-          <strong>인스타 공유 카드</strong>
-          <small>이름까지 들어가는 1080×1080 PNG</small>
+          <strong>22페이지 PDF 정밀 리포트</strong>
+          <small>평생 다시 꺼내볼 수 있는 디자인 리포트</small>
         </div>
       </div>
       <div class="deliv-item">
         <span class="deliv-item-icon">📊</span>
         <div class="deliv-item-text">
-          <strong>8개 영역 5단계 척도</strong>
+          <strong>8개 영역 5단계 시각 척도</strong>
           <small>강한 욕구 순으로 정렬된 시각 척도</small>
         </div>
       </div>
@@ -740,7 +734,7 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFo
         <span class="deliv-item-icon">🎨</span>
         <div class="deliv-item-text">
           <strong>공간·소품·컬러 처방</strong>
-          <small>거실·침실·주방 큐레이션 + 5색 팔레트</small>
+          <small>거실·침실·주방 처방 + 5색 팔레트 + 살 것/피할 것</small>
         </div>
       </div>
     </div>
@@ -750,7 +744,7 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFo
   <div class="final-cta">
     <div class="final-cta-tag">✦ 29,900원으로 받는 것</div>
     <h2 class="final-cta-title">내가 어떤 공간에서<br><em>가장 나다운지</em> 알고 싶다면</h2>
-    <p class="final-cta-sub">샘플에서 보신 것의 <strong>실제 본인 유형 버전</strong>을 받으시고,<br>잠긴 챕터까지 22페이지 PDF로 평생 다시 볼 수 있어요.</p>
+    <p class="final-cta-sub">샘플에서 보신 것의 <strong>실제 본인 유형 버전</strong>을 받으시고, <br>잠긴 챕터까지 22페이지 PDF로 평생 다시 볼 수 있어요.</p>
 
     <div class="price-box">
       <span class="price-new">29,900원</span>
@@ -760,7 +754,7 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFo
       <span>정밀 검사 시작하기</span>
       <span class="btn-final-price">29,900원</span>
     </a>
-    <small class="btn-final-sub">💳 신용·체크카드 결제 · 14분 평균 소요</small>
+    <small class="btn-final-sub">💳 신용·체크카드 결제 · 1회 결제 · 영구 열람</small>
 
     <div>
       <a class="btn-back-free" href="skopos_quiz.html" onclick="if(window.gtag)gtag('event','sample_to_free_click')">
