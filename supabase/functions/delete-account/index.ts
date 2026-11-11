@@ -140,7 +140,7 @@ const handler = async (event) => {
     const { error: delErr } = await sb.auth.admin.deleteUser(uid);
     if (delErr) {
       console.error('delete-account: auth delete failed', delErr);
-      return json(500, { success: false, message: '계정 삭제 중 문제가 발생했습니다. contact@skopos.kr 로 문의해 주세요.' });
+      return json(500, { success: false, message: '계정 삭제 중 문제가 발생했습니다. skopos@skopos.kr 로 문의해 주세요.' });
     }
 
     return json(200, {
