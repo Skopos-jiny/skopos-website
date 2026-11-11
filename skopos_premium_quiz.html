@@ -1213,6 +1213,7 @@ html{scroll-behavior:smooth}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
 <script src="/skopos-track.js" defer></script>
+<script src="/skopos-characters.js"></script>
 </head>
 
 <body>
@@ -4585,7 +4586,7 @@ function renderResult(t,scores){
     <div class="r-hero" data-anchor id="sec-hero" data-toc-label="결과 카드">
       <div class="r-hero-tag">✦ SDTI 정밀 검사 결과 · 내 집 취향 리포트</div>
       <span class="r-user-greeting" id="rUserGreeting"></span>
-      <span class="r-emoji">${t.emoji||'✨'}</span>
+      <span class="r-emoji">${SkoposCharacters.html(t.id,144)}</span>
       ${(()=>{
         const parts = splitTypeName(t.name);
         return `
@@ -5317,7 +5318,7 @@ function buildInstaCardHTML(t, scores, userName){
 
       <!-- 메인 결과 영역 -->
       <div style="position:relative;z-index:1;text-align:center;margin-bottom:22px;flex:0 0 auto">
-        <div style="display:inline-flex;align-items:center;justify-content:center;width:108px;height:108px;border-radius:32px;background:linear-gradient(145deg,rgba(255,255,255,.16),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.11);box-shadow:0 14px 32px rgba(0,0,0,.24);font-size:64px;line-height:1;margin-bottom:18px">${heroEmoji}</div>
+        <div style="display:inline-flex;align-items:center;justify-content:center;width:108px;height:108px;border-radius:32px;background:linear-gradient(145deg,rgba(255,255,255,.16),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.11);box-shadow:0 14px 32px rgba(0,0,0,.24);font-size:64px;line-height:1;margin-bottom:18px">${SkoposCharacters.html(t.id,100)}</div>
         <div style="font-size:15px;color:rgba(201,169,110,.86);letter-spacing:.22em;font-weight:900;text-transform:uppercase;margin-bottom:12px">${personLabel}</div>
         <div style="font-size:60px;font-weight:900;line-height:1.1;letter-spacing:0;color:#fff;margin-bottom:14px;text-shadow:0 10px 34px rgba(0,0,0,.22)">${typeName}</div>
         <div style="font-size:22px;color:#F1D48B;font-weight:800;letter-spacing:0;line-height:1.45">${shortCopy}</div>
@@ -5695,7 +5696,9 @@ async function _renderInstaCardCanvas(t, scores, userName){
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillStyle = '#fff';
-  ctx.fillText(heroEmoji, emojiCx, emojiCy + 4);
+  const characterImage = await SkoposCharacters.load(t.id);
+  if(characterImage) ctx.drawImage(characterImage,emojiCx-50,emojiCy-50,100,100);
+  else {ctx.font=`18px ${FONT_KR_EMOJI}`;ctx.fillText(SkoposCharacters.get(t.id)?.name||'SDTI',emojiCx,emojiCy+4);}
 
   // ══════ 8. 사용자 라벨 ══════
   ctx.fillStyle = 'rgba(201,169,110,0.86)';
@@ -6157,6 +6160,7 @@ async function downloadPDF(){
     const captureScale = isIOS() ? 1.5 : 2;
 
     async function capturePage(el){
+      await SkoposCharacters.ready(el);
       // Pretendard 는 글자 범위별로 나눠 받으므로, 캡처할 글자를 먼저 받아둡니다
       if(document.fonts && document.fonts.load){
         try{ await document.fonts.load("16px 'Pretendard Variable'", (el.innerText||'').slice(0,6000) || '가'); }catch(e){}
@@ -6219,7 +6223,7 @@ async function downloadPDF(){
         </div>
         <div style="position:absolute;left:0;right:0;bottom:200px;text-align:center">
           <div style="display:inline-flex;align-items:center;justify-content:center;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(233,30,140,.22),rgba(233,30,140,.08) 60%,transparent 75%)">
-            <span style="font-size:130px;line-height:1">${t.emoji||'✨'}</span>
+            <span style="line-height:1">${SkoposCharacters.html(t.id,260)}</span>
           </div>
         </div>
         <div style="position:absolute;bottom:52px;left:64px;right:64px;border-top:1px solid rgba(255,255,255,.15);padding-top:16px;display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.45)">
