@@ -15,6 +15,7 @@
  }
  start.addEventListener('click',()=>{wantsStart=true;open();});signout.addEventListener('click',async()=>{clear('로그아웃 중입니다.');await client.auth.signOut();signout.hidden=true;clear('로그아웃했습니다. 다시 로그인하여 참여할 수 있습니다.');});
  (async()=>{await status();if(!active)return;try{client=await SkoposAuth.getClient();client.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_OUT'||!session){wantsStart=false;signout.hidden=true;clear('회원가입·로그인 후 무료로 참여할 수 있습니다.');}else{signout.hidden=false;if(wantsStart)setTimeout(open,0);}});await SkoposAuth.guard({passive:true,onReady(){signout.hidden=false;start.textContent='무료 베타 시작하기';if(wantsStart)setTimeout(open,0);}});setInterval(async()=>{if(frame.hidden)return;try{const {data,error}=await client.auth.getUser();if(error||!data.user){clear('로그인이 만료되었습니다. 다시 로그인해 주세요.');}}catch{clear('로그인을 확인하지 못했습니다. 다시 로그인해 주세요.');}},60000);}catch{active=false;start.disabled=true;message.textContent='로그인 서비스를 불러오지 못했습니다. 새로고침해 주세요.';}})();
+ window.addEventListener('message',function(e){if(e.source!==frame.contentWindow)return;if(e.data&&e.data.type==='sdti-interior-exit'){clear('검사를 나왔습니다. 다시 시작할 수 있어요.');signout.hidden=false;}});
 })();
 
 
