@@ -1551,10 +1551,34 @@ let _authed=false;      // 로그인 확인 여부 (guard onReady 에서 true)
 let _pendingResult=null; // 문항은 마쳤고 로그인 대기 중인 결과
 let _currentUser=null;  // 로그인 사용자
 
+// 로그인·회원가입 중 페이지가 새로 열려도(카카오·네이버 이동, 이메일 인증 후 재방문, 새로고침)
+// 마친 검사 결과를 잃지 않도록 브라우저에 잠시 보관 (7일)
+const PENDING_KEY='skopos_free_pending';
+function storePending(type){try{localStorage.setItem(PENDING_KEY,JSON.stringify({id:type.id,ts:Date.now()}));}catch(e){}}
+function clearPending(){try{localStorage.removeItem(PENDING_KEY);}catch(e){}}
+function loadPending(){
+  try{
+    const raw=localStorage.getItem(PENDING_KEY);if(!raw)return null;
+    const p=JSON.parse(raw);
+    if(!p||!p.id||Date.now()-p.ts>7*24*3600*1000){clearPending();return null;}
+    const type=TYPES.find(t=>t.id===p.id);if(!type){clearPending();return null;}
+    return {type, sub:{sub:type.id,name:type.name,plain:type.plain}};
+  }catch(e){return null;}
+}
+function showResultGate(){
+  if(!window.SkoposAuth) return;
+  SkoposAuth.showGate({
+    title:'결과가 준비됐어요',
+    subtitle:'22문항을 모두 마치셨어요.<br>로그인하면 <strong>결과를 바로 확인</strong>하고 계정에 저장해 드려요.<br><small style="color:#8890A4">회원가입 후에도 답변은 그대로 유지돼요.</small>',
+    cta:'로그인하고 결과 보기'
+  });
+}
+
 function startQuiz(){
   // 문항은 로그인 없이 진행 (결과 확인 시점에만 로그인 요청)
   try{ trackEvent('quiz_start',{authed:_authed}); }catch(e){}
   cur=0;ans={};
+  clearPending();
   show('sq');
   renderQ();
 }
@@ -1750,11 +1774,8 @@ function runResult(){
     }else{
       // 결과는 준비됐고, 확인·저장에만 로그인을 요청
       if(window.SkoposAuth){
-        SkoposAuth.showGate({
-          title:'결과가 준비됐어요',
-          subtitle:'22문항을 모두 마치셨어요.<br>로그인하면 <strong>결과를 바로 확인</strong>하고 계정에 저장해 드려요.',
-          cta:'로그인하고 결과 보기'
-        });
+        storePending(type);
+        showResultGate();
         try{ trackEvent('quiz_result_gate_shown', {result_type:type.id}); }catch(e){}
       }else{
         // 인증 모듈을 못 불러온 경우에는 결과를 막지 않음
@@ -1769,6 +1790,7 @@ function revealResult(){
   if(!_pendingResult) return;
   const {type, sub} = _pendingResult;
   _pendingResult = null;
+  clearPending();
   resultType=type;
   resultSub=sub;
   saveResult(type, sub); // 유형 ID 저장 (로그인 상태면 DB 저장)
@@ -2134,6 +2156,7 @@ function closeShareModal(){
   }
 }
 function retryQuiz(){
+  clearPending();
   try{sessionStorage.removeItem('skopos_result');}catch(e){}
   try{sessionStorage.removeItem('skopos_unlocked');}catch(e){}
   try{
@@ -2158,6 +2181,21 @@ window.addEventListener('load',()=>{
       revealResult();
     }
   };
+
+  // 결과 확인 전 로그인·회원가입으로 페이지가 다시 열린 경우: 검사를 다시 하지 않고 이어서 결과 공개
+  const hasShared=new URLSearchParams(window.location.search).has('r');
+  const pending=hasShared?null:loadPending();
+  if(pending && window.SkoposAuth){
+    _pendingResult=pending;
+    show('sl');
+    const t=document.querySelector('#sl .ld-title'); if(t) t.textContent='검사 결과를 이어서 불러오는 중';
+    const sbt=document.querySelector('#sl .ld-sub'); if(sbt) sbt.innerHTML='이미 마치신 22문항 답변으로<br>결과를 준비하고 있어요.';
+    try{ trackEvent('quiz_pending_restored',{result_type:pending.type.id}); }catch(e){}
+    SkoposAuth.guard({ passive:true, onReady:onAuthReady });
+    // 로그인 상태가 아니면 결과 보기 로그인 창을 다시 띄움
+    setTimeout(()=>{ if(_pendingResult && !_authed) showResultGate(); }, 1800);
+    return;
+  }
 
   const found=loadSavedResult();
   if(found){
