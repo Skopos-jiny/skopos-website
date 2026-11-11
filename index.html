@@ -1021,6 +1021,16 @@ em{font-style:normal}
     </div>
   </div>
 </nav>
+<section id="interiorBetaBanner" aria-label="인테리어 검사 무료 베타" style="margin:90px auto 0;max-width:1120px;padding:20px 24px;border:1px solid #efc7dc;border-radius:20px;background:#fff5fa;position:relative;z-index:1">
+  <strong style="color:#b11466">11월 무료 베타 · 회원가입 필수</strong>
+  <h2 style="font-size:clamp(20px,3vw,28px);margin:8px 0">SDTI 인테리어 공간욕구검사</h2>
+  <p style="margin:8px 0">인테리어 전에, 내가 원하는 집의 기준부터. 욕구와 현재 충족을 비교하고 설계 방향을 확인하세요.</p>
+  <p style="font-size:14px">2026.11.01 ~ 11.30 23:59 (한국시간) · 무료 · 자동 결제 없음</p>
+  <a href="/interior-beta" style="display:inline-block;background:#dc1478;color:white;padding:12px 22px;border-radius:28px;text-decoration:none;font-weight:700">회원가입·로그인 후 무료 베타 참여 →</a>
+  <p style="font-size:12px;margin-top:10px">별도 상담용 베타입니다. 답변·결과는 마이페이지에 자동 저장되지 않으므로 PDF로 저장해 주세요.</p>
+</section>
+<script>fetch('/api/interior-beta',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(s=>{if(s&&!s.active)document.getElementById('interiorBetaBanner').hidden=true;}).catch(()=>{});</script>
+
 
 <!-- HERO -->
 <section class="hero">
