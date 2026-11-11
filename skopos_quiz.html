@@ -97,14 +97,14 @@ body{font-family:'Noto Sans KR','Apple SD Gothic Neo',sans-serif;background:var(
 }
 
 /* ── 네비게이션 (프리미엄 톤) ── */
-nav{position:fixed;top:46px;left:0;right:0;z-index:200;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:rgba(255,255,255,.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,0,0,.06)}
+nav{position:absolute;top:0;left:0;right:0;z-index:200;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:rgba(255,255,255,.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,0,0,.06)}
 .cafe-bar{position:fixed;top:0;left:0;right:0;z-index:210;background:linear-gradient(90deg,#E91E8C,#ff5fb0);color:#fff;display:flex;align-items:center;justify-content:center;gap:12px;height:46px;padding:0 20px;font-size:.82rem;font-weight:700;text-decoration:none;transition:filter .2s}
 .cafe-bar:hover{filter:brightness(1.06)}
 .cafe-bar-ic{font-size:1.1rem}
 .cafe-bar-txt{font-weight:600}
 .cafe-bar-txt b{font-weight:900}
 .cafe-bar-cta{background:rgba(255,255,255,.22);border-radius:50px;padding:4px 14px;font-weight:800;white-space:nowrap;font-size:.78rem}
-@media(max-width:680px){.cafe-bar{height:auto;min-height:46px;flex-direction:column;gap:4px;padding:7px 16px;text-align:center;font-size:.72rem}.cafe-bar-txt{line-height:1.35}nav{top:104px}}
+@media(max-width:680px){.cafe-bar{height:auto;min-height:46px;flex-direction:column;gap:4px;padding:7px 16px;text-align:center;font-size:.72rem}.cafe-bar-txt{line-height:1.35}}
 .nav-brand{font-family:'Noto Sans KR','Apple SD Gothic Neo',sans-serif;font-size:1.1rem;font-weight:900;letter-spacing:-.02em;color:var(--dark);text-decoration:none}
 .nav-brand span{color:var(--pink)}
 .nav-right{display:flex;align-items:center;gap:10px}
@@ -116,8 +116,8 @@ nav{position:fixed;top:46px;left:0;right:0;z-index:200;height:60px;display:flex;
 .nl{font-family:'Noto Sans KR','Apple SD Gothic Neo',sans-serif;font-size:1.1rem;font-weight:900;letter-spacing:-.02em;color:var(--dark);text-decoration:none}
 .nb{font-size:.78rem;color:var(--gray);text-decoration:none;transition:color .2s}
 .nb:hover{color:var(--dark)}
-.screen{display:none;min-height:100vh;padding:126px 24px 60px;align-items:center;justify-content:center;flex-direction:column}
-@media(max-width:680px){.q-prog-fixed{top:164px !important}.screen{padding-top:190px}}
+.screen{display:none;min-height:100vh;padding:84px 24px 60px;align-items:center;justify-content:center;flex-direction:column}
+@media(max-width:680px){.screen{padding-top:84px}}
 .screen.active{display:flex}
 
 /* ── INTRO ── */
@@ -801,7 +801,7 @@ em{font-style:normal;}
 
 <!-- QUIZ -->
 <div id="sq" class="screen">
-  <div style="position:fixed;top:106px;left:0;right:0;z-index:100" class="q-prog-fixed">
+  <div style="position:fixed;top:0;left:0;right:0;z-index:100" class="q-prog-fixed">
     <div class="q-prog-wrap"><div class="q-prog-fill" id="qpf" style="width:0%"></div></div>
   </div>
   <div class="qshell">
