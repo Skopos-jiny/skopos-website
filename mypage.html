@@ -521,6 +521,7 @@ async function openWithdraw(){
   if(s.intake_responses) deleteItems += '<li>설문 응답 '+s.intake_responses+'건 (휴대폰 번호 포함)</li>';
   if(s.seasonal_subscriptions) deleteItems += '<li>계절 가이드 구독 정보</li>';
   if(coupleAny) deleteItems += '<li>커플 진단 연결 정보</li>';
+  try{ const ir = await sb.from('interior_results').select('id',{count:'exact',head:true}); if(ir && ir.count) deleteItems += '<li>인테리어 공간욕구검사(베타) 결과 '+ir.count+'건</li>'; }catch(_){}
 
   let keepItems = '';
   if(payTotal){
