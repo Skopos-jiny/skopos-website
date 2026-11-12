@@ -15,6 +15,16 @@
  }
  start.addEventListener('click',()=>{wantsStart=true;open();});signout.addEventListener('click',async()=>{clear('로그아웃 중입니다.');await client.auth.signOut();signout.hidden=true;clear('로그아웃했습니다. 다시 로그인하여 참여할 수 있습니다.');});
  (async()=>{await status();if(!active)return;try{client=await SkoposAuth.getClient();client.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_OUT'||!session){wantsStart=false;signout.hidden=true;clear('회원가입·로그인 후 무료로 참여할 수 있습니다.');}else{signout.hidden=false;if(wantsStart)setTimeout(open,0);}});await SkoposAuth.guard({passive:true,onReady(){signout.hidden=false;start.textContent='무료 베타 시작하기';if(wantsStart)setTimeout(open,0);}});setInterval(async()=>{if(frame.hidden)return;try{const {data,error}=await client.auth.getUser();if(error||!data.user){clear('로그인이 만료되었습니다. 다시 로그인해 주세요.');}}catch{clear('로그인을 확인하지 못했습니다. 다시 로그인해 주세요.');}},60000);}catch{active=false;start.disabled=true;message.textContent='로그인 서비스를 불러오지 못했습니다. 새로고침해 주세요.';}})();
+ // 제한 시간 조정용: 문항별 응답 시간·시간 초과 여부만 이름 없이 기록 (답변 내용·계정 정보는 보내지 않음)
+ window.addEventListener('message',async function(e){
+  if(e.source!==frame.contentWindow||!e.data||e.data.type!=='sdti-interior-timing'||!Array.isArray(e.data.items))return;
+  try{
+   if(!client)return;
+   const lim=Number(e.data.limit)||0;
+   const rows=e.data.items.slice(0,40).filter(x=>/^q\d{2}$/.test(x.q)&&['answered','partial','timeout'].includes(x.st)).map(x=>({event:'interior_q_'+x.st,result_type:x.q,value:Math.max(0,Math.min(600000,Math.round(Number(x.ms)||0))),page:'/interior-beta',utm_content:'limit_'+lim}));
+   if(rows.length)await client.from('funnel_events').insert(rows);
+  }catch(_){}
+ });
  const TYPE_NAMES={sanctuary_deep:'고요한 회복형',sanctuary_zen:'비움 추구형',nature_forest:'초록 충전형',nature_earth:'핸드메이드 감성형',luxe_royal:'품격 감각형',luxe_gallery:'갤러리 큐레이터형',artistic_wild:'개성 표현형',artistic_indie:'빈티지 스토리형',minimal_pure:'순수 미니멀형',minimal_grid:'구조·정렬 추구형',cozy_hearth:'포근한 회복형',cozy_family:'함께하는 공간형'};
  // 검사 화면에서 '정밀검사 결과 불러오기'를 누르면 로그인한 본인의 최근 정밀검사 결과만 전달 (서버에 새로 저장하지 않음)
  window.addEventListener('message',async function(e){
