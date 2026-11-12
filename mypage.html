@@ -137,6 +137,11 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
 .panel{display:none}
 .panel.active{display:block}
 @media(max-width:500px){.result-actions{gap:6px}.btn-sm{font-size:.66rem;padding:5px 10px}}
+#interiorArea{margin-bottom:16px}
+.ir-head{font-size:.86rem;font-weight:800;margin:4px 0 10px;display:flex;align-items:center;gap:8px}
+.ir-beta{font-size:.62rem;font-weight:800;letter-spacing:.08em;padding:3px 7px;border-radius:6px;background:#3b1f55;color:#fff}
+.ir-emoji{font-size:2.2rem;display:flex;align-items:center;justify-content:center;width:64px}
+.ir-del{background:#fff;border:1px solid #e5e5ea;color:#888;cursor:pointer}
 </style>
 <script src="/skopos-track.js" defer></script>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -178,6 +183,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
   <!-- 검사 결과 패널 -->
   <div class="panel active" id="panelResults">
     <div id="coupleArea"></div>
+    <div id="interiorArea"></div>
     <div id="resultsArea"><div class="loading"><div class="spinner"></div>불러오는 중...</div></div>
   </div>
 
@@ -268,7 +274,7 @@ function toast(msg, dur=2800){
   else{badgeEl.textContent='이메일 가입';badgeEl.className='profile-badge badge-email';}
 
   // 병렬 로드
-  await Promise.all([renderResults(session.user), renderPayments(session.user), renderCouple(session)]);
+  await Promise.all([renderResults(session.user), renderPayments(session.user), renderCouple(session), renderInterior(session.user)]);
 })();
 
 // ── 검사 결과 렌더링 ─────────────────────────────────────────
@@ -328,6 +334,26 @@ function makeResultCard(r){
       ${pdfBtn}
     </div>
   </div>`;
+}
+
+// ── 인테리어 공간욕구검사 (베타) 저장 결과 ──────────────────────
+const INTERIOR_DIMS={sensory:'빛·소리 민감도',spatial:'동선·정리 욕구',objects:'소품·살림 취향',color:'색감·소재 취향',life:'집에서 보내는 시간',social:'함께 사는 방식',identity:'나를 드러내는 취향',restore:'쉼·회복 욕구'};
+async function renderInterior(user){
+  const area=document.getElementById('interiorArea');if(!area)return;
+  try{
+    const {data,error}=await sb.from('interior_results').select('id,created_at,updated_at,top,version').eq('user_id',user.id).order('created_at',{ascending:false}).limit(20);
+    if(error||!data||!data.length){area.innerHTML='';return;}
+    area.innerHTML='<div class="ir-head">🏠 SDTI 인테리어 공간욕구검사 <span class="ir-beta">BETA</span></div>'+data.map(r=>{
+      const date=new Date(r.created_at).toLocaleDateString('ko-KR');
+      const top=(r.top||[]).map(id=>INTERIOR_DIMS[id]).filter(Boolean).join(' · ')||'분석 결과 보기';
+      const id=String(r.id).replace(/[^0-9a-f-]/gi,'');
+      return `<div class="result-card ir-card"><span class="result-emoji ir-emoji">🏠</span><div class="result-info"><div class="result-type">${top}</div><div class="result-meta">인테리어 공간욕구검사 (베타) · ${date}</div></div><div class="result-actions"><a class="btn-sm btn-view" href="interior-beta?r=${id}">결과 보기</a><button class="btn-sm ir-del" data-id="${id}">삭제</button></div></div>`;}).join('');
+    area.querySelectorAll('.ir-del').forEach(b=>b.addEventListener('click',async()=>{
+      if(!confirm('이 인테리어 검사 결과를 삭제할까요? 삭제하면 되돌릴 수 없어요.'))return;
+      const {error}=await sb.from('interior_results').delete().eq('id',b.dataset.id).eq('user_id',user.id);
+      if(error){alert('삭제하지 못했어요. 잠시 후 다시 시도해 주세요.');return;}
+      renderInterior(user);}));
+  }catch(_){area.innerHTML='';}
 }
 
 // ── 결제 내역 렌더링 ─────────────────────────────────────────
