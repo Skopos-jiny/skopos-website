@@ -21,7 +21,7 @@
   try{
    if(!client)return;
    const lim=Number(e.data.limit)||0;
-   const rows=e.data.items.slice(0,40).filter(x=>/^q\d{2}$/.test(x.q)&&['answered','partial','timeout'].includes(x.st)).map(x=>({event:'interior_q_'+x.st,result_type:x.q,value:Math.max(0,Math.min(600000,Math.round(Number(x.ms)||0))),page:'/interior-beta',utm_content:'limit_'+lim}));
+   const rows=e.data.items.slice(0,40).filter(x=>/^q\d{2}$/.test(x.q)&&['answered','partial','timeout'].includes(x.st)).map(x=>({event:'interior_q_'+x.st,result_type:x.q,value:Math.max(0,Math.min(600000,Math.round(Number(x.ms)||0))),page:'/interior-beta',utm_content:'limit_'+(Number(x.lim)||lim)}));
    if(rows.length)await client.from('funnel_events').insert(rows);
   }catch(_){}
  });
