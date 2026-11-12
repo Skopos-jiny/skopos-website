@@ -4,7 +4,23 @@
  let active=false,client=null,loading=false,wantsStart=false,expiryTimer=null,generation=0;
  // 저장된 결과 다시 보기: /interior-beta?r=<id>
  const viewId=(()=>{const v=new URLSearchParams(location.search).get('r')||'';return /^[0-9a-f-]{36}$/i.test(v)?v:'';})();if(viewId)wantsStart=true;
- function clear(text){generation++;frame.hidden=true;frame.removeAttribute('srcdoc');document.body.classList.remove('frame-open');start.hidden=false;start.disabled=!(active||viewId);message.textContent=text;clearTimeout(expiryTimer);}
+ // 앱 안 브라우저(카카오톡·인스타그램·네이버 등): 로그인과 PDF 저장이 막힐 수 있어 기본 브라우저로 여는 길을 안내
+ const UA=navigator.userAgent||'',INAPP=/KAKAOTALK|Instagram|FBAN|FBAV|FB_IAB|NAVER\(inapp|DaumApps|Line\/|BAND\/|Barcelona/i.test(UA);
+ const byId=id=>document.getElementById(id);let savedId='',sheetPrint=null;const sheet=byId('inappSheet');
+ const HELP_OPEN="열리지 않으면 화면의 메뉴(⋯ 또는 공유 버튼)에서 '다른 브라우저로 열기'를 고르거나, 링크를 복사해 브라우저 주소창에 붙여 넣어 주세요.";
+ function externalUrl(u){if(/KAKAOTALK/i.test(UA))return 'kakaotalk://web/openExternal?url='+encodeURIComponent(u);if(/Android/i.test(UA))return 'intent://'+u.replace(/^https?:\/\//,'')+'#Intent;scheme=https;package=com.android.chrome;end';if(/iPhone|iPad|iPod/i.test(UA))return 'x-safari-'+u;return '';}
+ function openExternal(u,help){const x=externalUrl(u);if(x){try{window.location.href=x;}catch(_){}}setTimeout(()=>{help.textContent=HELP_OPEN;help.hidden=false;},x?1500:0);}
+ async function copyText(t){try{await navigator.clipboard.writeText(t);return true;}catch(_){try{const a=document.createElement('textarea');a.value=t;a.setAttribute('readonly','');a.style.cssText='position:fixed;top:0;left:0;opacity:0';document.body.appendChild(a);a.select();a.setSelectionRange(0,t.length);const ok=document.execCommand('copy');a.remove();return ok;}catch(e){return false;}}}
+ async function copyLink(u,help){const ok=await copyText(u);help.textContent=ok?'링크를 복사했어요. Chrome이나 Safari 주소창에 붙여 넣어 주세요.':'복사하지 못했어요. 주소창의 주소를 길게 눌러 복사해 주세요.';help.hidden=false;}
+ const pageUrl=()=>location.origin+location.pathname+location.search,resultUrl=id=>location.origin+'/interior-beta?r='+id;
+ function hideSheet(){if(sheet)sheet.hidden=true;sheetPrint=null;}
+ // 앱 안 브라우저에서 PDF 저장을 누르면 바로 인쇄하지 않고, 기본 브라우저에서 저장된 결과를 여는 길을 먼저 보여 준다
+ function showSheet(orig){if(!sheet){if(orig)orig();return;}sheetPrint=orig;const id=savedId||viewId;byId('sheetText').textContent=id?'지금은 앱 안에서 열린 화면이라 PDF 저장이 안 될 수 있어요. 결과는 내 계정에 저장돼 있으니, 기본 브라우저에서 같은 계정으로 로그인하면 이 결과지를 다시 열어 저장할 수 있어요.':'지금은 앱 안에서 열린 화면이라 PDF 저장이 안 될 수 있어요. 먼저 여기서 저장을 시도해 보고, 안 되면 기본 브라우저에서 다시 열어 주세요.';byId('sheetOpen').hidden=byId('sheetCopy').hidden=!id;byId('sheetTry').hidden=!orig;byId('sheetHelp').hidden=true;sheet.hidden=false;(id?byId('sheetOpen'):orig?byId('sheetTry'):byId('sheetClose')).focus();}
+ function guardPrint(){if(!INAPP)return;try{const w=frame.contentWindow;if(!w||w.__sdtiPrintGuard)return;const orig=typeof w.print==='function'?w.print.bind(w):null;w.__sdtiPrintGuard=true;w.print=function(){showSheet(orig);};}catch(_){}}
+ frame.addEventListener('load',guardPrint);
+ if(sheet){byId('sheetOpen').addEventListener('click',()=>openExternal(resultUrl(savedId||viewId),byId('sheetHelp')));byId('sheetCopy').addEventListener('click',()=>copyLink(resultUrl(savedId||viewId),byId('sheetHelp')));byId('sheetTry').addEventListener('click',()=>{const p=sheetPrint;hideSheet();if(p)setTimeout(p,60);});byId('sheetClose').addEventListener('click',hideSheet);sheet.addEventListener('click',e=>{if(e.target===sheet)hideSheet();});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!sheet.hidden)hideSheet();});}
+ if(INAPP&&byId('inappNotice')){byId('inappNotice').hidden=false;byId('inappOpen').addEventListener('click',()=>openExternal(pageUrl(),byId('inappHelp')));byId('inappCopy').addEventListener('click',()=>copyLink(pageUrl(),byId('inappHelp')));}
+ function clear(text){generation++;hideSheet();savedId='';frame.hidden=true;frame.removeAttribute('srcdoc');document.body.classList.remove('frame-open');start.hidden=false;start.disabled=!(active||viewId);message.textContent=text;clearTimeout(expiryTimer);}
  async function status(){try{const res=await fetch('/api/interior-beta',{cache:'no-store'});if(!res.ok)throw Error();const data=await res.json();active=data.active===true;start.disabled=!(active||viewId);message.textContent=viewId?'로그인하면 저장된 결과를 불러옵니다.':active?'회원가입·로그인 후 무료로 참여할 수 있습니다.':'11월 무료 베타 운영 기간이 아닙니다.';if(viewId)start.textContent='저장된 결과 보기';}catch{active=false;message.textContent='운영 상태를 확인하지 못했습니다. 잠시 후 새로고침해 주세요.';}}
  async function open(){if((!active&&!viewId)||loading)return;loading=true;start.disabled=true;const epoch=generation;
   try{const {data,error}=await client.auth.getSession();if(error)throw Error();if(!data.session){wantsStart=true;SkoposAuth.showGate({title:'인테리어 공간욕구검사 무료 베타',subtitle:'회원가입·로그인 후 참여할 수 있습니다.<br>결과는 로그인한 계정에 저장돼요 (베타).',cta:'로그인하고 무료 베타 시작'});return;}
@@ -67,7 +83,7 @@
    if(d.id&&/^[0-9a-f-]{36}$/i.test(d.id))res=await client.from('interior_results').update(row).eq('id',d.id).eq('user_id',s.session.user.id).select('id,created_at').single();
    else res=await client.from('interior_results').insert(Object.assign({user_id:s.session.user.id},row)).select('id,created_at').single();
    if(res.error)throw res.error;
-   clearDraft();reply({ok:true,id:res.data.id,date:res.data.created_at});
+   clearDraft();savedId=res.data.id;reply({ok:true,id:res.data.id,date:res.data.created_at});
   }catch(_){reply({ok:false,message:'결과를 저장하지 못했어요. PDF로 저장해 주세요.'});}
  });
  async function restoreSaved(epoch){

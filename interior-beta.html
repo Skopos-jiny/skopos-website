@@ -1,5 +1,12 @@
 <!doctype html>
 <html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>SDTI 인테리어 공간욕구검사 · 11월 무료 베타</title><meta name="description" content="인테리어 전에 내가 원하는 집의 기준을 발견하세요. 회원가입 후 참여하는 11월 무료 베타."><link rel="icon" href="/favicon.ico">
+<link rel="canonical" href="https://skopos.kr/interior-beta">
+<meta property="og:type" content="website"><meta property="og:site_name" content="SKOPOS 스코포스"><meta property="og:locale" content="ko_KR">
+<meta property="og:title" content="SDTI 인테리어 공간욕구검사 | 인테리어 전에, 내 집의 기준부터">
+<meta property="og:description" content="인테리어 상담 전에 내 공간욕구의 기준을 먼저 정리해 보세요. 56문항, 15분 안팎이면 고객용 리포트와 상담 가이드가 만들어집니다.">
+<meta property="og:url" content="https://skopos.kr/interior-beta">
+<meta property="og:image" content="https://skopos.kr/og-interior.jpg"><meta property="og:image:secure_url" content="https://skopos.kr/og-interior.jpg"><meta property="og:image:type" content="image/jpeg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="SDTI 인테리어 공간욕구검사 · 인테리어 전에, 내 집의 기준부터">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="SDTI 인테리어 공간욕구검사 | 인테리어 전에, 내 집의 기준부터"><meta name="twitter:description" content="인테리어 상담 전에 내 공간욕구의 기준을 먼저 정리해 보세요. 56문항, 15분 안팎이면 고객용 리포트와 상담 가이드가 만들어집니다."><meta name="twitter:image" content="https://skopos.kr/og-interior.jpg">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
 :root{--pink:#E91E8C;--pink2:#DC1478;--pink-lt:#FCE4F0;--dark:#0F0F1A;--mid:#3D3D5C;--gray:#8890A4;--line:#E6E8F0;--bg:#F7F8FC}
@@ -38,8 +45,21 @@ h1 em{font-style:normal;color:var(--pink)}
 .frame-open nav#landingNav,.frame-open #intro,.frame-open #account,.frame-open .card,.frame-open .reg{display:none}
 .frame-open main{max-width:none;padding:0}
 .frame-open #betaFrame{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;z-index:50}
+.inapp{max-width:520px;margin:0 auto 18px;padding:14px 16px;border-radius:16px;background:#FFF8E6;border:1px solid #F0DFA8;color:#6B5A20;font-size:.84rem;line-height:1.65;text-align:left}
+.inapp[hidden],#inappSheet[hidden],.inapp-help[hidden],.inapp-btns button[hidden],.sheet-btns button[hidden]{display:none}
+.inapp b{display:block;color:#4A3E12;font-size:.9rem;margin-bottom:2px}.inapp p{margin:0}
+.inapp-btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.inapp-btns button,.sheet-btns button{font:inherit;font-size:.84rem;font-weight:800;border-radius:50px;padding:10px 16px;cursor:pointer;border:1px solid #E0CF8E;background:#fff;color:#4A3E12}
+.inapp-btns .go,.sheet-btns .go{background:var(--dark);border-color:var(--dark);color:#fff}
+.inapp-help{margin:8px 0 0!important;font-size:.78rem;color:#7A6A2E}
+#inappSheet{position:fixed;inset:0;z-index:200;display:flex;align-items:flex-end;justify-content:center;background:rgba(15,15,26,.45);padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px))}
+.sheet{width:100%;max-width:440px;background:#fff;border-radius:20px;padding:22px 20px 18px;box-shadow:0 20px 50px rgba(15,15,26,.25);text-align:left}
+.sheet strong{display:block;font-size:1.02rem;font-weight:800;line-height:1.45;margin-bottom:8px}.sheet p{margin:0;font-size:.88rem;color:var(--mid)}
+.sheet-btns{display:flex;flex-direction:column;gap:8px;margin-top:14px}.sheet-btns button{width:100%;padding:13px 16px;font-size:.92rem;border-color:var(--line);color:var(--dark)}
+.sheet-btns .plain{color:var(--mid);font-weight:700}.sheet .inapp-help{color:var(--gray)}
+@media(min-width:560px){#inappSheet{align-items:center}}
 @media(max-width:420px){.stats{gap:20px}.stat b{font-size:1.8rem}}
-@media print{#landingNav,#intro,#account,.card,.reg{display:none}}
+@media print{#landingNav,#intro,#account,.card,.reg,#inappSheet{display:none}}
 </style></head><body>
 <nav id="landingNav"><a class="nav-brand" href="/">SKO<span>POS</span></a><span class="nav-tag">✦ 11월 무료 베타</span></nav>
 <main>
@@ -51,7 +71,7 @@ h1 em{font-style:normal;color:var(--pink)}
   <div class="chips"><span>⏱ 15분 안팎</span><span>📊 욕구 기준점·지금의 공간 비교</span><span>🏠 공간별 공사 범위</span><span>🧾 상담용 PDF</span></div>
   <div class="stats"><div class="stat"><b>56</b><small>검사 문항</small></div><div class="stat"><b>8</b><small>욕구 영역</small></div><div class="stat"><b>2</b><small>결과지 (고객·상담 실장님)</small></div></div>
 </section>
-<div id="account"><button id="start" disabled>회원가입·로그인 후 무료 베타 시작</button><p id="message" role="status">베타 운영 기간을 확인하고 있습니다.</p><button id="signout" hidden>로그아웃</button></div>
+<div id="account"><div class="inapp" id="inappNotice" hidden><b>앱 안에서 열린 화면이에요</b><p>카카오톡, 인스타그램, 네이버 같은 앱 안에서는 로그인이나 결과지 PDF 저장이 안 될 수 있어요. 기본 브라우저(Chrome, Safari, 삼성 인터넷)에서 열면 끝까지 편하게 진행할 수 있어요.</p><div class="inapp-btns"><button type="button" class="go" id="inappOpen">기본 브라우저로 열기</button><button type="button" id="inappCopy">링크 복사</button></div><p class="inapp-help" id="inappHelp" role="status" hidden></p></div><button id="start" disabled>회원가입·로그인 후 무료 베타 시작</button><p id="message" role="status">베타 운영 기간을 확인하고 있습니다.</p><button id="signout" hidden>로그아웃</button></div>
 <div class="card">
   <h2>베타 참여 안내</h2>
   <ul>
@@ -69,6 +89,6 @@ h1 em{font-style:normal;color:var(--pink)}
   <p class="muted">스코포스는 인테리어 공사를 하지 않습니다. 상담 전에 고객의 기준을 정리하는 검사를 제공합니다. 로그인 정보는 기존 SKOPOS 회원 정책에 따라 처리됩니다.</p>
 </div>
 <p class="reg">공간심리학 기반 SDTI · 한국저작권위원회 등록 제 C-2026-029862 호 (검사 엔진)</p>
-<iframe id="betaFrame" title="SDTI 인테리어 공간욕구검사" hidden sandbox="allow-scripts allow-same-origin allow-modals allow-downloads allow-forms"></iframe><noscript>검사를 이용하려면 JavaScript를 활성화해 주세요.</noscript>
+<iframe id="betaFrame" title="SDTI 인테리어 공간욕구검사" hidden sandbox="allow-scripts allow-same-origin allow-modals allow-downloads allow-forms"></iframe><noscript>검사를 이용하려면 JavaScript를 활성화해 주세요.</noscript><div id="inappSheet" hidden><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle"><strong id="sheetTitle">PDF 저장은 기본 브라우저에서 해 주세요</strong><p id="sheetText"></p><div class="sheet-btns"><button type="button" class="go" id="sheetOpen">기본 브라우저에서 결과 열기</button><button type="button" id="sheetCopy">결과 링크 복사</button><button type="button" class="plain" id="sheetTry">여기서 저장 시도하기</button><button type="button" class="plain" id="sheetClose">닫기</button></div><p class="inapp-help" id="sheetHelp" role="status" hidden></p></div></div>
 </main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script><script src="/skopos-auth.js"></script><script src="/interior-beta.js?v=20261112g"></script></body></html>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script><script src="/skopos-auth.js"></script><script src="/interior-beta.js?v=20261113a"></script></body></html>
