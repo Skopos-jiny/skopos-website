@@ -508,6 +508,7 @@ nav{position:absolute;top:0;left:0;right:0;z-index:200;height:60px;display:flex;
   border-left:1px solid rgba(255,255,255,.32);
   border-right:1px solid rgba(255,255,255,.32);
 }
+.upg-btn-primary > span{white-space:nowrap}
 .upg-btn-arrow{
   font-size:1.1rem;
   transition:transform .25s var(--ez);
@@ -535,7 +536,7 @@ nav{position:absolute;top:0;left:0;right:0;z-index:200;height:60px;display:flex;
   .upg-feat{padding:12px 14px}
   .upg-price{padding:16px 20px;margin-bottom:20px}
   .upg-price-value{font-size:1.75rem}
-  .upg-btn-primary{padding:15px 22px;font-size:.94rem;gap:8px}
+  .upg-btn-primary{padding:15px 18px;font-size:.92rem;gap:8px}
   .upg-btn-price{font-size:1.05rem;padding:0 8px}
 }
 @media(max-width:380px){
@@ -754,6 +755,29 @@ em{font-style:normal;}
 .char-box svg,.char-box img{width:100%;height:100%;display:block;object-fit:contain}
 </style>
 <script src="/skopos-track.js" defer></script>
+<style id="sk-journey">
+/* 로그인 전 결과 미리보기 */
+.pv-lock{margin:6px auto 0;max-width:440px;padding:22px 20px 20px;border-radius:20px;background:linear-gradient(135deg,#FFF9FB,#FFFCF5);border:1.5px solid rgba(220,20,120,.18);text-align:center}
+.pv-lock-tag{font-size:.82rem;font-weight:800;color:var(--dark);margin-bottom:12px}
+.pv-list{list-style:none;margin:0 auto 18px;padding:0;display:grid;gap:8px;text-align:left;max-width:300px}
+.pv-list li{position:relative;padding-left:24px;font-size:.84rem;color:#4A4A5A;font-weight:600;line-height:1.5}
+.pv-list li::before{content:'🔒';position:absolute;left:0;top:0;font-size:.78rem}
+.pv-btn{display:block;width:100%;max-width:340px;margin:0 auto;padding:16px 22px;border:0;border-radius:50px;background:linear-gradient(135deg,var(--pink),#FF6B9D);color:#fff;font:inherit;font-size:.98rem;font-weight:800;cursor:pointer;box-shadow:0 8px 24px rgba(220,20,120,.3)}
+.pv-note{margin-top:10px;font-size:.74rem;color:var(--gray);font-weight:600;line-height:1.6}
+.pv-sample{display:block;margin:18px auto 0;text-align:center;font-size:.84rem;font-weight:700;color:var(--pink);text-decoration:none}
+.sk-back{display:inline-block;margin-top:8px;font-size:.78rem;color:#8890A4;text-decoration:underline;text-underline-offset:3px}
+/* 결과 화면 다음 행동 */
+.upg-sample{position:relative;z-index:1;display:block;margin:12px auto 0;text-align:center;font-size:.84rem;font-weight:700;color:var(--pink);text-decoration:none}
+.ns-wrap{margin:8px 0 8px}
+.ns-head{font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gray);font-weight:700;text-align:center;margin-bottom:12px}
+.ns-card{display:flex;align-items:center;gap:12px;padding:16px 18px;margin-bottom:10px;border-radius:16px;background:#fff;border:1px solid rgba(0,0,0,.08);text-decoration:none;color:var(--dark);box-shadow:0 4px 14px rgba(15,15,26,.04)}
+.ns-card[hidden]{display:none}
+.ns-ico{font-size:1.4rem;flex-shrink:0}
+.ns-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;text-align:left}
+.ns-txt strong{font-size:.92rem;font-weight:800;letter-spacing:-.01em}
+.ns-txt small{font-size:.76rem;color:var(--gray);line-height:1.55;word-break:keep-all}
+.ns-arr{color:var(--pink);font-weight:800;flex-shrink:0}
+</style>
 </head>
 <body>
 <nav aria-label="주 메뉴">
@@ -1302,7 +1326,7 @@ const BEHAVIOR_PROFILES={
 
 형광등보다 간접 조명이, 딱딱한 의자보다 폭신한 소파가, 매끈한 소재보다 부드러운 패브릭이 몸을 안정시켜줘요. 이게 감성적 선호가 아니라 실제 신체 반응이에요. 차갑고 딱딱한 공간에 오래 있으면 피로가 안 풀리는 건 기분 탓이 아니에요.
 
-부클레 소파, 두꺼운 러그, 캔들, 아로마. 이 조합이 당신의 코르티솔을 낮춰주는 최고의 인테리어예요.
+부클레 소파, 두꺼운 러그, 캔들, 아로마. 이 조합이 당신을 가장 편안하게 해 주는 인테리어예요.
 
 추천 소품: 부드러운 쿠션 추가 → 앰버 전구 교체 → 셰기 러그 → 캔들홀더 세트 순으로.`,
 
@@ -1402,7 +1426,7 @@ const SPACE_IMAGES={
     ]},
   cozy_hearth:{
     title:'온기가 머무는 [[em]]공간들[[/em]]',
-    sub:'부클레, 간접 조명, 카펫 : 코르티솔이 내려가는 인테리어',
+    sub:'부클레, 간접 조명, 카펫 : 긴장이 스르르 풀리는 인테리어',
     rooms:[
       {name:'거실',kw:'부클레 · 벽난로 · 레이어링',url:'https://images.unsplash.com/photo-1600210492493-0946911123ea?w=800&q=80&auto=format&fit=crop'},
       {name:'휴게공간',kw:'창가 쿠션 · 담요 · 촛불',url:'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=800&q=80&auto=format&fit=crop'},
@@ -1565,6 +1589,58 @@ function loadPending(){
     return {type, sub:{sub:type.id,name:type.name,plain:type.plain}};
   }catch(e){return null;}
 }
+// 로그인 전 결과 미리보기: 유형 이름·캐릭터·한 줄 설명만 공개, 나머지는 로그인 후
+function renderPreview(t, sub){
+  const subName = sub ? sub.name : t.name;
+  const subPlain = sub ? sub.plain : t.plain;
+  const charSVG = sub ? makeSVG(sub.sub) : '';
+  const cm = charMeta(sub ? sub.sub : t.id);
+  const parts = splitTypeName(subName);
+  const head = parts.prefix
+    ? `<h2 class="rtype rtype-2lines"><span class="rtype-prefix">${parts.prefix}</span><span class="rtype-main"><span class="hl">${parts.emphasis}</span>${parts.suffix ? ` ${parts.suffix}` : ''}</span></h2>`
+    : `<h2 class="rtype">${dec(subName)}</h2>`;
+  document.getElementById('rw').innerHTML=`
+    <div class="rh" style="margin-bottom:8px;padding-bottom:12px;border-bottom:0">
+      <p class="rtag">✦ 스코포스 공간 욕구 유형 검사 (SDTI) 결과</p>
+      ${head}
+      <p style="font-size:.72rem;letter-spacing:.05em;color:var(--gray);font-weight:700;margin-bottom:10px;text-transform:uppercase">${dec(t.plain)}</p>
+      <p class="rdesc">${dec(t.desc)}</p>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;margin:4px 0 22px">
+      <div class="char-box" style="width:150px;height:150px;filter:drop-shadow(0 6px 16px rgba(59,47,69,.12));animation:charIn .8s var(--ez) both">${charSVG}</div>
+      <p class="char-name">${cm.n}</p>
+      <p class="char-sub">${dec(subPlain)} · ${cm.a}</p>
+    </div>
+    <div class="pv-lock">
+      <p class="pv-lock-tag">로그인하면 이어서 볼 수 있어요</p>
+      <ul class="pv-list">
+        <li>나만의 취향 프로파일 그래프</li>
+        <li>나의 공간 취향 이야기</li>
+        <li>나에게 맞는 소품·소재 처방</li>
+        <li>결과 저장과 공유</li>
+      </ul>
+      <button type="button" class="pv-btn" onclick="openResultGate('preview')">로그인하고 전체 결과 보기</button>
+      <p class="pv-note">카카오·네이버로 10초면 가입할 수 있어요<br>로그인해도 답변은 그대로 유지돼요</p>
+    </div>
+    <a class="pv-sample" href="skopos_sample_result.html" onclick="trackEvent('sample_preview_click',{location:'free_preview'})">정밀 검사 결과지 샘플 보기 →</a>
+  `;
+}
+function showPreview(type, sub){
+  resultType=type;resultSub=sub;
+  renderPreview(type, sub);
+  show('sr');
+  window.scrollTo({top:0,behavior:'smooth'});
+  try{ trackEvent('quiz_result_preview_shown',{result_type:type.id}); }catch(e){}
+}
+function openResultGate(from){
+  showResultGate();
+  try{ trackEvent('quiz_result_gate_shown',{result_type:_pendingResult?_pendingResult.type.id:'',from:from||''}); }catch(e){}
+}
+// 인테리어 공간욕구검사 안내: 베타 운영 중일 때만 보이기
+function showInteriorNext(){
+  const el=document.getElementById('nsInterior');if(!el)return;
+  fetch('/api/interior-beta',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(s=>{if(s&&s.active)el.hidden=false;}).catch(()=>{});
+}
 function showResultGate(){
   if(!window.SkoposAuth) return;
   SkoposAuth.showGate({
@@ -1572,6 +1648,7 @@ function showResultGate(){
     subtitle:'22문항을 모두 마치셨어요.<br>로그인하면 <strong>결과를 바로 확인</strong>하고 계정에 저장해 드려요.<br><small style="color:#8890A4">회원가입 후에도 답변은 그대로 유지돼요.</small>',
     cta:'로그인하고 결과 보기'
   });
+  try{const lead=document.querySelector('.sk-gate .sk-lead');if(lead&&!lead.querySelector('.sk-back')&&document.getElementById('sr').classList.contains('active')){const a=document.createElement('a');a.href='#';a.className='sk-back';a.textContent='결과 미리보기로 돌아가기';a.addEventListener('click',e=>{e.preventDefault();SkoposAuth.hideGate();});lead.appendChild(document.createElement('br'));lead.appendChild(a);}}catch(e){}
 }
 
 function startQuiz(){
@@ -1775,8 +1852,7 @@ function runResult(){
       // 결과는 준비됐고, 확인·저장에만 로그인을 요청
       if(window.SkoposAuth){
         storePending(type);
-        showResultGate();
-        try{ trackEvent('quiz_result_gate_shown', {result_type:type.id}); }catch(e){}
+        showPreview(type, sub);
       }else{
         // 인증 모듈을 못 불러온 경우에는 결과를 막지 않음
         revealResult();
@@ -1936,7 +2012,7 @@ function renderResult(t, sub, unlocked){
           <span class="upg-price-label-now">정밀 검사</span>
           <span class="upg-price-value">29,900원</span>
         </div>
-        <p class="upg-price-note">1회 결제 · 평생 열람 · 환불 가능 (7일 이내)</p>
+        <p class="upg-price-note">평생 열람 · 검사 시작 전 7일 이내 환불 가능</p>
       </div>
 
       <!-- CTA 버튼 -->
@@ -1947,6 +2023,22 @@ function renderResult(t, sub, unlocked){
       </a>
 
       <p class="upg-trust">💳 신용·체크카드 결제 · 1회 결제 · 영구 열람</p>
+      <a class="upg-sample" href="skopos_sample_result.html" onclick="trackEvent('sample_preview_click',{location:'free_result'})">결제 전에 결과지 샘플 먼저 보기 →</a>
+    </div>
+
+    <!-- 상황별 다음 행동 -->
+    <div class="ns-wrap">
+      <p class="ns-head">✦ 상황에 맞게 이어서 해 보세요</p>
+      <a class="ns-card" id="nsInterior" href="/interior-beta" hidden onclick="trackEvent('interior_cta_click',{location:'free_result'})">
+        <span class="ns-ico">🏠</span>
+        <span class="ns-txt"><strong>이사·인테리어를 앞두고 있다면</strong><small>SDTI 인테리어 공간욕구검사로 상담 전에 내 집의 기준을 정리해 보세요 · 11월 무료 베타</small></span>
+        <span class="ns-arr">→</span>
+      </a>
+      <a class="ns-card" href="payment.html?plan=couple" onclick="trackEvent('couple_cta_click',{location:'free_result'})">
+        <span class="ns-ico">💞</span>
+        <span class="ns-txt"><strong>함께 사는 분이 있다면</strong><small>커플 진단으로 두 사람의 8개 영역을 나란히 비교하고, 먼저 합의할 공간을 알려 드려요 · 2인 49,900원</small></span>
+        <span class="ns-arr">→</span>
+      </a>
     </div>
 
     <!-- 카카오톡 공유 버튼 -->
@@ -1965,6 +2057,7 @@ function renderResult(t, sub, unlocked){
     document.querySelectorAll('.rbar').forEach(b=>b.style.width=b.dataset.val+'%');
     renderSpaceImages();
   }, 400);
+  showInteriorNext();
 }
 
 // ── 결과 하단 유형별 공간 이미지 렌더 ──
@@ -1995,7 +2088,7 @@ function renderSpaceImages(){
     <p class="space-reveal-sub">${data.sub}</p>
     <div class="space-grid">${cards}</div>
     <div class="space-note" style="font-size:.82rem;color:#4A4A5A;line-height:1.8;font-weight:500">
-      이 분위기가 당신의 공간 욕구와 맞닿아 있어요. 더 정밀한 분석과 맞춤 소품·시공 가이드는 정밀 검사에서 만나보실 수 있습니다.
+      이 분위기가 당신의 공간 욕구와 맞닿아 있어요. 더 정밀한 분석과 맞춤 소품·공간 가이드는 정밀 검사에서 만나보실 수 있습니다.
     </div>`;
   // 등장 애니메이션
   setTimeout(()=>wrap.classList.add('show'),60);
@@ -2193,7 +2286,7 @@ window.addEventListener('load',()=>{
     try{ trackEvent('quiz_pending_restored',{result_type:pending.type.id}); }catch(e){}
     SkoposAuth.guard({ passive:true, onReady:onAuthReady });
     // 로그인 상태가 아니면 결과 보기 로그인 창을 다시 띄움
-    setTimeout(()=>{ if(_pendingResult && !_authed) showResultGate(); }, 1800);
+    setTimeout(()=>{ if(_pendingResult && !_authed){ showPreview(_pendingResult.type, _pendingResult.sub); openResultGate('restore'); } }, 1800);
     return;
   }
 

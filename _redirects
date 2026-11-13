@@ -15,7 +15,7 @@
 
 # 인스타 프로필 링크용 짧은 주소 (유입 추적 UTM 포함)
 /ig         /skopos_quiz?utm_source=instagram&utm_medium=bio&utm_campaign=free_quiz  302
-/ig-couple  /payment?plan=couple&utm_source=instagram&utm_medium=bio&utm_campaign=couple  302
+/ig-couple  /skopos_quiz?utm_source=instagram&utm_medium=bio&utm_campaign=couple  302
 /ig-sample  /skopos_sample_result?utm_source=instagram&utm_medium=bio&utm_campaign=sample  302
 
 # Interior beta: keep server sources out of static navigation

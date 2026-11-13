@@ -1239,7 +1239,7 @@ html{scroll-behavior:smooth}
       </div>
     </div>
     <h1 class="gate-title" id="gateTitle">스코포스 공간 욕구 유형 검사<br><span class="hl">SDTI 정밀 검사</span></h1>
-    <p class="gate-sub" id="gateSub">국내 최초 공간 욕구 심리 측정 도구 SDTI.<br>8개 영역 144문항으로 나의 공간 욕구 유형을 정밀하게 진단합니다.</p>
+    <p class="gate-sub" id="gateSub">공간심리학 기반 공간 욕구 심리 측정 도구 SDTI.<br>8개 영역 144문항으로 나의 공간 욕구 유형을 정밀하게 진단합니다.</p>
 
     <div class="features-grid">
       <div class="feat"><div class="feat-icon">🧠</div><div class="feat-title">144문항 정밀 분석</div><div class="feat-desc">8개 영역을 각 18문항으로 깊이 측정해요</div></div>
@@ -1471,15 +1471,15 @@ html{scroll-behavior:smooth}
   <div class="season-modal">
     <div class="season-modal-icon">✉️</div>
     <div class="season-modal-tag">✦ 계절 전환 알림</div>
-    <h2 class="season-modal-title">계절이 바뀔 때마다<br><em>나만의 시즌 가이드</em>를 보내드릴게요</h2>
-    <p class="season-modal-sub">3개월마다 한 번, 그 계절에 맞는 인테리어 변화 포인트를 이메일로 안내해드려요. 잊고 지나가지 않도록.</p>
+    <h2 class="season-modal-title">준비되면 보내 드릴게요<br><em>나만의 시즌 가이드</em></h2>
+    <p class="season-modal-sub">계절에 맞는 인테리어 변화 포인트를 이메일로 보내 드리려고 준비하고 있어요. 신청해 두시면 첫 가이드가 준비되는 대로 알려 드릴게요.</p>
 
     <div class="season-modal-preview">
-      <div class="season-modal-preview-label">받게 될 이메일 (연 4회)</div>
-      <div class="season-modal-preview-row"><span>🌸</span><span>3월 1일 · 봄의 시즌 가이드</span></div>
-      <div class="season-modal-preview-row"><span>☀️</span><span>6월 1일 · 여름의 시즌 가이드</span></div>
-      <div class="season-modal-preview-row"><span>🍂</span><span>9월 1일 · 가을의 시즌 가이드</span></div>
-      <div class="season-modal-preview-row"><span>❄️</span><span>12월 1일 · 겨울의 시즌 가이드</span></div>
+      <div class="season-modal-preview-label">준비 중인 계절 가이드</div>
+      <div class="season-modal-preview-row"><span>🌸</span><span>봄의 시즌 가이드</span></div>
+      <div class="season-modal-preview-row"><span>☀️</span><span>여름의 시즌 가이드</span></div>
+      <div class="season-modal-preview-row"><span>🍂</span><span>가을의 시즌 가이드</span></div>
+      <div class="season-modal-preview-row"><span>❄️</span><span>겨울의 시즌 가이드</span></div>
     </div>
 
     <form class="season-modal-form" onsubmit="submitSeasonSubscription(event)">
@@ -4397,7 +4397,7 @@ async function submitSeasonSubscription(ev){
 
     closeSeasonSubModal();
     updateSeasonSubBar(email);
-    toast('✅ 신청 완료! 다음 계절에 이메일을 보내드릴게요.', 4000);
+    toast('✅ 신청 완료! 첫 가이드가 준비되면 이메일로 알려 드릴게요.', 4000);
     trackEvent('season_sub_complete', {result_type:resultType.id, group:resultType.group});
 
   }catch(err){
@@ -4970,7 +4970,7 @@ function renderResult(t,scores){
           <div class="season-sub-icon">✉️</div>
           <div class="season-sub-body">
             <div class="season-sub-title" id="seasonSubTitle">계절이 바뀔 때마다 알려드릴까요?</div>
-            <div class="season-sub-desc" id="seasonSubDesc">3개월마다 ${krText(t.plain)} 전용 계절 가이드를 이메일로 받아보세요. 그 계절에 딱 맞는 변화 포인트를 잊지 않을 수 있어요.</div>
+            <div class="season-sub-desc" id="seasonSubDesc">${krText(t.plain)} 전용 계절 가이드 이메일을 준비하고 있어요. 신청해 두시면 첫 가이드가 준비되는 대로 보내 드릴게요.</div>
           </div>
           <button class="season-sub-btn" id="seasonSubBtn" onclick="openSeasonSubModal()">알림 받기</button>
         </div>

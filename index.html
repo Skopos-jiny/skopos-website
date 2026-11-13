@@ -920,6 +920,8 @@ footer{background:var(--dark);color:rgba(255,255,255,.5);padding:52px 24px 36px}
 /* ── MOBILE ── */
 @media(max-width:768px){
   .hero-inner,.sci-grid{grid-template-columns:1fr}
+  .hero{min-height:auto;padding:22px 20px 40px}
+  .hero-sub{margin-bottom:22px}
   .hero-visual{display:none}
   .steps{grid-template-columns:1fr}
   .tier-wrap{grid-template-columns:1fr}
@@ -1001,7 +1003,7 @@ em{font-style:normal}
 .tier-couple{display:block;margin-top:10px;padding:12px 14px;border-radius:14px;border:1.5px dashed rgba(233,30,140,.45);text-decoration:none;text-align:center;color:inherit}.tier-couple b{display:block;font-size:.92rem;color:#E91E8C}.tier-couple span{font-size:.78rem;opacity:.8}
 
 /* 글꼴: 사이트 전체를 Pretendard 한 가지로 통일합니다 (제목·본문·숫자 공통). */
-.ib-banner{max-width:1120px;margin:84px auto 0;padding:0 20px;position:relative;z-index:1}
+.ib-banner{max-width:1120px;margin:0 auto 48px;padding:0 20px;position:relative;z-index:1}
 .ib-inner{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:18px;background:#fff;border:1.5px solid rgba(233,30,140,.22);box-shadow:0 6px 22px rgba(233,30,140,.08);text-decoration:none;color:var(--dark)}
 .ib-pill{flex-shrink:0;font-size:.7rem;font-weight:800;color:#fff;background:linear-gradient(135deg,#E91E8C,#FF6B9D);padding:5px 11px;border-radius:50px}
 .ib-text{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.45}
@@ -1023,22 +1025,15 @@ em{font-style:normal}
       <span class="nav-logo-txt">SKO<span>POS</span></span>
     </a>
     <div class="nav-right">
-      <a class="nav-pill" href="payment.html">
-        <span class="nav-pill-label">SDTI 정밀 검사</span>
-        <span class="nav-pill-price">₩29,900</span>
+      <a class="nav-pill" href="skopos_quiz.html" onclick="if(window.gtag)gtag('event','free_quiz_click',{location:'nav'})">
+        <span class="nav-pill-label">SDTI 공간 유형 검사</span>
+        <span class="nav-pill-price">3분 · 무료</span>
       </a>
       <a class="nav-login-btn" href="login.html" id="navLoginBtn">로그인</a>
     </div>
   </div>
 </nav>
-<section id="interiorBetaBanner" class="ib-banner" aria-label="인테리어 공간욕구검사 무료 베타">
-  <a class="ib-inner" href="/interior-beta">
-    <span class="ib-pill">NEW · 11월 무료 베타</span>
-    <span class="ib-text"><strong>SDTI 인테리어 공간욕구검사</strong><small>인테리어 전에, 내 집의 기준부터 · 회원가입 후 무료 · 11월 30일까지</small></span>
-    <span class="ib-cta">참여하기 →</span>
-  </a>
-</section>
-<script>fetch('/api/interior-beta',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(s=>{if(s&&!s.active)document.getElementById('interiorBetaBanner').hidden=true;}).catch(()=>{});</script>
+
 
 
 <!-- HERO -->
@@ -1118,6 +1113,14 @@ em{font-style:normal}
     </div>
   </div>
 </section>
+<section id="interiorBetaBanner" class="ib-banner" aria-label="인테리어 공간욕구검사 무료 베타">
+  <a class="ib-inner" href="/interior-beta">
+    <span class="ib-pill">NEW · 11월 무료 베타</span>
+    <span class="ib-text"><strong>SDTI 인테리어 공간욕구검사</strong><small>인테리어 전에, 내 집의 기준부터 · 회원가입 후 무료 · 11월 30일까지</small></span>
+    <span class="ib-cta">참여하기 →</span>
+  </a>
+</section>
+<script>fetch('/api/interior-beta',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(s=>{if(s&&!s.active)document.getElementById('interiorBetaBanner').hidden=true;}).catch(()=>{});</script>
 
 <!-- HOW IT WORKS -->
 <div class="section-wrap alt fade-up">
@@ -1184,7 +1187,7 @@ em{font-style:normal}
           <div class="tier-feat"><div class="tier-feat-ic">✦</div><span>8개 영역 레이더 차트 프로파일</span></div>
           <div class="tier-feat"><div class="tier-feat-ic">✦</div><span>취향저격 심층 분석 3분류</span></div>
           <div class="tier-feat"><div class="tier-feat-ic">✦</div><span>거실·침실·주방 소품·조명·소재 처방</span></div>
-          <div class="tier-feat"><div class="tier-feat-ic">✦</div><span>PDF 리포트 이메일 발송</span></div>
+          <div class="tier-feat"><div class="tier-feat-ic">✦</div><span>PDF 리포트 · 마이페이지에서 다시 받기</span></div>
         </div>
         <a class="tier-btn" href="skopos_premium_quiz.html">정밀 진단 ₩29,900 →</a>
       </div>
