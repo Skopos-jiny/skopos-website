@@ -60,8 +60,9 @@ h1 em{font-style:normal;color:var(--pink)}
 @media(min-width:560px){#inappSheet{align-items:center}}
 @media(max-width:420px){.stats{gap:20px}.stat b{font-size:1.8rem}}
 @media print{#landingNav,#intro,#account,.card,.reg,#inappSheet{display:none}}
+.launch{margin:22px 0 0;padding:18px 18px 20px;border-radius:18px;background:#fff;border:1.5px solid rgba(233,30,140,.25);box-shadow:0 6px 22px rgba(233,30,140,.07);text-align:center;word-break:keep-all}.launch[hidden]{display:none}.launch b{display:block;font-size:1rem;font-weight:800;color:var(--pink2);margin-bottom:6px}.launch p{font-size:.86rem;line-height:1.7;color:var(--mid);margin:6px 0 0}.launch strong{color:var(--pink2)}.launch-btn{display:block;max-width:320px;margin:14px auto 0;padding:12px 16px;border-radius:50px;background:#FEE500;color:#191919;font-weight:800;font-size:.9rem;text-decoration:none}
 </style></head><body>
-<nav id="landingNav"><a class="nav-brand" href="/">SKO<span>POS</span></a><span class="nav-tag">✦ 11월 무료 베타</span></nav>
+<nav id="landingNav"><a class="nav-brand" href="/">SKO<span>POS</span></a><span class="nav-tag">✦ 12월 1일 정식 출시 · 사전 베타</span></nav>
 <main>
 <section id="intro">
   <span class="badge">● 회원가입 후 무료 참여 · 11월 30일까지</span>
@@ -71,6 +72,8 @@ h1 em{font-style:normal;color:var(--pink)}
   <div class="chips"><span>⏱ 15분 안팎</span><span>📊 욕구 기준점·지금의 공간 비교</span><span>🏠 공간별 공사 범위</span><span>🧾 상담용 PDF</span></div>
   <div class="stats"><div class="stat"><b>56</b><small>검사 문항</small></div><div class="stat"><b>8</b><small>욕구 영역</small></div><div class="stat"><b>2</b><small>결과지 (고객·상담 실장님)</small></div></div>
 </section>
+<div class="launch" id="launchNote"><b>12월 1일 정식 출시 예정이에요</b><p>지금은 사전 베타 기간이에요(11월 30일까지 무료). 사전 베타에 참여하신 분께는 <strong>정식 출시 후 쓸 수 있는 이용권 코드</strong>를 드려요.</p><p>참여를 원하시거나 궁금한 점이 있으면 카카오톡 채널에 "사전 베타 참여"라고 남겨 주세요. 이용권 코드도 카카오톡으로 보내 드려요.</p><a class="launch-btn" href="https://pf.kakao.com/_dtGjX/chat" target="_blank" rel="noopener">카카오톡으로 사전 베타 참여 문의</a></div>
+<script>fetch('/api/interior-beta',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(x=>{if(x&&!x.active){var e=document.getElementById('launchNote');if(e)e.hidden=true;}}).catch(()=>{});</script>
 <div id="account"><div class="inapp" id="inappNotice" hidden><b>앱 안에서 열린 화면이에요</b><p>카카오톡, 인스타그램, 네이버 같은 앱 안에서는 로그인이나 결과지 PDF 저장이 안 될 수 있어요. 기본 브라우저(Chrome, Safari, 삼성 인터넷)에서 열면 끝까지 편하게 진행할 수 있어요.</p><div class="inapp-btns"><button type="button" class="go" id="inappOpen">기본 브라우저로 열기</button><button type="button" id="inappCopy">링크 복사</button></div><p class="inapp-help" id="inappHelp" role="status" hidden></p></div><button id="start" disabled>회원가입·로그인 후 무료 베타 시작</button><p id="message" role="status">베타 운영 기간을 확인하고 있습니다.</p><button id="signout" hidden>로그아웃</button></div>
 <div class="card">
   <h2>베타 참여 안내</h2>
