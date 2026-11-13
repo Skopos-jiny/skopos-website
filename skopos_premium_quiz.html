@@ -940,7 +940,7 @@ html{scroll-behavior:smooth}
 .pdf-inner{padding:56px 64px;display:flex;flex-direction:column;flex:1}
 .pdf-inner-header{display:flex;justify-content:space-between;align-items:center;padding-bottom:14px;border-bottom:2px solid #E91E8C;margin-bottom:30px}
 .pdf-inner-brand{font-size:12px;font-weight:900;color:#1A1A2E;letter-spacing:.08em}
-.pdf-inner-brand span{color:#1A1A2E}
+.pdf-inner-brand span{color:#E91E8C}
 .pdf-page-num{font-size:11px;color:#6b6b80;font-weight:600}
 .pdf-ft{margin-top:auto;border-top:2px solid #E91E8C;padding-top:10px;font-size:10px;color:#6b6b80;display:flex;justify-content:space-between;align-items:center}
 .pdf-section-tag{font-size:10px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:#C9A96E;margin-bottom:8px}
@@ -1067,6 +1067,7 @@ html{scroll-behavior:smooth}
 .pdf-psyche-inner{position:relative;z-index:1;display:flex;flex-direction:column;flex:1}
 .pdf-psyche-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px;padding-bottom:14px;border-bottom:2px solid #E91E8C}
 .pdf-psyche-brand{font-size:12px;color:#1A1A2E;letter-spacing:.08em;font-weight:900}
+.pdf-psyche-brand span{color:#E91E8C}
 .pdf-psyche-pagenum{font-size:11px;color:#6b6b80;font-weight:600}
 .pdf-psyche-tag{font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#C9A96E;margin-bottom:14px}
 .pdf-psyche-title{font-size:26px;font-weight:900;color:#DC1478;line-height:1.35;margin-bottom:8px}
@@ -6028,7 +6029,7 @@ function openImageInNewTab(dataUrl, filename){
         <div class="tip-body">아래 이미지를 <strong>꾹 눌러서</strong><br>"사진에 추가" 또는 "이미지 저장"을 선택해주세요</div>
       </div>
       <img src="${dataUrl}" alt="${filename}">
-      <div class="footer">SKOPOS · skopos.kr</div>
+      <div class="footer"><b style="color:#0F0F1A">SKO</b><b style="color:#E91E8C">POS</b> · skopos.kr</div>
     </body></html>
   `);
   w.document.close();
@@ -6197,7 +6198,7 @@ async function downloadPDF(){
     // ── 공통 내지 헤더 / 푸터 (25p 샘플 스타일) ──────────────
     function innerHeader(pageNum, totalPages){
       return `<div class="pdf-inner-header">
-        <div class="pdf-inner-brand">SKOPOS · SDTI REPORT</div>
+        <div class="pdf-inner-brand">SKO<span>POS</span> · SDTI REPORT</div>
         <div class="pdf-page-num">${krText(t.plain)} · ${pageNum} / ${totalPages}</div>
       </div>`;
     }
@@ -6214,7 +6215,7 @@ async function downloadPDF(){
     const coverHtml = `<div class="pdf-page">
       <div class="pdf-cover">
         <img src="logo.png" style="width:64px;position:absolute;top:60px;left:64px" alt="">
-        <div style="position:absolute;top:72px;left:140px;font-weight:900;letter-spacing:.12em;font-size:14px;color:#fff">SKOPOS</div>
+        <div style="position:absolute;top:72px;left:140px;font-weight:900;letter-spacing:.12em;font-size:14px;color:#fff">SKO<span style="color:#E91E8C">POS</span></div>
         <div style="margin-top:160px;position:relative;z-index:1">
           <div style="font-size:12px;letter-spacing:.25em;color:#E91E8C;font-weight:800;margin-bottom:26px">SPACE DESIRE TYPE INVENTORY</div>
           <div style="font-size:34px;font-weight:900;line-height:1.5;color:#fff">${coverName}<br>SDTI 공간 욕구<br>정밀 리포트입니다.</div>
@@ -6227,7 +6228,7 @@ async function downloadPDF(){
           </div>
         </div>
         <div style="position:absolute;bottom:52px;left:64px;right:64px;border-top:1px solid rgba(255,255,255,.15);padding-top:16px;display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.45)">
-          <span>SKOPOS 공간 욕구 유형 검사</span>
+          <span><b style="color:#fff">SKO</b><b style="color:#E91E8C">POS</b> 공간 욕구 유형 검사</span>
           <span>skopos.kr</span>
         </div>
       </div>
@@ -6553,7 +6554,7 @@ async function downloadPDF(){
         <div class="pdf-psyche-page">
           <div class="pdf-psyche-inner">
             <div class="pdf-psyche-header">
-              <div class="pdf-psyche-brand">SKOPOS · SDTI REPORT</div>
+              <div class="pdf-psyche-brand">SKO<span>POS</span> · SDTI REPORT</div>
               <div class="pdf-psyche-pagenum">${krText(t.plain)} · 10 / ${PDF_TOTAL}</div>
             </div>
             <div class="pdf-psyche-tag">🧬 SPACE PSYCHOLOGY</div>
@@ -7023,7 +7024,7 @@ async function downloadPDF(){
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     const pBackHtml = `<div class="pdf-page" style="padding:0">
       <div style="background:#fff;width:100%;min-height:1123px;display:flex;flex-direction:column;justify-content:center;padding:90px 72px;box-sizing:border-box;position:relative">
-        <div style="font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:#C9A96E;font-weight:800;margin-bottom:44px">SKOPOS · SDTI REPORT</div>
+        <div style="font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:#C9A96E;font-weight:800;margin-bottom:44px"><span style="color:#fff;font-weight:900">SKO</span><span style="color:#E91E8C;font-weight:900">POS</span> · SDTI REPORT</div>
         <div style="font-size:30px;font-weight:900;color:#DC1478;line-height:1.4;margin-bottom:24px">나의 공간 다짐</div>
         <div style="font-size:13.5px;color:#3a3a52;line-height:1.9;margin-bottom:40px">리포트를 덮기 전에, 한 문장만 남겨 보세요.<br>계절이 바뀔 때마다 이 문장을 다시 꺼내 보게 될 거예요.</div>
         <div style="background:#fbf9f4;border:1px solid #eee4d2;border-radius:16px;padding:40px 36px;margin-bottom:52px">

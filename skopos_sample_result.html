@@ -64,6 +64,7 @@ h1,h2,h3,p,small,.result-name,.result-desc,.rx-item{word-break:keep-all;overflow
 /* ── 상단 네비 ── */
 .nav-bar{position:sticky;top:0;z-index:100;background:rgba(247,248,252,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
 .nav-inner{max-width:1100px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.nav-sk{font-weight:900;color:#0F0F1A}.nav-sk span{color:#E91E8C}
 .nav-back{display:inline-flex;align-items:center;gap:6px;font-size:.86rem;color:var(--gray);font-weight:700;text-decoration:none;transition:color .2s}
 .nav-back:hover{color:var(--pink)}
 .nav-cta{display:inline-flex;align-items:center;gap:8px;padding:9px 18px;background:var(--pink-gradient);color:#fff;text-decoration:none;border-radius:50px;font-size:.82rem;font-weight:800;box-shadow:var(--sh-pink);transition:transform .2s,box-shadow .2s}
@@ -386,7 +387,7 @@ h1,h2,h3,p,small,.result-name,.result-desc,.rx-item{word-break:keep-all;overflow
 <!-- 네비 -->
 <nav class="nav-bar">
   <div class="nav-inner">
-    <a class="nav-back" href="index.html">← SKOPOS 홈으로</a>
+    <a class="nav-back" href="index.html">← <b class="nav-sk">SKO<span>POS</span></b> 홈으로</a>
     <a class="nav-cta" href="skopos_premium_quiz.html" onclick="if(window.gtag)gtag('event','sample_to_premium_click',{location:'nav'})">
       정밀 검사 시작 <span>29,900원</span>
     </a>
