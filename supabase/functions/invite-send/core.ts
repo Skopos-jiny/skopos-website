@@ -43,7 +43,8 @@ export function buildMail(businessName, code) {
   return { subject, text, html };
 }
 
-// deps: { sb (service role client), env(name), fetch }
+// deps: { sb (service role client), send }
+//   send: 메일 발송 함수. 준비되지 않았으면 null. ({ to, subject, html, text }) => { ok, id, error }
 export function makeHandler(deps) {
   const json = (status, body) => ({ status, body });
   return async function handler(method, headers, rawBody) {
@@ -60,8 +61,7 @@ export function makeHandler(deps) {
         return json(401, { success: false, message: '로그인 세션이 만료되었습니다. 다시 로그인해 주세요.' });
       }
       const uid = userData.user.id;
-      const key = deps.env('RESEND_API_KEY');
-      const configured = !!key;
+      const configured = typeof deps.send === 'function';
       if (action === 'status') return json(200, { success: true, configured });
       if (action !== 'send') return json(400, { success: false, message: '알 수 없는 요청입니다.' });
       if (!configured) return json(503, { success: false, reason: 'not_configured', message: '이메일 발송을 준비하고 있어요. 링크를 복사해 전달해 주세요.' });
@@ -79,17 +79,12 @@ export function makeHandler(deps) {
       const mail = buildMail(prep.business_name, prep.invite_code);
       let ok = false, providerId = null, errText = null;
       try {
-        const res = await deps.fetch('https://api.resend.com/emails', {
-          method: 'POST',
-          headers: { Authorization: 'Bearer ' + key, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ from: deps.env('RESEND_FROM') || 'SKOPOS <no-reply@skopos.kr>', to: [email], subject: mail.subject, html: mail.html, text: mail.text }),
-        });
-        let j = {}; try { j = await res.json(); } catch (_) {}
-        ok = res.ok && !!j.id; providerId = j.id || null;
-        if (!ok) errText = String(res.status) + ' ' + String(j.name || j.message || '').slice(0, 200);
-      } catch (e) { errText = 'network ' + String(e && e.message || e).slice(0, 200); }
+        const r = (await deps.send({ to: email, subject: mail.subject, html: mail.html, text: mail.text })) || {};
+        ok = r.ok === true; providerId = r.id || null;
+        if (!ok) errText = String(r.error || 'send failed').slice(0, 200);
+      } catch (e) { errText = 'error ' + String(e && e.message || e).slice(0, 200); }
       await deps.sb.rpc('invite_send_finish', { p_send_id: prep.send_id, p_ok: ok, p_provider_id: providerId, p_error: errText });
-      if (!ok) { console.error('invite-send resend failed', errText); return json(502, { success: false, reason: 'send_failed', message: '메일을 보내지 못했어요. 주소를 확인하거나 링크를 복사해 전달해 주세요.' }); }
+      if (!ok) { console.error('invite-send mail failed', errText); return json(502, { success: false, reason: 'send_failed', message: '메일을 보내지 못했어요. 주소를 확인하거나 링크를 복사해 전달해 주세요.' }); }
       return json(200, { success: true, masked_to: masked });
     } catch (e) {
       console.error('invite-send error', e);
