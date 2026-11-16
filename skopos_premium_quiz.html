@@ -3727,6 +3727,7 @@ async function checkEntitlement(user){
       .select('id,status')
       .eq('user_id', user.id)
       .in('status', ['paid','free'])
+      .neq('product', 'interior') // 인테리어 검사 이용권 결제는 정밀 검사 이용권이 아님
       .limit(1);
     if(error){ console.warn('결제 이력 조회 오류:', error); return false; }
     return !!(data && data.length);

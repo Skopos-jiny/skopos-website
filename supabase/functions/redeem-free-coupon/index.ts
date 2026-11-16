@@ -130,6 +130,7 @@ const handler = async (event) => {
       .select('id')
       .eq('user_id', user_id)
       .in('status', ['paid', 'free'])
+      .neq('product', 'interior')
       .limit(1);
     if (existingErr) return json(500, { success: false, message: '이용권 확인에 실패했습니다. 잠시 후 다시 시도해 주세요.' });
     if (existing && existing.length) {

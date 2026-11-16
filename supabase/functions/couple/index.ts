@@ -82,7 +82,7 @@ const handler = async (event) => {
       }
 
       // 파트너 정밀 검사 이용권 (이미 이용권이 있으면 생략)
-      const { data: ent } = await sb.from('payments').select('id').eq('user_id', me.id).in('status', ['paid', 'free']).limit(1);
+      const { data: ent } = await sb.from('payments').select('id').eq('user_id', me.id).in('status', ['paid', 'free']).neq('product', 'interior').limit(1);
       if (!ent || !ent.length) {
         const { error: pErr } = await sb.from('payments').insert([{
           user_id: me.id,

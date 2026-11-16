@@ -200,7 +200,7 @@ const handler = async (event) => {
     // 이미 정상 처리된 결제가 자동 취소되는 일을 막는다.
     const { data: existingPay, error: existingErr } = await sb
       .from('payments')
-      .select('id,user_id,status,order_name,merchant_uid,amount,original_amount,discount_amount,final_amount,coupon_code')
+      .select('id,user_id,status,product,order_name,merchant_uid,amount,original_amount,discount_amount,final_amount,coupon_code')
       .eq('imp_uid', imp_uid)
       .maybeSingle();
     if (existingErr) console.error('existing payment lookup failed:', imp_uid, existingErr.message);
@@ -211,6 +211,10 @@ const handler = async (event) => {
         return json(resolvedUserId ? 409 : 401, { success: false, message: resolvedUserId
           ? '이미 다른 계정으로 처리된 결제입니다. 관리자에게 문의해 주세요.'
           : '결제한 계정으로 로그인한 뒤 다시 확인해 주세요.' });
+      }
+      // 인테리어 이용권 결제는 정밀 검사 이용권으로 쓰지 않는다 (interior-order 에서 처리)
+      if (existingPay.product === 'interior') {
+        return json(409, { success: false, message: '인테리어 검사 이용권 결제입니다. 인테리어 검사 화면에서 확인해 주세요.' });
       }
       if (existingPay.status === 'cancelled') {
         return json(400, { success: false, message: '취소된 결제입니다.' });
@@ -266,6 +270,10 @@ const handler = async (event) => {
 
     if (payment.status !== 'paid') {
       return json(400, { success: false, message: `결제가 완료되지 않았습니다. (${payment.status})` });
+    }
+    // 인테리어 이용권 주문은 interior-order 에서 처리 (여기서 금액 불일치로 취소하지 않도록)
+    if (String(payment.merchant_uid || '').startsWith('SKOPOS-INT-')) {
+      return json(409, { success: false, message: '인테리어 검사 이용권 결제입니다. 인테리어 이용권 화면에서 확인해 주세요.' });
     }
 
     // 쿠폰 사용은 JWT 로 검증된 로그인 사용자에게만 허용.

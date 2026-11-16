@@ -6,11 +6,11 @@ export const END = Date.parse('2026-12-01T00:00:00+09:00');
 function reply(status,body){return new Response(JSON.stringify(body),{status,headers:{'Content-Type':'application/json; charset=utf-8','Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff','Vary':'Authorization'}});}
 export async function onRequest({request}){
  const now=Date.now(),active=now>=START&&now<END;
- if(request.method==='GET')return reply(200,{active,startsAt:START,endsAt:END,serverNow:now});
+ if(request.method==='GET')return reply(200,{active,official:now>=END,startsAt:START,endsAt:END,serverNow:now});
  if(request.method!=='POST')return reply(405,{error:'method_not_allowed'});
  let mode='test',rid='';try{const b=await request.clone().json();if(b&&b.mode==='view')mode='view';if(b&&typeof b.r==='string')rid=b.r;}catch{}
- // 저장된 결과 다시 보기는 베타 기간이 끝나도 허용
- if(!active&&!(mode==='view'&&now>=START))return reply(410,{error:'beta_closed',endsAt:END,serverNow:now});
+ // 베타 기간 전에는 닫힘. 12월 1일부터는 정식판(이용권) 또는 저장 결과 다시 보기
+ if(now<START)return reply(410,{error:'beta_closed',endsAt:END,serverNow:now});
  const header=request.headers.get('Authorization')||'';
  const publicKey=request.headers.get('apikey')||'';
  if(!/^Bearer \S+$/.test(header)||!publicKey||publicKey.length>4096)return reply(401,{error:'login_required'});
@@ -19,7 +19,15 @@ export async function onRequest({request}){
   if(!res.ok)return reply(res.status>=500?503:401,{error:res.status>=500?'auth_unavailable':'login_required'});
   const user=await res.json();
   if(!user.id||user.is_anonymous)return reply(401,{error:'membership_required'});
-  // 베타 종료 후 다시 보기는 본인 저장 결과가 있을 때만 (검사 화면 재진입 방지)
+  // 정식판: 새 검사는 이용권 1회 사용(24시간 안 재진입은 같은 회차)
+  if(!active&&mode!=='view'){
+   const b=await fetch(AUTH_URL+'/rest/v1/rpc/interior_begin',{method:'POST',headers:{Authorization:header,apikey:publicKey,'Content-Type':'application/json'},body:'{}',signal:AbortSignal.timeout(8000)});
+   if(!b.ok)return reply(503,{error:'auth_unavailable'});
+   const r=await b.json();
+   if(!r||r.ok!==true)return reply(402,{error:'no_credit',remaining:0});
+   return reply(200,{html:content,official:true,remaining:r.remaining,reused:!!r.reused,endsAt:END,serverNow:Date.now()});
+  }
+  // 정식판 기간의 다시 보기는 본인 저장 결과가 있을 때만 (검사 화면 재진입 방지)
   if(!active){
    if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(rid))return reply(410,{error:'beta_closed',endsAt:END,serverNow:now});
    const q=await fetch(AUTH_URL+'/rest/v1/interior_results?select=id&id=eq.'+rid+'&user_id=eq.'+encodeURIComponent(user.id),{headers:{Authorization:header,apikey:publicKey},signal:AbortSignal.timeout(8000)});

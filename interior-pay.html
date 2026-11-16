@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>인테리어 공간욕구검사 이용권 | SKOPOS 스코포스</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+:root{--pink:#E91E8C;--ink:#0F0F1A;--mid:#5A5A6E;--gray:#8890A4;--line:#E4E7EF;--bg:#F7F8FC}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var(--bg);color:var(--ink);word-break:keep-all}
+nav{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:#fff;border-bottom:1px solid var(--line)}
+nav a{color:var(--ink);text-decoration:none;font-weight:900;letter-spacing:.08em}
+nav a span{color:var(--pink)}
+nav .nav-sub{font-size:.8rem;color:var(--gray);font-weight:600;letter-spacing:0}
+main{max-width:560px;margin:0 auto;padding:28px 16px 60px}
+h1{font-size:1.5rem;line-height:1.35;margin:0 0 8px}
+.lead{color:var(--mid);font-size:.92rem;line-height:1.7;margin:0 0 20px}
+.card{background:#fff;border-radius:18px;padding:20px;box-shadow:0 4px 20px rgba(15,15,26,.05);margin-bottom:16px}
+.bal{display:flex;justify-content:space-between;align-items:center;font-size:.9rem;color:var(--mid)}
+.bal b{font-size:1.25rem;color:var(--pink)}
+.plans{display:grid;gap:10px}
+.plan{display:block;width:100%;text-align:left;padding:16px;border-radius:14px;border:1.5px solid var(--line);background:#fff;cursor:pointer;font-family:inherit;color:inherit}
+.plan.sel{border-color:var(--pink);background:#FDF0F6}
+.plan .pn{font-weight:800;font-size:.98rem}
+.plan .pp{font-weight:900;font-size:1.2rem;color:var(--pink);margin-top:4px}
+.plan .pd{font-size:.82rem;color:var(--mid);margin-top:6px;line-height:1.6}
+.btn{display:block;width:100%;padding:15px;border:0;border-radius:50px;background:var(--pink);color:#fff;font-weight:800;font-size:1rem;cursor:pointer;font-family:inherit;margin-top:14px;text-align:center;text-decoration:none}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.sub{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+.row{display:flex;gap:8px}
+.row input{flex:1;min-width:0;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;font:inherit;text-transform:uppercase}
+.row button{padding:0 18px;border:0;border-radius:12px;background:var(--ink);color:#fff;font-weight:700;font-family:inherit;cursor:pointer}
+.msg{font-size:.84rem;margin-top:8px;line-height:1.6;min-height:1em}
+.msg.ok{color:#15803d}.msg.err{color:#C0264B}
+h2{font-size:1rem;margin:0 0 12px}
+.notes{font-size:.78rem;color:var(--gray);line-height:1.8;padding-left:18px;margin:0}
+.done{text-align:center}
+.done .big{font-size:2.2rem}
+[hidden]{display:none!important}
+</style>
+<script src="/skopos-track.js" defer></script>
+</head>
+<body>
+<nav><a href="/">SKO<span>POS</span></a><span class="nav-sub">인테리어 공간욕구검사 이용권</span></nav>
+<main>
+  <h1>SDTI 인테리어 공간욕구검사<br>이용권</h1>
+  <p class="lead">인테리어 상담 전에 내 공간욕구의 기준을 정리하는 검사예요. 56문항, 15분 안팎이면 고객용 리포트와 상담 가이드가 만들어집니다.</p>
+
+  <div class="card" id="balCard" hidden>
+    <div class="bal"><span>내 계정의 남은 이용권</span><b id="balNum">0회</b></div>
+    <a class="btn sub" id="goTest" href="/interior-beta" hidden>검사 시작하기</a>
+  </div>
+
+  <div class="card" id="buyCard">
+    <h2>이용권 고르기</h2>
+    <div class="plans">
+      <button type="button" class="plan sel" data-plan="single"><div class="pn">1회 이용권</div><div class="pp">59,900원</div><div class="pd">셀프 인테리어를 준비하는 분께 맞아요. 검사 1번, 결과와 PDF는 계속 다시 볼 수 있어요.</div></button>
+      <button type="button" class="plan" data-plan="pack10"><div class="pn">10회 이용권</div><div class="pp">100,000원</div><div class="pd">인테리어 업체 사장님용이에요. 한 계정에서 고객 상담 때마다 검사를 10번 진행할 수 있어요.</div></button>
+    </div>
+    <button class="btn" id="payBtn" type="button" disabled>로그인 확인 중...</button>
+    <p class="msg" id="payMsg"></p>
+  </div>
+
+  <div class="card">
+    <h2>이용권 코드가 있으신가요?</h2>
+    <div class="row"><input id="code" placeholder="예: INTERIORBETA" autocomplete="off" maxlength="40"><button type="button" id="codeBtn">등록</button></div>
+    <p class="msg" id="codeMsg"></p>
+  </div>
+
+  <div class="card done" id="doneCard" hidden>
+    <div class="big">✅</div>
+    <p id="doneText">이용권이 적립됐어요.</p>
+    <a class="btn" href="/interior-beta">검사 시작하기</a>
+  </div>
+
+  <ul class="notes">
+    <li>이용권 1회로 검사 1번을 진행해요. 검사를 시작한 뒤 24시간 안에는 다시 들어와도 같은 회차로 이어져요.</li>
+    <li>이용권은 결제한 계정에서만 쓸 수 있어요. 결제 내역은 마이페이지에서 확인할 수 있어요.</li>
+    <li>결제 후 검사를 시작하지 않으셨다면 결제일로부터 7일 이내 전액 환불을 요청할 수 있어요. 문의: 카카오톡 채널 또는 skopos@skopos.kr</li>
+    <li>스코포스는 인테리어 공사를 하지 않습니다. 상담 전에 기준을 정리하는 검사를 제공합니다.</li>
+  </ul>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.js"></script>
+<script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+<script src="skopos-auth.js"></script>
+<script>
+(function(){
+  'use strict';
+  const FN = 'https://rgbukqphcqptnfeqipfn.supabase.co/functions/v1/interior-order';
+  const IMP_CODE = 'imp57703773';
+  const PRICES = { single: 59900, pack10: 100000 };
+  const NAMES = { single: 'SKOPOS SDTI 인테리어 공간욕구검사 1회 이용권', pack10: 'SKOPOS SDTI 인테리어 공간욕구검사 10회 이용권' };
+  const $ = id => document.getElementById(id);
+  let plan = new URLSearchParams(location.search).get('plan') === 'pack10' ? 'pack10' : 'single';
+  let user = null, salesOpen = false, busy = false;
+  try { if (window.IMP) IMP.init(IMP_CODE); } catch (e) {}
+
+  function won(n){ return Number(n).toLocaleString('ko-KR') + '원'; }
+  function setMsg(el, text, ok){ el.textContent = text || ''; el.className = 'msg' + (text ? (ok ? ' ok' : ' err') : ''); }
+  function selectPlan(p){
+    plan = p;
+    document.querySelectorAll('.plan').forEach(b => b.classList.toggle('sel', b.dataset.plan === p));
+    refreshButton();
+  }
+  function refreshButton(){
+    const b = $('payBtn');
+    if (!user) { b.disabled = true; b.textContent = '로그인 후 구매할 수 있어요'; return; }
+    if (!salesOpen) { b.disabled = true; b.textContent = '12월 1일부터 구매할 수 있어요'; return; }
+    b.disabled = busy; b.textContent = busy ? '처리 중...' : (plan === 'pack10' ? '10회 이용권 ' : '1회 이용권 ') + won(PRICES[plan]) + ' 결제하기';
+  }
+  async function token(){
+    const sb = await SkoposAuth.getClient();
+    const { data: { session } } = await sb.auth.getSession();
+    return session && session.access_token;
+  }
+  async function call(body){
+    const t = await token();
+    if (!t) return { success: false, status: 401, message: '로그인이 필요합니다.' };
+    const res = await fetch(FN, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + t }, body: JSON.stringify(body) });
+    let j = {}; try { j = await res.json(); } catch (e) {}
+    j.status = res.status; return j;
+  }
+  function showCredits(c){
+    if (!c) return;
+    $('balCard').hidden = false;
+    $('balNum').textContent = c.remaining + '회';
+    $('goTest').hidden = !(c.remaining > 0 || c.open_session);
+  }
+  async function loadStatus(){
+    const j = await call({ action: 'status' });
+    if (!j.success) { setMsg($('payMsg'), j.message || '이용권 정보를 불러오지 못했어요.'); return; }
+    salesOpen = !!j.sales_open; showCredits(j.credits); refreshButton();
+  }
+  function done(text, c){
+    showCredits(c);
+    $('doneText').textContent = text;
+    $('doneCard').hidden = false;
+    $('doneCard').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  async function verify(impUid, merchantUid, p){
+    busy = true; refreshButton(); setMsg($('payMsg'), '결제를 확인하고 있어요...', true);
+    try{
+      const j = await call({ action: 'verify', imp_uid: impUid, merchant_uid: merchantUid, plan: p });
+      if (j.status === 401) {
+        try { sessionStorage.setItem('skopos_int_pending', JSON.stringify({ imp_uid: impUid, merchant_uid: merchantUid, plan: p, ts: Date.now() })); } catch (e) {}
+        setMsg($('payMsg'), '로그인이 만료되어 결제 확인을 마치지 못했어요. 다시 로그인하면 자동으로 이어서 확인해요. 결제는 이미 완료되었으니 다시 결제하지 마세요.');
+        SkoposAuth.showGate({ title: '다시 로그인해 주세요', subtitle: '결제한 계정으로 로그인하면 결제 확인을 이어서 진행해요.' });
+        return;
+      }
+      if (!j.success) { setMsg($('payMsg'), j.message || '결제를 확인하지 못했어요. 카카오톡 채널로 문의해 주세요.'); return; }
+      try { sessionStorage.removeItem('skopos_int_pending'); } catch (e) {}
+      try { window.SkoposTrack && SkoposTrack.event('purchase', { value: PRICES[p], order_id: merchantUid, product: 'interior_' + p }); } catch (e) {}
+      setMsg($('payMsg'), '');
+      done((p === 'pack10' ? '10회' : '1회') + ' 이용권이 적립됐어요. 지금 바로 검사를 시작할 수 있어요.', j.credits);
+    } catch (e) {
+      try { sessionStorage.setItem('skopos_int_pending', JSON.stringify({ imp_uid: impUid, merchant_uid: merchantUid, plan: p, ts: Date.now() })); } catch (x) {}
+      setMsg($('payMsg'), '결제 확인 서버에 연결하지 못했어요. 새로고침하면 다시 확인해요. 계속 안 되면 카카오톡 채널로 문의해 주세요.');
+    } finally { busy = false; refreshButton(); }
+  }
+  function pay(){
+    if (!user || !salesOpen || busy || !window.IMP) return;
+    busy = true; refreshButton(); setMsg($('payMsg'), '');
+    const merchantUid = 'SKOPOS-INT-' + Date.now();
+    const p = plan;
+    try { sessionStorage.setItem('skopos_int_plan', p); } catch (e) {}
+    IMP.request_pay({
+      pg: 'kcp', pay_method: 'card', merchant_uid: merchantUid, name: NAMES[p], amount: PRICES[p],
+      buyer_name: (user.user_metadata && (user.user_metadata.full_name || user.user_metadata.name)) || '', buyer_email: user.email || '', buyer_tel: '',
+      m_redirect_url: location.origin + location.pathname,
+    }, async (rsp) => {
+      if (rsp.success) { await verify(rsp.imp_uid, rsp.merchant_uid, p); }
+      else { busy = false; refreshButton(); const m = rsp.error_msg || '결제가 취소됐어요'; setMsg($('payMsg'), m.includes('취소') ? '' : '결제 실패: ' + m); }
+    });
+  }
+  async function redeem(){
+    const code = $('code').value.trim().toUpperCase();
+    if (!code) { setMsg($('codeMsg'), '코드를 입력해 주세요.'); return; }
+    if (!user) { SkoposAuth.showGate({ title: '로그인이 필요해요', subtitle: '이용권 코드는 로그인한 계정에 적립돼요.' }); return; }
+    $('codeBtn').disabled = true; setMsg($('codeMsg'), '확인 중...', true);
+    try {
+      const j = await call({ action: 'redeem', coupon_code: code });
+      if (!j.success) { setMsg($('codeMsg'), j.message || '코드를 등록하지 못했어요.'); return; }
+      setMsg($('codeMsg'), '1회 이용권이 적립됐어요.', true);
+      try { window.SkoposTrack && SkoposTrack.event('free_redeem', { product: 'interior', coupon_code: code }); } catch (e) {}
+      done('1회 이용권이 적립됐어요. 지금 바로 검사를 시작할 수 있어요.', j.credits);
+    } catch (e) { setMsg($('codeMsg'), '잠시 후 다시 시도해 주세요.'); }
+    finally { $('codeBtn').disabled = false; }
+  }
+
+  document.querySelectorAll('.plan').forEach(b => b.addEventListener('click', () => selectPlan(b.dataset.plan)));
+  $('payBtn').addEventListener('click', pay);
+  $('codeBtn').addEventListener('click', redeem);
+  $('code').addEventListener('keydown', e => { if (e.key === 'Enter') redeem(); });
+  selectPlan(plan);
+
+  // 모바일 결제 후 복귀: 주소의 결제 번호는 한 번만 쓰고 지운다
+  const q = new URLSearchParams(location.search);
+  const ret = q.get('imp_uid') ? { imp_uid: q.get('imp_uid'), merchant_uid: q.get('merchant_uid'), ok: q.get('imp_success') === 'true' } : null;
+  if (ret) { try { history.replaceState({}, '', location.pathname); } catch (e) {} }
+
+  SkoposAuth.guard({
+    title: '인테리어 공간욕구검사 이용권',
+    subtitle: '이용권은 로그인한 계정에 적립돼요.<br>로그인 후 구매하거나 코드를 등록해 주세요.',
+    async onReady(u){
+      user = u; await loadStatus();
+      let p = 'single'; try { p = sessionStorage.getItem('skopos_int_plan') || 'single'; } catch (e) {}
+      if (ret && ret.ok) { await verify(ret.imp_uid, ret.merchant_uid, p); return; }
+      if (ret && !ret.ok) { setMsg($('payMsg'), '결제가 완료되지 않았어요. 다시 시도해 주세요.'); return; }
+      let pv = null; try { pv = JSON.parse(sessionStorage.getItem('skopos_int_pending') || 'null'); } catch (e) {}
+      if (pv && pv.imp_uid && Date.now() - (pv.ts || 0) < 24 * 3600 * 1000) await verify(pv.imp_uid, pv.merchant_uid, pv.plan);
+    }
+  });
+})();
+</script>
+</body>
+</html>

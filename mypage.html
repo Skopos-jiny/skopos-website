@@ -343,14 +343,18 @@ async function renderInterior(user){
   const area=document.getElementById('interiorArea');if(!area)return;
   try{
     const {data,error}=await sb.from('interior_results').select('id,created_at,updated_at,top,version').eq('user_id',user.id).order('created_at',{ascending:false}).limit(20);
-    if(error||!data||!data.length){area.innerHTML='';return;}
-    area.innerHTML='<div class="ir-head">🏠 SDTI 인테리어 공간욕구검사 <span class="ir-beta">BETA</span></div>'+data.map(r=>{
+    // 정식판 이용권 현황 (12/1~)
+    let credit='';
+    try{const {data:cs}=await sb.rpc('interior_credit_status');if(cs&&cs.ok&&cs.total>0)credit='<div class="result-meta" style="margin:4px 0 10px">남은 이용권 <b style="color:#E91E8C">'+Number(cs.remaining)+'회</b> (전체 '+Number(cs.total)+'회) · <a href="/interior-pay" style="color:#E91E8C">이용권 구매</a> · <a href="/interior-beta" style="color:#E91E8C">검사 시작</a></div>';}catch(_){}
+    if(error||!data||!data.length){area.innerHTML=credit?'<div class="ir-head">🏠 SDTI 인테리어 공간욕구검사</div>'+credit:'';return;}
+    const anyBeta=data.some(r=>r.version!=='official');
+    area.innerHTML='<div class="ir-head">🏠 SDTI 인테리어 공간욕구검사 '+(anyBeta?'<span class="ir-beta">BETA</span>':'')+'</div>'+credit+data.map(r=>{
       const date=new Date(r.created_at).toLocaleDateString('ko-KR');
       const top=(r.top||[]).map(id=>INTERIOR_DIMS[id]).filter(Boolean).join(' · ')||'분석 결과 보기';
       const id=String(r.id).replace(/[^0-9a-f-]/gi,'');
-      return `<div class="result-card ir-card"><span class="result-emoji ir-emoji">🏠</span><div class="result-info"><div class="result-type">${top}</div><div class="result-meta">인테리어 공간욕구검사 (베타) · ${date}</div></div><div class="result-actions"><a class="btn-sm btn-view" href="interior-beta?r=${id}">결과 보기</a><button class="btn-sm ir-del" data-id="${id}">삭제</button></div></div>`;}).join('');
+      return `<div class="result-card ir-card"><span class="result-emoji ir-emoji">🏠</span><div class="result-info"><div class="result-type">${top}</div><div class="result-meta">인테리어 공간욕구검사${r.version==='official'?'':' (베타)'} · ${date}</div></div><div class="result-actions"><a class="btn-sm btn-view" href="interior-beta?r=${id}">결과 보기</a><button class="btn-sm ir-del" data-id="${id}">삭제</button></div></div>`;}).join('');
     area.querySelectorAll('.ir-del').forEach(b=>b.addEventListener('click',async()=>{
-      if(!confirm('이 인테리어 검사 결과를 삭제할까요? 삭제하면 되돌릴 수 없어요.'))return;
+      if(!confirm('이 인테리어 검사 결과를 삭제할까요? 삭제하면 되돌릴 수 없고, 사용한 이용권도 돌아오지 않아요.'))return;
       const {error}=await sb.from('interior_results').delete().eq('id',b.dataset.id).eq('user_id',user.id);
       if(error){alert('삭제하지 못했어요. 잠시 후 다시 시도해 주세요.');return;}
       renderInterior(user);}));

@@ -1,7 +1,10 @@
 (function(){
  'use strict';
  const start=document.getElementById('start'),message=document.getElementById('message'),frame=document.getElementById('betaFrame'),signout=document.getElementById('signout');
- let active=false,client=null,loading=false,wantsStart=false,expiryTimer=null,generation=0;
+ let active=false,official=false,client=null,loading=false,wantsStart=false,expiryTimer=null,generation=0;
+ const ORDER_FN='https://rgbukqphcqptnfeqipfn.supabase.co/functions/v1/interior-order';
+ // 정식판(12/1~): 이용권이 없을 때 구매 화면으로 가는 버튼
+ let buyLink=null;function showBuy(on){if(!buyLink){buyLink=document.createElement('a');buyLink.href='/interior-pay';buyLink.className='buy-link';buyLink.textContent='이용권 구매하기';buyLink.style.cssText='display:block;max-width:320px;margin:10px auto 0;padding:12px 16px;border-radius:50px;background:#E91E8C;color:#fff;font-weight:800;text-align:center;text-decoration:none';message.insertAdjacentElement('afterend',buyLink);}buyLink.hidden=!on;buyLink.style.display=on?'block':'none';}
  // 저장된 결과 다시 보기: /interior-beta?r=<id>
  const viewId=(()=>{const v=new URLSearchParams(location.search).get('r')||'';return /^[0-9a-f-]{36}$/i.test(v)?v:'';})();if(viewId)wantsStart=true;
  // 앱 안 브라우저(카카오톡·인스타그램·네이버 등): 로그인과 PDF 저장이 막힐 수 있어 기본 브라우저로 여는 길을 안내
@@ -20,20 +23,28 @@
  frame.addEventListener('load',guardPrint);
  if(sheet){byId('sheetOpen').addEventListener('click',()=>openExternal(resultUrl(savedId||viewId),byId('sheetHelp')));byId('sheetCopy').addEventListener('click',()=>copyLink(resultUrl(savedId||viewId),byId('sheetHelp')));byId('sheetTry').addEventListener('click',()=>{const p=sheetPrint;hideSheet();if(p)setTimeout(p,60);});byId('sheetClose').addEventListener('click',hideSheet);sheet.addEventListener('click',e=>{if(e.target===sheet)hideSheet();});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!sheet.hidden)hideSheet();});}
  if(INAPP&&byId('inappNotice')){byId('inappNotice').hidden=false;byId('inappOpen').addEventListener('click',()=>openExternal(pageUrl(),byId('inappHelp')));byId('inappCopy').addEventListener('click',()=>copyLink(pageUrl(),byId('inappHelp')));}
- function clear(text){generation++;hideSheet();savedId='';frame.hidden=true;frame.removeAttribute('srcdoc');document.body.classList.remove('frame-open');start.hidden=false;start.disabled=!(active||viewId);message.textContent=text;clearTimeout(expiryTimer);}
- async function status(){try{const res=await fetch('/api/interior-beta',{cache:'no-store'});if(!res.ok)throw Error();const data=await res.json();active=data.active===true;start.disabled=!(active||viewId);message.textContent=viewId?'로그인하면 저장된 결과를 불러옵니다.':active?'회원가입·로그인 후 무료로 참여할 수 있습니다.':(data.serverNow>=data.endsAt?'사전 베타가 종료되었습니다. 저장한 결과는 마이페이지에서 볼 수 있어요.':'11월 무료 베타 운영 기간이 아닙니다.');if(viewId)start.textContent='저장된 결과 보기';}catch{active=false;message.textContent='운영 상태를 확인하지 못했습니다. 잠시 후 새로고침해 주세요.';}}
- async function open(){if((!active&&!viewId)||loading)return;loading=true;start.disabled=true;const epoch=generation;
-  try{const {data,error}=await client.auth.getSession();if(error)throw Error();if(!data.session){wantsStart=true;SkoposAuth.showGate({title:'인테리어 공간욕구검사 무료 베타',subtitle:'회원가입·로그인 후 참여할 수 있습니다.<br>결과는 로그인한 계정에 저장돼요 (베타).',cta:'로그인하고 무료 베타 시작'});return;}
+ function clear(text){generation++;hideSheet();savedId='';frame.hidden=true;frame.removeAttribute('srcdoc');document.body.classList.remove('frame-open');start.hidden=false;start.disabled=!(active||official||viewId);message.textContent=text;clearTimeout(expiryTimer);showBuy(false);}
+ async function status(){try{const res=await fetch('/api/interior-beta',{cache:'no-store'});if(!res.ok)throw Error();const data=await res.json();active=data.active===true;official=data.official===true;start.disabled=!(active||official||viewId);message.textContent=viewId?'로그인하면 저장된 결과를 불러옵니다.':active?'회원가입·로그인 후 무료로 참여할 수 있습니다.':official?'이용권으로 검사를 시작할 수 있어요. 결과는 내 계정에 저장돼요.':'11월 무료 베타 운영 기간이 아닙니다.';if(viewId)start.textContent='저장된 결과 보기';else if(official)start.textContent='이용권으로 검사 시작';}catch{active=false;message.textContent='운영 상태를 확인하지 못했습니다. 잠시 후 새로고침해 주세요.';}}
+ async function open(){if((!active&&!official&&!viewId)||loading)return;loading=true;start.disabled=true;const epoch=generation;
+  try{const {data,error}=await client.auth.getSession();if(error)throw Error();if(!data.session){wantsStart=true;SkoposAuth.showGate(official?{title:'SDTI 인테리어 공간욕구검사',subtitle:'로그인 후 이용권으로 검사를 시작할 수 있어요.<br>결과는 로그인한 계정에 저장돼요.',cta:'로그인하고 시작하기'}:{title:'인테리어 공간욕구검사 무료 베타',subtitle:'회원가입·로그인 후 참여할 수 있습니다.<br>결과는 로그인한 계정에 저장돼요 (베타).',cta:'로그인하고 무료 베타 시작'});return;}
+   // 정식판: 시작 전에 남은 이용권을 확인하고, 새 회차를 쓰는 경우 한 번 더 묻는다
+   if(official&&!viewId){
+    const st=await fetch(ORDER_FN,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+data.session.access_token},body:JSON.stringify({action:'status'})}).then(r=>r.json()).catch(()=>null);if(epoch!==generation)return;
+    const c=st&&st.credits;
+    if(c&&!c.open_session&&c.remaining<=0){clear('남은 이용권이 없어요. 이용권을 구매하면 바로 검사를 시작할 수 있어요.');showBuy(true);return;}
+    if(c&&!c.open_session&&!confirm('이용권 1회를 사용해 검사를 시작할까요? (남은 이용권 '+c.remaining+'회)\n시작 후 24시간 안에는 다시 들어와도 추가로 차감되지 않아요.')){clear('검사를 시작하지 않았어요. 준비되면 다시 눌러 주세요.');return;}
+   }
    const res=await fetch('/api/interior-beta',{method:'POST',headers:{Authorization:'Bearer '+data.session.access_token,apikey:SkoposAuth.CONFIG.anon,'Content-Type':'application/json'},body:JSON.stringify(viewId?{mode:'view',r:viewId}:{mode:'test'}),cache:'no-store'});const result=await res.json();if(epoch!==generation)return;
    if(res.status===410){active=false;clear(viewId?'사전 베타가 종료되어 이 결과를 열 수 없어요. 마이페이지에서 저장한 결과를 다시 선택해 주세요.':'사전 베타가 종료되었습니다. 정식판 안내는 카카오톡 채널에서 확인해 주세요.');return;}
+   if(res.status===402){clear('남은 이용권이 없어요. 이용권을 구매하면 바로 검사를 시작할 수 있어요.');showBuy(true);return;}
    if(res.status===404){clear('이 계정에 저장된 결과를 찾지 못했어요. 마이페이지에서 다시 선택해 주세요.');return;}
    if(res.status===401){clear('회원가입·로그인이 필요합니다. 다시 로그인해 주세요.');SkoposAuth.showGate({title:'인테리어 공간욕구검사 무료 베타',subtitle:'회원가입·로그인 후 참여할 수 있습니다.<br>결과는 로그인한 계정에 저장돼요 (베타).',cta:'로그인하고 무료 베타 시작'});return;}
-   if(!res.ok||typeof result.html!=='string')throw Error();if(viewId)frame.addEventListener('load',()=>restoreSaved(epoch),{once:true});else{draftUser=data.session.user.id;frame.addEventListener('load',()=>offerDraft(epoch),{once:true});}frame.srcdoc=result.html;frame.hidden=false;document.body.classList.add('frame-open');start.hidden=true;signout.hidden=false;message.textContent=viewId?'저장된 결과를 보는 중입니다.':'11월 무료 베타 참여 중 · 결과는 내 계정에 저장돼요.';wantsStart=false;
-   const remaining=result.endsAt-result.serverNow;if(!viewId)expiryTimer=setTimeout(()=>{active=false;if(frame.hidden)clear('11월 무료 베타가 종료되었습니다.');else message.textContent='베타 기간이 끝났지만, 진행 중인 검사는 끝까지 마치고 결과를 저장할 수 있어요.';},Math.max(0,Math.min(remaining,2147483647)));
-  }catch{clear('검사 화면을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.');}finally{loading=false;start.disabled=!active;}
+   if(!res.ok||typeof result.html!=='string')throw Error();if(viewId)frame.addEventListener('load',()=>restoreSaved(epoch),{once:true});else{draftUser=data.session.user.id;frame.addEventListener('load',()=>offerDraft(epoch),{once:true});}frame.srcdoc=result.html;frame.hidden=false;document.body.classList.add('frame-open');start.hidden=true;signout.hidden=false;message.textContent=viewId?'저장된 결과를 보는 중입니다.':result.official?'검사 진행 중 · 결과는 내 계정에 저장돼요. (남은 이용권 '+(result.remaining??0)+'회)':'11월 무료 베타 참여 중 · 결과는 내 계정에 저장돼요.';wantsStart=false;
+   const remaining=result.endsAt-result.serverNow;if(!viewId&&!result.official)expiryTimer=setTimeout(()=>{active=false;if(frame.hidden)clear('11월 무료 베타가 종료되었습니다.');else message.textContent='베타 기간이 끝났지만, 진행 중인 검사는 끝까지 마치고 결과를 저장할 수 있어요.';},Math.max(0,Math.min(remaining,2147483647)));
+  }catch{clear('검사 화면을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.');}finally{loading=false;start.disabled=!(active||official||viewId);}
  }
  start.addEventListener('click',()=>{wantsStart=true;open();});signout.addEventListener('click',async()=>{clearDraft();clear('로그아웃 중입니다.');await client.auth.signOut();signout.hidden=true;clear('로그아웃했습니다. 다시 로그인하여 참여할 수 있습니다.');});
- (async()=>{await status();if(!active&&!viewId)return;try{client=await SkoposAuth.getClient();client.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_OUT'||!session){wantsStart=false;signout.hidden=true;clear('회원가입·로그인 후 무료로 참여할 수 있습니다.');}else{signout.hidden=false;if(wantsStart)setTimeout(open,0);}});await SkoposAuth.guard({passive:true,onReady(){signout.hidden=false;start.textContent=viewId?'저장된 결과 보기':'무료 베타 시작하기';if(wantsStart)setTimeout(open,0);}});// 로그인 만료일 때만 화면을 닫고, 일시적인 통신 오류에는 검사를 유지
+ (async()=>{await status();if(!active&&!official&&!viewId)return;try{client=await SkoposAuth.getClient();client.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_OUT'||!session){wantsStart=false;signout.hidden=true;clear('회원가입·로그인 후 무료로 참여할 수 있습니다.');}else{signout.hidden=false;if(wantsStart)setTimeout(open,0);}});await SkoposAuth.guard({passive:true,onReady(){signout.hidden=false;start.textContent=viewId?'저장된 결과 보기':official?'이용권으로 검사 시작':'무료 베타 시작하기';if(wantsStart)setTimeout(open,0);}});// 로그인 만료일 때만 화면을 닫고, 일시적인 통신 오류에는 검사를 유지
   setInterval(async()=>{if(frame.hidden)return;try{const {data,error}=await client.auth.getUser();const expired=error?[400,401,403].includes(error.status):!data.user;if(expired){clear('로그인이 만료되었습니다. 다시 로그인하면 하던 검사를 이어서 할 수 있어요.');}else if(error){message.textContent='연결이 잠시 불안정해요. 검사는 계속할 수 있어요.';}}catch{message.textContent='연결이 잠시 불안정해요. 검사는 계속할 수 있어요.';}},60000);}catch{active=false;start.disabled=true;message.textContent='로그인 서비스를 불러오지 못했습니다. 새로고침해 주세요.';}})();
  // 제한 시간 조정용: 문항별 응답 시간·시간 초과 여부만 이름 없이 기록 (답변 내용·계정 정보는 보내지 않음)
  window.addEventListener('message',async function(e){
@@ -78,12 +89,16 @@
   if(e.source!==frame.contentWindow||!e.data||e.data.type!=='sdti-interior-save')return;
   const reply=m=>{try{frame.contentWindow.postMessage(Object.assign({type:'sdti-interior-saved'},m),'*');}catch(_){}};
   try{
-   if(!client)throw Error();if(!active){reply({ok:false,message:'사전 베타가 종료되어 새로 저장할 수 없어요. PDF로 저장해 주세요.'});return;}const {data:s}=await client.auth.getSession();if(!s||!s.session){reply({ok:false,message:'로그인이 만료되어 저장하지 못했어요. PDF로 저장해 주세요.'});return;}
+   if(!client)throw Error();if(!active&&!official){reply({ok:false,message:'사전 베타가 종료되어 새로 저장할 수 없어요. PDF로 저장해 주세요.'});return;}const {data:s}=await client.auth.getSession();if(!s||!s.session){reply({ok:false,message:'로그인이 만료되어 저장하지 못했어요. PDF로 저장해 주세요.'});return;}
    const d=e.data,row={scores:d.scores&&typeof d.scores==='object'?d.scores:{},top:Array.isArray(d.top)?d.top.slice(0,3).map(String):[],form_state:d.state&&typeof d.state==='object'?d.state:{},version:'beta',updated_at:new Date().toISOString()};
    let res;
    if(d.id&&/^[0-9a-f-]{36}$/i.test(d.id))res=await client.from('interior_results').update(row).eq('id',d.id).eq('user_id',s.session.user.id).select('id,created_at').single();
    else res=await client.from('interior_results').insert(Object.assign({user_id:s.session.user.id},row)).select('id,created_at').single();
-   if(res.error)throw res.error;
+   if(res.error){const m=String(res.error.message||'');
+    if(/interior_no_session/.test(m)){reply({ok:false,message:'새 검사를 저장하려면 이용권 1회가 더 필요해요. 지금 결과는 PDF로 저장하고, 페이지를 새로 열어 시작해 주세요.'});return;}
+    if(/interior_edit_window_closed/.test(m)){reply({ok:false,message:'저장 후 24시간이 지나 수정할 수 없어요. PDF로 저장해 주세요.'});return;}
+    if(/interior_beta_readonly/.test(m)){reply({ok:false,message:'사전 베타 결과는 수정할 수 없어요. PDF로 저장해 주세요.'});return;}
+    throw res.error;}
    clearDraft();savedId=res.data.id;reply({ok:true,id:res.data.id,date:res.data.created_at});
   }catch(_){reply({ok:false,message:'결과를 저장하지 못했어요. PDF로 저장해 주세요.'});}
  });
@@ -91,10 +106,10 @@
   const send=m=>{try{frame.contentWindow.postMessage(Object.assign({type:'sdti-interior-restore'},m),'*');}catch(_){}};
   try{
    const {data:s}=await client.auth.getSession();if(epoch!==generation)return;
-   const {data,error}=await client.from('interior_results').select('id,created_at,form_state').eq('id',viewId).eq('user_id',s.session.user.id).maybeSingle();
-   if(error||!data){if(!active){clear('저장된 결과를 찾지 못했어요. 마이페이지에서 다시 선택해 주세요.');return;}send({ok:false,message:'저장된 결과를 찾지 못했어요. 마이페이지에서 다시 선택해 주세요.'});return;}
-   send({ok:true,id:data.id,date:data.created_at,state:data.form_state,readonly:!active});
-  }catch(_){if(!active){clear('저장된 결과를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.');return;}send({ok:false,message:'저장된 결과를 불러오지 못했어요.'});}
+   const {data,error}=await client.from('interior_results').select('id,created_at,form_state,version').eq('id',viewId).eq('user_id',s.session.user.id).maybeSingle();
+   if(error||!data){if(!active&&!official){clear('저장된 결과를 찾지 못했어요. 마이페이지에서 다시 선택해 주세요.');return;}send({ok:false,message:'저장된 결과를 찾지 못했어요. 마이페이지에서 다시 선택해 주세요.'});return;}
+   const editable=active||(official&&data.version==='official'&&Date.now()-Date.parse(data.created_at)<24*3600*1000);send({ok:true,id:data.id,date:data.created_at,state:data.form_state,readonly:!editable});
+  }catch(_){if(!active&&!official){clear('저장된 결과를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.');return;}send({ok:false,message:'저장된 결과를 불러오지 못했어요.'});}
  }
  window.addEventListener('message',function(e){if(e.source!==frame.contentWindow)return;if(e.data&&e.data.type==='sdti-interior-exit'){clear('검사를 나왔습니다. 다시 시작할 수 있어요.');signout.hidden=false;}});
 })();
