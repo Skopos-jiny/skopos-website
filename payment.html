@@ -85,6 +85,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
 .price-summary{background:#F7F8FC;border-radius:12px;padding:14px;margin-bottom:18px}
 .summary-row{display:flex;justify-content:space-between;align-items:center;font-size:.82rem;color:#8890A4;margin-bottom:8px}
 .summary-row.discount{color:#15803d}
+.summary-row[hidden]{display:none}
 .summary-row.total{margin:10px 0 0;padding-top:10px;border-top:1px solid rgba(0,0,0,.08);font-size:.96rem;font-weight:900;color:#0F0F1A}
 .summary-row.total span:last-child{font-size:1.25rem;color:#E91E8C}
 .user-info-box{background:linear-gradient(135deg,rgba(233,30,140,.06),rgba(255,107,157,.04));border:1.5px solid rgba(233,30,140,.15);border-radius:14px;padding:16px;margin-bottom:20px;display:flex;align-items:center;gap:14px}
@@ -181,7 +182,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
       <div class="field"><label>이메일</label><input type="email" id="loginEmail" placeholder="이메일을 입력해주세요" autocomplete="email"></div>
       <div class="field"><label>비밀번호</label><input type="password" id="loginPw" placeholder="비밀번호를 입력해주세요" autocomplete="current-password"></div>
       <button class="btn-email-login" id="loginBtn" onclick="loginEmail()">이메일로 로그인</button>
-      <div class="signup-link">계정이 없으신가요? <a href="login.html?redirect=payment.html&tab=signup">회원가입</a>&nbsp;·&nbsp;<a href="login.html?redirect=payment.html" style="color:#8890A4">비밀번호 찾기</a></div>
+      <div class="signup-link">계정이 없으신가요? <a class="keep-plan" href="login.html?redirect=payment.html&tab=signup">회원가입</a>&nbsp;·&nbsp;<a class="keep-plan" href="login.html?redirect=payment.html" style="color:#8890A4">비밀번호 찾기</a></div>
     </div>
   </div>
 
@@ -221,8 +222,8 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
         <div class="coupon-msg" id="couponMsg"></div>
       </div>
       <div class="price-summary">
-        <div class="summary-row"><span>할인 전 금액</span><span id="originalAmountText">₩29,900</span></div>
-        <div class="summary-row discount"><span>쿠폰 할인</span><span id="discountAmountText">-₩0</span></div>
+        <div class="summary-row"><span>상품 금액</span><span id="originalAmountText">₩29,900</span></div>
+        <div class="summary-row discount" id="discountRow" hidden><span>쿠폰 할인</span><span id="discountAmountText">-₩0</span></div>
         <div class="summary-row total"><span>최종 결제 금액</span><span id="finalAmountText">₩29,900</span></div>
       </div>
       <div class="alert error" id="payAlert"></div>
@@ -348,6 +349,7 @@ function updatePriceView(){
   document.getElementById('originalAmountText').textContent=formatWon(priceState.original_amount);
   document.getElementById('discountAmountText').textContent='-'+formatWon(priceState.discount_amount);
   document.getElementById('finalAmountText').textContent=formatWon(priceState.final_amount);
+  const dRow=document.getElementById('discountRow');if(dRow)dRow.hidden=!(priceState.discount_amount>0);
   const payBtn=document.getElementById('payBtn');
   if(priceState.final_amount<=0){
     payBtn.textContent='무료로 정밀 검사 시작하기';
@@ -414,9 +416,20 @@ function showPayPanel(user){
   setStep(2);showPanel('panelPay');
 }
 
+// 로그인 후 돌아올 주소: 고른 플랜(1인/커플)과 초대 코드 등 쿼리를 그대로 유지
+function payReturnPath(){
+  const q=new URLSearchParams(location.search);
+  if(typeof currentPlan!=='undefined'){if(currentPlan==='couple')q.set('plan','couple');else q.delete('plan');}
+  const s=q.toString();
+  return 'payment.html'+(s?'?'+s:'');
+}
+document.querySelectorAll('a.keep-plan').forEach(a=>a.addEventListener('click',()=>{
+  const u=new URL(a.getAttribute('href'),location.href);u.searchParams.set('redirect',payReturnPath());a.href=u.pathname.replace(/^\//,'')+u.search;
+}));
+
 async function loginKakao(){
   hideAlert('loginAlert');
-  const{error}=await sb.auth.signInWithOAuth({provider:'kakao',options:{redirectTo:window.location.origin+'/payment.html'}});
+  const{error}=await sb.auth.signInWithOAuth({provider:'kakao',options:{redirectTo:window.location.origin+'/'+payReturnPath()}});
   if(error)showAlert('loginAlert','카카오 로그인 오류: '+error.message);
 }
 
@@ -424,7 +437,7 @@ function loginNaver(){
   hideAlert('loginAlert');
   const state=Math.random().toString(36).slice(2);
   sessionStorage.setItem('naver_state',state);
-  sessionStorage.setItem('naver_redirect','payment.html');
+  sessionStorage.setItem('naver_redirect',payReturnPath());
   const params=new URLSearchParams({response_type:'code',client_id:NAVER_CLIENT_ID,redirect_uri:window.location.origin+'/naver-callback.html',state});
   window.location.href='https://nid.naver.com/oauth2.0/authorize?'+params;
 }

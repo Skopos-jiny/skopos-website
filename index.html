@@ -1045,6 +1045,8 @@ em{font-style:normal}
   </a>
 </section>
 <script>(function(){var b=document.getElementById('interiorBetaBanner');if(!b)return;function hide(){b.hidden=true;}
+/* 12월 1일 00:00(KST) 이후에는 서버 응답을 기다리지 않고 바로 숨김 */
+if(Date.now()>=Date.UTC(2026,10,30,15,0,0)){hide();return;}
 fetch('/api/interior-beta',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(s){
   if(!s){if(Date.now()>=Date.UTC(2026,10,30,15,0,0))hide();return;}
   if(!s.active||(s.endsAt&&s.serverNow&&s.serverNow>=s.endsAt))hide();
@@ -1201,10 +1203,10 @@ fetch('/api/interior-beta',{cache:'no-store'}).then(function(r){return r.ok?r.js
         <a class="tier-btn" href="skopos_premium_quiz.html">정밀 진단 ₩29,900 →</a>
       </div>
       <div class="tier couple">
-        <div class="popular">♥ 둘이 함께하면 ₩9,900 할인</div>
+        <div class="popular">♥ 두 사람이 함께 받는 진단</div>
         <div class="tier-tag">커플</div>
         <div class="tier-name">커플 진단</div>
-        <div class="tier-price"><sub>₩</sub>49,900<span class="tier-was">₩59,800</span></div>
+        <div class="tier-price"><sub>₩</sub>49,900</div>
         <div class="tier-note">2인 정밀 진단 · 1인당 ₩24,950</div>
         <div class="tier-divider"></div>
         <div class="tier-feats">

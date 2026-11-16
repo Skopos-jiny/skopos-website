@@ -8,7 +8,7 @@ export async function onRequest({request}){
  const now=Date.now(),active=now>=START&&now<END;
  if(request.method==='GET')return reply(200,{active,startsAt:START,endsAt:END,serverNow:now});
  if(request.method!=='POST')return reply(405,{error:'method_not_allowed'});
- let mode='test';try{const b=await request.clone().json();if(b&&b.mode==='view')mode='view';}catch{}
+ let mode='test',rid='';try{const b=await request.clone().json();if(b&&b.mode==='view')mode='view';if(b&&typeof b.r==='string')rid=b.r;}catch{}
  // 저장된 결과 다시 보기는 베타 기간이 끝나도 허용
  if(!active&&!(mode==='view'&&now>=START))return reply(410,{error:'beta_closed',endsAt:END,serverNow:now});
  const header=request.headers.get('Authorization')||'';
@@ -19,6 +19,14 @@ export async function onRequest({request}){
   if(!res.ok)return reply(res.status>=500?503:401,{error:res.status>=500?'auth_unavailable':'login_required'});
   const user=await res.json();
   if(!user.id||user.is_anonymous)return reply(401,{error:'membership_required'});
+  // 베타 종료 후 다시 보기는 본인 저장 결과가 있을 때만 (검사 화면 재진입 방지)
+  if(!active){
+   if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(rid))return reply(410,{error:'beta_closed',endsAt:END,serverNow:now});
+   const q=await fetch(AUTH_URL+'/rest/v1/interior_results?select=id&id=eq.'+rid+'&user_id=eq.'+encodeURIComponent(user.id),{headers:{Authorization:header,apikey:publicKey},signal:AbortSignal.timeout(8000)});
+   if(!q.ok)return reply(503,{error:'auth_unavailable'});
+   const rows=await q.json();
+   if(!Array.isArray(rows)||!rows.length)return reply(404,{error:'result_not_found'});
+  }
   return reply(200,{html:content,endsAt:END,serverNow:Date.now()});
  }catch{return reply(503,{error:'auth_unavailable'});}
 }
