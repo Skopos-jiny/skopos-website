@@ -192,7 +192,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
   <!-- 계정 관리 -->
   <div class="account-box">
     <h4>계정 관리</h4>
-    <p>더 이상 SKOPOS를 이용하지 않으신다면 회원 탈퇴를 신청하실 수 있습니다. 탈퇴 시 계정 정보와 검사 결과는 즉시 삭제되며 복구할 수 없습니다. 결제 기록은 법령(전자상거래법)에 따라 개인을 알아볼 수 없는 상태로 5년간 보관됩니다.</p>
+    <p>더 이상 SKOPOS를 이용하지 않으신다면 회원 탈퇴를 신청하실 수 있습니다. 탈퇴 시 계정 정보와 검사 결과는 즉시 삭제되며 복구할 수 없습니다. 결제 기록은 법령(전자상거래법)에 따라 5년간 보관됩니다.</p>
     <button class="btn-withdraw" onclick="openWithdraw()">회원 탈퇴</button>
   </div>
 
@@ -532,7 +532,7 @@ async function openWithdraw(){
   if(payTotal){
     keepItems = '<h5>법령에 따라 보관되는 항목</h5><ul>'
       + '<li>결제 기록 '+payTotal+'건: 5년 보관 (전자상거래법 제6조)</li>'
-      + '</ul><div class="wd-note">보관되는 결제 기록은 계정과의 연결이 끊겨 특정 개인을 알아볼 수 없는 상태로 저장되며, 환불 분쟁과 세무 대응 목적 외에는 사용되지 않습니다.</div>';
+      + '</ul><div class="wd-note">보관되는 결제 기록(구매자 이름·이메일·연락처, 결제 내역)은 법령에 따라 5년간 보관하며, 계정과 분리해 환불 분쟁과 세무 대응 목적으로만 사용합니다.</div>';
   }
 
   let coupleWarn = '';

@@ -147,7 +147,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
   <div class="pv" id="preview">
     <span class="pv-tag" id="pvTag">정밀 검사</span>
     <div class="pv-name" id="pvName">SKOPOS SDTI 정밀 검사</div>
-    <div class="pv-price"><b id="pvPrice">₩29,900</b><span id="pvSub">1회 결제 · 영구 열람</span></div>
+    <div class="pv-price"><b id="pvPrice">₩29,900</b><span id="pvSub">1회 결제 · 기간 제한 없이 열람</span></div>
     <ul class="pv-list" id="pvList"></ul>
     <div class="pv-links">
       <a href="skopos_sample_result.html" onclick="if(window.gtag)gtag('event','pay_preview_sample_click')">결과지 샘플 보기</a>
@@ -228,7 +228,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
       </div>
       <div class="alert error" id="payAlert"></div>
       <button class="btn-pay" id="payBtn" onclick="requestPay()">신용카드로 결제하기 ₩29,900</button>
-      <div class="pay-notice" id="payNotice">1회 결제 · 영구 열람 · 언제든 다시 확인 가능<br>결제 완료 후 즉시 진단이 시작됩니다</div>
+      <div class="pay-notice" id="payNotice">1회 결제 · 기간 제한 없이 열람 · 언제든 다시 확인 가능<br>결제 완료 후 즉시 진단이 시작됩니다</div>
       <div class="badge-row"><span class="badge">🔒 NHN KCP 안전결제</span><span class="badge">포트원 V1</span><span class="badge">SSL 보안</span></div>
     </div>
   </div>
@@ -248,6 +248,33 @@ let currentUser = null;
 const PLAN_PRICES = { single: 29900, couple: 49900 };
 let currentPlan = (new URLSearchParams(location.search).get('plan') === 'couple') ? 'couple' : 'single';
 try{ if(new URLSearchParams(location.search).get('imp_uid') && sessionStorage.getItem('skopos_plan')==='couple') currentPlan='couple'; }catch(e){}
+// 결제 확인에 쓸 조건(플랜·쿠폰·금액)을 이 탭에 다시 채운다 (복귀 주소 또는 보관해 둔 값 기준)
+function applyPayCtx(c){
+  if(!c)return;
+  if(c.plan==='couple'||c.plan==='single'){currentPlan=c.plan;try{sessionStorage.setItem('skopos_plan',c.plan);}catch(e){}try{setPlan(c.plan);}catch(e){}}
+  const cc=String(c.cc||'').toUpperCase().replace(/[^A-Z0-9-]/g,'').slice(0,40);
+  const base=currentPlan==='couple'?PLAN_PRICES.couple:PLAN_PRICES.single;
+  const amt=Number(c.amt);
+  const fin=Number.isFinite(amt)&&amt>=0&&amt<=base?amt:base;
+  try{sessionStorage.setItem('skopos_coupon_code',cc);sessionStorage.setItem('skopos_expected_amount',String(fin));}catch(e){}
+  priceState.coupon_code=cc;priceState.original_amount=base;priceState.final_amount=fin;priceState.discount_amount=Math.max(0,base-fin);
+}
+function savePendingVerify(impUid,merchantUid){
+  try{sessionStorage.setItem('skopos_pending_verify',JSON.stringify({imp_uid:impUid,merchant_uid:merchantUid,plan:currentPlan,cc:priceState.coupon_code||sessionStorage.getItem('skopos_coupon_code')||'',amt:Number(sessionStorage.getItem('skopos_expected_amount')||priceState.final_amount),ts:Date.now()}));}catch(e){}
+}
+let _pendingBusy=false;
+// 확인을 마치지 못한 결제가 있으면 (로그인 상태일 때) 이어서 확인
+async function tryPendingVerify(){
+  if(_pendingBusy)return;
+  let pv=null;try{pv=JSON.parse(sessionStorage.getItem('skopos_pending_verify')||'null');}catch(e){}
+  if(!pv||!pv.imp_uid)return;
+  if(Date.now()-(pv.ts||0)>24*3600*1000){try{sessionStorage.removeItem('skopos_pending_verify');}catch(e){}return;}
+  const{data:{session}}=await sb.auth.getSession();if(!session)return;
+  _pendingBusy=true;
+  try{currentUser=session.user;applyPayCtx(pv);toast('이전 결제를 확인하고 있어요...',2000);setStep(3);
+    await verifyAndStart(pv.imp_uid,pv.merchant_uid,sessionStorage.getItem('skopos_buyer_name')||'',sessionStorage.getItem('skopos_buyer_email')||session.user.email||'');
+  }finally{_pendingBusy=false;}
+}
 let BASE_AMOUNT = PLAN_PRICES[currentPlan];
 let appliedCoupon = null;
 let priceState = {
@@ -272,8 +299,8 @@ function setPlan(p){
   document.getElementById('inviteLink').style.display = couple ? 'none' : '';
   renderPreview(couple);
   document.getElementById('payNotice').innerHTML = couple
-    ? '결제 후 파트너 초대 링크와 6자리 코드가 발급돼요 · 파트너는 링크로 들어오거나 이 화면에서 코드를 입력하면 바로 검사 가능<br>1회 결제 · 영구 열람 (커플 진단은 쿠폰과 함께 쓸 수 없어요)'
-    : '1회 결제 · 영구 열람 · 언제든 다시 확인 가능<br>결제 완료 후 즉시 진단이 시작됩니다';
+    ? '결제 후 파트너 초대 링크와 6자리 코드가 발급돼요 · 파트너는 링크로 들어오거나 이 화면에서 코드를 입력하면 바로 검사 가능<br>1회 결제 · 기간 제한 없이 열람 (커플 진단은 쿠폰과 함께 쓸 수 없어요)'
+    : '1회 결제 · 기간 제한 없이 열람 · 언제든 다시 확인 가능<br>결제 완료 후 즉시 진단이 시작됩니다';
   if(couple){ try{ document.getElementById('couponCode').value=''; showCouponMessage('',''); document.getElementById('couponMsg').className='coupon-msg'; }catch(e){} }
   resetCoupon();
 }
@@ -283,7 +310,7 @@ function renderPreview(couple){
   document.getElementById('pvTag').textContent   = couple ? '커플 진단' : '정밀 검사';
   document.getElementById('pvName').textContent  = couple ? 'SKOPOS SDTI 커플 진단 (2인)' : 'SKOPOS SDTI 정밀 검사';
   document.getElementById('pvPrice').textContent = couple ? '₩49,900' : '₩29,900';
-  document.getElementById('pvSub').textContent   = couple ? '2인 · 1인당 ₩24,950' : '1회 결제 · 영구 열람';
+  document.getElementById('pvSub').textContent   = couple ? '2인 · 1인당 ₩24,950' : '1회 결제 · 기간 제한 없이 열람';
   var items = couple
     ? ['두 분이 각자 144문항 정밀 검사를 진행해요',
        '개인 결과지와 커플 솔루션 결과지 2부를 발급해 드려요',
@@ -454,7 +481,7 @@ async function loginEmail(){
   if(error){
     const msg=error.message.includes('Invalid')?'이메일 또는 비밀번호가 올바르지 않아요.':error.message.includes('Email not confirmed')?'이메일 인증이 필요합니다. 받은 편지함을 확인해주세요.':'로그인 오류: '+error.message;
     showAlert('loginAlert',msg);btn.disabled=false;btn.textContent='이메일로 로그인';
-  }else{showPayPanel(data.user);}
+  }else{showPayPanel(data.user);try{await tryPendingVerify();}catch(e){}}
 }
 
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.getElementById('panelLogin').classList.contains('active'))loginEmail();});
@@ -487,7 +514,8 @@ function requestPay(){
     // 주의: href 를 그대로 쓰면 이전 시도의 imp_uid/imp_success 파라미터가
     // 남아 있어 재시도 복귀 시 첫 번째(옛) 파라미터를 읽어 성공 결제를
     // 실패로 오판할 수 있음 → 쿼리 없는 깨끗한 URL 사용
-    m_redirect_url:window.location.origin+window.location.pathname,
+    // 플랜·쿠폰·금액은 복귀 주소에 함께 실어, 다른 탭이나 브라우저로 돌아와도 같은 조건으로 확인한다
+    m_redirect_url:window.location.origin+window.location.pathname+'?'+new URLSearchParams({plan:currentPlan,cc:priceState.coupon_code||'',amt:String(priceState.final_amount)}).toString(),
   },async(rsp)=>{
     if(rsp.success){
       toast('✅ 결제 완료! 검증 중...',2000);setStep(3);
@@ -538,11 +566,11 @@ async function verifyAndStart(impUid,merchantUid,name,email){
     const res=await fetch('https://rgbukqphcqptnfeqipfn.supabase.co/functions/v1/verify-payment',{method:'POST',headers:await authHeaders(),body:JSON.stringify({imp_uid:impUid,merchant_uid:merchantUid,amount:expectedAmount,coupon_code:couponCode,name,email,user_id:currentUser?.id||'',plan:currentPlan})});
     const result=await res.json();
     // 로그인 만료(401)·서버 연결 실패 때는 결제 번호를 이 탭에 남겨 두고, 다시 로그인하면 자동으로 확인을 이어 간다
-    if(res.status===401){try{sessionStorage.setItem('skopos_pending_verify',JSON.stringify({imp_uid:impUid,merchant_uid:merchantUid,ts:Date.now()}));}catch(e){}
+    if(res.status===401){savePendingVerify(impUid,merchantUid);
       showAlert('payAlert','로그인이 만료되어 결제 확인을 마치지 못했어요. 다시 로그인하면 결제 확인을 자동으로 이어서 진행해요. (결제는 이미 완료되었으니 다시 결제하지 마세요)');setStep(1);showPanel('panelLogin');return;}
     if(result.success){try{sessionStorage.removeItem('skopos_pending_verify');}catch(e){}sessionStorage.setItem('skopos_paid','1');try{ window.SkoposTrack && SkoposTrack.event('purchase',{value:expectedAmount,coupon_code:couponCode,order_id:merchantUid,user_id:currentUser?.id||null}); }catch(e){}if(result.plan==='couple'){window.location.href='couple.html?new=1';}else{window.location.href='skopos_premium_quiz.html?paid=1';}}
     else{showAlert('payAlert','결제 검증 실패: '+(result.message||'관리자에게 문의해 주세요'));document.getElementById('payBtn').disabled=false;updatePriceView();setStep(2);}
-  }catch(err){try{sessionStorage.setItem('skopos_pending_verify',JSON.stringify({imp_uid:impUid,merchant_uid:merchantUid,ts:Date.now()}));}catch(e){}showAlert('payAlert','결제 검증 서버에 연결하지 못했습니다. 새로고침하면 결제 확인을 다시 시도해요. 계속 안 되면 카카오톡 채널로 문의해 주세요.');document.getElementById('payBtn').disabled=false;updatePriceView();setStep(2);}
+  }catch(err){savePendingVerify(impUid,merchantUid);showAlert('payAlert','결제 검증 서버에 연결하지 못했습니다. 새로고침하면 결제 확인을 다시 시도해요. 계속 안 되면 카카오톡 채널로 문의해 주세요.');document.getElementById('payBtn').disabled=false;updatePriceView();setStep(2);}
 }
 
 try{ setPlan(currentPlan); }catch(e){}
@@ -556,30 +584,22 @@ window.addEventListener('load',async()=>{
     try{ window.history.replaceState({},'',window.location.origin+window.location.pathname); }catch(e){}
   }
   if(impUid&&impSuccess==='true'){
+    // 복귀 주소의 조건(플랜·쿠폰·금액)을 우선 사용. 없으면 이 탭에 저장해 둔 값
+    applyPayCtx(params.get('plan')?{plan:params.get('plan'),cc:params.get('cc'),amt:params.get('amt')}:{plan:currentPlan,cc:sessionStorage.getItem('skopos_coupon_code')||'',amt:sessionStorage.getItem('skopos_expected_amount')||''});
+    // 다른 브라우저로 돌아와 로그인이 안 된 상태면 확인을 미루고 로그인부터 (로그인 없이 확인하면 커플·쿠폰 결제가 취소될 수 있음)
+    const{data:{session}}=await sb.auth.getSession();
+    if(!session){
+      savePendingVerify(impUid,merchantUid);
+      showAlert('loginAlert','결제는 완료됐어요. 결제한 계정으로 로그인하면 결제 확인을 이어서 진행해요. 다시 결제하지 마세요.');
+      setStep(1);showPanel('panelLogin');return;
+    }
+    currentUser=session.user;
     const name=sessionStorage.getItem('skopos_buyer_name')||'';
-    const email=sessionStorage.getItem('skopos_buyer_email')||'';
-    // 가격 상태 전체 복원 (요약 표시 정합성: 검증 실패로 결제 패널에
-    // 돌아왔을 때 할인 전/할인/최종 금액이 일치하도록)
-    priceState.coupon_code=sessionStorage.getItem('skopos_coupon_code')||'';
-    priceState.final_amount=Number(sessionStorage.getItem('skopos_expected_amount')||BASE_AMOUNT);
-    priceState.original_amount=BASE_AMOUNT;
-    priceState.discount_amount=Math.max(0,BASE_AMOUNT-priceState.final_amount);
+    const email=sessionStorage.getItem('skopos_buyer_email')||session.user.email||'';
     toast('결제 확인 중...',2000);setStep(3);
     await verifyAndStart(impUid,merchantUid,name,email);
   }else if(impUid&&impSuccess==='false'){showAlert('payAlert','결제가 완료되지 않았어요. 다시 시도해주세요.');setStep(2);}
-  else if(!impUid){
-    // 이전에 확인을 마치지 못한 결제가 있으면 (로그인 상태일 때) 자동으로 다시 확인
-    let pv=null;try{pv=JSON.parse(sessionStorage.getItem('skopos_pending_verify')||'null');}catch(e){}
-    if(pv&&pv.imp_uid&&Date.now()-(pv.ts||0)<24*3600*1000){
-      try{const{data:{session}}=await sb.auth.getSession();if(session){
-        priceState.coupon_code=sessionStorage.getItem('skopos_coupon_code')||'';
-        priceState.final_amount=Number(sessionStorage.getItem('skopos_expected_amount')||BASE_AMOUNT);
-        priceState.original_amount=BASE_AMOUNT;priceState.discount_amount=Math.max(0,BASE_AMOUNT-priceState.final_amount);
-        toast('이전 결제를 확인하고 있어요...',2000);setStep(3);
-        await verifyAndStart(pv.imp_uid,pv.merchant_uid,sessionStorage.getItem('skopos_buyer_name')||'',sessionStorage.getItem('skopos_buyer_email')||'');
-      }}catch(e){}
-    }else if(pv){try{sessionStorage.removeItem('skopos_pending_verify');}catch(e){}}
-  }
+  else if(!impUid){ try{ await tryPendingVerify(); }catch(e){} }
 });
 </script>
 </body>

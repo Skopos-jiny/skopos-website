@@ -174,7 +174,7 @@ h2{font-size:1rem;margin:0 0 12px}
     IMP.request_pay({
       pg: 'kcp', pay_method: 'card', merchant_uid: merchantUid, name: NAMES[p], amount: PRICES[p],
       buyer_name: (user.user_metadata && (user.user_metadata.full_name || user.user_metadata.name)) || '', buyer_email: user.email || '', buyer_tel: '',
-      m_redirect_url: location.origin + location.pathname,
+      m_redirect_url: location.origin + location.pathname + '?plan=' + p,
     }, async (rsp) => {
       if (rsp.success) { await verify(rsp.imp_uid, rsp.merchant_uid, p); }
       else { busy = false; refreshButton(); const m = rsp.error_msg || '결제가 취소됐어요'; setMsg($('payMsg'), m.includes('취소') ? '' : '결제 실패: ' + m); }
@@ -204,6 +204,7 @@ h2{font-size:1rem;margin:0 0 12px}
   // 모바일 결제 후 복귀: 주소의 결제 번호는 한 번만 쓰고 지운다
   const q = new URLSearchParams(location.search);
   const ret = q.get('imp_uid') ? { imp_uid: q.get('imp_uid'), merchant_uid: q.get('merchant_uid'), ok: q.get('imp_success') === 'true' } : null;
+  const retPlan = ret && (q.get('plan') === 'pack10' || q.get('plan') === 'single') ? q.get('plan') : '';
   if (ret) { try { history.replaceState({}, '', location.pathname); } catch (e) {} }
 
   SkoposAuth.guard({
@@ -211,7 +212,8 @@ h2{font-size:1rem;margin:0 0 12px}
     subtitle: '이용권은 로그인한 계정에 적립돼요.<br>로그인 후 구매하거나 코드를 등록해 주세요.',
     async onReady(u){
       user = u; await loadStatus();
-      let p = 'single'; try { p = sessionStorage.getItem('skopos_int_plan') || 'single'; } catch (e) {}
+      // 결제한 이용권 종류는 복귀 주소에서 먼저 읽는다 (다른 탭·브라우저로 돌아온 경우 대비)
+      let p = retPlan; if (!p) { try { p = sessionStorage.getItem('skopos_int_plan') || 'single'; } catch (e) { p = 'single'; } }
       if (ret && ret.ok) { await verify(ret.imp_uid, ret.merchant_uid, p); return; }
       if (ret && !ret.ok) { setMsg($('payMsg'), '결제가 완료되지 않았어요. 다시 시도해 주세요.'); return; }
       let pv = null; try { pv = JSON.parse(sessionStorage.getItem('skopos_int_pending') || 'null'); } catch (e) {}
