@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>업체 화면 | SKOPOS 스코포스</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+:root{--pink:#E91E8C;--ink:#0F0F1A;--mid:#5A5A6E;--gray:#8890A4;--line:#E4E7EF;--bg:#F7F8FC}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var(--bg);color:var(--ink);word-break:keep-all;line-height:1.6}
+nav{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:#fff;border-bottom:1px solid var(--line)}
+nav a{color:var(--ink);text-decoration:none;font-weight:900;letter-spacing:.08em}
+nav a span{color:var(--pink)}
+nav .nav-sub{font-size:.8rem;color:var(--gray);font-weight:600;letter-spacing:0}
+main{max-width:720px;margin:0 auto;padding:28px 16px 60px}
+h1{font-size:1.5rem;line-height:1.35;margin:0 0 8px}
+h2{font-size:1.02rem;margin:0 0 12px}
+.lead{color:var(--mid);font-size:.92rem;line-height:1.7;margin:0 0 20px}
+.card{background:#fff;border-radius:18px;padding:20px;box-shadow:0 4px 20px rgba(15,15,26,.05);margin-bottom:16px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label.f{display:block;font-size:.8rem;font-weight:700;color:var(--mid)}
+label.f input,label.f textarea{display:block;width:100%;margin-top:6px;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;font:inherit;color:var(--ink);background:#fff}
+label.f input:focus{outline:2px solid rgba(233,30,140,.35);border-color:var(--pink)}
+.agree{display:flex;gap:10px;align-items:flex-start;margin-top:14px;padding:14px;border-radius:14px;background:#FDF0F6;color:#941050;font-size:.86rem;font-weight:700;cursor:pointer}
+.agree input{width:20px;height:20px;margin-top:2px;accent-color:#E91E8C;flex:none}
+.terms{font-size:.8rem;color:var(--mid);line-height:1.8;padding-left:18px;margin:14px 0 0}
+.btn{display:inline-block;padding:13px 22px;border:0;border-radius:50px;background:var(--pink);color:#fff;font-weight:800;font-size:.95rem;cursor:pointer;font-family:inherit;text-align:center;text-decoration:none}
+.btn.wide{display:block;width:100%;margin-top:14px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.sub{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+.btn.sm{padding:8px 14px;font-size:.8rem}
+.msg{font-size:.84rem;margin:8px 0 0;line-height:1.6;min-height:1em}
+.msg.ok{color:#15803d}.msg.err{color:#C0264B}
+.head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.pill{display:inline-block;font-size:.74rem;font-weight:800;padding:4px 10px;border-radius:50px;background:#EEF0F6;color:var(--mid);white-space:nowrap}
+.pill.ok{background:#E7F6EC;color:#15803d}.pill.warn{background:#FFF4DC;color:#8A6100}.pill.pink{background:#FDF0F6;color:#C01572}.pill.off{background:#FDECEF;color:#C0264B}
+.kv{font-size:.84rem;color:var(--mid);margin:4px 0 0}
+.bal{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.bal b{font-size:1.5rem;color:var(--pink)}
+.addrow{display:grid;grid-template-columns:1fr 1.4fr auto;gap:8px;align-items:end}
+.list{display:grid;gap:10px;margin-top:14px}
+.item{border:1.5px solid var(--line);border-radius:14px;padding:14px}
+.item .top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.item .nm{font-weight:800}
+.item .memo{font-size:.82rem;color:var(--mid);margin-top:4px;white-space:pre-wrap;overflow-wrap:anywhere}
+.item .dt{font-size:.76rem;color:var(--gray);margin-top:4px}
+.item .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.empty{font-size:.86rem;color:var(--gray);text-align:center;padding:18px 0}
+.notes{font-size:.78rem;color:var(--gray);line-height:1.8;padding-left:18px;margin:0}
+[hidden]{display:none!important}
+@media(max-width:560px){.grid,.addrow{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav><a href="/">SKO<span>POS</span></a><span class="nav-sub">업체 화면 · <a href="/mypage" style="font-weight:600;letter-spacing:0;color:var(--gray);text-decoration:underline">마이페이지</a></span></nav>
+<main>
+  <h1>SDTI 인테리어 공간욕구검사<br>업체 화면</h1>
+  <p class="lead">고객에게 검사 링크를 보내고, 고객이 공유에 동의한 결과를 상담 가이드로 받아 보는 곳이에요. 검사는 업체의 이용권으로 진행돼요.</p>
+
+  <div class="card" id="loadCard"><p class="msg" id="loadMsg">업체 정보를 확인하고 있어요...</p></div>
+
+  <!-- 업체 정보 등록 / 수정 -->
+  <div class="card" id="regCard" hidden>
+    <h2 id="regTitle">업체 정보 등록</h2>
+    <div class="grid">
+      <label class="f">상호 <input id="fName" maxlength="60" autocomplete="organization"></label>
+      <label class="f">사업자등록번호 <input id="fNo" inputmode="numeric" maxlength="12" placeholder="000-00-00000" autocomplete="off"></label>
+      <label class="f">대표자 이름 <input id="fCeo" maxlength="40" autocomplete="off"></label>
+      <label class="f">담당자 이름 <input id="fMgr" maxlength="40" autocomplete="name"></label>
+      <label class="f">담당자 연락처 <input id="fPhone" inputmode="tel" maxlength="30" placeholder="010-0000-0000" autocomplete="tel"></label>
+      <label class="f">담당자 이메일 <input id="fEmail" type="email" maxlength="120" autocomplete="email"></label>
+    </div>
+    <ul class="terms">
+      <li>고객이 공유에 동의한 결과만 볼 수 있고, 고객이 공유를 중지하거나 결과를 삭제하면 더 이상 볼 수 없어요.</li>
+      <li>공유받은 결과는 그 고객의 인테리어 상담 준비와 진행에만 쓰고, 다른 목적으로 쓰거나 다른 곳에 넘기지 않아요.</li>
+      <li>상담이 끝났거나 고객이 요청하면 내려받거나 인쇄한 자료를 지체 없이 파기해요.</li>
+      <li>검사 링크는 업체가 직접 아는 고객에게만 보내고, 고객 이름 칸에는 상담에 필요한 범위의 이름(별칭)만 적어요.</li>
+      <li>위 내용을 지키지 않으면 업체 화면 이용이 중지될 수 있어요.</li>
+    </ul>
+    <label class="agree"><input type="checkbox" id="fAgree"><span>위 업체 이용 기준을 확인했고 동의합니다.</span></label>
+    <button class="btn wide" id="regBtn" type="button">업체 정보 등록하기</button>
+    <button class="btn sub wide" id="regCancel" type="button" hidden>취소</button>
+    <p class="msg" id="regMsg"></p>
+  </div>
+
+  <div id="dash" hidden>
+    <div class="card">
+      <div class="head"><div><h2 id="bName" style="margin:0"></h2><p class="kv" id="bInfo"></p></div><span class="pill" id="bStatus"></span></div>
+      <p class="kv" id="bStatusNote"></p>
+      <button class="btn sub sm" id="editBtn" type="button" style="margin-top:10px">업체 정보 수정</button>
+    </div>
+
+    <div class="card">
+      <div class="bal"><div><h2 style="margin:0">남은 이용권</h2><p class="kv">고객이 검사를 시작할 때 1회가 쓰여요.</p></div><b id="credNum">0회</b></div>
+      <p class="kv" id="credNote"></p>
+      <a class="btn sm" id="credBuy" href="/interior-pay?plan=pack10" hidden style="margin-top:10px">업체용 이용권 구매</a>
+      <a class="btn sub sm" id="credAsk" href="https://pf.kakao.com/_dtGjX/chat" target="_blank" rel="noopener" hidden style="margin-top:10px">카카오톡으로 이용권 문의</a>
+    </div>
+
+    <div class="card">
+      <h2>고객에게 검사 보내기</h2>
+      <div class="addrow">
+        <label class="f">고객 이름(별칭) <input id="cName" maxlength="40" autocomplete="off"></label>
+        <label class="f">메모 (업체만 보여요) <input id="cMemo" maxlength="200" autocomplete="off" placeholder="예: 34평 아파트, 12월 상담 예정"></label>
+        <button class="btn" id="cAdd" type="button">링크 만들기</button>
+      </div>
+      <p class="msg" id="cMsg"></p>
+      <div class="list" id="cList"></div>
+    </div>
+
+    <ul class="notes">
+      <li>링크를 받은 고객은 로그인한 뒤, 결과를 업체에 공유하는 데 동의해야 검사를 시작할 수 있어요.</li>
+      <li>이용권은 고객이 검사를 시작하는 시점에 1회 쓰여요. 링크만 만들거나 고객이 동의만 한 상태에서는 쓰이지 않아요.</li>
+      <li>고객에게는 고객용 리포트가, 업체에는 상담 가이드가 보여요. 고객은 마이페이지에서 언제든 공유를 중지할 수 있어요.</li>
+      <li>스코포스는 인테리어 공사를 하지 않습니다. 상담 전에 고객의 기준을 정리하는 검사를 제공합니다.</li>
+    </ul>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.js"></script>
+<script src="skopos-auth.js"></script>
+<script>
+(function(){
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const day = t => { if (!t) return ''; const d = new Date(t); return d.getFullYear() + '.' + String(d.getMonth() + 1).padStart(2, '0') + '.' + String(d.getDate()).padStart(2, '0'); };
+  const fmtNo = n => String(n || '').replace(/^(\d{3})(\d{2})(\d{5})$/, '$1-$2-$3');
+  function setMsg(el, text, ok){ el.textContent = text || ''; el.className = 'msg' + (text ? (ok ? ' ok' : ' err') : ''); }
+  let sb = null, biz = null, credits = null;
+
+  const REG_ERR = { agree_required: '업체 이용 기준에 동의해 주세요.', name_required: '상호를 입력해 주세요.', biz_no_invalid: '사업자등록번호를 다시 확인해 주세요.', contact_required: '담당자 이름과 연락처를 입력해 주세요.', suspended: '이용이 중지된 업체예요. 카카오톡 채널로 문의해 주세요.', login_required: '로그인이 필요해요.' };
+  const STATUS = { pending: ['확인 중', 'warn', '등록하신 사업자 정보를 확인하고 있어요. 확인 전에도 고객에게 검사 링크를 보낼 수 있어요.'], verified: ['확인 완료', 'ok', ''], suspended: ['이용 중지', 'off', '업체 화면 이용이 중지됐어요. 카카오톡 채널로 문의해 주세요.'] };
+
+  function showReg(edit){
+    $('loadCard').hidden = true; $('regCard').hidden = false; $('dash').hidden = !!edit ? true : true;
+    $('regTitle').textContent = edit ? '업체 정보 수정' : '업체 정보 등록';
+    $('regBtn').textContent = edit ? '수정 내용 저장' : '업체 정보 등록하기';
+    $('regCancel').hidden = !edit;
+    if (edit && biz) { $('fName').value = biz.name || ''; $('fNo').value = fmtNo(biz.biz_no); $('fCeo').value = biz.ceo_name || ''; $('fMgr').value = biz.manager_name || ''; $('fPhone').value = biz.phone || ''; $('fEmail').value = biz.email || ''; }
+    setMsg($('regMsg'), edit ? '사업자등록번호를 바꾸면 다시 확인 절차를 거쳐요.' : '', true);
+  }
+  function showDash(){
+    $('loadCard').hidden = true; $('regCard').hidden = true; $('dash').hidden = false;
+    $('bName').textContent = biz.name;
+    $('bInfo').textContent = '사업자등록번호 ' + fmtNo(biz.biz_no) + (biz.manager_name ? ' · 담당 ' + biz.manager_name : '');
+    const st = STATUS[biz.status] || STATUS.pending;
+    $('bStatus').textContent = st[0]; $('bStatus').className = 'pill ' + st[1]; $('bStatusNote').textContent = st[2];
+    const rem = credits ? Number(credits.remaining) : 0;
+    $('credNum').textContent = rem + '회';
+    $('credNote').textContent = rem > 0 ? '' : '남은 이용권이 없으면 고객이 링크를 받아도 검사를 시작할 수 없어요.';
+    $('credBuy').hidden = biz.status !== 'verified';
+    $('credAsk').hidden = biz.status === 'verified';
+    const off = biz.status === 'suspended';
+    $('cAdd').disabled = off; $('editBtn').hidden = off;
+  }
+  async function load(){
+    const { data, error } = await sb.rpc('business_me');
+    if (error || !data || data.ok !== true) { setMsg($('loadMsg'), '업체 정보를 불러오지 못했어요. 잠시 후 새로고침해 주세요.'); return; }
+    if (!data.registered) { biz = null; showReg(false); return; }
+    biz = data.business; credits = data.credits; showDash(); await loadClients();
+  }
+  async function register(){
+    const b = $('regBtn'); b.disabled = true; setMsg($('regMsg'), '저장 중...', true);
+    try {
+      const { data, error } = await sb.rpc('business_register', { p_name: $('fName').value, p_biz_no: $('fNo').value, p_ceo: $('fCeo').value, p_manager: $('fMgr').value, p_phone: $('fPhone').value, p_email: $('fEmail').value, p_agree: $('fAgree').checked });
+      if (error) throw error;
+      if (!data || data.ok !== true) { setMsg($('regMsg'), REG_ERR[data && data.reason] || '저장하지 못했어요. 입력 내용을 확인해 주세요.'); return; }
+      setMsg($('regMsg'), ''); await load();
+    } catch (e) { setMsg($('regMsg'), /duplicate|unique/i.test(String(e && e.message)) ? '이미 등록된 사업자등록번호예요. 카카오톡 채널로 문의해 주세요.' : '저장하지 못했어요. 잠시 후 다시 시도해 주세요.'); }
+    finally { b.disabled = false; }
+  }
+
+  const link = code => location.origin + '/interior-beta?i=' + code;
+  const guideText = code => '[' + biz.name + '] 상담 전에 SDTI 인테리어 공간욕구검사를 부탁드려요. 56문항, 15분 안팎이에요. 저희 이용권으로 진행되어 따로 결제하실 것은 없고, 결과는 동의하신 범위에서 상담 준비에만 씁니다.\n' + link(code);
+  async function copy(text){ try { await navigator.clipboard.writeText(text); return true; } catch (e) { try { const a = document.createElement('textarea'); a.value = text; a.style.cssText = 'position:fixed;opacity:0'; document.body.appendChild(a); a.select(); const ok = document.execCommand('copy'); a.remove(); return ok; } catch (x) { return false; } } }
+  function stateOf(c){
+    if (c.status === 'invited') return ['링크 보냄 · 시작 전', ''];
+    if (c.status === 'accepted') return ['동의 완료 · 시작 전', 'pink'];
+    if (c.status === 'testing') return ['검사 중', 'warn'];
+    if (c.shared) return ['검사 완료', 'ok'];
+    if (c.revoked) return ['공유 중지됨', 'off'];
+    return ['결과 없음', 'off'];
+  }
+  function render(list){
+    const box = $('cList');
+    if (!list.length) { box.innerHTML = '<p class="empty">아직 보낸 검사가 없어요. 고객 이름을 적고 링크를 만들어 보세요.</p>'; return; }
+    box.innerHTML = list.map(c => {
+      const s = stateOf(c), open = ['invited', 'accepted', 'testing'].includes(c.status) && c.invite_code;
+      const dates = '보냄 ' + day(c.invited_at) + (c.started_at ? ' · 시작 ' + day(c.started_at) : '') + (c.completed_at ? ' · 완료 ' + day(c.completed_at) : '');
+      const acts = (open ? '<button class="btn sm" data-act="msg" data-code="' + esc(c.invite_code) + '">안내 문구와 링크 복사</button><button class="btn sub sm" data-act="link" data-code="' + esc(c.invite_code) + '">링크만 복사</button>' : '')
+        + (c.shared ? '<a class="btn sm" href="/interior-beta?g=' + esc(c.id) + '">상담 가이드 보기</a>' : '')
+        + (['invited', 'accepted'].includes(c.status) ? '<button class="btn sub sm" data-act="cancel" data-id="' + esc(c.id) + '">링크 취소</button>' : '');
+      const note = c.status === 'completed' && !c.shared ? '<div class="dt">' + (c.revoked ? '고객이 공유를 중지해 상담 가이드를 볼 수 없어요.' : '고객이 결과를 삭제했거나 탈퇴해 상담 가이드를 볼 수 없어요.') + '</div>' : '';
+      return '<div class="item"><div class="top"><span class="nm">' + esc(c.name) + '</span><span class="pill ' + s[1] + '">' + s[0] + '</span></div>' + (c.memo ? '<div class="memo">' + esc(c.memo) + '</div>' : '') + '<div class="dt">' + dates + '</div>' + note + (acts ? '<div class="acts">' + acts + '</div>' : '') + '</div>';
+    }).join('');
+  }
+  async function loadClients(){
+    const { data, error } = await sb.rpc('business_clients_list');
+    if (error || !data || data.ok !== true) { $('cList').innerHTML = '<p class="empty">고객 목록을 불러오지 못했어요. 새로고침해 주세요.</p>'; return; }
+    render(data.clients || []);
+  }
+  async function addClient(){
+    const name = $('cName').value.trim();
+    if (!name) { setMsg($('cMsg'), '고객 이름(별칭)을 입력해 주세요.'); return; }
+    $('cAdd').disabled = true; setMsg($('cMsg'), '링크를 만드는 중...', true);
+    try {
+      const { data, error } = await sb.rpc('business_client_add', { p_name: name, p_memo: $('cMemo').value });
+      if (error) throw error;
+      if (!data || data.ok !== true) { setMsg($('cMsg'), data && data.reason === 'too_many_open_invites' ? '시작 전인 링크가 너무 많아요. 쓰지 않는 링크를 취소해 주세요.' : data && data.reason === 'suspended' ? '이용이 중지된 업체예요.' : '링크를 만들지 못했어요.'); return; }
+      $('cName').value = ''; $('cMemo').value = '';
+      const ok = await copy(guideText(data.invite_code));
+      setMsg($('cMsg'), ok ? '링크를 만들고 안내 문구를 복사했어요. 고객에게 카카오톡이나 문자로 붙여 넣어 보내 주세요.' : '링크를 만들었어요. 아래 목록에서 복사해 고객에게 보내 주세요.', true);
+      await loadClients();
+    } catch (e) { setMsg($('cMsg'), '링크를 만들지 못했어요. 잠시 후 다시 시도해 주세요.'); }
+    finally { $('cAdd').disabled = biz && biz.status === 'suspended'; }
+  }
+  $('cList').addEventListener('click', async e => {
+    const b = e.target.closest('button[data-act]'); if (!b) return;
+    if (b.dataset.act === 'msg' || b.dataset.act === 'link') {
+      const ok = await copy(b.dataset.act === 'msg' ? guideText(b.dataset.code) : link(b.dataset.code));
+      setMsg($('cMsg'), ok ? '복사했어요. 고객에게 붙여 넣어 보내 주세요.' : '복사하지 못했어요. 다시 시도해 주세요.', ok);
+    } else if (b.dataset.act === 'cancel') {
+      if (!confirm('이 링크를 취소할까요? 취소하면 고객이 이 링크로 검사를 시작할 수 없어요.')) return;
+      b.disabled = true;
+      const { data } = await sb.rpc('business_client_cancel', { p_id: b.dataset.id });
+      setMsg($('cMsg'), data && data.ok ? '링크를 취소했어요.' : '이미 검사를 시작한 링크는 취소할 수 없어요.', !!(data && data.ok));
+      await loadClients();
+    }
+  });
+  $('regBtn').addEventListener('click', register);
+  $('regCancel').addEventListener('click', () => { if (biz) showDash(); });
+  $('editBtn').addEventListener('click', () => showReg(true));
+  $('cAdd').addEventListener('click', addClient);
+  $('cName').addEventListener('keydown', e => { if (e.key === 'Enter') addClient(); });
+
+  SkoposAuth.guard({
+    title: '업체 화면',
+    subtitle: '업체 담당자 계정으로 로그인해 주세요.<br>업체 정보는 로그인한 계정에 등록돼요.',
+    async onReady(){ try { sb = await SkoposAuth.getClient(); await load(); } catch (e) { setMsg($('loadMsg'), '업체 정보를 불러오지 못했어요. 잠시 후 새로고침해 주세요.'); } }
+  });
+})();
+</script>
+</body>
+</html>

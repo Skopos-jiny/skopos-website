@@ -181,6 +181,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
   <div class="panel active" id="panelResults">
     <div id="coupleArea"></div>
     <div id="interiorArea"></div>
+    <div id="sharesArea"></div>
     <div id="resultsArea"><div class="loading"><div class="spinner"></div>불러오는 중...</div></div>
   </div>
 
@@ -272,7 +273,7 @@ function toast(msg, dur=2800){
   else{badgeEl.textContent='이메일 가입';badgeEl.className='profile-badge badge-email';}
 
   // 병렬 로드
-  await Promise.all([renderResults(session.user), renderPayments(session.user), renderCouple(session), renderInterior(session.user)]);
+  await Promise.all([renderResults(session.user), renderPayments(session.user), renderCouple(session), renderInterior(session.user), renderShares()]);
 })();
 
 // HTML 이스케이프 (DB·세션 값은 화면에 넣기 전에 반드시 통과)
@@ -339,6 +340,25 @@ function makeResultCard(r){
 
 // ── 인테리어 공간욕구검사 (베타) 저장 결과 ──────────────────────
 const INTERIOR_DIMS={sensory:'빛·소리 민감도',spatial:'동선·정리 욕구',objects:'소품·살림 취향',color:'색감·소재 취향',life:'집에서 보내는 시간',social:'함께 사는 방식',identity:'나를 드러내는 취향',restore:'쉼·회복 욕구'};
+// ── 업체에 공유 중인 인테리어 검사 결과 + 업체 화면 바로가기 ──────────
+async function renderShares(){
+  const area=document.getElementById('sharesArea');if(!area)return;
+  const e=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  let html='';
+  try{const {data:me}=await sb.rpc('business_me');if(me&&me.ok&&me.registered)html+='<div class="result-meta" style="margin:4px 0 12px">🏢 '+e(me.business.name)+' · <a href="/business" style="color:#E91E8C;font-weight:700">업체 화면 열기</a></div>';}catch(_){}
+  try{const {data}=await sb.rpc('my_shares');const list=(data&&data.ok&&data.shares)||[];
+    if(list.length){html+='<div class="ir-head">🤝 업체에 공유한 인테리어 검사</div>'+list.map(s=>{
+      const id=String(s.id).replace(/[^0-9a-f-]/gi,''),date=s.consented_at?new Date(s.consented_at).toLocaleDateString('ko-KR'):'';
+      const st=s.revoked?'공유 중지됨':s.status==='completed'?'결과 공유 중':'검사 전 · 공유 동의함';
+      return '<div class="result-card ir-card"><span class="result-emoji ir-emoji">🤝</span><div class="result-info"><div class="result-type">'+e(s.business_name)+'</div><div class="result-meta">'+st+' · 동의 '+date+'</div></div><div class="result-actions">'+(s.revoked?'':'<button class="btn-sm ir-del sh-stop" data-id="'+id+'">공유 중지</button>')+'</div></div>';}).join('');}
+  }catch(_){}
+  area.innerHTML=html;
+  area.querySelectorAll('.sh-stop').forEach(b=>b.addEventListener('click',async()=>{
+    if(!confirm('이 업체와의 결과 공유를 중지할까요? 중지하면 업체는 내 결과를 더 이상 볼 수 없어요. 내 계정의 결과는 그대로 남아요.'))return;
+    const {data,error}=await sb.rpc('invite_revoke',{p_id:b.dataset.id});
+    if(error||!data||!data.ok){alert('공유를 중지하지 못했어요. 잠시 후 다시 시도해 주세요.');return;}
+    renderShares();}));
+}
 async function renderInterior(user){
   const area=document.getElementById('interiorArea');if(!area)return;
   try{

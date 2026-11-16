@@ -59,8 +59,8 @@ h2{font-size:1rem;margin:0 0 12px}
   <div class="card" id="buyCard">
     <h2>이용권 고르기</h2>
     <div class="plans">
-      <button type="button" class="plan sel" data-plan="single"><div class="pn">1회 이용권</div><div class="pp">59,900원</div><div class="pd">셀프 인테리어를 준비하는 분께 맞아요. 검사 1번, 결과와 PDF는 계속 다시 볼 수 있어요.</div></button>
-      <button type="button" class="plan" data-plan="pack10"><div class="pn">10회 이용권</div><div class="pp">100,000원</div><div class="pd">인테리어 업체 사장님용이에요. 한 계정에서 고객 상담 때마다 검사를 10번 진행할 수 있어요.</div></button>
+      <button type="button" class="plan sel" data-plan="single"><div class="pn">1회 이용권</div><div class="pp">59,900원</div><div class="pd">검사 1번, 결과와 PDF는 계속 다시 볼 수 있어요.</div></button>
+      <button type="button" class="plan" data-plan="pack10" id="planPack" hidden><div class="pn">10회 이용권</div><div class="pp">100,000원</div><div class="pd">등록 업체 전용이에요. 업체 화면에서 고객에게 검사 링크를 보낼 때 1회씩 쓰여요.</div></button>
     </div>
     <button class="btn" id="payBtn" type="button" disabled>로그인 확인 중...</button>
     <p class="msg" id="payMsg"></p>
@@ -82,7 +82,7 @@ h2{font-size:1rem;margin:0 0 12px}
     <li>이용권 1회로 검사 1번을 진행해요. 검사를 시작한 뒤 24시간 안에는 다시 들어와도 같은 회차로 이어져요.</li>
     <li>이용권은 결제한 계정에서만 쓸 수 있어요. 결제 내역은 마이페이지에서 확인할 수 있어요.</li>
     <li>결제 후 검사를 시작하지 않으셨다면 결제일로부터 7일 이내 전액 환불을 요청할 수 있어요.</li>
-    <li>10회 이용권을 일부 사용하신 경우, 결제일로부터 7일 이내에 사용한 횟수를 1회 이용권 가격(59,900원)으로 계산해 결제 금액에서 뺀 나머지를 환불해 드려요. 남는 금액이 없으면 환불되지 않아요.</li>
+    <li id="packNote" hidden>10회 이용권을 일부 사용하신 경우, 결제일로부터 7일 이내에 사용한 횟수를 1회 이용권 가격(59,900원)으로 계산해 결제 금액에서 뺀 나머지를 환불해 드려요. 남는 금액이 없으면 환불되지 않아요.</li>
     <li>환불 문의: 카카오톡 채널 또는 skopos@skopos.kr</li>
     <li>스코포스는 인테리어 공사를 하지 않습니다. 상담 전에 기준을 정리하는 검사를 제공합니다.</li>
   </ul>
@@ -99,14 +99,16 @@ h2{font-size:1rem;margin:0 0 12px}
   const PRICES = { single: 59900, pack10: 100000 };
   const NAMES = { single: 'SKOPOS SDTI 인테리어 공간욕구검사 1회 이용권', pack10: 'SKOPOS SDTI 인테리어 공간욕구검사 10회 이용권' };
   const $ = id => document.getElementById(id);
-  let plan = new URLSearchParams(location.search).get('plan') === 'pack10' ? 'pack10' : 'single';
-  let user = null, salesOpen = false, busy = false;
+  const wantPack = new URLSearchParams(location.search).get('plan') === 'pack10';
+  let plan = 'single';
+  let user = null, salesOpen = false, busy = false, packOk = false;
   try { if (window.IMP) IMP.init(IMP_CODE); } catch (e) {}
 
   function won(n){ return Number(n).toLocaleString('ko-KR') + '원'; }
   function setMsg(el, text, ok){ el.textContent = text || ''; el.className = 'msg' + (text ? (ok ? ' ok' : ' err') : ''); }
   function selectPlan(p){
-    plan = p;
+    plan = p === 'pack10' && !packOk ? 'single' : p;
+    p = plan;
     document.querySelectorAll('.plan').forEach(b => b.classList.toggle('sel', b.dataset.plan === p));
     refreshButton();
   }
@@ -137,7 +139,10 @@ h2{font-size:1rem;margin:0 0 12px}
   async function loadStatus(){
     const j = await call({ action: 'status' });
     if (!j.success) { setMsg($('payMsg'), j.message || '이용권 정보를 불러오지 못했어요.'); return; }
-    salesOpen = !!j.sales_open; showCredits(j.credits); refreshButton();
+    salesOpen = !!j.sales_open; showCredits(j.credits);
+    // 10회 이용권은 확인이 끝난 등록 업체에만 보인다
+    packOk = j.pack10_allowed === true; $('planPack').hidden = !packOk; $('packNote').hidden = !packOk;
+    if (packOk && wantPack) selectPlan('pack10'); else refreshButton();
   }
   function done(text, c){
     showCredits(c);
@@ -167,6 +172,7 @@ h2{font-size:1rem;margin:0 0 12px}
   }
   function pay(){
     if (!user || !salesOpen || busy || !window.IMP) return;
+    if (plan === 'pack10' && !packOk) return;
     busy = true; refreshButton(); setMsg($('payMsg'), '');
     const merchantUid = 'SKOPOS-INT-' + Date.now();
     const p = plan;

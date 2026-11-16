@@ -8,7 +8,7 @@ export async function onRequest({request}){
  const now=Date.now(),active=now>=START&&now<END;
  if(request.method==='GET')return reply(200,{active,official:now>=END,startsAt:START,endsAt:END,serverNow:now});
  if(request.method!=='POST')return reply(405,{error:'method_not_allowed'});
- let mode='test',rid='';try{const b=await request.clone().json();if(b&&b.mode==='view')mode='view';if(b&&typeof b.r==='string')rid=b.r;}catch{}
+ let mode='test',rid='',code='',cid='';try{const b=await request.clone().json();if(b&&['view','invite','guide'].includes(b.mode))mode=b.mode;if(b&&typeof b.r==='string')rid=b.r;if(b&&typeof b.code==='string')code=b.code;if(b&&typeof b.c==='string')cid=b.c;}catch{}
  // 베타 기간 전에는 닫힘. 12월 1일부터는 정식판(이용권) 또는 저장 결과 다시 보기
  if(now<START)return reply(410,{error:'beta_closed',endsAt:END,serverNow:now});
  const header=request.headers.get('Authorization')||'';
@@ -19,6 +19,25 @@ export async function onRequest({request}){
   if(!res.ok)return reply(res.status>=500?503:401,{error:res.status>=500?'auth_unavailable':'login_required'});
   const user=await res.json();
   if(!user.id||user.is_anonymous)return reply(401,{error:'membership_required'});
+  const rpc=(fn,args)=>fetch(AUTH_URL+'/rest/v1/rpc/'+fn,{method:'POST',headers:{Authorization:header,apikey:publicKey,'Content-Type':'application/json'},body:JSON.stringify(args),signal:AbortSignal.timeout(8000)});
+  // 업체 초대 검사: 고객이 시작 전 동의를 마친 초대만, 업체 이용권 1회 사용 (날짜와 무관)
+  if(mode==='invite'){
+   if(!/^[0-9a-f]{16}$/.test(code))return reply(403,{error:'invite_invalid'});
+   const b=await rpc('invite_begin',{p_code:code});
+   if(!b.ok)return reply(503,{error:'auth_unavailable'});
+   const r=await b.json();
+   if(!r||r.ok!==true)return reply(r&&r.reason==='no_credit'?402:403,{error:r&&r.reason==='no_credit'?'business_no_credit':'invite_'+((r&&r.reason)||'invalid')});
+   return reply(200,{html:content,invite:true,business:String(r.business_name||''),endsAt:END,serverNow:Date.now()});
+  }
+  // 업체의 상담 가이드 열람: 그 업체 소유자 + 고객 동의 유지 건만 (서버에서 확인 후 결과 상태를 함께 전달)
+  if(mode==='guide'){
+   if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(cid))return reply(404,{error:'guide_not_found'});
+   const g=await rpc('business_client_guide',{p_id:cid});
+   if(!g.ok)return reply(503,{error:'auth_unavailable'});
+   const r=await g.json();
+   if(!r||r.ok!==true)return reply(403,{error:'guide_'+((r&&r.reason)||'not_found')});
+   return reply(200,{html:content.replace('베타 기간이 끝나 보기만 할 수 있어요','고객이 공유한 결과 · 보기 전용'),guide:true,id:r.id,date:r.date,state:r.state,name:String(r.name||''),endsAt:END,serverNow:Date.now()});
+  }
   // 정식판: 새 검사는 이용권 1회 사용(24시간 안 재진입은 같은 회차)
   if(!active&&mode!=='view'){
    const b=await fetch(AUTH_URL+'/rest/v1/rpc/interior_begin',{method:'POST',headers:{Authorization:header,apikey:publicKey,'Content-Type':'application/json'},body:'{}',signal:AbortSignal.timeout(8000)});
