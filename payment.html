@@ -537,9 +537,12 @@ async function verifyAndStart(impUid,merchantUid,name,email){
     const expectedAmount=Number(sessionStorage.getItem('skopos_expected_amount')||priceState.final_amount||BASE_AMOUNT);
     const res=await fetch('https://rgbukqphcqptnfeqipfn.supabase.co/functions/v1/verify-payment',{method:'POST',headers:await authHeaders(),body:JSON.stringify({imp_uid:impUid,merchant_uid:merchantUid,amount:expectedAmount,coupon_code:couponCode,name,email,user_id:currentUser?.id||'',plan:currentPlan})});
     const result=await res.json();
-    if(result.success){sessionStorage.setItem('skopos_paid','1');try{ window.SkoposTrack && SkoposTrack.event('purchase',{value:expectedAmount,coupon_code:couponCode,order_id:merchantUid,user_id:currentUser?.id||null}); }catch(e){}if(result.plan==='couple'){window.location.href='couple.html?new=1';}else{window.location.href='skopos_premium_quiz.html?paid=1';}}
+    // 로그인 만료(401)·서버 연결 실패 때는 결제 번호를 이 탭에 남겨 두고, 다시 로그인하면 자동으로 확인을 이어 간다
+    if(res.status===401){try{sessionStorage.setItem('skopos_pending_verify',JSON.stringify({imp_uid:impUid,merchant_uid:merchantUid,ts:Date.now()}));}catch(e){}
+      showAlert('payAlert','로그인이 만료되어 결제 확인을 마치지 못했어요. 다시 로그인하면 결제 확인을 자동으로 이어서 진행해요. (결제는 이미 완료되었으니 다시 결제하지 마세요)');setStep(1);showPanel('panelLogin');return;}
+    if(result.success){try{sessionStorage.removeItem('skopos_pending_verify');}catch(e){}sessionStorage.setItem('skopos_paid','1');try{ window.SkoposTrack && SkoposTrack.event('purchase',{value:expectedAmount,coupon_code:couponCode,order_id:merchantUid,user_id:currentUser?.id||null}); }catch(e){}if(result.plan==='couple'){window.location.href='couple.html?new=1';}else{window.location.href='skopos_premium_quiz.html?paid=1';}}
     else{showAlert('payAlert','결제 검증 실패: '+(result.message||'관리자에게 문의해 주세요'));document.getElementById('payBtn').disabled=false;updatePriceView();setStep(2);}
-  }catch(err){showAlert('payAlert','결제 검증 서버에 연결하지 못했습니다. 관리자에게 문의해 주세요.');document.getElementById('payBtn').disabled=false;updatePriceView();setStep(2);}
+  }catch(err){try{sessionStorage.setItem('skopos_pending_verify',JSON.stringify({imp_uid:impUid,merchant_uid:merchantUid,ts:Date.now()}));}catch(e){}showAlert('payAlert','결제 검증 서버에 연결하지 못했습니다. 새로고침하면 결제 확인을 다시 시도해요. 계속 안 되면 카카오톡 채널로 문의해 주세요.');document.getElementById('payBtn').disabled=false;updatePriceView();setStep(2);}
 }
 
 try{ setPlan(currentPlan); }catch(e){}
@@ -564,6 +567,19 @@ window.addEventListener('load',async()=>{
     toast('결제 확인 중...',2000);setStep(3);
     await verifyAndStart(impUid,merchantUid,name,email);
   }else if(impUid&&impSuccess==='false'){showAlert('payAlert','결제가 완료되지 않았어요. 다시 시도해주세요.');setStep(2);}
+  else if(!impUid){
+    // 이전에 확인을 마치지 못한 결제가 있으면 (로그인 상태일 때) 자동으로 다시 확인
+    let pv=null;try{pv=JSON.parse(sessionStorage.getItem('skopos_pending_verify')||'null');}catch(e){}
+    if(pv&&pv.imp_uid&&Date.now()-(pv.ts||0)<24*3600*1000){
+      try{const{data:{session}}=await sb.auth.getSession();if(session){
+        priceState.coupon_code=sessionStorage.getItem('skopos_coupon_code')||'';
+        priceState.final_amount=Number(sessionStorage.getItem('skopos_expected_amount')||BASE_AMOUNT);
+        priceState.original_amount=BASE_AMOUNT;priceState.discount_amount=Math.max(0,BASE_AMOUNT-priceState.final_amount);
+        toast('이전 결제를 확인하고 있어요...',2000);setStep(3);
+        await verifyAndStart(pv.imp_uid,pv.merchant_uid,sessionStorage.getItem('skopos_buyer_name')||'',sessionStorage.getItem('skopos_buyer_email')||'');
+      }}catch(e){}
+    }else if(pv){try{sessionStorage.removeItem('skopos_pending_verify');}catch(e){}}
+  }
 });
 </script>
 </body>

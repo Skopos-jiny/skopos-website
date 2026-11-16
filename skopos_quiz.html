@@ -1245,7 +1245,7 @@ const BEHAVIOR_PROFILES={
 
 식물이 늘어날수록 집이 좋아지는 타입이에요. 새 잎이 돋아난 걸 발견했을 때의 기쁨, 물 줄 때의 집중감, 흙 냄새가 올라올 때의 안정감. 이건 그냥 취미가 아니에요. 자연과 가까울 때 실제로 몸이 더 잘 쉬어져요.
 
-도심에서 오래 지내다 숲이나 공원에 가면 컨디션이 확 달라지는 경험, 있으시죠? 인류의 99%가 자연 속에서 살아왔고, 우리 몸은 여전히 자연 환경에서 가장 잘 회복되도록 설계되어 있어요. 원목 가구, 라탄 소품, 자연광. 이것이 당신의 신경계가 원하는 환경이에요.
+도심에서 오래 지내다 숲이나 공원에 가면 컨디션이 확 달라지는 경험, 있으시죠? 사람은 오랫동안 자연 속에서 살아왔고, 많은 분들이 자연 가까이에서 편안함을 느껴요. 원목 가구, 라탄 소품, 자연광. 이것이 당신의 신경계가 원하는 환경이에요.
 
 식물 한 개가 아니라 작은 생태계를 만들어보세요. 아침에 눈을 뜨면 초록이 보이고, 흙과 나무 향이 감도는 공간. 그곳에서 당신이 가장 나답게 존재할 수 있어요.
 
@@ -1483,7 +1483,7 @@ function makeSVG(id){
 }
 
 const Q_TIME=8.0;
-let cur=0,ans={},qTimer=null,resultType=null,resultSub=null;
+let cur=0,ans={},qTimer=null,resultType=null,resultSub=null,_resultRunning=false;
 let timerPaused=false,qElapsed=0;
 
 // ═══════════════════════════════════════════════════════
@@ -1585,7 +1585,7 @@ function loadPending(){
   try{
     const raw=localStorage.getItem(PENDING_KEY);if(!raw)return null;
     const p=JSON.parse(raw);
-    if(!p||!p.id||Date.now()-p.ts>7*24*3600*1000){clearPending();return null;}
+    if(!p||!p.id||Date.now()-p.ts>3600*1000){clearPending();return null;}
     const type=TYPES.find(t=>t.id===p.id);if(!type){clearPending();return null;}
     return {type, sub:{sub:type.id,name:type.name,plain:type.plain}};
   }catch(e){return null;}
@@ -1655,7 +1655,7 @@ function showResultGate(){
 function startQuiz(){
   // 문항은 로그인 없이 진행 (결과 확인 시점에만 로그인 요청)
   try{ trackEvent('quiz_start',{authed:_authed}); }catch(e){}
-  cur=0;ans={};
+  cur=0;ans={};_resultRunning=false;
   clearPending();
   show('sq');
   renderQ();
@@ -1743,8 +1743,10 @@ function resumeTimer(){
     if(qElapsed>=Q_TIME){
       clearInterval(qTimer);
       if(!ans[cur]){
-        const ri=Math.floor(Math.random()*QS[cur].o.length);
-        ans[cur]={idx:ri,tags:QS[cur].o[ri].g};
+        // 시간 초과: 임의 선택 대신 이 문항 선택지들의 평균값(중립)으로 처리해 결과가 한쪽으로 쏠리지 않게 한다
+        const avg={},n=QS[cur].o.length;
+        QS[cur].o.forEach(o=>Object.entries(o.g).forEach(([k,v])=>{avg[k]=(avg[k]||0)+v/n;}));
+        ans[cur]={idx:-1,tags:avg,timeout:true};
       }
       nextQ();
     }
@@ -1776,8 +1778,9 @@ function selectOpt(i){
   document.querySelectorAll('.opt').forEach(e=>e.classList.remove('sel'));
   document.querySelectorAll('.opt')[i].classList.add('sel');
   ans[cur]={idx:i,tags:q.o[i].g};
-  // Brief pause for visual feedback, then auto-advance
-  setTimeout(()=>nextQ(),420);
+  // Brief pause for visual feedback, then auto-advance (빠른 연속 클릭으로 문항을 건너뛰지 않도록 같은 문항일 때만 이동)
+  const at=cur;
+  setTimeout(()=>{if(cur===at)nextQ();},420);
 }
 
 function nextQ(){
@@ -1830,6 +1833,8 @@ function compute(){
 // LOADING
 // ═══════════════════════════════════════════════════════
 function runResult(){
+  if(_resultRunning) return; // 결과 계산 중복 실행 방지
+  _resultRunning=true;
   show('sl');
   const steps=['응답 패턴 분석 중...','욕구 구조 매핑 중...','유형 알고리즘 적용 중...','보고서 생성 중...'];
   const c=document.getElementById('ldsteps');c.innerHTML='';

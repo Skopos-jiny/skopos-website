@@ -676,9 +676,14 @@ async function main(user){
     token = session && session.access_token;
     if(!token){ viewNone('로그인 정보를 확인하지 못했어요. 새로고침 해주세요.'); return; }
     const p = new URLSearchParams(location.search);
-    let invite = (p.get('invite')||'').toUpperCase();
+    let invite = (p.get('invite')||'').toUpperCase().replace(/[^A-Z0-9-]/g,'').slice(0,16);
     try{ if(invite) sessionStorage.setItem('skopos_invite', invite); else invite = sessionStorage.getItem('skopos_invite')||''; }catch(e){}
     let joinMsg = '';
+    // 초대 링크를 연 사람이 직접 동의한 경우에만 연결 (모르는 링크로 계정이 묶이지 않도록)
+    if(invite && !confirm('초대 코드 '+invite+' 로 커플 진단에 연결할까요?\n연결하면 두 분의 정밀 검사 결과가 서로의 커플 결과지에 표시돼요.')){
+      try{ sessionStorage.removeItem('skopos_invite'); history.replaceState({},'',location.pathname); }catch(e){}
+      invite = '';
+    }
     if(invite){
       const j = await call('join',{code:invite});
       try{ sessionStorage.removeItem('skopos_invite'); }catch(e){}

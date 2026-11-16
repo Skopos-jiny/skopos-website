@@ -9,6 +9,13 @@
  */
 (function (w, d) {
   'use strict';
+  // 로그인 처리 화면이나 주소에 인증 코드·토큰이 실린 경우에는 외부 추적(픽셀·GA)에 주소가 넘어가지 않도록 건너뛴다
+  if (/naver-callback/.test(w.location.pathname) ||
+      /(?:access_token|refresh_token|type=recovery)/.test(w.location.hash) ||
+      /[?&](?:code|state|token)=/.test(w.location.search)) {
+    w.SkoposTrack = { event: function () {}, attr: function () { return null; }, anonId: function () { return null; } };
+    return;
+  }
   var CFG = {
     pixelId: '2679260049178159',
     gaId: 'G-M6RMFNZ7W3',
