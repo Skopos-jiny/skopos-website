@@ -12,14 +12,15 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:#F7F8FC;min-height:100vh;-webkit-font-smoothing:antialiased}
-nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,0,0,.06);height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 24px}
+
 .nav-logo{font-size:1.1rem;font-weight:900;color:#0F0F1A;text-decoration:none}
 .nav-logo span{color:#E91E8C}
 .nav-right{display:flex;align-items:center;gap:12px}
 .nav-user{font-size:.8rem;color:#8890A4;font-weight:600}
 .btn-logout{font-size:.78rem;color:#8890A4;background:none;border:1px solid rgba(0,0,0,.1);border-radius:50px;padding:6px 14px;cursor:pointer;font-family:inherit;transition:all .2s}
 .btn-logout:hover{border-color:#E91E8C;color:#E91E8C}
-.container{max-width:760px;margin:0 auto;padding:28px 20px 60px}
+.container{max-width:920px;margin:0 auto;padding:28px 24px 60px}
+@media(max-width:500px){.container{padding:20px 16px 50px}}
 
 /* 프로필 카드 */
 .profile-card{background:linear-gradient(135deg,#0F0F1A,#1E1040);border-radius:20px;padding:26px;margin-bottom:22px;display:flex;align-items:center;gap:18px}
@@ -140,6 +141,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
 .ir-emoji{font-size:2.2rem;display:flex;align-items:center;justify-content:center;width:64px}
 .ir-del{background:#fff;border:1px solid #e5e5ea;color:#888;cursor:pointer}
 </style>
+<link rel="stylesheet" href="/skopos-shell.css?v=20261116">
 <script src="/skopos-track.js" defer></script>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
@@ -147,56 +149,111 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
 </head>
 <body>
 
-<nav>
-  <a class="nav-logo" href="index.html">SKO<span>POS</span></a>
-  <div class="nav-right">
-    <span class="nav-user" id="navUser"></span>
-    <button class="btn-logout" onclick="logout()">로그아웃</button>
+<div class="shell">
+<aside class="side" id="side">
+  <a class="side-logo" href="/">SKO<span>POS</span></a>
+  <div class="mode" role="tablist" aria-label="화면 전환"><a class="on" href="/mypage" aria-current="page">일반</a><a href="/business" id="modeBiz">업체</a></div>
+  <div class="side-menu" id="sideMenu">
+    <button type="button" data-tab="home" class="on"><span class="ico">🏠</span>스코포스 홈</button>
+    <button type="button" data-tab="tests"><span class="ico">📝</span>검사하기</button>
+    <button type="button" data-tab="results"><span class="ico">📄</span>결과지 확인<span class="cnt" id="cntResults" hidden></span></button>
+    <button type="button" data-tab="payments"><span class="ico">💳</span>결제 내역</button>
   </div>
+  <div class="side-sep"></div>
+  <a class="ws-card" id="wsCard" href="/business" hidden><small>내 업체</small><b id="wsName"></b><span id="wsStatus"></span></a>
+  <div class="side-menu">
+    <button type="button" data-tab="shares"><span class="ico">🤝</span>업체 공유 관리<span class="cnt" id="cntShares" hidden></span></button>
+    <button type="button" data-tab="account"><span class="ico">⚙️</span>계정 설정</button>
+  </div>
+  <div class="side-foot">
+    <a href="https://pf.kakao.com/_dtGjX/chat" target="_blank" rel="noopener">카카오톡 문의</a>
+    <button type="button" onclick="logout()">로그아웃</button>
+  </div>
+</aside>
+<div class="scrim" id="scrim"></div>
+<div class="shell-main">
+<nav class="topbar">
+  <button type="button" class="burger" id="burger" aria-label="메뉴 열기">☰</button>
+  <h1 id="topTitle">스코포스 홈</h1>
+  <span class="who" id="navUser"></span>
 </nav>
 
 <div class="container">
 
-  <!-- 프로필 -->
-  <div class="profile-card">
-    <div class="avatar" id="avatarEl">?</div>
-    <div class="profile-info">
-      <div class="profile-name" id="profileName">로딩 중...</div>
-      <div class="profile-email" id="profileEmail"></div>
-      <span class="profile-badge" id="profileBadge"></span>
+  <!-- 홈 -->
+  <div class="panel active" id="panelHome">
+    <div class="profile-card">
+      <div class="avatar" id="avatarEl">?</div>
+      <div class="profile-info">
+        <div class="profile-name" id="profileName">로딩 중...</div>
+        <div class="profile-email" id="profileEmail"></div>
+        <span class="profile-badge" id="profileBadge"></span>
+      </div>
+      <div class="profile-stat">
+        <div class="stat-num" id="statNum">0</div>
+        <div class="stat-label">완료한 검사</div>
+      </div>
     </div>
-    <div class="profile-stat">
-      <div class="stat-num" id="statNum">0</div>
-      <div class="stat-label">완료한 검사</div>
+    <div class="tiles">
+      <button type="button" class="tile" data-go="results"><small>저장된 결과지</small><b id="tileResults">0</b><span>기초·정밀·인테리어 검사</span></button>
+      <button type="button" class="tile" data-go="payments"><small>인테리어 검사 이용권</small><b id="tileCredits">0회</b><span>남은 횟수</span></button>
+      <button type="button" class="tile" data-go="shares"><small>결과를 공유 중인 업체</small><b id="tileShares">0곳</b><span>언제든 중지할 수 있어요</span></button>
+    </div>
+    <div class="section">
+      <div class="section-tag">START</div>
+      <div class="section-title">3분 무료 검사로 내 공간 유형부터 확인해 보세요</div>
+      <p style="font-size:.84rem;color:#5A5A6E;line-height:1.7;margin:8px 0 14px">22문항으로 12가지 공간 유형 중 내 유형을 알려 드려요. 결과는 이 계정에 저장돼 결과지 확인에서 다시 볼 수 있어요.</p>
+      <a class="btn-cta" href="skopos_quiz.html">무료 검사 시작</a>
     </div>
   </div>
 
-  <!-- 탭 -->
-  <div class="tab-row">
-    <button class="tab-btn active" onclick="switchTab('results',this)">🎯 나의 검사 결과</button>
-    <button class="tab-btn" onclick="switchTab('payments',this)">💳 결제 내역</button>
+  <!-- 검사하기 -->
+  <div class="panel" id="panelTests">
+    <div class="pg-head"><div><h2>검사하기</h2><p>목적에 맞는 검사를 골라 시작해 보세요.</p></div></div>
+    <div class="tests">
+      <div class="test main"><span class="tag">무료</span><h3>SDTI 기초 검사</h3><p>22문항, 3분 안팎. 12가지 공간 유형 중 내 유형과 캐릭터를 확인해요.</p><a href="skopos_quiz.html">무료 검사 시작</a></div>
+      <div class="test"><span class="tag">29,900원</span><h3>SDTI 정밀 검사</h3><p>144문항, 약 15분. 8개 영역 분석과 TOP 3 핵심 욕구, 22페이지 PDF 리포트를 받아요.</p><a href="payment.html">정밀 검사 알아보기</a></div>
+      <div class="test"><span class="tag">인테리어 준비</span><h3>SDTI 인테리어 공간욕구검사</h3><p>56문항, 15분 안팎. 상담 전에 내 집의 기준과 공사 범위를 정리한 결과지를 만들어요.</p><a href="/interior-beta">인테리어 검사 알아보기</a></div>
+    </div>
   </div>
 
-  <!-- 검사 결과 패널 -->
-  <div class="panel active" id="panelResults">
+  <!-- 결과지 확인 -->
+  <div class="panel" id="panelResults">
+    <div class="pg-head"><div><h2>결과지 확인</h2><p>이 계정에 저장된 검사 결과예요.</p></div></div>
     <div id="coupleArea"></div>
     <div id="interiorArea"></div>
-    <div id="sharesArea"></div>
     <div id="resultsArea"><div class="loading"><div class="spinner"></div>불러오는 중...</div></div>
   </div>
 
-  <!-- 결제 내역 패널 -->
+  <!-- 결제 내역 -->
   <div class="panel" id="panelPayments">
+    <div class="pg-head"><div><h2>결제 내역</h2><p>결제와 이용권 등록 기록이에요.</p></div></div>
     <div id="paymentsArea"><div class="loading"><div class="spinner"></div>불러오는 중...</div></div>
   </div>
 
-  <!-- 계정 관리 -->
-  <div class="account-box">
-    <h4>계정 관리</h4>
-    <p>더 이상 SKOPOS를 이용하지 않으신다면 회원 탈퇴를 신청하실 수 있습니다. 탈퇴 시 계정 정보와 검사 결과는 즉시 삭제되며 복구할 수 없습니다. 결제 기록은 법령(전자상거래법)에 따라 5년간 보관됩니다.</p>
-    <button class="btn-withdraw" onclick="openWithdraw()">회원 탈퇴</button>
+  <!-- 업체 공유 관리 -->
+  <div class="panel" id="panelShares">
+    <div class="pg-head"><div><h2>업체 공유 관리</h2><p>인테리어 업체의 초대로 검사한 경우, 동의한 결과가 그 업체에 공유돼요. 여기서 언제든 중지할 수 있어요.</p></div></div>
+    <div id="sharesArea"><div class="loading"><div class="spinner"></div>불러오는 중...</div></div>
   </div>
 
+  <!-- 계정 설정 -->
+  <div class="panel" id="panelAccount">
+    <div class="pg-head"><div><h2>계정 설정</h2></div></div>
+    <div class="section" id="bizJoin">
+      <div class="section-title" style="margin-top:0">인테리어 업체이신가요?</div>
+      <p style="font-size:.82rem;color:#5A5A6E;line-height:1.7;margin:8px 0 12px">업체 정보를 등록하면 고객에게 검사 링크를 보내고, 고객이 공유에 동의한 결과를 상담 가이드로 받아 볼 수 있어요.</p>
+      <a class="btn-sm btn-pdf" href="/business" style="text-decoration:none;display:inline-block">업체 화면으로 이동</a>
+    </div>
+    <div class="account-box" style="margin-top:0">
+      <h4>계정 관리</h4>
+      <p>더 이상 SKOPOS를 이용하지 않으신다면 회원 탈퇴를 신청하실 수 있습니다. 탈퇴 시 계정 정보와 검사 결과는 즉시 삭제되며 복구할 수 없습니다. 결제 기록은 법령(전자상거래법)에 따라 5년간 보관됩니다.</p>
+      <button class="btn-withdraw" onclick="openWithdraw()">회원 탈퇴</button>
+    </div>
+  </div>
+
+</div>
+</div>
 </div>
 
 <!-- 회원 탈퇴 모달 -->
@@ -235,12 +292,27 @@ const TYPE_INFO = {
 };
 
 // ── 탭 전환 ──────────────────────────────────────────────────
-function switchTab(tab, btn){
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
+const TAB_TITLES={home:'스코포스 홈',tests:'검사하기',results:'결과지 확인',payments:'결제 내역',shares:'업체 공유 관리',account:'계정 설정'};
+function showTab(tab, push){
+  if(!TAB_TITLES[tab]) tab='home';
+  document.querySelectorAll('#side [data-tab]').forEach(b=>b.classList.toggle('on', b.dataset.tab===tab));
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('panel'+tab.charAt(0).toUpperCase()+tab.slice(1)).classList.add('active');
+  document.getElementById('topTitle').textContent=TAB_TITLES[tab];
+  closeSide();
+  if(push!==false){ try{ history.replaceState(null,'',tab==='home'?location.pathname:'#'+tab); }catch(_){} }
+  window.scrollTo(0,0);
 }
+function closeSide(){ document.getElementById('side').classList.remove('open'); document.getElementById('scrim').classList.remove('open'); }
+document.querySelectorAll('#side [data-tab]').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.go)));
+document.getElementById('burger').addEventListener('click',()=>{ document.getElementById('side').classList.add('open'); document.getElementById('scrim').classList.add('open'); });
+document.getElementById('scrim').addEventListener('click',closeSide);
+window.addEventListener('hashchange',()=>showTab(location.hash.slice(1),false));
+if(location.hash.length>1) showTab(location.hash.slice(1),false);
+const RESULT_COUNTS={quiz:0,interior:0};
+function setResultCount(k,n){ RESULT_COUNTS[k]=n; const t=RESULT_COUNTS.quiz+RESULT_COUNTS.interior; document.getElementById('statNum').textContent=t; document.getElementById('tileResults').textContent=t; setCount('cntResults',t); }
+function setCount(id,n){ const el=document.getElementById(id); if(!el) return; el.textContent=n; el.hidden=!(n>0); }
 
 // ── 토스트 ───────────────────────────────────────────────────
 function toast(msg, dur=2800){
@@ -298,7 +370,7 @@ async function renderResults(user){
         <div class="empty-text">아직 완료한 검사가 없어요<br>지금 바로 내 공간 욕구 유형을 확인해보세요!</div>
         <a class="btn-cta" href="skopos_quiz.html">SDTI 기초 검사 (무료)</a>
       </div>`;
-      document.getElementById('statNum').textContent = '0';
+      setResultCount('quiz',0);
       return;
     }
     // 세션에서 임시 표시
@@ -306,11 +378,11 @@ async function renderResults(user){
     if(premId){ const t=TYPE_INFO[premId]||{name:premId,emoji:'✨'}; cards.push({result_type:premId,quiz_type:'SDTI 정밀',created_at:new Date().toISOString(),t}); }
     if(freeId){ const t=TYPE_INFO[freeId]||{name:freeId,emoji:'✨'}; cards.push({result_type:freeId,quiz_type:'SDTI 기초',created_at:new Date().toISOString(),t}); }
     area.innerHTML = cards.map(r=>makeResultCard(r)).join('');
-    document.getElementById('statNum').textContent = cards.length;
+    setResultCount('quiz',cards.length);
     return;
   }
 
-  document.getElementById('statNum').textContent = data.length;
+  setResultCount('quiz',data.length);
   area.innerHTML = data.map(r=>makeResultCard(r)).join('');
 }
 
@@ -345,14 +417,19 @@ async function renderShares(){
   const area=document.getElementById('sharesArea');if(!area)return;
   const e=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   let html='';
-  try{const {data:me}=await sb.rpc('business_me');if(me&&me.ok&&me.registered)html+='<div class="result-meta" style="margin:4px 0 12px">🏢 '+e(me.business.name)+' · <a href="/business" style="color:#E91E8C;font-weight:700">업체 화면 열기</a></div>';}catch(_){}
+  // 등록한 업체가 있으면 왼쪽에 업체 카드 표시
+  try{const {data:me}=await sb.rpc('business_me');if(me&&me.ok&&me.registered){const st={pending:'확인 중',verified:'확인 완료',suspended:'이용 중지'}[me.business.status]||'';
+    document.getElementById('wsName').textContent=me.business.name;document.getElementById('wsStatus').textContent=st+' · 남은 이용권 '+Number((me.credits&&me.credits.remaining)||0)+'회';document.getElementById('wsCard').hidden=false;const bj=document.getElementById('bizJoin');if(bj)bj.hidden=true;}}catch(_){}
+  let active=0;
   try{const {data}=await sb.rpc('my_shares');const list=(data&&data.ok&&data.shares)||[];
-    if(list.length){html+='<div class="ir-head">🤝 업체에 공유한 인테리어 검사</div>'+list.map(s=>{
+    active=list.filter(x=>!x.revoked).length;
+    if(list.length){html+=list.map(s=>{
       const id=String(s.id).replace(/[^0-9a-f-]/gi,''),date=s.consented_at?new Date(s.consented_at).toLocaleDateString('ko-KR'):'';
       const st=s.revoked?'공유 중지됨':s.status==='completed'?'결과 공유 중':'검사 전 · 공유 동의함';
       return '<div class="result-card ir-card"><span class="result-emoji ir-emoji">🤝</span><div class="result-info"><div class="result-type">'+e(s.business_name)+'</div><div class="result-meta">'+st+' · 동의 '+date+'</div></div><div class="result-actions">'+(s.revoked?'':'<button class="btn-sm ir-del sh-stop" data-id="'+id+'">공유 중지</button>')+'</div></div>';}).join('');}
   }catch(_){}
-  area.innerHTML=html;
+  area.innerHTML=html||'<div class="empty"><div class="empty-icon">🤝</div><div class="empty-text">공유 중인 업체가 없어요.<br>인테리어 업체가 보낸 초대 링크로 검사하면 여기에 표시돼요.</div></div>';
+  setCount('cntShares',active);document.getElementById('tileShares').textContent=active+'곳';
   area.querySelectorAll('.sh-stop').forEach(b=>b.addEventListener('click',async()=>{
     if(!confirm('이 업체와의 결과 공유를 중지할까요? 중지하면 업체는 내 결과를 더 이상 볼 수 없어요. 내 계정의 결과는 그대로 남아요.'))return;
     const {data,error}=await sb.rpc('invite_revoke',{p_id:b.dataset.id});
@@ -365,7 +442,8 @@ async function renderInterior(user){
     const {data,error}=await sb.from('interior_results').select('id,created_at,updated_at,top,version').eq('user_id',user.id).order('created_at',{ascending:false}).limit(20);
     // 정식판 이용권 현황 (12/1~)
     let credit='';
-    try{const {data:cs}=await sb.rpc('interior_credit_status');if(cs&&cs.ok&&cs.total>0)credit='<div class="result-meta" style="margin:4px 0 10px">남은 이용권 <b style="color:#E91E8C">'+Number(cs.remaining)+'회</b> (전체 '+Number(cs.total)+'회) · <a href="/interior-pay" style="color:#E91E8C">이용권 구매</a> · <a href="/interior-beta" style="color:#E91E8C">검사 시작</a></div>';}catch(_){}
+    try{const {data:cs}=await sb.rpc('interior_credit_status');if(cs&&cs.ok)document.getElementById('tileCredits').textContent=Number(cs.remaining||0)+'회';if(cs&&cs.ok&&cs.total>0)credit='<div class="result-meta" style="margin:4px 0 10px">남은 이용권 <b style="color:#E91E8C">'+Number(cs.remaining)+'회</b> (전체 '+Number(cs.total)+'회) · <a href="/interior-pay" style="color:#E91E8C">이용권 구매</a> · <a href="/interior-beta" style="color:#E91E8C">검사 시작</a></div>';}catch(_){}
+    setResultCount('interior',(!error&&data)?data.length:0);
     if(error||!data||!data.length){area.innerHTML=credit?'<div class="ir-head">🏠 SDTI 인테리어 공간욕구검사</div>'+credit:'';return;}
     const anyBeta=data.some(r=>r.version!=='official');
     area.innerHTML='<div class="ir-head">🏠 SDTI 인테리어 공간욕구검사 '+(anyBeta?'<span class="ir-beta">BETA</span>':'')+'</div>'+credit+data.map(r=>{
