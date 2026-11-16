@@ -269,6 +269,7 @@ nav{position:absolute;top:0;left:0;right:0;z-index:200;height:60px;display:flex;
 
 .radar{margin:32px 0}
 .radar-ttl{font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gray);font-weight:700;margin-bottom:16px;text-align:center}
+.radar-note{font-size:.72rem;color:var(--gray);line-height:1.6;text-align:center;margin-top:14px;word-break:keep-all}
 .rbars{width:100%;display:flex;flex-direction:column;gap:11px}
 .rrow{display:flex;align-items:center;gap:12px}
 .rlbl{font-size:.72rem;color:var(--dark);width:88px;text-align:right;flex-shrink:0;font-weight:600}
@@ -1614,7 +1615,7 @@ function renderPreview(t, sub){
     <div class="pv-lock">
       <p class="pv-lock-tag">로그인하면 이어서 볼 수 있어요</p>
       <ul class="pv-list">
-        <li>나만의 취향 프로파일 그래프</li>
+        <li>유형별 취향 프로파일 그래프</li>
         <li>나의 공간 취향 이야기</li>
         <li>나에게 맞는 소품·소재 처방</li>
         <li>결과 저장과 공유</li>
@@ -1941,7 +1942,7 @@ function renderResult(t, sub, unlocked){
 
     <!-- 취향 프로파일 바 -->
     <div class="radar">
-      <p class="radar-ttl">나만의 취향 프로파일</p>
+      <p class="radar-ttl">이 유형의 대표 취향 프로파일</p>
       <div class="rbars">
         ${Object.entries(t.bars).map(([l,v])=>`
           <div class="rrow">
@@ -1950,6 +1951,7 @@ function renderResult(t, sub, unlocked){
             <span class="rval">${v}</span>
           </div>`).join('')}
       </div>
+      <p class="radar-note">같은 유형에서 공통으로 나타나는 경향이에요. 내 응답으로 계산한 8개 영역 점수는 정밀 검사에서 확인할 수 있어요.</p>
     </div>
 
     <!-- 행동패턴 분석 -->

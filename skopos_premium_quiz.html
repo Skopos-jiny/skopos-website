@@ -3918,6 +3918,18 @@ function nextQ(){
 
 // ── COMPUTE ──────────────────────────────────────────────────────
 // ── 태그 평균·표준편차 자동 계산 (문항이 바뀌어도 자동 적응) ──
+// 영역별 채점 문항 (문항 번호: +1 그렇다일수록 이 영역 욕구가 큼, -1 반대 뜻 문항)
+// 함께 사는 방식은 높을수록 "관계 중심", 낮을수록 "혼자만의 공간 중시"라 혼자 지향 문항을 뒤집는다.
+const SEC_ITEM_DIR={
+  0:{0:1,1:1,2:1,3:1,4:1,6:1,7:1,8:1,10:1,11:1,12:1,14:1,15:1,17:1},
+  1:{18:1,19:1,20:1,25:1,26:1,28:1,29:1},
+  2:{36:1,37:1,39:1,40:1,42:1,43:1,45:1,46:1,48:1,51:1,52:1},
+  3:{55:1,56:1,58:1,59:1,61:1,62:1,64:1,67:1,68:1,70:1,71:1},
+  4:{73:1,74:1,76:1,77:1,80:1,82:1,83:1,86:1,88:1,89:1},
+  5:{90:1,91:1,93:1,94:1,96:1,97:-1,99:1,100:-1,102:-1,103:1,105:-1,106:-1},
+  6:{108:1,109:1,112:1,115:1,118:1,120:1,121:1,123:1,124:1},
+  7:{126:1,127:1,129:1,130:1,133:1,135:1,136:1,139:1,141:1},
+};
 let _TAG_STATS=null;
 function tagStats(){
   if(_TAG_STATS) return _TAG_STATS;
@@ -3958,22 +3970,20 @@ function compute(){
   const c={};
   Object.values(ans).forEach(a=>Object.entries(a.tags||{}).forEach(([k,v])=>{c[k]=(c[k]||0)+v;}));
   // 8개 영역 점수 계산 (0~100)
+  // 영역마다 그 영역을 직접 묻는 척도 문항(5점)의 응답을 평균해 0~100으로 환산한다.
+  // 반대 뜻 문항은 점수를 뒤집는다(6-점수). 시간이 지나 넘어간 문항은 빠진다.
+  // 선택형 문항과 영역 성격이 다른 척도 문항은 유형 판정(태그)에만 쓴다.
   const secScores={};
-  const secKeyMap={
-    0:['sensory_low','sensory_high','material','light','sound','visual'],
-    1:['control','minimal_m','function','organised','open','grid'],
-    2:['display','art','story','earth','vintage','natural_n'],
-    3:['bold','neutral','luxe','industrial','aesthetic','quality'],
-    4:['solo','family','social_s','routine','health','adaptable'],
-    5:['social_s','family','intimacy','solo','cozy','warmth'],
-    6:['identity','art','timeless','bold','vintage','story'],
-    7:['restore','cozy','sensory_low','material','solo','control'],
-  };
   SECS.forEach((sec,i)=>{
-    const keys=secKeyMap[i];
-    let total=0,max=0;
-    keys.forEach(k=>{total+=(c[k]||0);max+=18*3;});
-    secScores[sec.label]=Math.min(99,Math.round((total/Math.max(max,1))*100)+20);
+    let sum=0,n=0;
+    Object.entries(SEC_ITEM_DIR[i]||{}).forEach(([qi,dir])=>{
+      const a=ans[qi];
+      if(!a||!Number.isInteger(a.idx)) return;
+      const v=5-a.idx; // idx 0=매우 그렇다(5점) ~ 4=전혀 아니다(1점)
+      if(v<1||v>5) return;
+      sum+=(dir<0?6-v:v); n++;
+    });
+    secScores[sec.label]=n>=3?Math.round((sum/n-1)/4*100):50;
   });
   // 유형 매칭 — z-score 표준화 (과잉 공급 태그 자동 보정, 12유형 균등 분류)
   const {mean,sd}=tagStats();
@@ -6363,7 +6373,7 @@ async function downloadPDF(){
 
     // 샘플 10p 형태의 8각 레이더 (웹 결과지와 동일 엔진 재사용)
     const pdfRadarSvg = (typeof buildRadarSVG === 'function')
-      ? `<div style="display:flex;justify-content:center;margin:6px 0 18px"><div style="width:270px">${buildRadarSVG(t, {})}</div></div>`
+      ? `<div style="display:flex;justify-content:center;margin:6px 0 18px"><div style="width:270px">${buildRadarSVG(t, scores)}</div></div>`
       : '';
 
     const bpText = krText((typeof BEHAVIOR_PROFILES !== 'undefined' && BEHAVIOR_PROFILES[t.id]) || t.desc || '');
