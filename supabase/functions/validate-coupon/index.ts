@@ -60,14 +60,15 @@ const handler = async (event) => {
 
     const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
-    // JWT 가 있으면 검증된 사용자 id 로 대체 (per_user_limit 판정 정확도 향상)
-    let resolvedUserId = user_id || null;
+    // 쿠폰 확인은 로그인한 사용자만 (코드 무작위 대입 방지, 1인 사용 한도 판정)
     const authHeader = event.headers.authorization || event.headers.Authorization || '';
     const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : '';
-    if (token) {
-      const { data: userData, error: userError } = await sb.auth.getUser(token);
-      if (!userError && userData?.user?.id) resolvedUserId = userData.user.id;
+    if (!token) return json(401, { success: false, message: '로그인 후 쿠폰을 적용할 수 있어요.' });
+    const { data: userData, error: userError } = await sb.auth.getUser(token);
+    if (userError || !userData?.user?.id) {
+      return json(401, { success: false, message: '로그인 세션이 만료되었습니다. 다시 로그인해 주세요.' });
     }
+    const resolvedUserId = userData.user.id;
 
     const { data: coupon, error } = await sb
       .from('coupons')
@@ -80,11 +81,8 @@ const handler = async (event) => {
       return json(500, { success: false, message: '쿠폰 조회 중 오류가 발생했습니다.' });
     }
 
-    if (!coupon) {
-      return json(404, { success: false, message: '존재하지 않는 쿠폰입니다.' });
-    }
-
-    if (!coupon.is_active) {
+    // 없는 코드·비활성·다른 상품용 코드는 같은 안내로 답해 코드 존재 여부를 드러내지 않는다
+    if (!coupon || !coupon.is_active || (coupon.product || 'premium') !== 'premium') {
       return json(400, { success: false, message: '사용할 수 없는 쿠폰입니다.' });
     }
 

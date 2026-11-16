@@ -99,6 +99,8 @@ async function getValidCoupon(sb, couponCode, originalAmount, userId) {
   if (error) throw new Error('쿠폰 조회 중 오류가 발생했습니다.');
   if (!coupon) throw new Error('존재하지 않는 쿠폰입니다.');
   if (!coupon.is_active) throw new Error('사용할 수 없는 쿠폰입니다.');
+  // 상품 구분: 정밀 검사 결제에는 정밀 검사용(premium) 쿠폰만 (인테리어 검사용 코드 등 차단)
+  if ((coupon.product || 'premium') !== 'premium') throw new Error('사용할 수 없는 쿠폰입니다.');
 
   const now = new Date();
   if (coupon.starts_at && new Date(coupon.starts_at) > now) {
@@ -158,6 +160,13 @@ async function cancelPayment(accessToken, impUid, reason) {
   }
 }
 
+// 자동 취소 결과에 맞는 안내. 취소에 실패하면 돈만 빠진 상태가 되므로 결제 번호와 연락처를 함께 안내한다
+function cancelNotice(cancelled, okMessage, impUid) {
+  return cancelled
+    ? okMessage
+    : '결제 확인에 실패했고 자동 취소도 완료되지 않았습니다. 결제 번호(' + impUid + ')를 skopos@skopos.kr 로 보내 주시면 바로 환불해 드리겠습니다.';
+}
+
 const handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') return json(200, {});
   if (event.httpMethod !== 'POST') {
@@ -169,6 +178,13 @@ const handler = async (event) => {
     const isCouple = plan === 'couple';
     const baseAmount = isCouple ? COUPLE_AMOUNT : BASE_AMOUNT;
     if (!imp_uid) return json(400, { success: false, message: 'imp_uid가 없습니다.' });
+    // 결제 번호 형식 검사: 포트원 V1 imp_uid는 imp_ + 숫자. 변형된 값으로 같은 결제를 여러 번 처리하는 것을 막는다
+    if (typeof imp_uid !== 'string' || !/^imp_\d{6,20}$/.test(imp_uid)) {
+      return json(400, { success: false, message: '결제 번호 형식이 올바르지 않습니다.' });
+    }
+    if (merchant_uid && (typeof merchant_uid !== 'string' || merchant_uid.length > 80)) {
+      return json(400, { success: false, message: '주문 번호 형식이 올바르지 않습니다.' });
+    }
 
     const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
@@ -189,9 +205,12 @@ const handler = async (event) => {
       .maybeSingle();
     if (existingErr) console.error('existing payment lookup failed:', imp_uid, existingErr.message);
     if (existingPay) {
-      if (existingPay.user_id && resolvedUserId && existingPay.user_id !== resolvedUserId) {
+      // 이미 기록된 결제는 그 결제를 한 본인(로그인 확인)에게만 결과와 초대 코드를 돌려준다
+      if (existingPay.user_id && existingPay.user_id !== resolvedUserId) {
         console.error('verify-payment: imp_uid already recorded for another user', imp_uid);
-        return json(409, { success: false, message: '이미 다른 계정으로 처리된 결제입니다. 관리자에게 문의해 주세요.' });
+        return json(resolvedUserId ? 409 : 401, { success: false, message: resolvedUserId
+          ? '이미 다른 계정으로 처리된 결제입니다. 관리자에게 문의해 주세요.'
+          : '결제한 계정으로 로그인한 뒤 다시 확인해 주세요.' });
       }
       if (existingPay.status === 'cancelled') {
         return json(400, { success: false, message: '취소된 결제입니다.' });
@@ -230,7 +249,7 @@ const handler = async (event) => {
     }
     const accessToken = tokenData.response.access_token;
 
-    const payRes = await fetch(`https://api.iamport.kr/payments/${imp_uid}`, {
+    const payRes = await fetch(`https://api.iamport.kr/payments/${encodeURIComponent(imp_uid)}`, {
       headers: { Authorization: accessToken },
     });
     const payData = await payRes.json();
@@ -238,6 +257,12 @@ const handler = async (event) => {
       return json(400, { success: false, message: '결제 정보를 조회하지 못했습니다.' });
     }
     const payment = payData.response;
+
+    // 조회된 결제가 요청한 결제 번호·주문 번호와 정확히 같은지 확인
+    if (!payment || payment.imp_uid !== imp_uid || (merchant_uid && payment.merchant_uid !== merchant_uid)) {
+      console.error('verify-payment: payment identity mismatch', imp_uid, merchant_uid, payment?.imp_uid, payment?.merchant_uid);
+      return json(400, { success: false, message: '결제 정보가 일치하지 않습니다. 관리자에게 문의해 주세요.' });
+    }
 
     if (payment.status !== 'paid') {
       return json(400, { success: false, message: `결제가 완료되지 않았습니다. (${payment.status})` });
@@ -248,14 +273,14 @@ const handler = async (event) => {
     // per_user_limit 검사를 우회하는 것을 차단한다.
     // 결제는 이미 확정된 상태이므로 거부 시 자동 취소를 동반한다.
     if (isCouple && (!auth.verified || String(coupon_code || '').trim())) {
-      await cancelPayment(accessToken, imp_uid, '커플 진단 조건 불충족(로그인 필요·쿠폰 불가)');
-      return json(400, { success: false, message: '커플 진단은 로그인 후 쿠폰 없이 결제할 수 있어요. 결제를 자동 취소했습니다.' });
+      const ok = await cancelPayment(accessToken, imp_uid, '커플 진단 조건 불충족(로그인 필요·쿠폰 불가)');
+      return json(ok ? 400 : 500, { success: false, message: cancelNotice(ok, '커플 진단은 로그인 후 쿠폰 없이 결제할 수 있어요. 결제를 자동 취소했습니다.', imp_uid) });
     }
 
     if (String(coupon_code || '').trim() && !auth.verified) {
       console.error('Coupon payment without verified user:', imp_uid, coupon_code);
-      await cancelPayment(accessToken, imp_uid, '쿠폰 결제 로그인 검증 실패');
-      return json(401, { success: false, message: '쿠폰 사용에는 로그인이 필요합니다. 결제를 자동 취소했으니 로그인 후 다시 시도해 주세요.' });
+      const ok = await cancelPayment(accessToken, imp_uid, '쿠폰 결제 로그인 검증 실패');
+      return json(ok ? 401 : 500, { success: false, message: cancelNotice(ok, '쿠폰 사용에는 로그인이 필요합니다. 결제를 자동 취소했으니 로그인 후 다시 시도해 주세요.', imp_uid) });
     }
 
     // 쿠폰 재검증: 결제는 이미 완료된 상태이므로, 여기서 실패하면
@@ -265,8 +290,8 @@ const handler = async (event) => {
       couponResult = await getValidCoupon(sb, coupon_code, baseAmount, resolvedUserId);
     } catch (couponErr) {
       console.error('Coupon revalidation failed after payment:', imp_uid, couponErr.message);
-      await cancelPayment(accessToken, imp_uid, '쿠폰 검증 실패: ' + couponErr.message);
-      return json(400, { success: false, message: '쿠폰 검증에 실패하여 결제를 자동 취소했습니다. (' + couponErr.message + ')' });
+      const ok = await cancelPayment(accessToken, imp_uid, '쿠폰 검증 실패: ' + couponErr.message);
+      return json(ok ? 400 : 500, { success: false, message: cancelNotice(ok, '쿠폰 검증에 실패하여 결제를 자동 취소했습니다. (' + couponErr.message + ')', imp_uid) });
     }
     const expectedAmount = couponResult.final_amount;
     const clientAmount = Number(amount || 0);
@@ -278,8 +303,8 @@ const handler = async (event) => {
         paidAmount: payment.amount,
         coupon_code,
       });
-      await cancelPayment(accessToken, imp_uid, '결제 금액 검증 실패');
-      return json(400, { success: false, message: '결제 금액이 일치하지 않아 자동 취소했습니다.' });
+      const ok = await cancelPayment(accessToken, imp_uid, '결제 금액 검증 실패');
+      return json(ok ? 400 : 500, { success: false, message: cancelNotice(ok, '결제 금액이 일치하지 않아 자동 취소했습니다.', imp_uid) });
     }
 
     const paymentRecord = {

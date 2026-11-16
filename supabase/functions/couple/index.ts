@@ -14,7 +14,9 @@ function json(statusCode, body) {
 function displayName(u) {
   if (!u) return '';
   const m = u.user_metadata || {};
-  return m.full_name || m.name || m.nickname || (u.email ? u.email.split('@')[0] : '') || '';
+  const raw = m.full_name || m.name || m.nickname || (u.email ? u.email.split('@')[0] : '') || '';
+  // 이름은 사용자가 직접 바꿀 수 있는 값이라 화면에 그대로 넣으면 스크립트가 실행될 수 있다. HTML 특수문자를 빼고 길이를 제한한다
+  return String(raw).replace(/[<>"'`&\\]/g, '').trim().slice(0, 30);
 }
 
 async function latestResult(sb, userId) {
@@ -68,10 +70,15 @@ const handler = async (event) => {
       }
 
       if (!c.partner_id) {
-        const { error: upErr } = await sb.from('couples')
+        // 동시에 여러 계정이 같은 코드로 연결을 시도해도 실제로 자리를 차지한 1명만 이용권을 받는다
+        const { data: claimed, error: upErr } = await sb.from('couples')
           .update({ partner_id: me.id, paired_at: new Date().toISOString() })
-          .eq('id', c.id).is('partner_id', null);
+          .eq('id', c.id).is('partner_id', null)
+          .select('id');
         if (upErr) throw upErr;
+        if (!claimed || !claimed.length) {
+          return json(409, { success: false, message: '이미 다른 분이 연결된 초대 코드예요.' });
+        }
       }
 
       // 파트너 정밀 검사 이용권 (이미 이용권이 있으면 생략)

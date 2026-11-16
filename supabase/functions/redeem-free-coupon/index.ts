@@ -53,6 +53,8 @@ async function getValidCoupon(sb, couponCode, originalAmount, userId) {
   if (error) throw new Error('쿠폰 조회 중 오류가 발생했습니다.');
   if (!coupon) throw new Error('존재하지 않는 쿠폰입니다.');
   if (!coupon.is_active) throw new Error('사용할 수 없는 쿠폰입니다.');
+  // 상품 구분: 정밀 검사 결제에는 정밀 검사용(premium) 쿠폰만 (인테리어 검사용 코드 등 차단)
+  if ((coupon.product || 'premium') !== 'premium') throw new Error('사용할 수 없는 쿠폰입니다.');
 
   const now = new Date();
   if (coupon.starts_at && new Date(coupon.starts_at) > now) {
