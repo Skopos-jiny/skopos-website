@@ -275,6 +275,9 @@ function toast(msg, dur=2800){
   await Promise.all([renderResults(session.user), renderPayments(session.user), renderCouple(session), renderInterior(session.user)]);
 })();
 
+// HTML 이스케이프 (DB·세션 값은 화면에 넣기 전에 반드시 통과)
+function esc(v){return String(v==null?'':v).replace(/[&<>"'`]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','`':'&#96;'}[ch]));}
+
 // ── 검사 결과 렌더링 ─────────────────────────────────────────
 async function renderResults(user){
   const area = document.getElementById('resultsArea');
@@ -318,17 +321,17 @@ function makeResultCard(r){
     ? `skopos_premium_quiz.html?r=${btoa(encodeURIComponent(r.result_type))}`
     : `skopos_quiz.html`;
   const pdfBtn = isPrem
-    ? `<button class="btn-sm btn-pdf" onclick="redownloadPDF('${r.result_type}','${r.result_name||t.name}')" title="PDF 리포트 다운로드">📄 PDF 저장</button>`
+    ? `<button class="btn-sm btn-pdf" data-type="${esc(r.result_type)}" onclick="redownloadPDF(this.dataset.type,'',this)" title="PDF 리포트 다운로드">📄 PDF 저장</button>`
     : '';
   return `<div class="result-card">
     <span class="result-emoji">${SkoposCharacters.html(r.result_type,64)}</span>
     <div class="result-info">
-      <div class="result-type">${t.name}</div>
-      <div class="result-meta">${r.quiz_type||'기초'} 검사 · ${date}</div>
+      <div class="result-type">${esc(t.name)}</div>
+      <div class="result-meta">${esc(r.quiz_type||'기초')} 검사 · ${date}</div>
     </div>
     <div class="result-actions">
-      <span class="badge-type ${isPrem?'badge-premium':'badge-free'}">${r.quiz_type||'기초'}</span>
-      <a class="btn-sm btn-view" href="${resultUrl}">결과 보기</a>
+      <span class="badge-type ${isPrem?'badge-premium':'badge-free'}">${esc(r.quiz_type||'기초')}</span>
+      <a class="btn-sm btn-view" href="${esc(resultUrl)}">결과 보기</a>
       ${pdfBtn}
     </div>
   </div>`;
@@ -374,9 +377,9 @@ function payName(p){
   return n.replace('SKOPOS SDTI ','SDTI ');
 }
 function payMethod(p){
-  if(p.pg==='FREE_COUPON') return '쿠폰'+(p.coupon_code?` (${p.coupon_code})`:'');
+  if(p.pg==='FREE_COUPON') return '쿠폰'+(p.coupon_code?` (${esc(p.coupon_code)})`:'');
   if(p.pg==='couple') return '커플 진단 초대';
-  return p.pg || '카드 결제';
+  return esc(p.pg || '카드 결제');
 }
 async function renderPayments(user){
   const area = document.getElementById('paymentsArea');
@@ -413,8 +416,8 @@ async function renderPayments(user){
       const isCouple = /커플/.test(p.order_name||'') || p.pg==='couple';
       return `<div class="pay-item">
         <div class="pay-left">
-          <div class="pay-name">${payName(p)}${isCouple?' <a class="pay-link" href="couple.html">결과지 보기</a>':''}</div>
-          <div class="pay-detail">${date} ${time} · ${payMethod(p)} · 주문번호 ${(p.merchant_uid||p.imp_uid||'').slice(-12)}</div>
+          <div class="pay-name">${esc(payName(p))}${isCouple?' <a class="pay-link" href="couple.html">결과지 보기</a>':''}</div>
+          <div class="pay-detail">${date} ${time} · ${payMethod(p)} · 주문번호 ${esc((p.merchant_uid||p.imp_uid||'').slice(-12))}</div>
         </div>
         <div class="pay-right">
           <div class="pay-amount">${amt>0?'₩'+amt.toLocaleString():'무료'}</div>
@@ -435,11 +438,11 @@ async function renderCouple(session){
     const r = await fetch(SUPABASE_URL + '/functions/v1/couple', {method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token}, body:JSON.stringify({action:'status'})});
     const j = await r.json();
     if(!j.success || !j.couple) return;
-    const c = j.couple, my = c.my_name || '나', pt = c.partner_name || '파트너';
+    const c = j.couple, my = esc(c.my_name || '나'), pt = esc(c.partner_name || '파트너');
     const ready = c.my_done && c.partner_done;
     const step = !c.paired ? '파트너 초대를 기다리고 있어요' : !c.my_done ? '내 정밀 검사를 진행해 주세요' : !c.partner_done ? `${pt}님의 정밀 검사를 기다리고 있어요` : '결과지 2부가 발급됐어요';
     area.innerHTML = `<div class="couple-card">
-      <div class="cc-top"><span class="cc-tag">커플 진단</span><span class="cc-code">초대 코드 ${c.code}</span></div>
+      <div class="cc-top"><span class="cc-tag">커플 진단</span><span class="cc-code">초대 코드 ${esc(c.code)}</span></div>
       <div class="cc-title">${my}님 × ${c.paired?pt+'님':'파트너'}</div>
       <div class="cc-step ${ready?'ok':''}">${step}</div>
       ${ready ? `<div class="cc-docs">
@@ -453,8 +456,8 @@ async function renderCouple(session){
 }
 
 // ── PDF 재다운로드 ───────────────────────────────────────────
-async function redownloadPDF(resultTypeId, resultName){
-  const btn = event.target;
+async function redownloadPDF(resultTypeId, resultName, el){
+  const btn = el || event.target;
   btn.disabled = true;
   btn.textContent = '⏳ 생성 중...';
   toast('PDF 생성 중이에요. 잠시 기다려주세요.', 4000);

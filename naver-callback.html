@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <meta name="robots" content="noindex">
 <title>네이버 로그인 처리 중...</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.js"></script>
 <style>
 body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#F7F8FC;margin:0}
 .box{text-align:center;padding:40px}
@@ -38,7 +38,16 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
   const code = params.get('code');
   const state = params.get('state');
   const savedState = sessionStorage.getItem('naver_state');
-  const redirect = sessionStorage.getItem('naver_redirect') || 'mypage.html';
+  // 같은 사이트 경로만 허용 (오픈 리다이렉트 방지)
+  const redirect = (function(raw){
+    raw = String(raw || '').trim();
+    if(!raw || /[\s\\]/.test(raw) || raw.startsWith('//')) return 'mypage.html';
+    try{
+      const u = new URL(raw, window.location.origin + '/');
+      if(u.origin !== window.location.origin) return 'mypage.html';
+      return u.pathname.replace(/^\/+/, '/') + u.search + u.hash;
+    }catch(e){ return 'mypage.html'; }
+  })(sessionStorage.getItem('naver_redirect'));
 
   if (!code || !state || state !== savedState) {
     alert('로그인에 실패했습니다. 다시 시도해주세요.');

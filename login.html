@@ -144,6 +144,20 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFo
       <button class="btn-submit" id="signupBtn" onclick="signupEmail()">회원가입</button>
     </div>
 
+    <!-- 비밀번호 재설정 패널 (메일의 재설정 링크로 들어왔을 때만 표시) -->
+    <div class="panel" id="panel-reset">
+      <div class="field">
+        <label>새 비밀번호</label>
+        <input type="password" id="resetPw" placeholder="8자 이상 입력해주세요" autocomplete="new-password">
+      </div>
+      <div class="field">
+        <label>새 비밀번호 확인</label>
+        <input type="password" id="resetPw2" placeholder="한 번 더 입력해주세요" autocomplete="new-password">
+        <div class="err-msg" id="resetErr"></div>
+      </div>
+      <button class="btn-submit" id="resetBtn" onclick="updatePassword()">비밀번호 변경</button>
+    </div>
+
   </div>
 </div>
 
@@ -155,22 +169,69 @@ const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFz
 const NAVER_CLIENT_ID = 'MUwb6Wq_YGvDSIbbkRB1';
 const KAKAO_APP_KEY  = 'd0c68901a08c4272cce34084fca1372d';
 
+// 비밀번호 재설정 메일 링크로 들어온 경우 (클라이언트가 주소의 토큰을 지우기 전에 먼저 확인)
+let IS_RECOVERY = /type=recovery/.test(window.location.hash);
+
 const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
 
 // ── redirect 파라미터 검증 (오픈 리다이렉트 방지) ──────────
-// 내부 상대 경로만 허용: "payment.html", "skopos_quiz.html?x=1",
-// "/path?query" 형태. 절대 URL(https://...)이나 //host 는 거부.
+// 같은 사이트 주소만 허용하고, 경로·쿼리·해시만 돌려준다.
+// https://다른사이트, //host, /\host, javascript: 등은 모두 mypage.html 로.
+function sameOriginPath(raw){
+  raw = String(raw || '').trim();
+  if(!raw || /[\s\\]/.test(raw) || raw.startsWith('//')) return '';
+  try{
+    const u = new URL(raw, window.location.origin + '/');
+    if(u.origin !== window.location.origin) return '';
+    if(/^\/login\.html$/i.test(u.pathname)) return '';
+    return u.pathname.replace(/^\/+/, '/') + u.search + u.hash;
+  }catch(e){ return ''; }
+}
 function safeRedirect(){
   const raw = new URLSearchParams(window.location.search).get('redirect') || '';
-  if(/^(?:[\w-]+\.html(?:[?#].*)?|\/(?!\/)[^\s]*)$/.test(raw)) return raw;
-  return 'mypage.html';
+  return sameOriginPath(raw) || 'mypage.html';
 }
 
-// ── 이미 로그인된 경우 리다이렉트 ─────────────────────────
+// ── 비밀번호 재설정 화면 ──────────────────────────────────
+function showResetPanel(){
+  IS_RECOVERY = true;
+  document.querySelector('.tabs').style.display = 'none';
+  const sbtn = document.querySelector('.social-btns'); if(sbtn) sbtn.style.display = 'none';
+  const orl = document.querySelector('.or-line'); if(orl) orl.style.display = 'none';
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-reset').classList.add('active');
+  clearAlerts();
+  showInfo('새로 사용할 비밀번호를 입력해 주세요');
+}
+async function updatePassword(){
+  clearAlerts();
+  const pw = document.getElementById('resetPw').value;
+  const pw2 = document.getElementById('resetPw2').value;
+  const err = document.getElementById('resetErr');
+  err.classList.remove('show');
+  if(pw.length < 8){ err.textContent='비밀번호는 8자 이상이어야 해요'; err.classList.add('show'); return; }
+  if(pw !== pw2){ err.textContent='두 비밀번호가 서로 달라요'; err.classList.add('show'); return; }
+  const btn = document.getElementById('resetBtn');
+  btn.disabled = true; btn.textContent = '변경 중...';
+  const { error } = await sb.auth.updateUser({ password: pw });
+  if(error){
+    btn.disabled = false; btn.textContent = '비밀번호 변경';
+    showError('비밀번호를 바꾸지 못했어요. 재설정 메일을 다시 받아 시도해 주세요.');
+    return;
+  }
+  showInfo('✅ 비밀번호를 변경했어요. 잠시 후 이동합니다.');
+  btn.textContent = '변경 완료';
+  setTimeout(()=>{ window.location.href = 'mypage.html'; }, 1200);
+}
+sb.auth.onAuthStateChange((event)=>{ if(event === 'PASSWORD_RECOVERY') showResetPanel(); });
+if(IS_RECOVERY) document.addEventListener('DOMContentLoaded', showResetPanel);
+
+// ── 이미 로그인된 경우 리다이렉트 (재설정 중에는 머무름) ────────
 (async()=>{
+  if(IS_RECOVERY){ showResetPanel(); return; }
   const { data:{ session } } = await sb.auth.getSession();
-  if(session){
+  if(session && !IS_RECOVERY){
     window.location.href = safeRedirect();
   }
 })();
@@ -307,7 +368,8 @@ async function resetPassword(){
 // ── Enter 키 처리 ─────────────────────────────────────────
 document.addEventListener('keydown', e => {
   if(e.key !== 'Enter') return;
-  if(document.getElementById('panel-login').classList.contains('active')) loginEmail();
+  if(document.getElementById('panel-reset').classList.contains('active')) updatePassword();
+  else if(document.getElementById('panel-login').classList.contains('active')) loginEmail();
   else signupEmail();
 });
 </script>
