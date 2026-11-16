@@ -1003,14 +1003,16 @@ em{font-style:normal}
 .tier-couple{display:block;margin-top:10px;padding:12px 14px;border-radius:14px;border:1.5px dashed rgba(233,30,140,.45);text-decoration:none;text-align:center;color:inherit}.tier-couple b{display:block;font-size:.92rem;color:#E91E8C}.tier-couple span{font-size:.78rem;opacity:.8}
 
 /* 글꼴: 사이트 전체를 Pretendard 한 가지로 통일합니다 (제목·본문·숫자 공통). */
-.ib-banner{max-width:1120px;margin:0 auto 48px;padding:0 20px;position:relative;z-index:1}
-.ib-inner{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:18px;background:#fff;border:1.5px solid rgba(233,30,140,.22);box-shadow:0 6px 22px rgba(233,30,140,.08);text-decoration:none;color:var(--dark)}
-.ib-pill{flex-shrink:0;font-size:.7rem;font-weight:800;color:#fff;background:linear-gradient(135deg,#E91E8C,#FF6B9D);padding:5px 11px;border-radius:50px}
-.ib-text{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.45}
-.ib-text strong{font-size:.98rem;font-weight:800;letter-spacing:-.02em}
-.ib-text small{font-size:.78rem;color:var(--gray);word-break:keep-all}
-.ib-cta{flex-shrink:0;font-size:.85rem;font-weight:800;color:var(--pink)}
-@media(max-width:600px){.ib-inner{flex-wrap:wrap;gap:8px 10px}.ib-text{flex-basis:100%;order:2}.ib-cta{order:1;margin-left:auto}}
+.ib-banner{position:sticky;top:68px;left:0;right:0;z-index:99;background:linear-gradient(135deg,#DC1478 0%,#E91E8C 55%,#FF6B9D 100%);box-shadow:0 4px 18px rgba(220,20,120,.22)}
+.ib-banner[hidden]{display:none}
+.ib-inner{max-width:1120px;margin:0 auto;padding:10px 24px;display:flex;align-items:center;gap:12px;text-decoration:none;color:#fff}
+.ib-pill{flex-shrink:0;font-size:.72rem;font-weight:900;color:#DC1478;background:#fff;padding:5px 11px;border-radius:50px;letter-spacing:-.01em;box-shadow:0 2px 8px rgba(0,0,0,.12);white-space:nowrap}
+.ib-text{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.4}
+.ib-text strong{font-size:.95rem;font-weight:800;letter-spacing:-.02em;color:#fff}
+.ib-text small{font-size:.78rem;color:rgba(255,255,255,.9);word-break:keep-all}
+.ib-cta{flex-shrink:0;font-size:.85rem;font-weight:900;color:#DC1478;background:#fff;padding:8px 14px;border-radius:50px;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.ib-sub-short{display:none}
+@media(max-width:700px){.ib-inner{padding:8px 16px;gap:6px;flex-wrap:wrap}.ib-pill{font-size:.64rem;padding:4px 9px}.ib-cta{font-size:.74rem;padding:6px 11px;margin-left:auto}.ib-text{flex-basis:100%;order:3;line-height:1.35}.ib-text strong{font-size:.82rem}.ib-sub-full{display:none}.ib-sub-short{display:block;font-size:.7rem}}
 </style>
 <script src="/skopos-track.js" defer></script>
 </head>
@@ -1033,6 +1035,21 @@ em{font-style:normal}
     </div>
   </div>
 </nav>
+
+<!-- INTERIOR BETA TOP BAR (12/1 정식 출시 전까지 한시 노출) -->
+<section id="interiorBetaBanner" class="ib-banner" aria-label="SDTI 인테리어 공간욕구검사 사전 베타 안내">
+  <a class="ib-inner" href="/interior-beta" onclick="if(window.gtag)gtag('event','interior_cta_click',{location:'topbar'})">
+    <span class="ib-pill">NEW &middot; 11월 30일까지 무료</span>
+    <span class="ib-text"><strong>SDTI 인테리어 공간욕구검사 &middot; 12월 1일 정식 출시</strong><small class="ib-sub-full">사전 베타 참여를 원하시면 카카오톡 채널에 "사전 베타 참여"를 남겨 주세요. 정식 출시 후 쓸 수 있는 이용권 코드를 카카오톡으로 보내 드려요.</small><small class="ib-sub-short">카카오톡 채널에 "사전 베타 참여" 문의 시 이용권 코드 발급</small></span>
+    <span class="ib-cta">사전 베타 참여하기 &rarr;</span>
+  </a>
+</section>
+<script>(function(){var b=document.getElementById('interiorBetaBanner');if(!b)return;function hide(){b.hidden=true;}
+fetch('/api/interior-beta',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(s){
+  if(!s){if(Date.now()>=Date.UTC(2026,10,30,15,0,0))hide();return;}
+  if(!s.active||(s.endsAt&&s.serverNow&&s.serverNow>=s.endsAt))hide();
+}).catch(function(){if(Date.now()>=Date.UTC(2026,10,30,15,0,0))hide();});})();</script>
+
 
 
 
@@ -1113,14 +1130,6 @@ em{font-style:normal}
     </div>
   </div>
 </section>
-<section id="interiorBetaBanner" class="ib-banner" aria-label="인테리어 공간욕구검사 12월 1일 정식 출시, 사전 베타">
-  <a class="ib-inner" href="/interior-beta">
-    <span class="ib-pill">12월 1일 정식 출시 · 사전 베타</span>
-    <span class="ib-text"><strong>SDTI 인테리어 공간욕구검사</strong><small>인테리어 전에, 내 집의 기준부터 · 11월 30일까지 무료 · 사전 베타 참여자에게 정식 출시 후 이용권 코드</small></span>
-    <span class="ib-cta">참여하기 →</span>
-  </a>
-</section>
-<script>fetch('/api/interior-beta',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(s=>{if(s&&!s.active)document.getElementById('interiorBetaBanner').hidden=true;}).catch(()=>{});</script>
 
 <!-- HOW IT WORKS -->
 <div class="section-wrap alt fade-up">
