@@ -112,8 +112,8 @@ drop trigger if exists interior_results_guard on public.interior_results;
 create trigger interior_results_guard before insert or update on public.interior_results
   for each row execute function private.interior_results_guard();
 
--- 6) 사전 베타 이용권 코드: 정식판 1회 무료, 12/1~12/31, 한 계정 1회, 전체 200회
+-- 6) 사전 베타 이용권 코드: 정식판 1회 무료, 12/1~12/31, 한 계정 1회, 전체 한도 없음
 insert into public.coupons (code, name, discount_type, discount_value, starts_at, expires_at, usage_limit, used_count, per_user_limit, is_active, product)
 values ('INTERIORBETA', '인테리어 공간욕구검사 사전 베타 이용권', 'fixed', 59900,
-        timestamptz '2026-12-01 00:00:00+09', timestamptz '2026-12-31 23:59:59+09', 200, 0, 1, true, 'interior')
+        timestamptz '2026-12-01 00:00:00+09', timestamptz '2026-12-31 23:59:59+09', null, 0, 1, true, 'interior')
 on conflict (code) do nothing;
