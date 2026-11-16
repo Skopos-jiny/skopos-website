@@ -27,6 +27,11 @@ main{max-width:920px;margin:0 auto;padding:28px 24px 60px}
 .stat3 .rem b{color:var(--pink)}
 .use{display:flex;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid var(--line);font-size:.84rem}
 .use:last-child{border-bottom:0}.use span{color:var(--gray);font-size:.78rem;white-space:nowrap}
+.coderow{display:flex;gap:8px}
+.coderow input{flex:1;min-width:0;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;font:inherit;text-transform:uppercase}
+.coderow input:focus{outline:2px solid rgba(233,30,140,.35);border-color:var(--pink)}
+.coderow button{padding:0 20px;border:0;border-radius:12px;background:var(--ink);color:#fff;font-weight:700;font-family:inherit;cursor:pointer;white-space:nowrap}
+.coderow button:disabled{opacity:.45;cursor:not-allowed}
 .tiles.t4{grid-template-columns:repeat(4,1fr)}
 .tile.on{outline:2px solid var(--pink)}
 .editrow{display:grid;grid-template-columns:1fr 1.4fr;gap:8px;margin-top:10px}
@@ -168,6 +173,12 @@ label.f input:focus{outline:2px solid rgba(233,30,140,.35);border-color:var(--pi
       <a class="btn sm" id="credBuy" href="/interior-pay?plan=pack10" hidden style="margin-top:12px">업체용 이용권 구매</a>
       <a class="btn sub sm" id="credAsk" href="https://pf.kakao.com/_dtGjX/chat" target="_blank" rel="noopener" hidden style="margin-top:12px">카카오톡으로 이용권 문의</a>
     </div>
+    <div class="card">
+      <h2>이용권 코드 등록</h2>
+      <div class="coderow"><input id="cpCode" maxlength="40" autocomplete="off" aria-label="이용권 코드" placeholder="받으신 코드를 입력해 주세요"><button type="button" id="cpBtn">등록</button></div>
+      <p class="msg" id="cpMsg"></p>
+      <p class="kv">코드를 등록하면 이 업체 계정에 이용권이 적립돼요. 같은 코드는 한 계정에서 한 번만 쓸 수 있어요.</p>
+    </div>
     <div class="card" id="grantCard" hidden>
       <h2>받은 내역</h2>
       <div id="grantList"></div>
@@ -219,7 +230,7 @@ label.f input:focus{outline:2px solid rgba(233,30,140,.35);border-color:var(--pi
     $('credBuy').hidden = biz.status !== 'verified';
     $('credAsk').hidden = biz.status === 'verified';
     const off = biz.status === 'suspended';
-    $('cAdd').disabled = off; $('editBtn').hidden = off;
+    $('cAdd').disabled = off; $('cpBtn').disabled = off; $('editBtn').hidden = off;
   }
   async function load(){
     const { data, error } = await sb.rpc('business_me');
@@ -342,6 +353,26 @@ label.f input:focus{outline:2px solid rgba(233,30,140,.35);border-color:var(--pi
   $('cList').addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.closest('.editrow')) { const b = $('cList').querySelector('button[data-act="save"]'); if (b) b.click(); } });
   function setFilter(f){ filt = f; document.querySelectorAll('#chips button').forEach(x => x.classList.toggle('on', x.dataset.f === f)); document.querySelectorAll('#sumTiles .tile').forEach(x => x.classList.toggle('on', x.dataset.f === f)); render(); }
   $('sumTiles').addEventListener('click', e => { const t = e.target.closest('.tile'); if (!t) return; if (t.dataset.go) showTab(t.dataset.go); else setFilter(filt === t.dataset.f ? 'all' : t.dataset.f); });
+  const ORDER_FN = 'https://rgbukqphcqptnfeqipfn.supabase.co/functions/v1/interior-order';
+  async function redeem(){
+    const code = $('cpCode').value.trim().toUpperCase();
+    if (!code) { setMsg($('cpMsg'), '코드를 입력해 주세요.'); return; }
+    if (!/^[A-Z0-9-]{3,40}$/.test(code)) { setMsg($('cpMsg'), '코드를 다시 확인해 주세요.'); return; }
+    $('cpBtn').disabled = true; setMsg($('cpMsg'), '확인 중...', true);
+    try {
+      const { data: { session } } = await sb.auth.getSession();
+      if (!session || !session.access_token) { setMsg($('cpMsg'), '로그인이 필요해요. 새로고침 후 다시 시도해 주세요.'); return; }
+      const res = await fetch(ORDER_FN, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + session.access_token }, body: JSON.stringify({ action: 'redeem', coupon_code: code }) });
+      let j = {}; try { j = await res.json(); } catch (e) {}
+      if (!j.success) { setMsg($('cpMsg'), j.message || '코드를 등록하지 못했어요.'); return; }
+      $('cpCode').value = '';
+      await load();
+      setMsg($('cpMsg'), Number(j.granted || 1) + '회 이용권이 적립됐어요.', true);
+    } catch (e) { setMsg($('cpMsg'), '잠시 후 다시 시도해 주세요.'); }
+    finally { $('cpBtn').disabled = biz && biz.status === 'suspended'; }
+  }
+  $('cpBtn').addEventListener('click', redeem);
+  $('cpCode').addEventListener('keydown', e => { if (e.key === 'Enter') redeem(); });
   const TABS = { clients: '고객·검사 관리', credits: '이용권 관리', settings: '업체 설정' };
   function closeSide(){ $('side').classList.remove('open'); $('scrim').classList.remove('open'); }
   function showTab(tab, push){
