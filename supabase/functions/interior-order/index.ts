@@ -89,7 +89,8 @@ const handler = async (event) => {
       return json(200, { success: true, sales_open: salesOpen(), sales_start: SALES_START, plans, pack10_allowed: pack10Allowed, credits: await creditStatus(sb, uid) });
     }
 
-    if (!salesOpen()) return json(403, { success: false, message: '정식판 이용권은 12월 1일부터 구매할 수 있어요.' });
+    // 카드 결제는 판매 시작일부터. 이용권 코드 등록(redeem)은 판매 시작 전에도 받는다.
+    if (!salesOpen() && action !== 'redeem') return json(403, { success: false, message: '정식판 이용권은 12월 1일부터 구매할 수 있어요.' });
 
     if (action === 'redeem') {
       const code = String(body.coupon_code || '').trim().toUpperCase();
