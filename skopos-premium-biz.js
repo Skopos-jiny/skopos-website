@@ -113,6 +113,8 @@
   }
   function startView(){
     if (!window.SkoposAuth) return;
+    // 리포트가 준비될 때까지 '분석 중' 화면을 보여 준다 (로그인 창은 이 화면 위에 뜬다)
+    panel('<div style="text-align:center;padding:28px 0"><div style="width:44px;height:44px;margin:0 auto 16px;border-radius:50%;border:4px solid #F3C6DE;border-top-color:#E91E8C;animation:bizspin .9s linear infinite"></div><b style="font-size:1.05rem">검사 데이터를 분석 중입니다</b><p style="font-size:.86rem;color:#8890A4;margin:8px 0 0">고객의 정밀검사 리포트를 준비하고 있어요. 잠시만 기다려 주세요.</p></div><style>@keyframes bizspin{to{transform:rotate(360deg)}}</style>');
     SkoposAuth.guard({
       title: '업체 화면',
       subtitle: '업체 계정으로 로그인하면 고객의 정밀검사 리포트를 볼 수 있어요.',
@@ -135,6 +137,7 @@
           bar.style.cssText = 'position:sticky;top:0;z-index:500;background:#0F0F1A;color:#fff;font-size:.82rem;font-weight:700;padding:10px 16px;display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap';
           bar.innerHTML = '<span>' + esc(d.name || '고객') + '님의 SDTI 정밀검사 리포트 · 업체 열람용</span><a href="/business" style="color:#FFB3D9;font-weight:800;text-decoration:none">업체 화면으로</a>';
           var sr = document.getElementById('sr'); if (sr) sr.insertBefore(bar, sr.firstChild);
+          setTimeout(hidePanel, 700);
           setTimeout(function(){
             document.querySelectorAll('.r-bar-fill').forEach(function(b){ b.style.width = b.dataset.val + '%'; });
             document.querySelectorAll('.budget-fill').forEach(function(b){ b.style.width = b.dataset.val + '%'; });
