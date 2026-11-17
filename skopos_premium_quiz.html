@@ -1214,7 +1214,7 @@ html{scroll-behavior:smooth}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
 <script src="/skopos-track.js" defer></script>
-<script src="/skopos-premium-biz.js?v=20261117" defer></script>
+<script src="/skopos-premium-biz.js?v=20261117b" defer></script>
 <script src="/skopos-characters.js"></script>
 </head>
 
@@ -5112,7 +5112,7 @@ async function saveScores(typeId, scores){
     if(!session) return;
     const clean = {};
     SECS.forEach(s=>{ const v = scores?.[s.label]; if(typeof v==='number') clean[s.key]=Math.round(v); });
-    const { data, error } = await sb.from('premium_results').insert([{ user_id: session.user.id, result_type: typeId, scores: clean }]).select('id').single();
+    const { data, error } = await sb.from('premium_results').insert([Object.assign({ user_id: session.user.id, result_type: typeId, scores: clean }, (window.SkoposBiz && SkoposBiz.code) ? { invite_code: SkoposBiz.code } : {})]).select('id').single();
     if(error) throw error;
     if(data?.id && resultType?.id === typeId){
       const url = new URL(window.location.href);

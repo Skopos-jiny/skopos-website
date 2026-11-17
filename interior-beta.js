@@ -117,8 +117,9 @@
    const d=e.data,row={scores:d.scores&&typeof d.scores==='object'?d.scores:{},top:Array.isArray(d.top)?d.top.slice(0,3).map(String):[],form_state:d.state&&typeof d.state==='object'?d.state:{},version:'beta',updated_at:new Date().toISOString()};
    let res;
    if(d.id&&/^[0-9a-f-]{36}$/i.test(d.id))res=await client.from('interior_results').update(row).eq('id',d.id).eq('user_id',s.session.user.id).select('id,created_at').single();
-   else res=await client.from('interior_results').insert(Object.assign({user_id:s.session.user.id},row)).select('id,created_at').single();
+   else res=await client.from('interior_results').insert(Object.assign({user_id:s.session.user.id},row,inviteRun&&inviteCode?{invite_code:inviteCode}:{})).select('id,created_at').single();
    if(res.error){const m=String(res.error.message||'');
+    if(/invite_not_active/.test(m)){reply({ok:false,message:'초대 검사 정보를 확인하지 못해 저장하지 못했어요. 지금 결과는 PDF로 저장하고, 업체가 보낸 초대 링크를 다시 열어 주세요.'});return;}
     if(/interior_no_session/.test(m)){reply({ok:false,message:'새 검사를 저장하려면 이용권 1회가 더 필요해요. 지금 결과는 PDF로 저장하고, 페이지를 새로 열어 시작해 주세요.'});return;}
     if(/interior_edit_window_closed/.test(m)){reply({ok:false,message:'저장 후 24시간이 지나 수정할 수 없어요. PDF로 저장해 주세요.'});return;}
     if(/interior_beta_readonly/.test(m)){reply({ok:false,message:'사전 베타 결과는 수정할 수 없어요. PDF로 저장해 주세요.'});return;}

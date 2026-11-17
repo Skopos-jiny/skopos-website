@@ -98,6 +98,7 @@
         if (pay) { pay.textContent = '✦ 검사 시작하기'; pay.onclick = function(){ startQuiz(true); }; }
         var g = document.querySelector('#sp .guarantee'); if (g) g.textContent = bizName + '에서 요청한 검사예요 · 따로 결제하실 것은 없어요';
         _authed = true;
+        window.SkoposBiz.code = code; // 결과 저장 때 이 초대에 연결한다
         hidePanel();
         var saved = null; try { saved = loadProgress(); } catch (e) {}
         if (saved) showResumeModal(saved); else startQuiz(true);
@@ -125,6 +126,8 @@
           if (!d || d.ok !== true) { failBg(GUIDE[d && d.reason] || '이 계정으로는 볼 수 없는 리포트예요. 업체 계정으로 로그인했는지 확인해 주세요.'); return; }
           var type = TYPE_MAP[d.result_type];
           if (!type) { failBg('리포트를 표시하지 못했어요. 카카오톡 채널로 문의해 주세요.'); return; }
+          // 리포트와 PDF 에는 로그인한 업체 담당자가 아니라 고객 이름(별칭)을 쓴다
+          try { currentUserName = String(d.name || '고객').replace(/[<>"'`&\\]/g, '').trim().slice(0, 30); } catch (e) {}
           resultType = type;
           renderResult(type, d.scores || {});
           show('sr');
@@ -142,5 +145,5 @@
     });
   }
 
-  window.SkoposBiz = { active: isCode || isBg, start: function(){ if (isCode) startInvite(); else if (isBg) startView(); } };
+  window.SkoposBiz = { active: isCode || isBg, code: '', start: function(){ if (isCode) startInvite(); else if (isBg) startView(); } };
 })();
