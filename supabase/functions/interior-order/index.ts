@@ -158,7 +158,10 @@ const handler = async (event) => {
         if (existing.product !== 'interior') return json(409, { success: false, message: '인테리어 검사 결제가 아닙니다.' });
         if (existing.status === 'cancelled') return json(400, { success: false, message: '취소된 결제입니다.' });
         const p = Object.values(PLANS).find((x) => x.name === existing.order_name) || PLANS.single;
-        await grantPlan(sb, uid, existing.id, p);
+        // 적립까지 끝난 경우에만 성공으로 답한다
+        if (!(await grantPlan(sb, uid, existing.id, p))) {
+          return json(500, { success: false, message: '이용권 적립에 실패했어요. 결제 번호(' + imp_uid + ')로 문의해 주시면 바로 처리해 드릴게요.' });
+        }
         return json(200, { success: true, already: true, credits: await creditStatus(sb, uid), premium_credits: p.premium ? await premiumStatus(sb, uid) : undefined });
       }
 
