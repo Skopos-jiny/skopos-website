@@ -1214,6 +1214,7 @@ html{scroll-behavior:smooth}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
 <script src="/skopos-track.js" defer></script>
+<script src="/skopos-premium-biz.js?v=20261117" defer></script>
 <script src="/skopos-characters.js"></script>
 </head>
 
@@ -7211,6 +7212,9 @@ function resumeRestart(){
 //  window.SkoposAuth 가 준비됨)
 function _initPremiumGate(){
   const p = new URLSearchParams(window.location.search);
+
+  // 업체 초대 검사(?i=) · 업체의 고객 리포트 열람(?bg=)은 skopos-premium-biz.js 가 맡는다
+  if(window.SkoposBiz && SkoposBiz.active){ SkoposBiz.start(); return; }
 
   // 공개 열람 화면용 passive 인증 구독:
   // 게이트는 띄우지 않되, 이후 결제/검사 버튼이 showGate() 로 띄운

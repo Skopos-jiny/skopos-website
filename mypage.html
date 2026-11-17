@@ -197,7 +197,7 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFo
     <div class="tiles">
       <button type="button" class="tile" data-go="results"><small>저장된 결과지</small><b id="tileResults">0</b><span>기초·정밀·인테리어 검사</span></button>
       <button type="button" class="tile" data-go="payments"><small>인테리어 검사 이용권</small><b id="tileCredits">0회</b><span>남은 횟수</span></button>
-      <button type="button" class="tile" data-go="shares"><small>결과를 공유 중인 업체</small><b id="tileShares">0곳</b><span>공유 상태를 확인해요</span></button>
+      <button type="button" class="tile" data-go="shares"><small>결과를 공유 중인 업체</small><b id="tileShares">0곳</b><span>공유 상태를 확인하고 중지할 수 있어요</span></button>
     </div>
     <div class="section">
       <div class="section-tag">START</div>
@@ -233,7 +233,7 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFo
 
   <!-- 업체 공유 관리 -->
   <div class="panel" id="panelShares">
-    <div class="pg-head"><div><h2>업체 공유 관리</h2><p>인테리어 업체의 초대로 검사한 경우, 동의한 결과가 그 업체에 공유돼요. 업체가 상담 가이드를 구매하기 전에는 여기서 공유를 중지할 수 있어요.</p></div></div>
+    <div class="pg-head"><div><h2>업체 공유 관리</h2><p>업체의 초대로 검사한 경우, 동의한 결과가 그 업체에 공유돼요. 여기서 공유를 중지할 수 있고, 업체가 결과를 구매한 뒤에는 요청 7일 뒤에 중지돼요.</p></div></div>
     <div id="sharesArea"><div class="loading"><div class="spinner"></div>불러오는 중...</div></div>
   </div>
 
@@ -425,15 +425,16 @@ async function renderShares(){
     active=list.filter(x=>!x.revoked).length;
     if(list.length){html+=list.map(s=>{
       const id=String(s.id).replace(/[^0-9a-f-]/gi,''),date=s.consented_at?new Date(s.consented_at).toLocaleDateString('ko-KR'):'';
-      const st=s.revoked?'공유 중지됨':s.status==='completed'?'결과 공유 중':'검사 전 · 공유 동의함';const lock=s.locked?'<div class="result-meta">업체가 상담 가이드를 구매해 공유를 중지할 수 없어요. 계정 설정에서 회원 탈퇴를 하면 결과와 함께 삭제돼요.</div>':'';
-      return '<div class="result-card ir-card"><span class="result-emoji ir-emoji">🤝</span><div class="result-info"><div class="result-type">'+e(s.business_name)+'</div><div class="result-meta">'+st+' · 동의 '+date+'</div>'+lock+'</div><div class="result-actions">'+(s.revoked||s.locked?'':'<button class="btn-sm ir-del sh-stop" data-id="'+id+'">공유 중지</button>')+'</div></div>';}).join('');}
+      const until=s.revoke_at?new Date(s.revoke_at).toLocaleDateString('ko-KR'):'';const tn=s.test_type==='premium'?'SDTI 정밀검사':'인테리어 공간욕구검사';const st=s.revoked?'공유 중지됨':s.revoke_at?'공유 중지 요청함':s.status==='completed'?'결과 공유 중':'검사 전 · 공유 동의함';const lock=s.revoke_at?'<div class="result-meta">'+until+'부터 업체가 내 결과를 볼 수 없어요.</div>':'';
+      return '<div class="result-card ir-card"><span class="result-emoji ir-emoji">🤝</span><div class="result-info"><div class="result-type">'+e(s.business_name)+'</div><div class="result-meta">'+tn+' · '+st+' · 동의 '+date+'</div>'+lock+'</div><div class="result-actions">'+(s.revoked||s.revoke_at?'':'<button class="btn-sm ir-del sh-stop" data-id="'+id+'" data-p="'+(s.purchased&&s.status==='completed'?'1':'')+'">'+(s.purchased&&s.status==='completed'?'공유 중지 요청':'공유 중지')+'</button>')+'</div></div>';}).join('');}
   }catch(_){}
-  area.innerHTML=html||'<div class="empty"><div class="empty-icon">🤝</div><div class="empty-text">공유 중인 업체가 없어요.<br>인테리어 업체가 보낸 초대 링크로 검사하면 여기에 표시돼요.</div></div>';
+  area.innerHTML=html||'<div class="empty"><div class="empty-icon">🤝</div><div class="empty-text">공유 중인 업체가 없어요.<br>업체가 보낸 초대 링크로 검사하면 여기에 표시돼요.</div></div>';
   setCount('cntShares',active);document.getElementById('tileShares').textContent=active+'곳';
   area.querySelectorAll('.sh-stop').forEach(b=>b.addEventListener('click',async()=>{
-    if(!confirm('이 업체와의 결과 공유를 중지할까요? 중지하면 업체는 내 결과를 더 이상 볼 수 없어요. 내 계정의 결과는 그대로 남아요.'))return;
+    if(!confirm(b.dataset.p?'이 업체와의 결과 공유 중지를 요청할까요? 업체가 이미 결과를 구매해서 요청한 날부터 7일 뒤에 중지돼요. 그 뒤로는 업체가 내 결과를 볼 수 없고, 내 계정의 결과는 그대로 남아요.':'이 업체와의 결과 공유를 중지할까요? 중지하면 업체는 내 결과를 더 이상 볼 수 없어요. 내 계정의 결과는 그대로 남아요.'))return;
     const {data,error}=await sb.rpc('invite_revoke',{p_id:b.dataset.id});
-    if(error||!data||!data.ok){alert(data&&data.reason==='purchased'?'업체가 상담 가이드를 구매해 공유를 중지할 수 없어요. 계정 설정에서 회원 탈퇴를 하면 결과와 함께 삭제돼요.':'공유를 중지하지 못했어요. 잠시 후 다시 시도해 주세요.');renderShares();return;}
+    if(error||!data||!data.ok){alert('공유를 중지하지 못했어요. 잠시 후 다시 시도해 주세요.');renderShares();return;}
+    if(data.delayed)alert('공유 중지를 요청했어요. '+new Date(data.effective_at).toLocaleDateString('ko-KR')+'부터 업체가 내 결과를 볼 수 없어요.');
     renderShares();}));
 }
 async function renderInterior(user){
@@ -454,7 +455,7 @@ async function renderInterior(user){
     area.querySelectorAll('.ir-del').forEach(b=>b.addEventListener('click',async()=>{
       if(!confirm('이 인테리어 검사 결과를 삭제할까요? 삭제하면 되돌릴 수 없고, 사용한 이용권도 돌아오지 않아요.'))return;
       const {error}=await sb.from('interior_results').delete().eq('id',b.dataset.id).eq('user_id',user.id);
-      if(error){alert('삭제하지 못했어요. 잠시 후 다시 시도해 주세요.');return;}
+      if(error){alert(/shared_result_locked/.test(String(error.message||''))?'업체에 공유 중인 결과라 지금은 삭제할 수 없어요. 업체 공유 관리에서 공유 중지를 요청하면 7일 뒤부터 삭제할 수 있고, 회원 탈퇴를 하면 바로 삭제돼요.':'삭제하지 못했어요. 잠시 후 다시 시도해 주세요.');return;}
       renderInterior(user);}));
   }catch(_){area.innerHTML='';}
 }
