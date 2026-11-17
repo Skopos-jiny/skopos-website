@@ -57,7 +57,7 @@
    const res=await fetch('/api/interior-beta',{method:'POST',headers:{Authorization:'Bearer '+data.session.access_token,apikey:SkoposAuth.CONFIG.anon,'Content-Type':'application/json'},body:JSON.stringify(inviteCode?{mode:'invite',code:inviteCode}:guideId?{mode:'guide',c:guideId}:viewId?{mode:'view',r:viewId}:{mode:'test'}),cache:'no-store'});const result=await res.json().catch(()=>({}));if(epoch!==generation)return;
    if(inviteCode&&res.status===402){clear((inviteBiz||'업체')+'의 이용권이 부족해 지금은 시작할 수 없어요. 초대한 업체에 알려 주세요. 따로 결제하실 필요는 없어요.');return;}
    if(inviteCode&&res.status===403){inviteOk=false;if(invCard)invCard.hidden=true;clear(result.error==='invite_completed'?'이 초대 검사는 이미 마쳤어요. 결과는 마이페이지에서 다시 볼 수 있어요.':'이 초대 링크로는 시작할 수 없어요. 링크를 보낸 업체에 다시 요청해 주세요.');return;}
-   if(guideId&&(res.status===403||res.status===404)){const g=result.error||'';clear(g==='guide_not_completed'?'고객이 아직 검사를 마치지 않았어요.':g==='guide_not_shared'?'고객이 결과 공유를 중지해 상담 가이드를 볼 수 없어요.':g==='guide_result_deleted'?'고객이 결과를 삭제해 상담 가이드를 볼 수 없어요.':'이 계정으로는 볼 수 없는 상담 가이드예요. 업체 계정으로 로그인했는지 확인해 주세요.');start.disabled=true;return;}
+   if(guideId&&(res.status===403||res.status===404)){const g=result.error||'';clear(g==='guide_not_completed'?'고객이 아직 검사를 마치지 않았어요.':g==='guide_not_purchased'?'상담 가이드를 구매하면 볼 수 있어요. 업체 화면의 고객 목록에서 구매해 주세요.':g==='guide_not_shared'?'고객이 결과 공유를 중지해 상담 가이드를 볼 수 없어요.':g==='guide_result_deleted'?'고객이 결과를 삭제해 상담 가이드를 볼 수 없어요.':'이 계정으로는 볼 수 없는 상담 가이드예요. 업체 계정으로 로그인했는지 확인해 주세요.');start.disabled=true;return;}
    if(res.status===410){active=false;clear(viewId?'사전 베타가 종료되어 이 결과를 열 수 없어요. 마이페이지에서 저장한 결과를 다시 선택해 주세요.':'사전 베타가 종료되었습니다. 정식판 안내는 카카오톡 채널에서 확인해 주세요.');return;}
    if(res.status===402){clear('남은 이용권이 없어요. 이용권을 구매하면 바로 검사를 시작할 수 있어요.');showBuy(true);return;}
    if(res.status===404){clear('이 계정에 저장된 결과를 찾지 못했어요. 마이페이지에서 다시 선택해 주세요.');return;}
@@ -122,7 +122,7 @@
     if(/interior_edit_window_closed/.test(m)){reply({ok:false,message:'저장 후 24시간이 지나 수정할 수 없어요. PDF로 저장해 주세요.'});return;}
     if(/interior_beta_readonly/.test(m)){reply({ok:false,message:'사전 베타 결과는 수정할 수 없어요. PDF로 저장해 주세요.'});return;}
     throw res.error;}
-   clearDraft();savedId=res.data.id;reply({ok:true,id:res.data.id,date:res.data.created_at});if(inviteRun)message.textContent='결과가 내 계정에 저장되고 '+(inviteBiz||'업체')+'에 공유됐어요.';
+   clearDraft();savedId=res.data.id;reply({ok:true,id:res.data.id,date:res.data.created_at});if(inviteRun)message.textContent='결과가 내 계정에 저장됐어요. '+(inviteBiz||'업체')+'가 상담 가이드를 확인할 수 있어요.';
   }catch(_){reply({ok:false,message:'결과를 저장하지 못했어요. PDF로 저장해 주세요.'});}
  });
  async function restoreSaved(epoch){

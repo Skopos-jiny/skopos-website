@@ -17,8 +17,8 @@ body{margin:0;font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMa
 main{max-width:920px;margin:0 auto;padding:28px 24px 60px}
 .panel{display:none}.panel.active{display:block}
 .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:16px}
-.chips button{border:1px solid var(--line);background:#fff;border-radius:50px;padding:6px 12px;font:inherit;font-size:.78rem;font-weight:700;color:var(--mid);cursor:pointer}
-.chips button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.chips button,.toolbar button{border:1px solid var(--line);background:#fff;border-radius:50px;padding:6px 12px;font:inherit;font-size:.78rem;font-weight:700;color:var(--mid);cursor:pointer}
+.chips button.on,.toolbar button.on{background:var(--ink);border-color:var(--ink);color:#fff}
 .search{margin-left:auto;min-width:160px;flex:1;max-width:240px;padding:7px 12px;border:1px solid var(--line);border-radius:50px;font:inherit;font-size:.8rem}
 .stat3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .stat3 div{background:#F7F8FC;border-radius:14px;padding:14px}
@@ -27,9 +27,42 @@ main{max-width:920px;margin:0 auto;padding:28px 24px 60px}
 .stat3 .rem b{color:var(--pink)}
 .use{display:flex;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid var(--line);font-size:.84rem}
 .use:last-child{border-bottom:0}.use span{color:var(--gray);font-size:.78rem;white-space:nowrap}
-.addrow.mail{grid-template-columns:1fr 1.2fr 1.2fr auto}
-@media(max-width:860px){.addrow.mail{grid-template-columns:1fr 1fr}}
-@media(max-width:560px){.addrow.mail{grid-template-columns:1fr}}
+.tblwrap{overflow-x:auto;margin-top:14px}
+.ctbl{width:100%;border-collapse:collapse;font-size:.84rem}
+.ctbl th{text-align:left;font-size:.74rem;font-weight:700;color:var(--gray);padding:10px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+.ctbl td{padding:12px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+.ctbl tr:last-child td{border-bottom:0}
+.ctbl .nm{font-weight:800;display:block}
+.ctbl small{display:block;font-size:.74rem;color:var(--gray);margin-top:2px;overflow-wrap:anywhere}
+.ctbl .em{color:var(--mid);overflow-wrap:anywhere}
+.ctbl .btn.sm{padding:7px 13px;font-size:.78rem;white-space:nowrap}
+.ctbl .btn.buy{background:#FFD400;color:#0F0F1A}
+.ctbl .btn.ghost{background:none;color:#0E7C7B;padding:7px 4px}
+.ctbl .btn[disabled]{opacity:.4;cursor:not-allowed}
+.more{position:relative}.more summary{list-style:none;cursor:pointer;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:var(--gray)}
+.more summary::-webkit-details-marker{display:none}.more summary:hover{background:#F1F2F7}
+.more .menu{position:absolute;right:0;top:34px;z-index:20;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 28px rgba(15,15,26,.14);padding:6px;min-width:190px;display:flex;flex-direction:column}
+.more .menu button{border:0;background:none;font:inherit;font-size:.82rem;font-weight:600;color:var(--ink);text-align:left;padding:9px 12px;border-radius:8px;cursor:pointer}
+.more .menu button:hover{background:#F7F8FC}.more .menu button.danger{color:#C0264B}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:14px}
+.toolbar select{border:1px solid var(--line);background:#fff;border-radius:50px;padding:6px 12px;font:inherit;font-size:.78rem;font-weight:700;color:var(--mid)}
+.modal{position:fixed;inset:0;z-index:400;background:rgba(15,15,26,.5);display:flex;align-items:center;justify-content:center;padding:16px}
+.modal .box{background:#F4F5F9;border-radius:18px;width:100%;max-width:460px;max-height:92vh;overflow:auto}
+.modal .mh{display:flex;justify-content:space-between;align-items:center;padding:18px 20px 0}.modal .mh b{font-size:1rem}
+.modal .mh button{border:0;background:none;font-size:1.3rem;cursor:pointer;color:var(--mid);line-height:1}
+.modal .mb{background:#fff;border-radius:14px;margin:16px 20px;padding:18px}
+.modal .row{display:flex;justify-content:space-between;gap:12px;font-size:.88rem;padding:9px 0;border-bottom:1px solid var(--line)}.modal .row:last-child{border-bottom:0}
+.modal .row span{color:var(--mid)}.modal .row b.pt{color:#0E7C7B}
+.modal .agree{margin:0 20px 16px}
+.modal .go{display:block;width:100%;border:0;border-radius:0 0 18px 18px;padding:16px;background:var(--pink);color:#fff;font:inherit;font-weight:800;font-size:.95rem;cursor:pointer}
+.modal .go:disabled{background:#E4E7EF;color:#A0A6B8;cursor:not-allowed}
+@media(max-width:760px){
+ .ctbl thead{display:none}.ctbl,.ctbl tbody,.ctbl tr,.ctbl td{display:block;width:100%}
+ .ctbl tr{border:1.5px solid var(--line);border-radius:14px;padding:6px 12px;margin-bottom:10px}
+ .ctbl td{border:0;padding:7px 0;display:flex;justify-content:space-between;align-items:center;gap:12px}
+ .ctbl td[data-l]::before{content:attr(data-l);font-size:.74rem;font-weight:700;color:var(--gray);flex:none}
+ .ctbl td.first{display:block}.ctbl td.full{display:block}
+}
 .coderow{display:flex;gap:8px}
 .coderow input{flex:1;min-width:0;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;font:inherit;text-transform:uppercase}
 .coderow input:focus{outline:2px solid rgba(233,30,140,.35);border-color:var(--pink)}
@@ -37,7 +70,7 @@ main{max-width:920px;margin:0 auto;padding:28px 24px 60px}
 .coderow button:disabled{opacity:.45;cursor:not-allowed}
 .tiles.t4{grid-template-columns:repeat(4,1fr)}
 .tile.on{outline:2px solid var(--pink)}
-.editrow{display:grid;grid-template-columns:1fr 1.4fr;gap:8px;margin-top:10px}
+.editrow{display:grid;grid-template-columns:1fr 1.2fr 1.4fr;gap:8px}
 .editrow input{width:100%;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;font:inherit}
 .use small{display:block;color:var(--gray);font-size:.74rem;font-weight:500}
 @media(max-width:860px){.tiles.t4{grid-template-columns:1fr 1fr}}
@@ -66,7 +99,7 @@ label.f input:focus{outline:2px solid rgba(233,30,140,.35);border-color:var(--pi
 .kv{font-size:.84rem;color:var(--mid);margin:4px 0 0}
 .bal{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
 .bal b{font-size:1.5rem;color:var(--pink)}
-.addrow{display:grid;grid-template-columns:1fr 1.4fr auto;gap:8px;align-items:end}
+.addrow{display:grid;grid-template-columns:1fr 1.2fr 1.2fr auto;gap:8px;align-items:end}
 .list{display:grid;gap:10px;margin-top:14px}
 .item{border:1.5px solid var(--line);border-radius:14px;padding:14px}
 .item .top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
@@ -77,6 +110,7 @@ label.f input:focus{outline:2px solid rgba(233,30,140,.35);border-color:var(--pi
 .empty{font-size:.86rem;color:var(--gray);text-align:center;padding:18px 0}
 .notes{font-size:.78rem;color:var(--gray);line-height:1.8;padding-left:18px;margin:0}
 [hidden]{display:none!important}
+@media(max-width:860px){.addrow{grid-template-columns:1fr 1fr}}
 @media(max-width:560px){.grid,.addrow{grid-template-columns:1fr}}
 </style>
 </head>
@@ -120,10 +154,12 @@ label.f input:focus{outline:2px solid rgba(233,30,140,.35);border-color:var(--pi
       <label class="f">담당자 이메일 <input id="fEmail" type="email" maxlength="120" autocomplete="email"></label>
     </div>
     <ul class="terms">
-      <li>고객이 공유에 동의한 결과만 볼 수 있고, 고객이 공유를 중지하거나 결과를 삭제하면 더 이상 볼 수 없어요.</li>
+      <li>고객이 공유에 동의한 결과만 볼 수 있고, 고객이 결과를 삭제하거나 탈퇴하면 더 이상 볼 수 없어요.</li>
       <li>공유받은 결과는 그 고객의 인테리어 상담 준비와 진행에만 쓰고, 다른 목적으로 쓰거나 다른 곳에 넘기지 않아요.</li>
       <li>상담이 끝났거나 고객이 요청하면 내려받거나 인쇄한 자료를 지체 없이 파기해요.</li>
       <li>검사 링크는 업체가 직접 아는 고객에게만 보내고, 고객 이름 칸에는 상담에 필요한 범위의 이름(별칭)만 적어요.</li>
+      <li>고객 이메일은 검사 안내 메일을 받아도 된다고 한 고객의 주소만 입력해요.</li>
+      <li>상담 가이드는 고객별로 이용권 1회를 써서 구매하고, 구매한 뒤에는 환불되지 않아요.</li>
       <li>위 내용을 지키지 않으면 업체 화면 이용이 중지될 수 있어요.</li>
     </ul>
     <label class="agree"><input type="checkbox" id="fAgree"><span>위 업체 이용 기준을 확인했고 동의합니다.</span></label>
@@ -140,38 +176,41 @@ label.f input:focus{outline:2px solid rgba(233,30,140,.35);border-color:var(--pi
   </div>
 
   <div class="panel" id="panelClients">
-    <div class="pg-head"><div><h2>고객·검사 관리</h2><p>고객에게 검사 링크를 보내고 진행 상태와 상담 가이드를 확인해요.</p></div></div>
+    <div class="pg-head"><div><h2>고객·검사 관리</h2><p>고객에게 검사를 요청하고, 검사를 마친 고객의 상담 가이드를 구매해 확인해요.</p></div></div>
     <div class="tiles t4" id="sumTiles">
-      <button type="button" class="tile" data-f="wait"><small>시작 전</small><b id="sWait">0</b><span>링크를 보냈고 아직 시작하지 않음</span></button>
-      <button type="button" class="tile" data-f="testing"><small>검사 중</small><b id="sTesting">0</b><span>이용권이 쓰인 진행 중 검사</span></button>
-      <button type="button" class="tile" data-f="done"><small>상담 가이드</small><b id="sShared">0</b><span>지금 볼 수 있는 고객</span></button>
+      <button type="button" class="tile" data-f="wait"><small>검사 전</small><b id="sWait">0</b><span>링크를 보냈고 아직 시작하지 않음</span></button>
+      <button type="button" class="tile" data-f="testing"><small>검사 중</small><b id="sTesting">0</b><span>검사를 진행하고 있는 고객</span></button>
+      <button type="button" class="tile" data-f="done"><small>검사 완료</small><b id="sShared">0</b><span>상담 가이드를 구매할 수 있어요</span></button>
       <button type="button" class="tile" data-go="credits"><small>남은 이용권</small><b id="sCred">0회</b><span>이용권 관리로 이동</span></button>
     </div>
     <div class="card">
-      <h2>고객에게 검사 보내기</h2>
+      <h2>고객 추가</h2>
       <div class="addrow" id="addRow">
         <label class="f">고객 이름(별칭) <input id="cName" maxlength="40" autocomplete="off"></label>
-        <label class="f" id="cEmailWrap" hidden>고객 이메일 (선택) <input id="cEmail" type="email" inputmode="email" maxlength="120" autocomplete="off" placeholder="입력하면 안내 메일을 보내요"></label>
+        <label class="f" id="cEmailWrap">고객 이메일 (선택) <input id="cEmail" type="email" inputmode="email" maxlength="120" autocomplete="off" placeholder="name@example.com"></label>
         <label class="f">메모 (업체만 보여요) <input id="cMemo" maxlength="200" autocomplete="off" placeholder="예: 34평 아파트, 12월 상담 예정"></label>
         <button class="btn" id="cAdd" type="button">링크 만들기</button>
       </div>
       <p class="msg" id="cMsg"></p>
-      <p class="kv" id="mailNote" hidden>이메일은 검사 안내 메일을 보내는 데만 쓰고 저장하지 않아요. 안내 메일을 받아도 된다고 한 고객의 주소만 입력해 주세요.</p>
+      <p class="kv" id="mailNote">입력한 이메일은 검사 안내 메일을 보내고 고객을 구분하는 데만 써요. 안내 메일을 받아도 된다고 한 고객의 주소만 입력해 주세요.</p>
     </div>
     <div class="card">
-      <h2 style="margin:0">고객 목록</h2>
-      <div class="chips" id="chips"><button type="button" data-f="all" class="on">전체</button><button type="button" data-f="wait">시작 전</button><button type="button" data-f="testing">검사 중</button><button type="button" data-f="done">검사 완료</button><input class="search" id="cSearch" placeholder="이름, 메모로 검색" autocomplete="off"></div>
-      <div class="list" id="cList"></div>
+      <div class="head"><h2 style="margin:0">고객 목록</h2><button class="btn sub sm" id="csvBtn" type="button">검사 현황 파일 다운로드</button></div>
+      <div class="toolbar" id="chips"><button type="button" data-f="all" class="on">전체</button><button type="button" data-f="wait">검사 전</button><button type="button" data-f="testing">검사 중</button><button type="button" data-f="done">검사 완료</button>
+        <select id="buyFilter" aria-label="구매 상태"><option value="all">구매 상태: 전체</option><option value="no">미구매</option><option value="yes">구매 완료</option></select>
+        <input class="search" id="cSearch" placeholder="이름, 이메일, 메모로 검색" autocomplete="off"></div>
+      <div class="tblwrap"><table class="ctbl"><thead><tr><th>이름</th><th>이메일</th><th>검사 상태</th><th>검사 요청</th><th>상담 가이드</th><th>가이드 보기</th><th></th></tr></thead><tbody id="cList"></tbody></table></div>
     </div>
     <ul class="notes">
-      <li>링크를 받은 고객은 로그인한 뒤, 결과를 업체에 공유하는 데 동의해야 검사를 시작할 수 있어요.</li>
-      <li>고객에게는 고객용 리포트가, 업체에는 상담 가이드가 보여요. 고객은 마이페이지에서 언제든 공유를 중지할 수 있어요.</li>
+      <li>고객은 로그인한 뒤, 결과를 업체에 공유하는 데 동의하면 바로 검사할 수 있어요. 이용권이 없어도 검사는 진행돼요.</li>
+      <li>상담 가이드는 고객별로 구매해야 볼 수 있어요. 고객 1명당 이용권 1회가 쓰이고, 검사 전에 미리 구매해 둘 수도 있어요.</li>
+      <li>구매한 상담 가이드는 환불되지 않아요. 검사 시작 전에 링크를 취소하면 미리 구매한 이용권은 돌려드려요.</li>
       <li>스코포스는 인테리어 공사를 하지 않습니다. 상담 전에 고객의 기준을 정리하는 검사를 제공합니다.</li>
     </ul>
   </div>
 
   <div class="panel" id="panelCredits">
-    <div class="pg-head"><div><h2>이용권 관리</h2><p>고객이 검사를 시작할 때 이용권 1회가 쓰여요. 링크만 만들거나 고객이 동의만 한 상태에서는 쓰이지 않아요.</p></div></div>
+    <div class="pg-head"><div><h2>이용권 관리</h2><p>상담 가이드를 구매할 때 고객 1명당 이용권 1회가 쓰여요. 고객의 검사는 이용권이 없어도 진행돼요.</p></div></div>
     <div class="card">
       <div class="stat3"><div class="rem"><small>남은 이용권</small><b id="credNum">0회</b></div><div><small>받은 이용권</small><b id="credTotal">0회</b></div><div><small>사용한 이용권</small><b id="credUsed">0회</b></div></div>
       <p class="kv" id="credNote"></p>
@@ -189,7 +228,7 @@ label.f input:focus{outline:2px solid rgba(233,30,140,.35);border-color:var(--pi
       <div id="grantList"></div>
     </div>
     <div class="card">
-      <h2>고객 검사 사용 내역</h2>
+      <h2>사용 내역</h2>
       <div id="useList"><p class="empty">아직 사용한 내역이 없어요.</p></div>
     </div>
   </div>
@@ -197,6 +236,18 @@ label.f input:focus{outline:2px solid rgba(233,30,140,.35);border-color:var(--pi
 </div>
 </div>
 
+<div class="modal" id="buyModal" hidden><div class="box" role="dialog" aria-modal="true" aria-labelledby="buyTitle">
+  <div class="mh"><b id="buyTitle">상담 가이드 구매</b><button type="button" id="buyClose" aria-label="닫기">×</button></div>
+  <div class="mb">
+    <div class="row"><span>검사</span><b id="buyTest"></b></div>
+    <div class="row"><span>주문 상품</span><b>SDTI 인테리어 공간욕구검사 상담 가이드</b></div>
+    <div class="row"><span>사용 이용권</span><b class="pt">1회</b></div>
+    <div class="row"><span>남은 이용권</span><b id="buyRemain"></b></div>
+  </div>
+  <label class="agree"><input type="checkbox" id="buyAgree"><span>구매한 상담 가이드는 환불되지 않는 데 동의합니다. (검사 시작 전에 링크를 취소하면 이용권을 돌려드려요.)</span></label>
+  <p class="msg" id="buyMsg" style="margin:0 20px 12px"></p>
+  <button type="button" class="go" id="buyGo" disabled>이용권 1회 사용하기</button>
+</div></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.js"></script>
 <script src="skopos-auth.js"></script>
 <script>
@@ -231,7 +282,7 @@ label.f input:focus{outline:2px solid rgba(233,30,140,.35);border-color:var(--pi
     const rem = credits ? Number(credits.remaining) : 0;
     $('credNum').textContent = rem + '회'; $('sCred').textContent = rem + '회'; $('credTotal').textContent = Number(credits ? credits.total : 0) + '회'; $('credUsed').textContent = Number(credits ? credits.used : 0) + '회';
     $('wsStatus').textContent = st[0] + ' · 남은 이용권 ' + rem + '회';
-    $('credNote').textContent = rem > 0 ? '' : '남은 이용권이 없으면 고객이 링크를 받아도 검사를 시작할 수 없어요.';
+    $('credNote').textContent = rem > 0 ? '' : '남은 이용권이 없으면 상담 가이드를 구매할 수 없어요. 고객 검사는 그대로 진행돼요.';
     $('credBuy').hidden = biz.status !== 'verified';
     $('credAsk').hidden = biz.status === 'verified';
     const off = biz.status === 'suspended';
@@ -256,39 +307,97 @@ label.f input:focus{outline:2px solid rgba(233,30,140,.35);border-color:var(--pi
   }
 
   const link = code => location.origin + '/interior-beta?i=' + code;
-  const guideText = code => '[' + biz.name + '] 상담 전에 SDTI 인테리어 공간욕구검사를 부탁드려요. 56문항, 15분 안팎이에요. 저희 이용권으로 진행되어 따로 결제하실 것은 없고, 결과는 동의하신 범위에서 상담 준비에만 씁니다.\n' + link(code);
+  const guideText = code => '[' + biz.name + '] 상담 전에 SDTI 인테리어 공간욕구검사를 부탁드려요. 56문항, 15분 안팎이에요. 따로 결제하실 것은 없고, 결과는 동의하신 범위에서 상담 준비에만 씁니다.\n' + link(code);
   async function copy(text){ try { await navigator.clipboard.writeText(text); return true; } catch (e) { try { const a = document.createElement('textarea'); a.value = text; a.style.cssText = 'position:fixed;opacity:0'; document.body.appendChild(a); a.select(); const ok = document.execCommand('copy'); a.remove(); return ok; } catch (x) { return false; } } }
   function stateOf(c){
-    if (c.status === 'invited') return ['링크 보냄 · 시작 전', ''];
-    if (c.status === 'accepted') return ['동의 완료 · 시작 전', 'pink'];
-    if (c.status === 'testing') return ['검사 중', 'warn'];
-    if (c.shared) return ['검사 완료', 'ok'];
-    if (c.revoked) return ['공유 중지됨', 'off'];
-    return ['결과 없음', 'off'];
+    if (c.status === 'invited') return ['검사 전', '', '링크 보냄'];
+    if (c.status === 'accepted') return ['검사 전', 'pink', '동의 완료'];
+    if (c.status === 'testing') return ['검사 중', 'warn', ''];
+    if (!c.has_result) return ['결과 없음', 'off', '고객이 결과를 삭제했거나 탈퇴했어요'];
+    if (c.revoked) return ['공유 중지', 'off', '고객이 공유를 중지했어요'];
+    return ['검사 완료', 'ok', ''];
   }
-  let all = [], filt = 'all', editId = null, mailId = null, mailOn = false;
+  let all = [], filt = 'all', editId = null, mailOn = false, buyId = null;
   const grp = c => c.status === 'testing' ? 'testing' : c.status === 'completed' ? 'done' : 'wait';
+  const byId = id => all.find(c => c.id === id);
+  function shown(){
+    const q = $('cSearch').value.trim().toLowerCase(), bf = $('buyFilter').value;
+    return all.filter(c => (filt === 'all' || grp(c) === filt) && (bf === 'all' || (bf === 'yes') === !!c.purchased_at)
+      && (!q || (c.name + ' ' + (c.email || '') + ' ' + (c.memo || '')).toLowerCase().includes(q)));
+  }
+  function guideWhy(c){
+    if (c.status !== 'completed') return '검사를 마치면 볼 수 있어요';
+    if (!c.has_result) return '고객이 결과를 삭제했거나 탈퇴했어요';
+    if (c.revoked) return '고객이 공유를 중지했어요';
+    return '구매하면 볼 수 있어요';
+  }
   function render(){
-    const box = $('cList'), q = $('cSearch').value.trim().toLowerCase(), off = !biz || biz.status === 'suspended';
-    const list = all.filter(c => (filt === 'all' || grp(c) === filt) && (!q || (c.name + ' ' + (c.memo || '')).toLowerCase().includes(q)));
-    if (all.length && !list.length) { box.innerHTML = '<p class="empty">조건에 맞는 고객이 없어요.</p>'; return; }
-    if (!list.length) { box.innerHTML = '<p class="empty">아직 보낸 검사가 없어요. 고객 이름을 적고 링크를 만들어 보세요.</p>'; return; }
+    const box = $('cList'), off = !biz || biz.status === 'suspended', list = shown();
+    if (all.length && !list.length) { box.innerHTML = '<tr><td colspan="7" class="full"><p class="empty">조건에 맞는 고객이 없어요.</p></td></tr>'; return; }
+    if (!list.length) { box.innerHTML = '<tr><td colspan="7" class="full"><p class="empty">아직 추가한 고객이 없어요. 고객 이름을 적고 링크를 만들어 보세요.</p></td></tr>'; return; }
     box.innerHTML = list.map(c => {
-      const s = stateOf(c), open = ['invited', 'accepted', 'testing'].includes(c.status) && c.invite_code;
-      const dates = '보냄 ' + day(c.invited_at) + (c.started_at ? ' · 시작 ' + day(c.started_at) : '') + (c.completed_at ? ' · 완료 ' + day(c.completed_at) : '');
-      const acts = (open ? '<button class="btn sm" data-act="msg" data-code="' + esc(c.invite_code) + '">안내 문구와 링크 복사</button><button class="btn sub sm" data-act="link" data-code="' + esc(c.invite_code) + '">링크만 복사</button>' : '')
-        + (c.shared ? '<a class="btn sm" href="/interior-beta?g=' + esc(c.id) + '">상담 가이드 보기</a>' : '')
-        + (open && mailOn && !off ? '<button class="btn sub sm" data-act="mail" data-id="' + esc(c.id) + '">' + (c.mail ? '메일 다시 보내기' : '메일로 보내기') + '</button>' : '')
-        + (off ? '' : '<button class="btn sub sm" data-act="edit" data-id="' + esc(c.id) + '">이름·메모 수정</button>')
-        + (!off && ['invited', 'accepted'].includes(c.status) ? '<button class="btn sub sm" data-act="reissue" data-id="' + esc(c.id) + '">링크 다시 만들기</button>' : '')
-        + (['invited', 'accepted'].includes(c.status) ? '<button class="btn sub sm" data-act="cancel" data-id="' + esc(c.id) + '">링크 취소</button>' : '');
-      if (editId === c.id) return '<div class="item"><div class="top"><span class="nm">이름·메모 수정</span><span class="pill ' + s[1] + '">' + s[0] + '</span></div><div class="editrow"><input id="eName" maxlength="40" autocomplete="off" aria-label="고객 이름(별칭)" value="' + esc(c.name) + '"><input id="eMemo" maxlength="200" autocomplete="off" aria-label="메모" placeholder="메모 (업체만 보여요)" value="' + esc(c.memo || '') + '"></div><div class="acts"><button class="btn sm" data-act="save" data-id="' + esc(c.id) + '">저장</button><button class="btn sub sm" data-act="editoff">취소</button></div></div>';
-      const mailLine = c.mail ? '<div class="dt">안내 메일 보냄 ' + esc(c.mail.to) + ' · ' + day(c.mail.at) + '</div>' : '';
-      if (mailId === c.id) return '<div class="item"><div class="top"><span class="nm">' + esc(c.name) + '</span><span class="pill ' + s[1] + '">' + s[0] + '</span></div>' + mailLine + '<div class="editrow" style="grid-template-columns:1fr"><input id="mEmail" type="email" inputmode="email" maxlength="120" autocomplete="off" aria-label="고객 이메일" placeholder="고객 이메일"></div><div class="acts"><button class="btn sm" data-act="mailsend" data-id="' + esc(c.id) + '">안내 메일 보내기</button><button class="btn sub sm" data-act="mailoff">취소</button></div></div>';
-      const note = c.status === 'completed' && !c.shared ? '<div class="dt">' + (c.revoked ? '고객이 공유를 중지해 상담 가이드를 볼 수 없어요.' : '고객이 결과를 삭제했거나 탈퇴해 상담 가이드를 볼 수 없어요.') + '</div>' : '';
-      return '<div class="item"><div class="top"><span class="nm">' + esc(c.name) + '</span><span class="pill ' + s[1] + '">' + s[0] + '</span></div>' + (c.memo ? '<div class="memo">' + esc(c.memo) + '</div>' : '') + '<div class="dt">' + dates + '</div>' + mailLine + note + (acts ? '<div class="acts">' + acts + '</div>' : '') + '</div>';
+      const s = stateOf(c), id = esc(c.id), open = ['invited', 'accepted', 'testing'].includes(c.status) && c.invite_code;
+      if (editId === c.id) return '<tr><td colspan="7" class="full"><div class="editrow"><input id="eName" maxlength="40" autocomplete="off" aria-label="고객 이름(별칭)" value="' + esc(c.name) + '"><input id="eEmail" type="email" maxlength="120" autocomplete="off" aria-label="고객 이메일" placeholder="고객 이메일" value="' + esc(c.email || '') + '"><input id="eMemo" maxlength="200" autocomplete="off" aria-label="메모" placeholder="메모 (업체만 보여요)" value="' + esc(c.memo || '') + '"></div><div class="acts" style="display:flex;gap:8px;margin-top:10px"><button class="btn sm" data-act="save" data-id="' + id + '">저장</button><button class="btn sub sm" data-act="editoff">취소</button></div></td></tr>';
+      const sub = [c.memo ? esc(c.memo) : '', '보냄 ' + day(c.invited_at) + (c.completed_at ? ' · 완료 ' + day(c.completed_at) : '')].filter(Boolean).join(' · ');
+      const req = open && !off ? '<button class="btn ghost sm" data-act="mail" data-id="' + id + '">검사 요청 ➤</button>' + (c.mail ? '<small>보냄 ' + day(c.mail.at) + '</small>' : '') : '<span class="em">' + (c.mail ? '보냄 ' + day(c.mail.at) : '-') + '</span>';
+      const canBuy = !off && !c.purchased_at && !c.revoked && !(c.status === 'completed' && !c.has_result);
+      const buy = c.purchased_at ? '<span class="pill ok">구매 완료</span><small>' + day(c.purchased_at) + '</small>' : canBuy ? '<button class="btn buy sm" data-act="buy" data-id="' + id + '">구매</button>' : '<span class="em">-</span>';
+      const guide = c.shared ? '<a class="btn sm" href="/interior-beta?g=' + id + '">가이드 보기</a>' : '<button class="btn sub sm" disabled title="' + esc(guideWhy(c)) + '">가이드 보기</button>';
+      const menu = (off ? '' : '<button data-act="edit" data-id="' + id + '">이름·이메일·메모 수정</button>')
+        + (open ? '<button data-act="msg" data-code="' + esc(c.invite_code) + '">안내 문구와 링크 복사</button><button data-act="link" data-code="' + esc(c.invite_code) + '">링크만 복사</button>' : '')
+        + (!off && ['invited', 'accepted'].includes(c.status) ? '<button data-act="reissue" data-id="' + id + '">링크 다시 만들기</button>' : '')
+        + (['invited', 'accepted'].includes(c.status) ? '<button class="danger" data-act="cancel" data-id="' + id + '">링크 취소</button>' : '');
+      return '<tr><td class="first"><span class="nm">' + esc(c.name) + '</span><small>' + sub + '</small></td>'
+        + '<td data-l="이메일"><span class="em">' + (c.email ? esc(c.email) : '-') + '</span></td>'
+        + '<td data-l="검사 상태"><div><span class="pill ' + s[1] + '">' + s[0] + '</span>' + (s[2] ? '<small>' + s[2] + '</small>' : '') + '</div></td>'
+        + '<td data-l="검사 요청"><div>' + req + '</div></td>'
+        + '<td data-l="상담 가이드"><div>' + buy + '</div></td>'
+        + '<td data-l="가이드 보기">' + guide + '</td>'
+        + '<td>' + (menu ? '<details class="more"><summary aria-label="더 보기">⋮</summary><div class="menu">' + menu + '</div></details>' : '') + '</td></tr>';
     }).join('');
   }
+  // ── 상담 가이드 구매 ──
+  function openBuy(id){
+    const c = byId(id); if (!c) return; buyId = id;
+    const rem = credits ? Number(credits.remaining) : 0;
+    $('buyTitle').textContent = c.name + '님의 상담 가이드 구매';
+    $('buyTest').textContent = c.status === 'completed' ? day(c.completed_at) + ' 완료' : '검사 완료 전 선구매';
+    $('buyRemain').textContent = rem + '회';
+    $('buyAgree').checked = false; $('buyGo').disabled = true; $('buyGo').textContent = '이용권 1회 사용하기';
+    setMsg($('buyMsg'), rem > 0 ? '' : '남은 이용권이 없어요. 이용권 관리에서 코드를 등록하거나 이용권을 구매해 주세요.');
+    $('buyModal').hidden = false;
+  }
+  function closeBuy(){ $('buyModal').hidden = true; buyId = null; }
+  const syncBuy = () => { $('buyGo').disabled = !$('buyAgree').checked || !(credits && Number(credits.remaining) > 0); };
+  async function doBuy(){
+    if (!buyId) return; const id = buyId;
+    $('buyGo').disabled = true; $('buyGo').textContent = '처리 중...';
+    let data = null, error = null;
+    try { const r = await sb.rpc('business_client_purchase', { p_ids: [id] }); data = r.data; error = r.error; } catch (e) { error = e; }
+    if (error || !data || data.ok !== true) {
+      const why = data && data.reason;
+      setMsg($('buyMsg'), why === 'no_credit' ? '남은 이용권이 없어요. 이용권 관리에서 코드를 등록하거나 이용권을 구매해 주세요.' : why === 'nothing_to_purchase' ? '이미 구매했거나 구매할 수 없는 고객이에요.' : '구매하지 못했어요. 잠시 후 다시 시도해 주세요.');
+      $('buyGo').textContent = '이용권 1회 사용하기'; syncBuy(); return;
+    }
+    closeBuy(); await load();
+    const c = byId(id);
+    setMsg($('cMsg'), c && c.shared ? '구매했어요. 이제 상담 가이드를 볼 수 있어요.' : '구매했어요. 고객이 검사를 마치면 바로 상담 가이드를 볼 수 있어요.', true);
+  }
+  $('buyAgree').addEventListener('change', syncBuy);
+  $('buyGo').addEventListener('click', doBuy);
+  $('buyClose').addEventListener('click', closeBuy);
+  $('buyModal').addEventListener('click', e => { if (e.target === $('buyModal')) closeBuy(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('buyModal').hidden) closeBuy(); });
+  // ── 검사 현황 파일 ──
+  function downloadCsv(){
+    const cell = v => { let t = String(v == null ? '' : v); if (/^[=+\-@\t\r]/.test(t)) t = "'" + t; return '"' + t.replace(/"/g, '""') + '"'; };
+    const rows = [['이름', '이메일', '메모', '검사 상태', '링크 보낸 날', '검사 완료일', '구매 상태', '구매일']].concat(shown().map(c => [c.name, c.email || '', c.memo || '', stateOf(c)[0], day(c.invited_at), day(c.completed_at), c.purchased_at ? '구매 완료' : '미구매', day(c.purchased_at)]));
+    const blob = new Blob(['﻿' + rows.map(r => r.map(cell).join(',')).join('\r\n')], { type: 'text/csv;charset=utf-8' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'skopos-검사현황-' + day(new Date()).replace(/\./g, '') + '.csv';
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  }
+  $('csvBtn').addEventListener('click', downloadCsv);
+  $('buyFilter').addEventListener('change', () => render());
   async function loadClients(){
     const { data, error } = await sb.rpc('business_clients_list');
     if (error || !data || data.ok !== true) { $('cList').innerHTML = '<p class="empty">고객 목록을 불러오지 못했어요. 새로고침해 주세요.</p>'; return; }
@@ -296,7 +405,7 @@ label.f input:focus{outline:2px solid rgba(233,30,140,.35);border-color:var(--pi
     const n = all.filter(c => c.status !== 'completed').length; $('cntClients').textContent = n; $('cntClients').hidden = !n;
     $('sWait').textContent = all.filter(c => grp(c) === 'wait').length;
     $('sTesting').textContent = all.filter(c => c.status === 'testing').length;
-    $('sShared').textContent = all.filter(c => c.shared).length;
+    $('sShared').textContent = all.filter(c => c.status === 'completed').length;
     await loadCredits();
   }
   const SRC = { single: '1회 이용권 구매', pack10: '10회 이용권 구매', coupon: '코드 등록', admin: '스코포스 지급' };
@@ -306,22 +415,22 @@ label.f input:focus{outline:2px solid rgba(233,30,140,.35);border-color:var(--pi
     // 내역 함수가 아직 없으면 고객 목록에서 사용 내역만 계산해 보여 준다
     const uses = h ? h.uses : all.filter(c => c.started_at).map(c => ({ name: c.name, invited: true, started_at: c.started_at, completed: c.status === 'completed' }))
       .sort((a, b) => String(b.started_at).localeCompare(String(a.started_at)));
-    $('useList').innerHTML = uses.length ? uses.map(u => '<div class="use"><b>' + esc(u.invited ? (u.name || '삭제된 고객 항목') : '업체 계정에서 직접 검사') + '<small>' + (u.completed ? '검사 완료' : '검사 중') + '</small></b><span>' + day(u.started_at) + ' · 1회 사용</span></div>').join('') : '<p class="empty">아직 사용한 내역이 없어요.</p>';
+    $('useList').innerHTML = uses.length ? uses.map(u => '<div class="use"><b>' + esc(u.invited ? (u.name || '삭제된 고객 항목') : '업체 계정에서 직접 검사') + '<small>' + (u.invited ? '상담 가이드 구매' : '검사 1회') + '</small></b><span>' + day(u.started_at) + ' · 1회 사용</span></div>').join('') : '<p class="empty">아직 사용한 내역이 없어요.</p>';
     $('grantCard').hidden = !h;
     if (h) $('grantList').innerHTML = h.grants.length ? h.grants.map(g => '<div class="use"><b>' + esc(SRC[g.source] || '이용권') + '</b><span>' + day(g.created_at) + ' · ' + Number(g.credits) + '회</span></div>').join('') : '<p class="empty">아직 받은 이용권이 없어요.</p>';
   }
   async function addClient(){
     const name = $('cName').value.trim();
     if (!name) { setMsg($('cMsg'), '고객 이름(별칭)을 입력해 주세요.'); return; }
-    const email = mailOn ? $('cEmail').value.trim() : '';
+    const email = $('cEmail').value.trim();
     if (email && !EMAIL_RE.test(email)) { setMsg($('cMsg'), '이메일 주소를 다시 확인해 주세요.'); return; }
     $('cAdd').disabled = true; setMsg($('cMsg'), '링크를 만드는 중...', true);
     try {
-      const { data, error } = await sb.rpc('business_client_add', { p_name: name, p_memo: $('cMemo').value });
+      const { data, error } = await sb.rpc('business_client_add', { p_name: name, p_memo: $('cMemo').value, p_email: email || null });
       if (error) throw error;
-      if (!data || data.ok !== true) { setMsg($('cMsg'), data && data.reason === 'too_many_open_invites' ? '시작 전인 링크가 너무 많아요. 쓰지 않는 링크를 취소해 주세요.' : data && data.reason === 'suspended' ? '이용이 중지된 업체예요.' : '링크를 만들지 못했어요.'); return; }
+      if (!data || data.ok !== true) { setMsg($('cMsg'), data && data.reason === 'too_many_open_invites' ? '시작 전인 링크가 너무 많아요. 쓰지 않는 링크를 취소해 주세요.' : data && data.reason === 'suspended' ? '이용이 중지된 업체예요.' : data && data.reason === 'email_invalid' ? '이메일 주소를 다시 확인해 주세요.' : '링크를 만들지 못했어요.'); return; }
       $('cName').value = ''; $('cMemo').value = ''; $('cEmail').value = ''; syncAddBtn();
-      if (email) {
+      if (email && mailOn) {
         setMsg($('cMsg'), '안내 메일을 보내는 중...', true);
         const m = await sendMail(data.id, email);
         setMsg($('cMsg'), m.success ? m.masked_to + ' 로 안내 메일을 보냈어요.' : '링크는 만들었어요. ' + (m.message || '메일은 보내지 못했어요.') + ' 아래 목록에서 링크를 복사해 전달할 수 있어요.', !!m.success);
@@ -340,28 +449,29 @@ label.f input:focus{outline:2px solid rgba(233,30,140,.35);border-color:var(--pi
       const ok = await copy(b.dataset.act === 'msg' ? guideText(b.dataset.code) : link(b.dataset.code));
       setMsg($('cMsg'), ok ? '복사했어요. 고객에게 붙여 넣어 보내 주세요.' : '복사하지 못했어요. 다시 시도해 주세요.', ok);
     } else if (b.dataset.act === 'cancel') {
-      if (!confirm('이 링크를 취소할까요? 취소하면 고객이 이 링크로 검사를 시작할 수 없어요.')) return;
+      if (!confirm('이 링크를 취소할까요? 취소하면 고객이 이 링크로 검사를 시작할 수 없고, 목록에서도 사라져요.')) return;
       b.disabled = true;
       const { data } = await sb.rpc('business_client_cancel', { p_id: b.dataset.id });
-      setMsg($('cMsg'), data && data.ok ? '링크를 취소했어요.' : '이미 검사를 시작한 링크는 취소할 수 없어요.', !!(data && data.ok));
-      await loadClients();
-    } else if (b.dataset.act === 'mail') { mailId = b.dataset.id; editId = null; render(); const i = $('mEmail'); if (i) i.focus();
-    } else if (b.dataset.act === 'mailoff') { mailId = null; render();
-    } else if (b.dataset.act === 'mailsend') {
-      const email = $('mEmail').value.trim();
-      if (!EMAIL_RE.test(email)) { setMsg($('cMsg'), '이메일 주소를 다시 확인해 주세요.'); return; }
+      setMsg($('cMsg'), data && data.ok ? (data.refunded ? '링크를 취소하고 미리 구매한 이용권 1회를 돌려드렸어요.' : '링크를 취소했어요.') : '이미 검사를 시작한 링크는 취소할 수 없어요.', !!(data && data.ok));
+      await load();
+    } else if (b.dataset.act === 'buy') { openBuy(b.dataset.id);
+    } else if (b.dataset.act === 'mail') {
+      const c = byId(b.dataset.id); if (!c) return;
+      if (!c.email) { editId = c.id; render(); const i = $('eEmail'); if (i) i.focus(); setMsg($('cMsg'), '고객 이메일을 입력하고 저장한 뒤 다시 눌러 주세요.'); return; }
+      if (!mailOn) { setMsg($('cMsg'), '안내 메일 발송을 준비하고 있어요. ⋮ 메뉴에서 링크를 복사해 전달해 주세요.'); return; }
+      if (!confirm(c.email + ' 로 검사 안내 메일을 보낼까요?')) return;
       b.disabled = true; setMsg($('cMsg'), '안내 메일을 보내는 중...', true);
-      const m = await sendMail(b.dataset.id, email);
-      setMsg($('cMsg'), m.success ? m.masked_to + ' 로 안내 메일을 보냈어요.' : (m.message || '메일을 보내지 못했어요.'), !!m.success);
-      if (m.success) mailId = null;
+      const m = await sendMail(c.id, c.email);
+      setMsg($('cMsg'), m.success ? c.email + ' 로 안내 메일을 보냈어요.' : (m.message || '메일을 보내지 못했어요.'), !!m.success);
       await loadClients();
-    } else if (b.dataset.act === 'edit') { mailId = null; editId = b.dataset.id; render(); const i = $('eName'); if (i) i.focus();
+    } else if (b.dataset.act === 'edit') { editId = b.dataset.id; render(); const i = $('eName'); if (i) i.focus();
     } else if (b.dataset.act === 'editoff') { editId = null; render();
     } else if (b.dataset.act === 'save') {
-      const name = $('eName').value.trim();
+      const name = $('eName').value.trim(), em = $('eEmail').value.trim();
       if (!name) { setMsg($('cMsg'), '고객 이름(별칭)을 입력해 주세요.'); return; }
+      if (em && !EMAIL_RE.test(em)) { setMsg($('cMsg'), '이메일 주소를 다시 확인해 주세요.'); return; }
       b.disabled = true;
-      const { data, error } = await sb.rpc('business_client_update', { p_id: b.dataset.id, p_name: name, p_memo: $('eMemo').value });
+      const { data, error } = await sb.rpc('business_client_update', { p_id: b.dataset.id, p_name: name, p_memo: $('eMemo').value, p_email: em });
       const ok = !error && data && data.ok === true;
       setMsg($('cMsg'), ok ? '저장했어요.' : '저장하지 못했어요. 잠시 후 다시 시도해 주세요.', ok);
       if (ok) editId = null;
@@ -376,7 +486,7 @@ label.f input:focus{outline:2px solid rgba(233,30,140,.35);border-color:var(--pi
       await loadClients();
     }
   });
-  $('cList').addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.closest('.editrow')) { const b = $('cList').querySelector('button[data-act="save"],button[data-act="mailsend"]'); if (b) b.click(); } });
+  $('cList').addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.closest('.editrow')) { const b = $('cList').querySelector('button[data-act="save"]'); if (b) b.click(); } });
   function setFilter(f){ filt = f; document.querySelectorAll('#chips button').forEach(x => x.classList.toggle('on', x.dataset.f === f)); document.querySelectorAll('#sumTiles .tile').forEach(x => x.classList.toggle('on', x.dataset.f === f)); render(); }
   $('sumTiles').addEventListener('click', e => { const t = e.target.closest('.tile'); if (!t) return; if (t.dataset.go) showTab(t.dataset.go); else setFilter(filt === t.dataset.f ? 'all' : t.dataset.f); });
   const MAIL_FN = 'https://rgbukqphcqptnfeqipfn.supabase.co/functions/v1/invite-send';
@@ -396,8 +506,7 @@ label.f input:focus{outline:2px solid rgba(233,30,140,.35);border-color:var(--pi
   async function initMail(){
     const j = await mailCall({ action: 'status' });
     mailOn = !!(j && j.success && j.configured);
-    $('cEmailWrap').hidden = !mailOn; $('mailNote').hidden = !mailOn; $('addRow').classList.toggle('mail', mailOn);
-    if (mailOn) render();
+    syncAddBtn();
   }
   $('cEmail').addEventListener('input', syncAddBtn);
   $('cEmail').addEventListener('keydown', e => { if (e.key === 'Enter') addClient(); });
