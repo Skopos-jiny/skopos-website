@@ -6,12 +6,14 @@ import { process, serveNetlifyHandler } from './adapter.ts';
 //   action 'status' : 내 이용권 현황 + 판매 상품
 //   action 'verify' : 카드 결제(포트원 V1 + KCP) 확인 후 이용권 적립 (1회 59,900원 / 10회 100,000원)
 //   action 'redeem' : 인테리어 전용 쿠폰(전액)으로 1회 이용권 적립 (예: INTERIORBETA)
+//   plan 'premium1'  : 등록 업체용 SDTI 정밀검사 횟수권 1회 59,900원 (business_premium_credits 에 적립, 판매 시작일과 무관)
 // 결제 기록은 payments(product='interior')에 남기고, 이용권은 interior_credits 에 적립한다.
 // payments 의 product 로 정밀 검사 이용권 판정과 분리된다.
 
 const PLANS = {
   single: { amount: 59900, credits: 1, source: 'single', name: 'SKOPOS SDTI 인테리어 공간욕구검사 1회 이용권' },
   pack10: { amount: 100000, credits: 10, source: 'pack10', name: 'SKOPOS SDTI 인테리어 공간욕구검사 10회 이용권' },
+  premium1: { amount: 59900, credits: 1, source: 'purchase', name: 'SKOPOS SDTI 정밀검사 업체용 1회 횟수권', premium: true },
 };
 const SALES_START = Date.parse('2026-12-01T00:00:00+09:00');
 const SITE_ORIGIN = 'https://skopos.kr';
@@ -51,17 +53,32 @@ async function creditStatus(sb, uid) {
   const open = (uses || []).some((u) => !u.result_id && !u.business_client_id && Date.parse(u.started_at) > dayAgo);
   return { total, used, remaining: Math.max(total - used, 0), open_session: open };
 }
-// 10회 이용권은 확인이 끝난 등록 업체만 구매할 수 있다 (조회 실패 시 불가로 본다)
-async function packAllowed(sb, uid) {
+// 등록 업체 상태 (조회 실패 시 미등록으로 본다). 10회 이용권은 확인 완료 업체만, 정밀검사 횟수권은 등록 업체(이용 중지 제외)만 구매할 수 있다
+async function businessStatus(sb, uid) {
   try {
     const { data, error } = await sb.from('businesses').select('status').eq('owner_user_id', uid).maybeSingle();
-    return !error && data?.status === 'verified';
-  } catch (_) { return false; }
+    return !error && data ? String(data.status || '') : '';
+  } catch (_) { return ''; }
+}
+async function premiumStatus(sb, uid) {
+  const [{ data: credits }, { data: uses }] = await Promise.all([
+    sb.from('business_premium_credits').select('credits,payment_id,payments(status)').eq('user_id', uid),
+    sb.from('business_premium_uses').select('id').eq('user_id', uid),
+  ]);
+  const total = (credits || []).filter((c) => !c.payment_id || ['paid', 'free'].includes(c.payments?.status)).reduce((s, c) => s + c.credits, 0);
+  const used = (uses || []).length;
+  return { total, used, remaining: Math.max(total - used, 0) };
 }
 // 이용권 적립 (같은 결제에 두 번 적립되지 않도록 payment_id 고유)
 async function grantCredits(sb, uid, paymentId, credits, source) {
   const { error } = await sb.from('interior_credits').upsert([{ user_id: uid, payment_id: paymentId, credits, source }], { onConflict: 'payment_id', ignoreDuplicates: true });
   if (error) { console.error('interior credit grant failed', paymentId, error.message); return false; }
+  return true;
+}
+async function grantPlan(sb, uid, paymentId, p) {
+  if (!p.premium) return grantCredits(sb, uid, paymentId, p.credits, p.source);
+  const { error } = await sb.from('business_premium_credits').upsert([{ user_id: uid, payment_id: paymentId, credits: p.credits, source: p.source }], { onConflict: 'payment_id', ignoreDuplicates: true });
+  if (error) { console.error('premium credit grant failed', paymentId, error.message); return false; }
   return true;
 }
 
@@ -82,15 +99,18 @@ const handler = async (event) => {
     }
     const user = userData.user;
     const uid = user.id;
-    const pack10Allowed = await packAllowed(sb, uid);
-    const plans = Object.fromEntries(Object.entries(PLANS).filter(([k]) => k !== 'pack10' || pack10Allowed).map(([k, v]) => [k, { amount: v.amount, credits: v.credits, name: v.name }]));
+    const bizStatus = await businessStatus(sb, uid);
+    const pack10Allowed = bizStatus === 'verified';
+    const premiumAllowed = !!bizStatus && bizStatus !== 'suspended';
+    const plans = Object.fromEntries(Object.entries(PLANS).filter(([k]) => (k !== 'pack10' || pack10Allowed) && (k !== 'premium1' || premiumAllowed)).map(([k, v]) => [k, { amount: v.amount, credits: v.credits, name: v.name }]));
 
     if (action === 'status') {
-      return json(200, { success: true, sales_open: salesOpen(), sales_start: SALES_START, plans, pack10_allowed: pack10Allowed, credits: await creditStatus(sb, uid) });
+      return json(200, { success: true, sales_open: salesOpen(), sales_start: SALES_START, plans, pack10_allowed: pack10Allowed, premium_allowed: premiumAllowed, credits: await creditStatus(sb, uid), premium_credits: premiumAllowed ? await premiumStatus(sb, uid) : null });
     }
 
     // 카드 결제는 판매 시작일부터. 이용권 코드 등록(redeem)은 판매 시작 전에도 받는다.
-    if (!salesOpen() && action !== 'redeem') return json(403, { success: false, message: '정식판 이용권은 12월 1일부터 구매할 수 있어요.' });
+    // 등록 업체용 정밀검사 횟수권(premium1)은 판매 시작일과 무관하게 구매할 수 있다.
+    if (!salesOpen() && action !== 'redeem' && !(action === 'verify' && body.plan === 'premium1')) return json(403, { success: false, message: '정식판 이용권은 12월 1일부터 구매할 수 있어요.' });
 
     if (action === 'redeem') {
       const code = String(body.coupon_code || '').trim().toUpperCase();
@@ -137,9 +157,9 @@ const handler = async (event) => {
         if (existing.user_id !== uid) return json(409, { success: false, message: '이미 다른 계정으로 처리된 결제입니다. 관리자에게 문의해 주세요.' });
         if (existing.product !== 'interior') return json(409, { success: false, message: '인테리어 검사 결제가 아닙니다.' });
         if (existing.status === 'cancelled') return json(400, { success: false, message: '취소된 결제입니다.' });
-        const p = existing.order_name === PLANS.pack10.name ? PLANS.pack10 : PLANS.single;
-        await grantCredits(sb, uid, existing.id, p.credits, p.source);
-        return json(200, { success: true, already: true, credits: await creditStatus(sb, uid) });
+        const p = Object.values(PLANS).find((x) => x.name === existing.order_name) || PLANS.single;
+        await grantPlan(sb, uid, existing.id, p);
+        return json(200, { success: true, already: true, credits: await creditStatus(sb, uid), premium_credits: p.premium ? await premiumStatus(sb, uid) : undefined });
       }
 
       const tokenRes = await fetch('https://api.iamport.kr/users/getToken', {
@@ -162,6 +182,11 @@ const handler = async (event) => {
         return json(409, { success: false, message: '인테리어 검사 이용권 주문이 아닙니다.' });
       }
       const p = PLANS[plan];
+      if (plan === 'premium1' && !premiumAllowed) {
+        console.error('premium1 not allowed', imp_uid, uid);
+        const ok = await cancelPayment(accessToken, imp_uid, '등록 업체 전용 상품');
+        return json(ok ? 403 : 500, { success: false, message: cancelNotice(ok, '정밀검사 횟수권은 등록 업체 전용 상품이라 결제를 자동 취소했습니다.', imp_uid) });
+      }
       if (plan === 'pack10' && !pack10Allowed) {
         console.error('interior pack10 not allowed', imp_uid, uid);
         const ok = await cancelPayment(accessToken, imp_uid, '등록 업체 전용 상품');
@@ -191,10 +216,10 @@ const handler = async (event) => {
           return json(500, { success: false, message: '결제 기록 저장에 실패했습니다. 결제 번호(' + imp_uid + ')로 문의해 주세요.' });
         }
       } else payId = ins.id;
-      if (!(await grantCredits(sb, uid, payId, p.credits, p.source))) {
+      if (!(await grantPlan(sb, uid, payId, p))) {
         return json(500, { success: false, message: '이용권 적립에 실패했어요. 결제 번호(' + imp_uid + ')로 문의해 주시면 바로 처리해 드릴게요.' });
       }
-      return json(200, { success: true, plan, granted: p.credits, credits: await creditStatus(sb, uid) });
+      return json(200, { success: true, plan, granted: p.credits, credits: await creditStatus(sb, uid), premium_credits: p.premium ? await premiumStatus(sb, uid) : undefined });
     }
 
     return json(400, { success: false, message: '알 수 없는 요청입니다.' });
