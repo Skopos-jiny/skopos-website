@@ -2,6 +2,7 @@
 // invite-send: 업체가 입력한 고객 이메일로 검사 안내 메일을 보낸다.
 // 발송 방법 (위에서부터 먼저 설정된 것을 쓴다)
 //   1) Gmail SMTP: GMAIL_USER (로그인하는 Google 계정 주소), GMAIL_APP_PASSWORD (앱 비밀번호)
+//      앱 비밀번호가 'skopos-mail' 이라는 이름으로 등록된 경우도 받는다.
 //   2) Resend: RESEND_API_KEY
 // 발신 주소: MAIL_FROM (기본 'SKOPOS <skopos@skopos.kr>')
 import { createClient } from 'npm:@supabase/supabase-js@2';
@@ -15,7 +16,7 @@ function isAllowedOrigin(o) {
 const FROM = Deno.env.get('MAIL_FROM') || 'SKOPOS <skopos@skopos.kr>';
 
 function makeSend() {
-  const gUser = Deno.env.get('GMAIL_USER'), gPass = (Deno.env.get('GMAIL_APP_PASSWORD') || '').replace(/\s+/g, '');
+  const gUser = Deno.env.get('GMAIL_USER'), gPass = (Deno.env.get('GMAIL_APP_PASSWORD') || Deno.env.get('skopos-mail') || '').replace(/\s+/g, '');
   if (gUser && gPass) {
     // Edge Function 에서는 25·587 포트가 막혀 있어 465(SSL)를 쓴다
     const transport = nodemailer.createTransport({ host: 'smtp.gmail.com', port: 465, secure: true, auth: { user: gUser, pass: gPass }, connectionTimeout: 10000, socketTimeout: 15000 });
