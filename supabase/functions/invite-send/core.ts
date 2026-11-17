@@ -21,20 +21,26 @@ export function maskEmail(e) {
   const [u, d] = e.split('@');
   return u.slice(0, Math.min(2, Math.max(1, u.length - 1))) + '***@' + d;
 }
-export function buildMail(businessName, code) {
-  const link = SITE + '/interior-beta?i=' + encodeURIComponent(code);
+const TESTS = {
+  interior: { path: '/interior-beta?i=', name: 'SDTI 인테리어 공간욕구검사', subject: '인테리어 공간욕구검사', info: '56문항, 15분 안팎이에요.' },
+  premium: { path: '/skopos_premium_quiz.html?i=', name: 'SDTI 정밀검사', subject: 'SDTI 정밀검사', info: '8개 영역 144문항이에요.' },
+};
+export function buildMail(businessName, code, testType) {
+  const t = TESTS[testType] || TESTS.interior;
+  const link = SITE + t.path + encodeURIComponent(code);
   const name = String(businessName || '').replace(/[\r\n]+/g, ' ').trim();
-  const subject = '[스코포스] ' + name + '에서 보낸 인테리어 공간욕구검사 안내';
-  const text = name + '에서 상담 전에 SDTI 인테리어 공간욕구검사를 요청했어요.\n\n'
-    + '56문항, 15분 안팎이에요. ' + name + '의 이용권으로 진행되어 따로 결제하실 것은 없고, 결과는 동의하신 범위에서 상담 준비에만 쓰여요.\n\n'
+  const note = '고객님이 따로 결제하실 것은 없고, 결과는 동의하신 범위에서 상담 준비에만 쓰여요.';
+  const subject = '[스코포스] ' + name + '에서 보낸 ' + t.subject + ' 안내';
+  const text = name + '에서 상담 전에 ' + t.name + '를 요청했어요.\n\n'
+    + t.info + ' ' + note + '\n\n'
     + '검사 시작: ' + link + '\n\n'
     + '이 메일은 ' + name + '의 요청으로 스코포스가 보냈어요. 요청한 적이 없다면 이 메일을 무시해 주세요.\n스코포스 ' + SITE;
   const html = '<div style="margin:0;padding:24px 12px;background:#F7F8FC;font-family:-apple-system,BlinkMacSystemFont,\'Apple SD Gothic Neo\',\'Malgun Gothic\',sans-serif;color:#0F0F1A">'
     + '<div style="max-width:520px;margin:0 auto;background:#ffffff;border-radius:18px;padding:32px 28px">'
     + '<div style="font-size:18px;font-weight:900;letter-spacing:.02em">SKO<span style="color:#E91E8C">POS</span></div>'
     + '<h1 style="font-size:20px;line-height:1.5;margin:24px 0 12px">' + esc(name) + '에서 상담 전 검사를 요청했어요</h1>'
-    + '<p style="font-size:15px;line-height:1.8;color:#5A5A6E;margin:0 0 8px">SDTI 인테리어 공간욕구검사는 56문항, 15분 안팎이에요.</p>'
-    + '<p style="font-size:15px;line-height:1.8;color:#5A5A6E;margin:0 0 24px">' + esc(name) + '의 이용권으로 진행되어 따로 결제하실 것은 없고, 결과는 동의하신 범위에서 상담 준비에만 쓰여요.</p>'
+    + '<p style="font-size:15px;line-height:1.8;color:#5A5A6E;margin:0 0 8px">' + t.name + '예요. ' + t.info + '</p>'
+    + '<p style="font-size:15px;line-height:1.8;color:#5A5A6E;margin:0 0 24px">' + note + '</p>'
     + '<a href="' + esc(link) + '" style="display:inline-block;padding:14px 28px;border-radius:50px;background:#E91E8C;color:#ffffff;font-size:15px;font-weight:800;text-decoration:none">검사 시작하기</a>'
     + '<p style="font-size:12px;line-height:1.7;color:#8890A4;margin:24px 0 0">버튼이 열리지 않으면 아래 주소를 복사해 주세요.<br><a href="' + esc(link) + '" style="color:#8890A4">' + esc(link) + '</a></p>'
     + '<hr style="border:0;border-top:1px solid #E4E7EF;margin:24px 0 16px">'
@@ -76,7 +82,7 @@ export function makeHandler(deps) {
       if (prepErr || !prep) { console.error('invite-send prepare failed', prepErr && prepErr.message); return json(500, { success: false, message: '메일을 보내지 못했어요. 잠시 후 다시 시도해 주세요.' }); }
       if (prep.ok !== true) return json(prep.reason === 'daily_limit' || prep.reason === 'client_limit' ? 429 : 400, { success: false, reason: prep.reason, message: REASONS[prep.reason] || '메일을 보낼 수 없어요.' });
 
-      const mail = buildMail(prep.business_name, prep.invite_code);
+      const mail = buildMail(prep.business_name, prep.invite_code, prep.test_type);
       let ok = false, providerId = null, errText = null;
       try {
         const r = (await deps.send({ to: email, subject: mail.subject, html: mail.html, text: mail.text })) || {};
