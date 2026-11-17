@@ -60,6 +60,7 @@ h2{font-size:1rem;margin:0 0 12px}
     <h2>이용권 고르기</h2>
     <div class="plans">
       <button type="button" class="plan sel" data-plan="single"><div class="pn">1회 이용권</div><div class="pp">59,900원</div><div class="pd">검사 1번, 결과와 PDF는 계속 다시 볼 수 있어요.</div></button>
+      <button type="button" class="plan" data-plan="premium1" id="planPrem" hidden><div class="pn">SDTI 정밀검사 횟수권 1회 (업체용)</div><div class="pp">59,900원</div><div class="pd">등록 업체 전용이에요. 업체 화면에서 고객의 정밀검사 리포트를 구매할 때 1회씩 쓰여요.</div></button>
       <button type="button" class="plan" data-plan="pack10" id="planPack" hidden><div class="pn">10회 이용권</div><div class="pp">100,000원</div><div class="pd">등록 업체 전용이에요. 업체 화면에서 고객에게 검사 링크를 보낼 때 1회씩 쓰여요.</div></button>
     </div>
     <button class="btn" id="payBtn" type="button" disabled>로그인 확인 중...</button>
@@ -75,7 +76,7 @@ h2{font-size:1rem;margin:0 0 12px}
   <div class="card done" id="doneCard" hidden>
     <div class="big">✅</div>
     <p id="doneText">이용권이 적립됐어요.</p>
-    <a class="btn" href="/interior-beta">검사 시작하기</a>
+    <a class="btn" id="doneGo" href="/interior-beta">검사 시작하기</a>
   </div>
 
   <ul class="notes">
@@ -83,6 +84,7 @@ h2{font-size:1rem;margin:0 0 12px}
     <li>이용권은 결제한 계정에서만 쓸 수 있어요. 결제 내역은 마이페이지에서 확인할 수 있어요.</li>
     <li>결제 후 검사를 시작하지 않으셨다면 결제일로부터 7일 이내 전액 환불을 요청할 수 있어요.</li>
     <li id="packNote" hidden>10회 이용권을 일부 사용하신 경우, 결제일로부터 7일 이내에 사용한 횟수를 1회 이용권 가격(59,900원)으로 계산해 결제 금액에서 뺀 나머지를 환불해 드려요. 남는 금액이 없으면 환불되지 않아요.</li>
+    <li id="premNote" hidden>정밀검사 횟수권은 등록 업체 전용이에요. 사용하지 않은 횟수권은 결제일로부터 7일 이내 전액 환불을 요청할 수 있어요.</li>
     <li>환불 문의: 카카오톡 채널 또는 skopos@skopos.kr</li>
     <li>스코포스는 인테리어 공사를 하지 않습니다. 상담 전에 기준을 정리하는 검사를 제공합니다.</li>
   </ul>
@@ -96,18 +98,20 @@ h2{font-size:1rem;margin:0 0 12px}
   'use strict';
   const FN = 'https://rgbukqphcqptnfeqipfn.supabase.co/functions/v1/interior-order';
   const IMP_CODE = 'imp57703773';
-  const PRICES = { single: 59900, pack10: 100000 };
-  const NAMES = { single: 'SKOPOS SDTI 인테리어 공간욕구검사 1회 이용권', pack10: 'SKOPOS SDTI 인테리어 공간욕구검사 10회 이용권' };
+  const PRICES = { single: 59900, pack10: 100000, premium1: 59900 };
+  const NAMES = { single: 'SKOPOS SDTI 인테리어 공간욕구검사 1회 이용권', pack10: 'SKOPOS SDTI 인테리어 공간욕구검사 10회 이용권', premium1: 'SKOPOS SDTI 정밀검사 업체용 1회 횟수권' };
+  const LABELS = { single: '1회 이용권 ', pack10: '10회 이용권 ', premium1: '정밀검사 횟수권 1회 ' };
   const $ = id => document.getElementById(id);
-  const wantPack = new URLSearchParams(location.search).get('plan') === 'pack10';
+  const wantPlan = new URLSearchParams(location.search).get('plan') || '';
+  const wantPack = wantPlan === 'pack10', wantPrem = wantPlan === 'premium1';
   let plan = 'single';
-  let user = null, salesOpen = false, busy = false, packOk = false;
+  let user = null, salesOpen = false, busy = false, packOk = false, premOk = false;
   try { if (window.IMP) IMP.init(IMP_CODE); } catch (e) {}
 
   function won(n){ return Number(n).toLocaleString('ko-KR') + '원'; }
   function setMsg(el, text, ok){ el.textContent = text || ''; el.className = 'msg' + (text ? (ok ? ' ok' : ' err') : ''); }
   function selectPlan(p){
-    plan = p === 'pack10' && !packOk ? 'single' : p;
+    plan = (p === 'pack10' && !packOk) || (p === 'premium1' && !premOk) ? 'single' : p;
     p = plan;
     document.querySelectorAll('.plan').forEach(b => b.classList.toggle('sel', b.dataset.plan === p));
     refreshButton();
@@ -115,8 +119,9 @@ h2{font-size:1rem;margin:0 0 12px}
   function refreshButton(){
     const b = $('payBtn');
     if (!user) { b.disabled = true; b.textContent = '로그인 후 구매할 수 있어요'; return; }
-    if (!salesOpen) { b.disabled = true; b.textContent = '12월 1일부터 구매할 수 있어요'; return; }
-    b.disabled = busy; b.textContent = busy ? '처리 중...' : (plan === 'pack10' ? '10회 이용권 ' : '1회 이용권 ') + won(PRICES[plan]) + ' 결제하기';
+    // 인테리어 이용권은 판매 시작일부터, 업체용 정밀검사 횟수권은 바로 구매할 수 있다
+    if (!salesOpen && plan !== 'premium1') { b.disabled = true; b.textContent = '12월 1일부터 구매할 수 있어요'; return; }
+    b.disabled = busy; b.textContent = busy ? '처리 중...' : LABELS[plan] + won(PRICES[plan]) + ' 결제하기';
   }
   async function token(){
     const sb = await SkoposAuth.getClient();
@@ -142,7 +147,8 @@ h2{font-size:1rem;margin:0 0 12px}
     salesOpen = !!j.sales_open; showCredits(j.credits);
     // 10회 이용권은 확인이 끝난 등록 업체에만 보인다
     packOk = j.pack10_allowed === true; $('planPack').hidden = !packOk; $('packNote').hidden = !packOk;
-    if (packOk && wantPack) selectPlan('pack10'); else refreshButton();
+    premOk = j.premium_allowed === true; $('planPrem').hidden = !premOk; $('premNote').hidden = !premOk;
+    if (premOk && wantPrem) selectPlan('premium1'); else if (packOk && wantPack) selectPlan('pack10'); else refreshButton();
   }
   function done(text, c){
     showCredits(c);
@@ -164,15 +170,18 @@ h2{font-size:1rem;margin:0 0 12px}
       try { sessionStorage.removeItem('skopos_int_pending'); } catch (e) {}
       try { window.SkoposTrack && SkoposTrack.event('purchase', { value: PRICES[p], order_id: merchantUid, product: 'interior_' + p }); } catch (e) {}
       setMsg($('payMsg'), '');
-      done((p === 'pack10' ? '10회' : '1회') + ' 이용권이 적립됐어요. 지금 바로 검사를 시작할 수 있어요.', j.credits);
+      if (p === 'premium1') { $('doneGo').href = '/business#credits'; $('doneGo').textContent = '업체 화면으로 가기'; done('SDTI 정밀검사 횟수권 1회가 적립됐어요. 업체 화면에서 고객의 리포트를 구매할 때 쓸 수 있어요.', j.credits); }
+      else done((p === 'pack10' ? '10회' : '1회') + ' 이용권이 적립됐어요. 지금 바로 검사를 시작할 수 있어요.', j.credits);
     } catch (e) {
       try { sessionStorage.setItem('skopos_int_pending', JSON.stringify({ imp_uid: impUid, merchant_uid: merchantUid, plan: p, ts: Date.now() })); } catch (x) {}
       setMsg($('payMsg'), '결제 확인 서버에 연결하지 못했어요. 새로고침하면 다시 확인해요. 계속 안 되면 카카오톡 채널로 문의해 주세요.');
     } finally { busy = false; refreshButton(); }
   }
   function pay(){
-    if (!user || !salesOpen || busy || !window.IMP) return;
+    if (!user || busy || !window.IMP) return;
+    if (!salesOpen && plan !== 'premium1') return;
     if (plan === 'pack10' && !packOk) return;
+    if (plan === 'premium1' && !premOk) return;
     busy = true; refreshButton(); setMsg($('payMsg'), '');
     const merchantUid = 'SKOPOS-INT-' + Date.now();
     const p = plan;
@@ -210,7 +219,7 @@ h2{font-size:1rem;margin:0 0 12px}
   // 모바일 결제 후 복귀: 주소의 결제 번호는 한 번만 쓰고 지운다
   const q = new URLSearchParams(location.search);
   const ret = q.get('imp_uid') ? { imp_uid: q.get('imp_uid'), merchant_uid: q.get('merchant_uid'), ok: q.get('imp_success') === 'true' } : null;
-  const retPlan = ret && (q.get('plan') === 'pack10' || q.get('plan') === 'single') ? q.get('plan') : '';
+  const retPlan = ret && ['pack10', 'single', 'premium1'].includes(q.get('plan')) ? q.get('plan') : '';
   if (ret) { try { history.replaceState({}, '', location.pathname); } catch (e) {} }
 
   SkoposAuth.guard({

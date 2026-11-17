@@ -982,6 +982,10 @@ em{font-style:normal}
 .nav-login-btn{font-size:.78rem;font-weight:700;color:var(--dark);margin-left:8px;border:1.5px solid rgba(15,15,26,.15);border-radius:50px;padding:7px 16px;text-decoration:none;transition:all .2s;white-space:nowrap}
 .nav-login-btn:hover{background:var(--dark);color:#fff;border-color:var(--dark)}
 .nav-login-btn.logged-in{background:var(--pink);color:#fff;border-color:var(--pink)}
+.nav-login-btn .nl-name{font-weight:600;opacity:.85;margin-right:6px;max-width:7em;overflow:hidden;text-overflow:ellipsis;display:inline-block;vertical-align:bottom}
+.nav-login-btn .nl-go::after{content:' ›'}
+@media(max-width:640px){.nav-login-btn .nl-name{display:none}}
+@media(max-width:420px){.nav-login-btn .nl-x{display:none}}
 .nav-login-btn.logged-in:hover{background:#d01478;border-color:#d01478}
 
 .hero-badge-wrap{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px}
@@ -1811,9 +1815,16 @@ document.querySelectorAll('.hero .fade-up').forEach(el=>el.classList.add('on'));
     if(session){
       const name = session.user.user_metadata?.full_name ||
                    session.user.email?.split('@')[0] || '마이페이지';
-      btn.textContent = name + '님 ▾';
+      // 로그인한 뒤에는 이름만 보이지 않고, 누르면 어디로 가는지 알 수 있게 표시한다
+      btn.textContent = '';
+      const nm = document.createElement('span'); nm.className = 'nl-name'; nm.textContent = name + '님';
+      const go = document.createElement('span'); go.className = 'nl-go'; go.textContent = '마이페이지';
+      const ex = document.createElement('span'); ex.className = 'nl-x'; ex.textContent = ' · 검사 결과'; go.appendChild(ex);
+      btn.appendChild(nm); btn.appendChild(go);
       btn.href = 'mypage.html';
-      btn.classList.add('active');
+      btn.title = '마이페이지에서 검사 결과 보기';
+      btn.setAttribute('aria-label', name + '님, 마이페이지에서 검사 결과 보기');
+      btn.classList.add('active', 'logged-in');
     } else {
       btn.textContent = '로그인';
       btn.href = 'login.html';
