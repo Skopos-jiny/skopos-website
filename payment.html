@@ -344,6 +344,8 @@ async function joinWithInvite(){
   if(!/^[A-Z0-9]{6}$/.test(code)){ inviteMsg('초대 코드 6자리를 확인해 주세요.','error'); return; }
   const h=await authHeaders();
   if(!h.Authorization){ inviteMsg('로그인 후 이용할 수 있어요.','error'); return; }
+  // 링크로 들어온 경우와 같이, 코드로 연결할 때도 결과 공유를 안내하고 확인을 받는다
+  if(!window.confirm('초대 코드 '+code+' 로 커플 진단에 연결할까요?\n\n· 두 분의 정밀 검사 결과가 서로의 커플 결과지에 표시돼요.\n· 이미 정밀 검사를 마치셨다면 가장 최근 결과가 비교에 쓰여요.\n· 결과지는 로그인한 두 분만 볼 수 있어요.')){ inviteMsg('연결하지 않았어요.',''); return; }
   btn.disabled=true; btn.textContent='확인 중...'; inviteMsg('','');
   try{
     const r=await fetch(SUPABASE_URL+'/functions/v1/couple',{method:'POST',headers:h,body:JSON.stringify({action:'join',code})});

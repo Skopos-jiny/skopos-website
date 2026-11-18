@@ -427,12 +427,13 @@ async function renderShares(){
     document.getElementById('wsName').textContent=me.business.name;document.getElementById('wsStatus').textContent=st+' · 남은 이용권 '+Number((me.credits&&me.credits.remaining)||0)+'회';document.getElementById('wsCard').hidden=false;document.getElementById('modeSw').hidden=false;const bj=document.getElementById('bizJoin');if(bj)bj.hidden=true;}}catch(_){}
   let active=0;
   try{const {data}=await sb.rpc('my_shares');const list=(data&&data.ok&&data.shares)||[];
-    active=list.filter(x=>!x.revoked).length;
+    // 같은 업체에 검사 두 개를 공유해도 1곳으로 센다 (business_id 없으면 업체 이름으로 대신)
+    active=new Set(list.filter(x=>!x.revoked).map(x=>x.business_id||x.business_name)).size;
     // 업체 관련 메뉴는 업체의 초대로 검사한 적이 있는 고객에게만 보여 준다
     if(list.length){document.getElementById('navShares').hidden=false;document.getElementById('tileSharesBtn').hidden=false;}
     if(list.length){html+=list.map(s=>{
       const id=String(s.id).replace(/[^0-9a-f-]/gi,''),date=s.consented_at?new Date(s.consented_at).toLocaleDateString('ko-KR'):'';
-      const until=s.revoke_at?new Date(s.revoke_at).toLocaleDateString('ko-KR'):'';const tn=s.test_type==='premium'?'SDTI 정밀검사':'인테리어 공간욕구검사';const st=s.revoked?'공유 중지됨':s.revoke_at?'공유 중지 요청함':s.status==='completed'?'결과 공유 중':'검사 전 · 공유 동의함';const lock=s.revoke_at?'<div class="result-meta">'+until+'부터 업체가 내 결과를 볼 수 없어요.</div>':'';
+      const until=s.revoke_at?new Date(s.revoke_at).toLocaleDateString('ko-KR'):'';const tn=s.test_type==='premium'?'SDTI 정밀검사':'인테리어 공간욕구검사';const st=s.revoked?'공유 중지됨':s.revoke_at?'공유 중지 요청함':s.status!=='completed'?'검사 전 · 공유 동의함':s.purchased?'결과 공유 중 · 업체 열람 가능':'공유 동의함 · 업체 열람 전';const lock=s.revoke_at?'<div class="result-meta">'+until+'부터 업체가 내 결과를 볼 수 없어요.</div>':'';
       return '<div class="result-card ir-card"><span class="result-emoji ir-emoji">🤝</span><div class="result-info"><div class="result-type">'+e(s.business_name)+'</div><div class="result-meta">'+tn+' · '+st+' · 동의 '+date+'</div>'+lock+'</div><div class="result-actions">'+(s.revoked||s.revoke_at?'':'<button class="btn-sm ir-del sh-stop" data-id="'+id+'" data-p="'+(s.purchased&&s.status==='completed'?'1':'')+'">'+(s.purchased&&s.status==='completed'?'공유 중지 요청':'공유 중지')+'</button>')+'</div></div>';}).join('');}
   }catch(_){}
   area.innerHTML=html||'<div class="empty"><div class="empty-icon">🤝</div><div class="empty-text">공유 중인 업체가 없어요.<br>업체가 보낸 초대 링크로 검사하면 여기에 표시돼요.</div></div>';

@@ -409,6 +409,7 @@ function askInvite(code){
     <p class="sub">연결하면 별도 결제 없이 정밀 검사(144문항)를 시작할 수 있어요.</p>
     <ul class="steps">
       <li><span class="dot ok">✓</span>두 분의 정밀 검사 결과가 서로의 커플 결과지에 표시돼요</li>
+      <li><span class="dot ok">✓</span>이미 정밀 검사를 마치셨다면 가장 최근 결과가 비교에 쓰여요</li>
       <li><span class="dot ok">✓</span>결과지는 로그인한 두 분만 볼 수 있어요</li>
     </ul>
     <div class="btn-row"><button class="btn btn-p" id="invYes">연결하고 시작하기</button><button class="btn btn-s" id="invNo">연결하지 않기</button></div></div>`;
@@ -439,6 +440,9 @@ const ROOMS = [
   {n:'개인 코너·작업 공간', d:['identity','restore','life']},
 ];
 function level(v){ return v>=70?['hi','강함']:v>=50?['mid','보통']:['lo','약함']; }
+// 각 사람의 경향은 개인 결과지와 같은 기준(절대 점수)으로 설명하고, 두 사람의 차이는 따로 말한다
+function absTxt(key,v){ return v>=60?DOM[key].hi:v<50?DOM[key].lo:'상황에 따라 유연하게 반응하는 편이에요'; }
+function relTxt(hn,x){ return (x.a>=60&&x.b>=60)||(x.a<50&&x.b<50) ? `두 분 모두 같은 방향이지만, ${hn}님 쪽이 ${x.d}점 더 강해요` : `이 욕구는 ${hn}님 쪽이 ${x.d}점 더 강해요`; }
 function today(){ const d=new Date(); return d.getFullYear()+'. '+(d.getMonth()+1)+'. '+d.getDate()+'.'; }
 function ymd(){ const d=new Date(); return ''+d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0'); }
 function b64(s){ try{ return btoa(encodeURIComponent(s)); }catch(e){ return ''; } }
@@ -542,7 +546,7 @@ function coupleHTML(){
 
   <div class="card"><h2>부딪히기 쉬운 영역과 솔루션</h2><p class="muted">차이가 큰 순서예요. 누가 맞고 틀린 게 아니라, 집에 바라는 것이 다른 지점이에요.</p>
     ${top.length?top.map((x,i)=>{const [h,l]=who(x);return `<div class="ins"><h3>${i+1}. ${esc(x.s.label)} <span class="chip far">차이 ${x.d}</span></h3>
-      <p><b>${esc(h)}</b>님은 ${esc(DOM[x.s.key].hi)}. <b>${esc(l)}</b>님은 ${esc(DOM[x.s.key].lo)}.</p>
+      <p><b>${esc(h)}</b>님(${Math.max(x.a,x.b)}점)은 ${esc(absTxt(x.s.key,Math.max(x.a,x.b)))}. <b>${esc(l)}</b>님(${Math.min(x.a,x.b)}점)은 ${esc(absTxt(x.s.key,Math.min(x.a,x.b)))}. ${esc(relTxt(h,x))}.</p>
       <p style="margin-top:6px"><b>이런 장면에서</b> ${esc(DOM[x.s.key].scene)}.</p>
       <div class="tip"><b>솔루션</b> ${esc(DOM[x.s.key].tip)}.</div>
       <div class="tip"><b>역할 나누기</b> 이 욕구가 더 강한 ${esc(h)}님이 기준안을 먼저 내고, ${esc(l)}님은 예산·관리 측면에서 조정해 주세요.</div></div>`;}).join('')
@@ -634,9 +638,9 @@ function a4Couple(){
    </div>`);
   h+=a4Page(3,T,N,docNo,W,`
    <div class="sec-t"><span class="no">03</span><h2>부딪히기 쉬운 영역과 솔루션</h2><p>누가 맞고 틀린 게 아니라, 바라는 것이 다른 지점이에요</p></div>
-   ${topD.length?topD.map((x,i)=>{const[hn,ln]=who(x);const aHi=x.a>=x.b;const d=DOM[x.s.key];return`<div class="cf"><div class="cf-h"><span class="n">${i+1}</span><h3>${esc(x.s.label)}</h3><span class="chip far">차이 ${x.d}점</span></div>
-    <div class="two"><div class="a"><b>${an} ${x.a}점</b>${esc(aHi?d.hi:d.lo)}.</div><div class="b"><b>${bn} ${x.b}점</b>${esc(aHi?d.lo:d.hi)}.</div></div>
-    <dl class="kv"><dt>이런 장면</dt><dd>${esc(d.scene)}.</dd><dt class="s">솔루션</dt><dd>${esc(d.tip)}.</dd><dt>역할 나누기</dt><dd>이 욕구가 더 강한 ${hn}님이 기준안을 먼저 내고, ${ln}님은 예산과 관리 측면에서 조정해 주세요.</dd></dl></div>`;}).join('')
+   ${topD.length?topD.map((x,i)=>{const[hn,ln]=who(x);const d=DOM[x.s.key];return`<div class="cf"><div class="cf-h"><span class="n">${i+1}</span><h3>${esc(x.s.label)}</h3><span class="chip far">차이 ${x.d}점</span></div>
+    <div class="two"><div class="a"><b>${an} ${x.a}점</b>${esc(absTxt(x.s.key,x.a))}.</div><div class="b"><b>${bn} ${x.b}점</b>${esc(absTxt(x.s.key,x.b))}.</div></div>
+    <dl class="kv"><dt>두 분의 차이</dt><dd>${relTxt(hn,x)}.</dd><dt>이런 장면</dt><dd>${esc(d.scene)}.</dd><dt class="s">솔루션</dt><dd>${esc(d.tip)}.</dd><dt>역할 나누기</dt><dd>이 욕구가 더 강한 ${hn}님이 기준안을 먼저 내고, ${ln}님은 예산과 관리 측면에서 조정해 주세요.</dd></dl></div>`;}).join('')
    :`<div class="box"><h4>큰 차이가 없어요</h4><p>8개 영역 모두 차이가 크지 않은 조합이에요. 대신 두 분 다 약한 영역은 집에서도 놓치기 쉬우니 4쪽의 공간별 플랜을 참고해 주세요.</p></div>`}`);
   h+=a4Page(4,T,N,docNo,W,`
    <div class="sec"><div class="sec-t"><span class="no">04</span><h2>공간별 솔루션 플랜</h2><p>조율이 더 필요한 공간부터</p></div>
@@ -724,9 +728,11 @@ function viewReport(r){
   <section class="doc" data-doc="personal" id="personalDoc">${personalHTML('me')}</section>
   <section class="doc" data-doc="couple" id="coupleDoc">${coupleHTML()}</section>
   <p class="foot">SDTI 결과는 경향을 보여 주는 참고 자료예요. 두 분의 대화를 위한 출발점으로 활용해 주세요.<br>© SKOPOS · SDTI 검사 문항·해석 체계와 검사 엔진은 한국저작권위원회에 정식 등록되어 법적으로 보호받고 있습니다</p>`;
-  setDoc(location.hash==='#couple'?'couple':'personal');
+  // 마이페이지 'PDF 저장' 바로가기(?dl=personal|couple): setDoc이 주소를 바꾸기 전에 먼저 읽어야 한다
   const dl=new URLSearchParams(location.search).get('dl');
-  if(dl==='personal'||dl==='couple') setTimeout(()=>printDoc(dl), 800);
+  const wantDl = dl==='personal'||dl==='couple' ? dl : '';
+  setDoc(wantDl || (location.hash==='#couple'?'couple':'personal'));
+  if(wantDl) setTimeout(()=>printDoc(wantDl), 800);
   try{ window.SkoposTrack && SkoposTrack.event('couple_report_view',{}); }catch(e){}
 }
 

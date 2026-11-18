@@ -3509,6 +3509,7 @@ let ageGroup=AGE_DEFAULT;       // 선택된 연령대 키
 let Q_TIME=AGE_TIMES[AGE_DEFAULT]; // 현재 문항 제한 시간(선택에 따라 갱신)
 const AGE_KEY='skopos_premium_age'; // 연령대 저장 키
 let cur=0,ans={},qTimer=null,timerEl=null,elapsed=0;
+let _advanceT=null; // 선택 후 다음 문항 이동 예약 (한 번만)
 let resultType=null,isPaid=false;
 let resultScores = {};
 let currentUserName = ''; // 로그인한 사용자 이름
@@ -3822,6 +3823,7 @@ function beginQuiz(paid){
 
 function renderQ(){
   clearInterval(qTimer);
+  clearTimeout(_advanceT);_advanceT=null;
   const q=QS[cur];
   const sec=SECS[q.s];
   // 진행바
@@ -3930,7 +3932,10 @@ function selectOpt(i){
   }
   recordAns(cur,i);
   saveProgress(); // 매 응답마다 진행 상태 저장
-  setTimeout(()=>nextQ(),380);
+  // 빠른 연속 클릭으로 문항을 건너뛰지 않도록 다음 이동은 한 번만 예약하고, 같은 문항일 때만 이동
+  const at=cur;
+  clearTimeout(_advanceT);
+  _advanceT=setTimeout(()=>{_advanceT=null;if(cur===at)nextQ();},380);
 }
 
 function nextQ(){
