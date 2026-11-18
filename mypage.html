@@ -76,6 +76,8 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFo
 .pay-status{display:inline-block;font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:50px;background:rgba(3,199,90,.1);color:#027a35}
 .pay-status.free{background:rgba(233,30,140,.08);color:#C2185B}.pay-status.cancel{background:rgba(0,0,0,.06);color:#8890A4}.pay-status.wait{background:#FFF4E0;color:#B26A00}
 .pay-link{font-size:.68rem;font-weight:800;color:#E91E8C;margin-left:6px;text-decoration:none;white-space:nowrap}
+[hidden]{display:none!important}
+.tiles{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
 /* 커플 진단 */
 .couple-card{border:1.5px solid rgba(233,30,140,.25);background:linear-gradient(160deg,#FFF5FA,#fff 60%);border-radius:16px;padding:18px;margin-bottom:16px}
 .cc-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
@@ -155,7 +157,7 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFo
 <div class="shell">
 <aside class="side" id="side">
   <a class="side-logo" href="/">SKO<span>POS</span></a>
-  <div class="mode" role="tablist" aria-label="화면 전환"><a class="on" href="/mypage" aria-current="page">일반</a><a href="/business" id="modeBiz">업체</a></div>
+  <div class="mode" id="modeSw" role="tablist" aria-label="화면 전환" hidden><a class="on" href="/mypage" aria-current="page">일반</a><a href="/business" id="modeBiz">업체</a></div>
   <div class="side-menu" id="sideMenu">
     <button type="button" data-tab="home" class="on"><span class="ico">🏠</span>스코포스 홈</button>
     <button type="button" data-tab="tests"><span class="ico">📝</span>검사하기</button>
@@ -165,7 +167,7 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFo
   <div class="side-sep"></div>
   <a class="ws-card" id="wsCard" href="/business" hidden><small>내 업체</small><b id="wsName"></b><span id="wsStatus"></span></a>
   <div class="side-menu">
-    <button type="button" data-tab="shares"><span class="ico">🤝</span>업체 공유 관리<span class="cnt" id="cntShares" hidden></span></button>
+    <button type="button" data-tab="shares" id="navShares" hidden><span class="ico">🤝</span>업체 공유 관리<span class="cnt" id="cntShares" hidden></span></button>
     <button type="button" data-tab="account"><span class="ico">⚙️</span>계정 설정</button>
   </div>
   <div class="side-foot">
@@ -200,7 +202,7 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFo
     <div class="tiles">
       <button type="button" class="tile" data-go="results"><small>저장된 결과지</small><b id="tileResults">0</b><span>기초·정밀·인테리어 검사</span></button>
       <button type="button" class="tile" data-go="payments"><small>인테리어 검사 이용권</small><b id="tileCredits">0회</b><span>남은 횟수</span></button>
-      <button type="button" class="tile" data-go="shares"><small>결과를 공유 중인 업체</small><b id="tileShares">0곳</b><span>공유 상태를 확인하고 중지할 수 있어요</span></button>
+      <button type="button" class="tile" data-go="shares" id="tileSharesBtn" hidden><small>결과를 공유 중인 업체</small><b id="tileShares">0곳</b><span>공유 상태를 확인하고 중지할 수 있어요</span></button>
     </div>
     <div class="section">
       <div class="section-tag">START</div>
@@ -243,7 +245,7 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFo
   <!-- 계정 설정 -->
   <div class="panel" id="panelAccount">
     <div class="pg-head"><div><h2>계정 설정</h2></div></div>
-    <div class="section" id="bizJoin">
+    <div class="section" id="bizJoin" hidden>
       <div class="section-title" style="margin-top:0">인테리어 업체이신가요?</div>
       <p style="font-size:.82rem;color:#5A5A6E;line-height:1.7;margin:8px 0 12px">업체 정보를 등록하면 고객에게 검사 링크를 보내고, 고객이 공유에 동의한 결과를 상담 가이드로 받아 볼 수 있어요.</p>
       <a class="btn-sm btn-pdf" href="/business" style="text-decoration:none;display:inline-block">업체 화면으로 이동</a>
@@ -422,10 +424,12 @@ async function renderShares(){
   let html='';
   // 등록한 업체가 있으면 왼쪽에 업체 카드 표시
   try{const {data:me}=await sb.rpc('business_me');if(me&&me.ok&&me.registered){const st={pending:'확인 중',verified:'확인 완료',suspended:'이용 중지'}[me.business.status]||'';
-    document.getElementById('wsName').textContent=me.business.name;document.getElementById('wsStatus').textContent=st+' · 남은 이용권 '+Number((me.credits&&me.credits.remaining)||0)+'회';document.getElementById('wsCard').hidden=false;const bj=document.getElementById('bizJoin');if(bj)bj.hidden=true;}}catch(_){}
+    document.getElementById('wsName').textContent=me.business.name;document.getElementById('wsStatus').textContent=st+' · 남은 이용권 '+Number((me.credits&&me.credits.remaining)||0)+'회';document.getElementById('wsCard').hidden=false;document.getElementById('modeSw').hidden=false;const bj=document.getElementById('bizJoin');if(bj)bj.hidden=true;}}catch(_){}
   let active=0;
   try{const {data}=await sb.rpc('my_shares');const list=(data&&data.ok&&data.shares)||[];
     active=list.filter(x=>!x.revoked).length;
+    // 업체 관련 메뉴는 업체의 초대로 검사한 적이 있는 고객에게만 보여 준다
+    if(list.length){document.getElementById('navShares').hidden=false;document.getElementById('tileSharesBtn').hidden=false;}
     if(list.length){html+=list.map(s=>{
       const id=String(s.id).replace(/[^0-9a-f-]/gi,''),date=s.consented_at?new Date(s.consented_at).toLocaleDateString('ko-KR'):'';
       const until=s.revoke_at?new Date(s.revoke_at).toLocaleDateString('ko-KR'):'';const tn=s.test_type==='premium'?'SDTI 정밀검사':'인테리어 공간욕구검사';const st=s.revoked?'공유 중지됨':s.revoke_at?'공유 중지 요청함':s.status==='completed'?'결과 공유 중':'검사 전 · 공유 동의함';const lock=s.revoke_at?'<div class="result-meta">'+until+'부터 업체가 내 결과를 볼 수 없어요.</div>':'';
