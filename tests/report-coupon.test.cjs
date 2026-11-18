@@ -20,7 +20,7 @@ function scoring() {
   vm.runInContext(constant('SECS') + constant('QS') + constant('TYPES') +
     'let ans={};' + between('function getSectionScore(', 'function show(') +
     between('function recordAns(', 'function selectOpt(') +
-    between('let _TAG_STATS=null;', '// ── LOADING') +
+    between('const SEC_ITEM_DIR={', '// ── LOADING') +
     between('function buildRadarSVG(', 'function renderResult(') +
     'globalThis.api={SECS,QS,TYPES,getSectionScore,compute,recordAns,buildRadarSVG};', context);
   return context.api;
@@ -70,7 +70,7 @@ test('all site scripts and both deployed handlers parse', () => {
   for(const name of ['verify-payment','redeem-free-coupon']) loadHandler(name);
 });
 function loadHandler(name, options = {}) {
-  const calls = [], tables = [], coupon = {code:'TEST-ONLY', is_active:true, discount_type:'percent', discount_value:options.couponPercent ?? 100, per_user_limit:1, used_count:0};
+  const calls = [], tables = [], coupon = {code:'TEST-ONLY', product:'premium', is_active:true, discount_type:'percent', discount_value:options.couponPercent ?? 100, per_user_limit:1, used_count:0};
   let paymentReads = 0;
   const user = {id:'test-user'};
   const sb = {
@@ -79,7 +79,7 @@ function loadHandler(name, options = {}) {
       tables.push(table);
       let inserted = false;
       const query = {
-        select(){return query;}, eq(){return query;}, in(){return query;},
+        select(){return query;}, eq(){return query;}, in(){return query;}, neq(){return query;},
         insert(){inserted=true; return query;},
         limit:async()=>({data:[],error:options.lookupError || null}),
         maybeSingle:async()=>({data:table==='coupons'?coupon:(++paymentReads > 1 ? options.recorded || null : null),error:null}),
@@ -95,7 +95,7 @@ function loadHandler(name, options = {}) {
       calls.push(url);
       return {json:async()=> url.endsWith('/getToken') ? {code:0,response:{access_token:'test-token'}} :
         url.endsWith('/cancel') ? {code:options.cancelRejected?1:0} :
-        {code:0,response:{status:'paid',amount:options.paymentAmount ?? 29900,paid_at:1000}}};
+        {code:0,response:{status:'paid',imp_uid:'imp_123456789012',merchant_uid:'test-order',amount:options.paymentAmount ?? 29900,paid_at:1000}}};
     }, serveNetlifyHandler:handler=>{context.handler=handler;}
   });
   const source = read('supabase/functions/'+name+'/index.ts').replace(/^import .*;\n/gm,'');
@@ -128,7 +128,7 @@ test('free coupon relies on atomic database logging rather than independent writ
 });
 test('paid verification never reports success when its payment insert fails',async()=>{
   const a = loadHandler('verify-payment',{insertError:{code:'db-error'}});
-  const r = await a.handler({httpMethod:'POST',headers:{authorization:'Bearer test'},body:JSON.stringify({imp_uid:'test-imp',merchant_uid:'test-order',amount:29900})});
+  const r = await a.handler({httpMethod:'POST',headers:{authorization:'Bearer test'},body:JSON.stringify({imp_uid:'imp_123456789012',merchant_uid:'test-order',amount:29900})});
   assert.equal(r.statusCode,500);
   assert.equal(JSON.parse(r.body).success,false);
   assert.equal(a.calls.filter(u=>u.includes('/cancel')).length,0);
@@ -140,7 +140,7 @@ test('site shows the current report page count and no incorrect reference discou
 test('concurrent paid replay returns the existing payment and rejects a different owner',async()=>{
   for(const userId of ['test-user','someone-else']){
     const a = loadHandler('verify-payment',{insertError:{code:'23505'},recorded:{id:'existing-id',user_id:userId,status:'paid'}});
-    const r = await a.handler({httpMethod:'POST',headers:{authorization:'Bearer test'},body:JSON.stringify({imp_uid:'test-imp',merchant_uid:'test-order',amount:29900})});
+    const r = await a.handler({httpMethod:'POST',headers:{authorization:'Bearer test'},body:JSON.stringify({imp_uid:'imp_123456789012',merchant_uid:'test-order',amount:29900})});
     assert.equal(r.statusCode,userId==='test-user'?200:409);
     if(userId==='test-user') assert.equal(JSON.parse(r.body).payment_id,'existing-id');
     assert.equal(a.calls.filter(u=>u.includes('/cancel')).length,0);
@@ -149,7 +149,7 @@ test('concurrent paid replay returns the existing payment and rejects a differen
 test('coupon limit race cancels the paid charge and reports cancellation failure accurately',async()=>{
   for(const cancelRejected of [false,true]){
     const a = loadHandler('verify-payment',{insertError:{code:'P0001'},couponPercent:50,paymentAmount:14950,cancelRejected});
-    const r = await a.handler({httpMethod:'POST',headers:{authorization:'Bearer test'},body:JSON.stringify({imp_uid:'test-imp',merchant_uid:'test-order',amount:14950,coupon_code:'TEST-ONLY'})});
+    const r = await a.handler({httpMethod:'POST',headers:{authorization:'Bearer test'},body:JSON.stringify({imp_uid:'imp_123456789012',merchant_uid:'test-order',amount:14950,coupon_code:'TEST-ONLY'})});
     assert.equal(r.statusCode,cancelRejected?500:400);
     assert.equal(JSON.parse(r.body).success,false);
     assert.equal(a.calls.filter(u=>u.includes('/cancel')).length,1);
