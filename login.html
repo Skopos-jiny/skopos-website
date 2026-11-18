@@ -64,6 +64,16 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFo
 .terms-check input{margin-top:2px;accent-color:#E91E8C;flex-shrink:0}
 .terms-check span{font-size:.73rem;color:#8890A4;line-height:1.5}
 .terms-check a{color:#E91E8C;text-decoration:none}
+/* 비밀번호 찾기·재설정 */
+.find-head{font-size:1rem;font-weight:800;color:#0F0F1A;margin-bottom:6px}
+.find-desc{font-size:.8rem;color:#5A5A6E;line-height:1.7;margin-bottom:16px}
+.find-note{font-size:.74rem;color:#8890A4;line-height:1.7;margin-top:14px;padding:12px 14px;background:#F7F8FC;border-radius:10px}
+.find-note a{color:#E91E8C;font-weight:700;text-decoration:none}
+.pw-wrap{position:relative}
+.pw-wrap input{padding-right:58px}
+.pw-toggle{position:absolute;right:8px;top:50%;transform:translateY(-50%);border:0;background:none;font:inherit;font-size:.72rem;font-weight:700;color:#8890A4;cursor:pointer;padding:6px}
+.pw-hint{font-size:.72rem;color:#8890A4;margin-top:6px}
+.pw-hint.ok{color:#027a35}
 </style>
 <script src="/skopos-track.js" defer></script>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -117,7 +127,7 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFo
       </div>
       <button class="btn-submit" id="loginBtn" onclick="loginEmail()">로그인</button>
       <div class="bottom-link">
-        비밀번호를 잊으셨나요? <a onclick="resetPassword()">재설정</a>
+        비밀번호를 잊으셨나요? <a onclick="showFindPanel()">비밀번호 찾기</a>
       </div>
     </div>
 
@@ -144,15 +154,36 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFo
       <button class="btn-submit" id="signupBtn" onclick="signupEmail()">회원가입</button>
     </div>
 
+    <!-- 비밀번호 찾기 패널 (재설정 메일 요청) -->
+    <div class="panel" id="panel-find">
+      <div class="find-head">비밀번호 찾기</div>
+      <p class="find-desc">가입하신 이메일을 입력하시면 새 비밀번호를 설정할 수 있는 링크를 보내 드려요.</p>
+      <div class="field">
+        <label>가입한 이메일</label>
+        <input type="email" id="findEmail" placeholder="이메일을 입력해주세요" autocomplete="email">
+        <div class="err-msg" id="findErr"></div>
+      </div>
+      <button class="btn-submit" id="findBtn" onclick="resetPassword()">재설정 메일 받기</button>
+      <div class="find-note">
+        · 메일이 보이지 않으면 스팸함·프로모션함을 확인해 주세요.<br>
+        · 카카오·네이버로 가입하셨다면 비밀번호가 없어요. 위 화면의 카카오톡·네이버 버튼으로 로그인해 주세요.<br>
+        · 메일이 계속 오지 않으면 <a href="https://pf.kakao.com/_dtGjX/chat" target="_blank" rel="noopener">카카오톡 채널</a>로 문의해 주세요.
+      </div>
+      <div class="bottom-link"><a onclick="switchTab('login')">로그인으로 돌아가기</a></div>
+    </div>
+
     <!-- 비밀번호 재설정 패널 (메일의 재설정 링크로 들어왔을 때만 표시) -->
     <div class="panel" id="panel-reset">
+      <div class="find-head">새 비밀번호 설정</div>
+      <p class="find-desc" id="resetFor">새로 사용할 비밀번호를 입력해 주세요.</p>
       <div class="field">
         <label>새 비밀번호</label>
-        <input type="password" id="resetPw" placeholder="8자 이상 입력해주세요" autocomplete="new-password">
+        <div class="pw-wrap"><input type="password" id="resetPw" placeholder="8자 이상 입력해주세요" autocomplete="new-password" oninput="pwHint()"><button type="button" class="pw-toggle" onclick="togglePw(this)">보기</button></div>
+        <div class="pw-hint" id="pwHint">8자 이상, 영문과 숫자를 섞으면 더 안전해요</div>
       </div>
       <div class="field">
         <label>새 비밀번호 확인</label>
-        <input type="password" id="resetPw2" placeholder="한 번 더 입력해주세요" autocomplete="new-password">
+        <div class="pw-wrap"><input type="password" id="resetPw2" placeholder="한 번 더 입력해주세요" autocomplete="new-password"><button type="button" class="pw-toggle" onclick="togglePw(this)">보기</button></div>
         <div class="err-msg" id="resetErr"></div>
       </div>
       <button class="btn-submit" id="resetBtn" onclick="updatePassword()">비밀번호 변경</button>
@@ -171,6 +202,12 @@ const KAKAO_APP_KEY  = 'd0c68901a08c4272cce34084fca1372d';
 
 // 비밀번호 재설정 메일 링크로 들어온 경우 (클라이언트가 주소의 토큰을 지우기 전에 먼저 확인)
 let IS_RECOVERY = /type=recovery/.test(window.location.hash);
+// 만료되었거나 이미 사용한 재설정 링크 (예: #error=access_denied&error_code=otp_expired)
+const LINK_ERROR = (function(){
+  const h = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+  const q = new URLSearchParams(window.location.search);
+  return h.get('error_code') || h.get('error') || q.get('error_code') || '';
+})();
 
 const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
@@ -193,16 +230,47 @@ function safeRedirect(){
   return sameOriginPath(raw) || 'mypage.html';
 }
 
-// ── 비밀번호 재설정 화면 ──────────────────────────────────
-function showResetPanel(){
+// ── 비밀번호 찾기·재설정 화면 ─────────────────────────────
+function hideEntry(hide){
+  document.querySelector('.tabs').style.display = hide ? 'none' : '';
+  const sbtn = document.querySelector('.social-btns'); if(sbtn) sbtn.style.display = hide ? 'none' : '';
+  const orl = document.querySelector('.or-line'); if(orl) orl.style.display = hide ? 'none' : '';
+}
+function showFindPanel(msg){
+  hideEntry(true);
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-find').classList.add('active');
+  clearAlerts();
+  const le = document.getElementById('loginEmail').value.trim();
+  const fe = document.getElementById('findEmail');
+  if(le && !fe.value) fe.value = le;
+  if(msg) showError(msg);
+  setTimeout(()=>fe.focus(), 50);
+}
+async function showResetPanel(){
   IS_RECOVERY = true;
-  document.querySelector('.tabs').style.display = 'none';
-  const sbtn = document.querySelector('.social-btns'); if(sbtn) sbtn.style.display = 'none';
-  const orl = document.querySelector('.or-line'); if(orl) orl.style.display = 'none';
+  hideEntry(true);
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('panel-reset').classList.add('active');
   clearAlerts();
-  showInfo('새로 사용할 비밀번호를 입력해 주세요');
+  try{
+    const { data:{ session } } = await sb.auth.getSession();
+    if(session && session.user && session.user.email){
+      document.getElementById('resetFor').textContent = session.user.email + ' 계정에서 새로 사용할 비밀번호를 입력해 주세요.';
+    }
+  }catch(e){}
+}
+function togglePw(btn){
+  const input = btn.previousElementSibling;
+  const show = input.type === 'password';
+  input.type = show ? 'text' : 'password';
+  btn.textContent = show ? '숨기기' : '보기';
+}
+function pwHint(){
+  const pw = document.getElementById('resetPw').value, el = document.getElementById('pwHint');
+  const good = pw.length >= 8 && /[A-Za-z]/.test(pw) && /[0-9]/.test(pw);
+  el.textContent = pw.length && pw.length < 8 ? '8자 이상 입력해 주세요 (' + pw.length + '자)' : good ? '사용할 수 있는 비밀번호예요' : '8자 이상, 영문과 숫자를 섞으면 더 안전해요';
+  el.classList.toggle('ok', good);
 }
 async function updatePassword(){
   clearAlerts();
@@ -214,15 +282,28 @@ async function updatePassword(){
   if(pw !== pw2){ err.textContent='두 비밀번호가 서로 달라요'; err.classList.add('show'); return; }
   const btn = document.getElementById('resetBtn');
   btn.disabled = true; btn.textContent = '변경 중...';
+  const { data:{ session } } = await sb.auth.getSession();
+  if(!session){
+    btn.disabled = false; btn.textContent = '비밀번호 변경';
+    showFindPanel('재설정 링크의 유효 시간이 지났어요. 재설정 메일을 다시 받아 주세요.');
+    return;
+  }
   const { error } = await sb.auth.updateUser({ password: pw });
   if(error){
     btn.disabled = false; btn.textContent = '비밀번호 변경';
-    showError('비밀번호를 바꾸지 못했어요. 재설정 메일을 다시 받아 시도해 주세요.');
+    const m = String(error.message || ''), code = String(error.code || '');
+    if(code === 'same_password' || /different from the old/i.test(m)) { err.textContent = '이전과 다른 비밀번호를 입력해 주세요'; err.classList.add('show'); }
+    else if(code === 'weak_password' || /weak|at least/i.test(m)) { err.textContent = '더 안전한 비밀번호를 입력해 주세요 (8자 이상, 영문과 숫자 조합 권장)'; err.classList.add('show'); }
+    else if(/session|expired|jwt/i.test(m)) showFindPanel('재설정 링크의 유효 시간이 지났어요. 재설정 메일을 다시 받아 주세요.');
+    else showError('비밀번호를 바꾸지 못했어요. 잠시 후 다시 시도해 주세요.');
     return;
   }
-  showInfo('✅ 비밀번호를 변경했어요. 잠시 후 이동합니다.');
+  // 다른 기기에 남아 있는 로그인은 정리 (이 기기는 그대로 로그인 유지)
+  try{ await sb.auth.signOut({ scope: 'others' }); }catch(e){}
+  IS_RECOVERY = false;
+  showInfo('✅ 비밀번호를 변경했어요. 다른 기기에서는 새 비밀번호로 다시 로그인해 주세요.');
   btn.textContent = '변경 완료';
-  setTimeout(()=>{ window.location.href = 'mypage.html'; }, 1200);
+  setTimeout(()=>{ window.location.href = 'mypage.html'; }, 1800);
 }
 sb.auth.onAuthStateChange((event)=>{ if(event === 'PASSWORD_RECOVERY') showResetPanel(); });
 if(IS_RECOVERY) document.addEventListener('DOMContentLoaded', showResetPanel);
@@ -230,6 +311,11 @@ if(IS_RECOVERY) document.addEventListener('DOMContentLoaded', showResetPanel);
 // ── 이미 로그인된 경우 리다이렉트 (재설정 중에는 머무름) ────────
 (async()=>{
   if(IS_RECOVERY){ showResetPanel(); return; }
+  if(LINK_ERROR){
+    try{ history.replaceState({}, '', window.location.pathname + window.location.search.replace(/([?&])error[^&]*&?/g,'$1')); }catch(e){}
+    showFindPanel(/expired|otp/i.test(LINK_ERROR) ? '재설정 링크가 만료됐거나 이미 사용됐어요. 아래에서 메일을 다시 받아 주세요.' : '링크를 확인하지 못했어요. 아래에서 재설정 메일을 다시 받아 주세요.');
+    return;
+  }
   const { data:{ session } } = await sb.auth.getSession();
   if(session && !IS_RECOVERY){
     window.location.href = safeRedirect();
@@ -244,6 +330,8 @@ if(IS_RECOVERY) document.addEventListener('DOMContentLoaded', showResetPanel);
 
 // ── 탭 전환 ──────────────────────────────────────────────
 function switchTab(tab){
+  if(!IS_RECOVERY) hideEntry(false);
+  document.getElementById('panel-find').classList.remove('active');
   document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active', (i===0&&tab==='login')||(i===1&&tab==='signup')));
   document.getElementById('panel-login').classList.toggle('active', tab==='login');
   document.getElementById('panel-signup').classList.toggle('active', tab==='signup');
@@ -354,21 +442,52 @@ async function signupEmail(){
   }
 }
 
-// ── 비밀번호 재설정 ────────────────────────────────────────
+// ── 비밀번호 재설정 메일 요청 ──────────────────────────────
+let findCooldown = 0, findTimer = null;
+function startCooldown(sec){
+  const btn = document.getElementById('findBtn');
+  findCooldown = sec; clearInterval(findTimer);
+  const tick = ()=>{
+    if(findCooldown <= 0){ clearInterval(findTimer); btn.disabled = false; btn.textContent = '재설정 메일 다시 받기'; return; }
+    btn.disabled = true; btn.textContent = findCooldown + '초 후 다시 받을 수 있어요'; findCooldown--;
+  };
+  tick(); findTimer = setInterval(tick, 1000);
+}
 async function resetPassword(){
-  const email = document.getElementById('loginEmail').value.trim();
-  if(!email || !email.includes('@')){ showError('이메일을 먼저 입력해주세요'); return; }
+  clearAlerts();
+  const email = document.getElementById('findEmail').value.trim();
+  const err = document.getElementById('findErr');
+  err.classList.remove('show');
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ err.textContent='이메일을 올바르게 입력해 주세요'; err.classList.add('show'); return; }
+  if(findCooldown > 0) return;
+  const btn = document.getElementById('findBtn');
+  btn.disabled = true; btn.textContent = '보내는 중...';
   const { error } = await sb.auth.resetPasswordForEmail(email, {
     redirectTo: window.location.origin + '/login.html',
   });
-  if(error) showError('오류: ' + error.message);
-  else showInfo('✅ 비밀번호 재설정 메일을 발송했습니다');
+  if(error){
+    const m = String(error.message || ''), st = error.status;
+    if(st === 429 || /rate limit|security purposes|too many/i.test(m)){
+      const sec = (m.match(/after (\d+) seconds/) || [])[1];
+      showError(sec ? '조금 전에 메일을 보냈어요. ' + sec + '초 후에 다시 시도해 주세요.' : '지금은 메일 발송 요청이 많아요. 잠시 후 다시 시도하시거나 카카오톡 채널로 문의해 주세요.');
+      startCooldown(sec ? Number(sec) : 60);
+    } else {
+      showError('메일을 보내지 못했어요. 잠시 후 다시 시도해 주세요.');
+      btn.disabled = false; btn.textContent = '재설정 메일 받기';
+    }
+    return;
+  }
+  // 가입 여부를 알려 주지 않도록 같은 안내를 보여 준다
+  showInfo('✅ ' + email + ' 로 가입된 계정이 있으면 재설정 메일을 보냈어요. 메일의 버튼을 눌러 새 비밀번호를 설정해 주세요.');
+  try{ window.SkoposTrack && SkoposTrack.event('password_reset_request',{}); }catch(e){}
+  startCooldown(60);
 }
 
 // ── Enter 키 처리 ─────────────────────────────────────────
 document.addEventListener('keydown', e => {
   if(e.key !== 'Enter') return;
   if(document.getElementById('panel-reset').classList.contains('active')) updatePassword();
+  else if(document.getElementById('panel-find').classList.contains('active')) resetPassword();
   else if(document.getElementById('panel-login').classList.contains('active')) loginEmail();
   else signupEmail();
 });
