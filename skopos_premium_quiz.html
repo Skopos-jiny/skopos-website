@@ -1725,6 +1725,9 @@ const SECTION_INSIGHTS = {
 };
 
 // 점수 → 구간 키 매핑 함수
+// 영역별 공간심리학 해설 (2026-11-18 추가, 채점과 무관)
+const SECTION_SPACE = {"sensory":{"view":"같은 빛과 소리도 사람마다 받아들이는 세기가 다릅니다. 자극을 깊게 받아들이는 사람은 불편도 빨리 느끼지만, 잘 맞는 환경에서 얻는 편안함도 큽니다. 예민함은 고칠 점이 아니라 공간을 고르는 기준입니다.","tips":["저녁에는 천장등 대신 낮은 위치의 조명 하나만 켜 보기","가장 오래 앉는 자리에서 들리는 소리와 보이는 빛을 적어 보기","손이 자주 닿는 곳의 소재 하나 바꾸기"]},"spatial":{"view":"눈에 들어오는 물건이 많으면 쉬는 동안에도 주의가 계속 쓰입니다. 물건의 자리가 정해져 있고 내가 그 질서를 정했다는 느낌(통제감)이 안정감을 만듭니다. 천장과 가구의 높이도 영향을 줍니다. 낮고 아늑한 공간은 안정감을, 높고 트인 공간은 해방감을 주는 경향이 있습니다.","tips":["소파에 앉았을 때 보이는 면부터 비우기","자주 다니는 길에 걸리는 가구 하나 옮기기","키 큰 가구는 한쪽 벽으로 모아 시야 열기"]},"objects":{"view":"사람은 아끼는 물건을 자기의 일부처럼 느낍니다. 기억이 담긴 물건은 낯선 집을 내 집으로 바꾸는 역할을 합니다. 물건이 많은 것보다, 보여 줄 것과 넣어 둘 것이 나뉘지 않은 것이 불편의 원인인 경우가 많습니다.","tips":["가장 아끼는 물건 세 개의 자리를 먼저 정하기","보여 주는 선반은 한두 곳으로 모으기","모서리가 둥근 소품 하나로 방의 인상을 부드럽게 해 보기"]},"color":{"view":"사람은 나무, 돌, 식물처럼 자연을 떠올리게 하는 색과 소재에서 편안함을 느끼는 경향이 있습니다(생명친화 가설). 색의 효과는 사람과 상황에 따라 다르므로, 유행하는 색보다 내가 오래 봐도 편한 색이 기준입니다.","tips":["마음에 드는 공간 사진 다섯 장에서 반복되는 색 세 가지 찾기","샘플은 낮과 저녁에 각각 보기","넓은 면은 차분하게, 바꾸기 쉬운 패브릭에 색 쓰기"]},"life":{"view":"자리는 행동을 부릅니다. 일하는 자리와 쉬는 자리가 같으면 쉬어도 일이 떠오르기 쉽습니다. 내 마음대로 쓸 수 있는 자리(슈필라움)가 작게라도 있을 때 집에서 보내는 시간이 지겹지 않습니다.","tips":["하루를 시간순으로 적고 활동마다 자리를 짝지어 보기","일하는 자리에서 침대가 보이지 않게 방향 바꾸기","취미 도구를 꺼내는 데 걸리는 단계 줄이기"]},"social":{"view":"사람은 상대와의 거리로 편안함을 조절합니다(프록시믹스). 가까운 사이라도 늘 가까이 있고 싶은 것은 아닙니다. 함께 있을 때와 혼자 있을 때를 스스로 고를 수 있을 때 관계도 편해집니다(프라이버시 조절).","tips":["식탁과 소파에서 서로 앉는 거리와 방향 살펴보기(마주 보기, 나란히, 비스듬히)","각자 방해받지 않는 자리와 시간 정하기","함께 사는 사람과 서로의 결과를 놓고 다른 점 이야기하기"]},"identity":{"view":"집은 내가 어떤 사람인지를 확인하는 장소입니다(장소 정체성). 남의 기준으로 꾸민 집은 예뻐도 내 집 같지 않을 수 있습니다. 비싼 것으로 채우는 것보다 내 취향과 관심이 드러나는 것이 내 집이라는 느낌을 만듭니다.","tips":["집에서 가장 나다운 곳 한 곳과 가장 남의 집 같은 곳 한 곳 고르기","싫은 것부터 적고 하나씩 줄이기","바꾸기 쉬운 벽 한 면이나 선반 하나를 내 취향 자리로 정하기"]},"restore":{"view":"사람은 등 뒤가 막혀 있고 앞이 트인 자리에서 편안함을 느끼는 경향이 있습니다(조망-은신 이론). 나무나 하늘처럼 애쓰지 않아도 눈이 가는 풍경은 지친 주의를 쉬게 합니다(주의회복이론).","tips":["소파나 침대를 벽에 등지고 문이나 창이 보이는 방향으로 놓기","쉬는 자리에서 보이는 곳에 식물이나 창밖 풍경 두기","잠자리에서 보이는 물건 줄이기"]}};
+
 function getScoreLevel(score){
   const v = Number(score) || 0;
   if(v <= 30) return 'low';
@@ -1777,13 +1780,13 @@ const QS=[
  t:'집에 들어왔을 때 조명이 너무 밝으면 왠지 긴장이 안 풀린다.',
  keys:{A:{sensory_low:2},D:{sensory_high:2}}},
 {s:0,type:'scale',
- t:'옆집 소음, TV 소리, 공사 소리 같은 소음이 다른 사람보다 더 신경 쓰인다.',
+ t:'옆집 소음, TV 소리, 공사 소리가 들리면 하던 일이나 쉼이 자주 끊긴다.',
  keys:{A:{sensory_low:2,restore:1},D:{sensory_high:2}}},
 {s:0,type:'scale',
  t:'형광등 아래 오래 있으면 이유 없이 피곤해진다.',
  keys:{A:{sensory_low:2,restore:1},D:{sensory_high:1}}},
 {s:0,type:'scale',
- t:'촉감이 좋은 소재(린넨·양모·부클레 등)가 집에 있으면 괜히 기분이 좋다.',
+ t:'촉감이 좋은 소재(린넨·양모·몽글한 부클레 원단 등)가 집에 있으면 기분이 좋아진다.',
  keys:{A:{material:2,cozy:1},D:{minimal_m:1}}},
 {s:0,type:'scale',
  t:'소파나 침구를 고를 때 촉감이 디자인보다 중요하다.',
@@ -1798,7 +1801,7 @@ const QS=[
  t:'공간에 아무런 소리도 없는 완전한 고요함이 불편하기보다 오히려 편하다.',
  keys:{A:{sensory_low:2,solo:1},D:{social_s:1,energy:1}}},
 {s:0,type:'scale',
- t:'자연광과 인공 조명의 차이가 기분에 실제로 영향을 준다고 느낀다.',
+ t:'해가 잘 드는 날과 흐린 날, 집에서 느끼는 기분 차이가 큰 편이다.',
  keys:{A:{light:2,natural_n:1},D:{sensory_high:2}}},
 {s:0,type:'scale',
  t:'향기(아로마·캔들·섬유유연제 등)가 공간의 분위기를 크게 바꾼다고 생각한다.',
@@ -1816,7 +1819,7 @@ const QS=[
  t:'공간의 색감이 너무 강렬하거나 원색이면 오래 있기 불편하다.',
  keys:{A:{sensory_low:2,neutral:1},D:{art:2,bold:1}}},
 {s:0,type:'scale',
- t:'카페나 레스토랑에서도 조명·소음·온도에 민감하게 반응하는 편이다.',
+ t:'카페나 식당에서 조명·소음·온도 때문에 자리를 옮기거나 일찍 나온 적이 있다.',
  keys:{A:{sensory_low:3},D:{sensory_high:2}}},
 {s:0,type:'choice',
  t:'같은 공간에 있는데 남들보다 더 예민하게 반응하는 것은?',
@@ -1837,7 +1840,7 @@ const QS=[
     {l:'크기·기능 (눕기 좋은지)',g:{function:2,cozy:1}},
     {l:'소재 내구성 (오래 쓸 수 있는지)',g:{function:2,minimal_m:1}}]},
 {s:0,type:'scale',
- t:'빛이 잘 드는 창가 자리와 조용한 구석 자리 중 구석이 더 편하다.',
+ t:'카페에서 자리를 고를 때 빛이 드는 창가보다 벽을 등진 조용한 구석 자리로 먼저 간다.',
  keys:{A:{sensory_low:2,solo:1},D:{natural_n:1,social_s:1}}},
 
 // ── 영역 2: 공간·구조 욕구 (Q19~Q36) ──────────────────────────
@@ -1857,10 +1860,10 @@ const QS=[
     {l:'소파 +작은 테이블 (미니멀)',g:{minimal_m:2,control:1}},
     {l:'소파 +다양한 오브제 (풍성한 연출)',g:{display:2,art:2}}]},
 {s:1,type:'scale',
- t:'천장이 낮은 공간에서는 답답함을 느끼고 높은 천장을 선호한다.',
+ t:'천장이 낮은 공간에 오래 있으면 답답해진다.',
  keys:{A:{open:2,luxe:1},D:{cozy:1}}},
 {s:1,type:'scale',
- t:'방이 여러 개로 나뉜 폐쇄형보다 오픈 플랜(거실·주방 연결)을 선호한다.',
+ t:'방으로 나뉜 구조보다 거실과 주방이 벽 없이 이어진 트인 구조가 좋다.',
  keys:{A:{open:2,social_s:2},D:{solo:2,sensory_low:1}}},
 {s:1,type:'choice',
  t:'주방에서 가장 중요한 것은?',
@@ -1908,7 +1911,7 @@ const QS=[
  t:'바닥 소재(원목/타일/카펫)가 집 전체 분위기를 결정한다고 생각한다.',
  keys:{A:{material:2,aesthetic:1},D:{function:1}}},
 {s:1,type:'scale',
- t:'공간이 좁아도 높은 수납장보다 낮은 가구로 시야를 열어두는 게 좋다.',
+ t:'수납이 조금 줄더라도 키 큰 수납장보다 낮은 가구로 시야를 열어 두고 싶다.',
  keys:{A:{open:2,minimal_m:1},D:{function:2,organised:1}}},
 
 // ── 영역 3: 소품·오브제 취향 (Q37~Q54) ──────────────────────────
@@ -1996,7 +1999,7 @@ const QS=[
  t:'공간에 패턴(체크·스트라이프·플로럴 등)이 들어가면 오히려 생동감이 있다.',
  keys:{A:{bold:2,art:2},D:{minimal_m:2,neutral:2}}},
 {s:3,type:'scale',
- t:'소재를 여러 겹 레이어링하는 것(린넨 위에 니트 쿠션·러그 위에 담요)을 좋아한다.',
+ t:'소재를 여러 겹 겹쳐 쓰는 것(린넨 위에 니트 쿠션, 러그 위에 담요)을 좋아한다.',
  keys:{A:{cozy:3,material:2},D:{minimal_m:2}}},
 {s:3,type:'choice',
  t:'가장 끌리는 나무 소재는?',
@@ -2029,7 +2032,7 @@ const QS=[
     {l:'너무 밋밋한 무채색만 (개성 없는)',g:{bold:1,art:1,identity:1}},
     {l:'빈티지와 모던 섞인 (통일감 없는)',g:{control:2,minimal_m:1}}]},
 {s:3,type:'scale',
- t:'테라코타, 세이지 그린, 오브 화이트 같은 자연에서 온 컬러를 선호한다.',
+ t:'테라코타, 세이지 그린, 오프 화이트 같은 자연에서 온 색을 선호한다.',
  keys:{A:{earth:2,natural_n:2},D:{bold:1,luxe:1}}},
 {s:3,type:'scale',
  t:'공간에서 광택 있는 소재(유광 타일·거울·크롬)보다 무광·매트 소재가 좋다.',
@@ -2056,7 +2059,7 @@ const QS=[
  t:'계절에 따라 컬러 포인트를 바꾸는 것(봄=핑크, 겨울=딥 블루)을 해보고 싶다.',
  keys:{A:{display:1,art:1,identity:1},D:{minimal_m:1,control:1}}},
 {s:3,type:'scale',
- t:'집에 골드·황금색 소품이 하나라도 있으면 공간이 한층 올라간다고 느낀다.',
+ t:'골드·황금색 소품이 하나 있으면 공간이 더 고급스러워 보인다.',
  keys:{A:{luxe:3,aesthetic:1},D:{earth:1,minimal_m:1}}},
 
 // ── 영역 5: 라이프스타일·루틴 (Q73~Q90) ──────────────────────────
@@ -2162,7 +2165,7 @@ const QS=[
  t:'아이가 있거나 생길 예정이고 그 공간 설계가 인테리어에 반영되어야 한다.',
  keys:{A:{family:3,function:2},D:{solo:1,minimal_m:1}}},
 {s:5,type:'scale',
- t:'집에 반드시 나만의 공간(방 한 구석이라도)이 있어야 숨통이 트인다.',
+ t:'집에 내 마음대로 할 수 있는 나만의 자리(방 한구석이라도)가 있어야 숨통이 트인다.',
  keys:{A:{solo:3,sensory_low:1},D:{social_s:1,family:1}}},
 {s:5,type:'choice',
  t:'집에서 가족·파트너와 가장 많은 시간을 보내는 활동은?',
@@ -2183,7 +2186,7 @@ const QS=[
     {l:'아늑하고 편안한 분위기',g:{cozy:2,social_s:1}},
     {l:'별로 신경 안 쓴다',g:{adaptable:2,solo:1}}]},
 {s:5,type:'scale',
- t:'같이 사는 사람의 물건이 내 공간으로 넘어오는 것이 불편하다.',
+ t:'같이 사는 사람의 물건이 내 자리(책상, 화장대, 옷장 등)로 넘어와 있으면 불편하다.',
  keys:{A:{control:2,solo:1},D:{family:2,adaptable:2}}},
 {s:5,type:'scale',
  t:'집에서 가족과 함께 식사하는 것이 하루 중 가장 중요한 시간이다.',
@@ -2260,7 +2263,7 @@ const QS=[
  t:'내 집 사진을 SNS에 올리거나 보여주고 싶은 마음이 있다.',
  keys:{A:{identity:2,social_s:1,aesthetic:1},D:{solo:1,minimal_m:1}}},
 {s:6,type:'scale',
- t:'공간에 내가 살아온 레이어(사진·여행 기념품·책 등)가 쌓이는 게 좋다.',
+ t:'내가 살아온 흔적(사진·여행 기념품·책 등)이 집에 쌓여 가는 게 좋다.',
  keys:{A:{story:3,identity:2},D:{minimal_m:2}}},
 {s:6,type:'choice',
  t:'집을 꾸미는 나의 성향은?',
@@ -2283,7 +2286,7 @@ const QS=[
 
 // ── 영역 8: 회복·안정 욕구 (Q127~Q144) ──────────────────────────
 {s:7,type:'scale',
- t:'집에 돌아왔을 때 완전히 긴장이 풀리는 느낌이 있어야 진짜 집이다.',
+ t:'집은 무엇보다 돌아왔을 때 긴장이 완전히 풀리는 곳이어야 한다.',
  keys:{A:{restore:3,sensory_low:1},D:{adaptable:1}}},
 {s:7,type:'scale',
  t:'힘든 하루 후 집이 회복을 못 시켜주면 더 피곤해지는 느낌이 있다.',
@@ -2322,7 +2325,7 @@ const QS=[
  t:'낮에 집에서 낮잠을 자거나 쉬는 시간이 삶의 질에 중요하다.',
  keys:{A:{restore:3,cozy:1},D:{function:1,social_s:1}}},
 {s:7,type:'scale',
- t:'집이 완전한 안식처가 되지 못하면 밖에서도 불안함이 생긴다.',
+ t:'집에서 제대로 쉬지 못한 날은 밖에서도 마음이 편하지 않다.',
  keys:{A:{restore:3,sensory_low:2},D:{adaptable:2,social_s:1}}},
 {s:7,type:'choice',
  t:'명절이나 가족 행사 후 집에 돌아왔을 때?',
@@ -2343,7 +2346,7 @@ const QS=[
     {l:'자연광 +식물 (자연스러운 기상)',g:{natural_n:3,light:1,restore:1}},
     {l:'미니멀하고 깔끔 (아무것도 없는)',g:{minimal_m:3,restore:1}}]},
 {s:7,type:'scale',
- t:'공간이 나를 회복시켜준다고 느낄 때 삶 전체가 달라지는 것을 경험한 적 있다.',
+ t:'조명이나 배치, 정리를 바꾼 뒤 집에서 쉬는 느낌이 달라진 경험이 있다.',
  keys:{A:{restore:2,identity:2},D:{adaptable:1}}},
 {s:7,type:'scale',
  t:'집을 나설 때 잘 정돈된 상태로 두고 나가야 돌아올 때 기분이 좋다.',
@@ -3149,37 +3152,37 @@ const GROUP_INSIGHTS={
 const GROUP_PSYCHOLOGY={
   sanctuary:{
     theory:'환경 회복 이론',
-    theory_en:'Attention Restoration Theory · Kaplan & Kaplan, 1989',
-    science:'하루 종일 여러 자극을 처리한 사람에게는 조용하고 예측 가능한 환경이 큰 도움이 됩니다. 빛, 소리, 물건의 양이 줄어들면 머리가 덜 바쁘고 몸도 천천히 쉬는 모드로 들어가기 쉬워요.',
+    theory_en:'Attention Restoration',
+    science:'하루 종일 여러 자극을 처리한 사람에게는 조용하고 예측 가능한 환경이 큰 도움이 됩니다. 빛, 소리, 물건의 양이 줄어들면 머리가 덜 바쁘고 몸도 천천히 쉬는 모드로 들어가기 쉬워요. 등 뒤가 막혀 있고 앞이 트인 자리에서 편안함을 느끼는 경향(조망-은신)도 같은 맥락이에요.',
     why:'어둑한 조명과 정돈된 공간에서 안도감이 드는 건 이상한 일이 아닙니다. 내 감각이 쉴 수 있는 조건을 몸이 먼저 알아차리는 것이고, 그래서 집은 바깥 자극을 잠시 내려놓는 장소가 되어야 해요.',
   },
   nature:{
     theory:'생명친화 가설',
-    theory_en:'Biophilia Hypothesis · E. O. Wilson, 1984',
+    theory_en:'Biophilia Hypothesis',
     science:'사람은 자연광, 식물, 나무 질감처럼 자연을 떠올리게 하는 요소에서 편안함을 느끼는 경우가 많습니다. 초록이 보이고 소재가 부드러우면 공간이 덜 건조하고 더 살아있는 느낌을 줍니다.',
     why:'식물을 볼 때 마음이 느슨해지고 원목을 만질 때 안정감이 드는 건 자연스러운 반응입니다. 집 안에 작은 자연을 들이면, 바쁜 도심 생활 속에서도 숨을 고를 자리가 생깁니다.',
   },
   luxe:{
-    theory:'미적 자기개념 이론',
-    theory_en:'Aesthetic Self-Concept Theory',
+    theory:'자기 일치 개념',
+    theory_en:'Self-Congruity',
     science:'잘 만들어진 물건과 정돈된 마감은 생활의 태도까지 바꿔놓을 때가 있습니다. 매일 보는 소재와 디테일이 만족스러우면 공간을 더 아끼게 되고, 그 안에서의 하루도 조금 더 단정해져요.',
     why:'좋은 호텔이나 잘 꾸민 공간에 들어갔을 때 자세가 달라지는 경험이 있다면, 이 유형의 감각을 이해하기 쉽습니다. 아름다운 디테일은 보여주기 위한 장식이 아니라 나를 대하는 방식에 가깝습니다.',
   },
   artistic:{
     theory:'확장된 자기 이론',
-    theory_en:'Extended Self Theory · Belk, 1988',
+    theory_en:'Extended Self',
     science:'사람은 자신이 고른 물건과 배치 속에서 자기 이야기를 확인합니다. 책, 그림, 여행지에서 산 소품처럼 개인의 시간이 담긴 물건은 공간을 단순한 집이 아니라 나를 설명하는 장면으로 만들어줘요.',
     why:'남들이 다 좋아하는 집보다 내가 볼 때 나다운 집이 더 편할 수 있습니다. 취향이 선명할수록 집은 쉬는 곳을 넘어 나를 확인하는 공간이 됩니다.',
   },
   minimal:{
-    theory:'인지 부하 이론',
-    theory_en:'Cognitive Load Theory · Sweller, 1988',
+    theory:'시각적 복잡성과 주의 부담',
+    theory_en:'Visual Complexity and Attention',
     science:'눈에 보이는 물건이 많을수록 머릿속도 분주해지기 쉽습니다. 정돈된 공간에서는 해야 할 일과 쉴 일이 더 잘 구분되고, 집중할 때도 방해 요소가 줄어듭니다.',
     why:'물건을 줄였을 때 마음까지 가벼워지는 느낌은 충분히 자연스럽습니다. 이 유형에게 비움은 차가운 취향이 아니라 하루를 가볍게 시작하기 위한 생활 방식입니다.',
   },
   cozy:{
-    theory:'안전 기지 이론',
-    theory_en:'Secure Base Theory · Bowlby, 1969',
+    theory:'안전 기지 개념',
+    theory_en:'Secure Base · 애착 이론에서 빌린 설명',
     science:'부드러운 촉감, 낮은 조도, 따뜻한 색감은 많은 사람에게 안정감을 줍니다. 특히 함께 머무는 시간이 중요한 사람에게 이런 요소는 대화와 휴식을 더 편하게 만들어줍니다.',
     why:'폭신한 소파와 따뜻한 조명이 좋은 이유는 단순히 예뻐서만은 아닙니다. 그 안에서 긴장이 풀리고, 같이 있는 사람과의 시간이 더 자연스럽게 이어지기 때문이에요.',
   },
@@ -4751,6 +4754,7 @@ function renderResult(t,scores){
                 <div class="sdd-detail-text">${krText(insight.impl)}</div>
               </div>
             </div>
+            ${(()=>{const sp=(typeof SECTION_SPACE!=='undefined')&&SECTION_SPACE[sec.key];if(!sp)return '';return `<div class="sdd-detail" style="margin-top:10px"><div class="sdd-detail-label">📐 공간심리학으로 보면</div><div class="sdd-detail-text">${krText(sp.view)}</div></div><div class="sdd-detail" style="margin-top:10px"><div class="sdd-detail-label">✅ 바로 해 볼 것</div><div class="sdd-detail-text">${sp.tips.map(x=>'· '+krText(x)).join('<br>')}</div></div>`;})()}
           </div>`;
       }).join('');
 
@@ -6601,6 +6605,7 @@ async function downloadPDF(){
               <div class="pdf-top-detail-text">${krText(insight.impl)}</div>
             </div>
           </div>
+          ${(()=>{const sp=(typeof SECTION_SPACE!=='undefined')&&SECTION_SPACE[item.sec.key];if(!sp)return '';return `<div class="pdf-top-detail-grid" style="margin-top:12px"><div class="pdf-top-detail"><div class="pdf-top-detail-label">📐 공간심리학으로 보면</div><div class="pdf-top-detail-text">${krText(sp.view)}</div></div><div class="pdf-top-detail"><div class="pdf-top-detail-label">✅ 바로 해 볼 것</div><div class="pdf-top-detail-text">${sp.tips.map(x=>'· '+krText(x)).join('<br>')}</div></div></div>`;})()}
         </div>
 
         <div class="pdf-top-tip" style="border-left:3px solid ${item.color}">
