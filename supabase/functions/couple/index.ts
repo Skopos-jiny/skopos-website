@@ -38,6 +38,42 @@ async function findCouple(sb, uid) {
   return data && data.length ? data[0] : null;
 }
 
+async function ensureEntitlement(sb, me, code) {
+  // 파트너 정밀 검사 이용권이 없으면 발급. 이미 있으면 그대로 true
+  const { data: ent, error: eErr } = await sb.from('payments').select('id')
+    .eq('user_id', me.id).in('status', ['paid', 'free']).neq('product', 'interior').limit(1);
+  if (eErr) throw eErr;
+  if (ent && ent.length) return true;
+  const { error: pErr } = await sb.from('payments').insert([{
+    user_id: me.id,
+    imp_uid: null,
+    merchant_uid: 'COUPLE-' + code,
+    pg: 'couple',
+    product: 'premium',
+    amount: 0,
+    original_amount: 0,
+    discount_amount: 0,
+    final_amount: 0,
+    coupon_code: null,
+    buyer_name: displayName(me),
+    buyer_email: me.email || '',
+    buyer_phone: '',
+    status: 'free',
+    paid_at: new Date().toISOString(),
+    order_name: 'SKOPOS SDTI 커플 진단 (파트너 이용권)',
+  }]);
+  if (pErr) { console.error('partner entitlement insert failed:', pErr.message); return false; }
+  return true;
+}
+
+async function grantWithRetry(sb, me, code) {
+  for (let i = 0; i < 2; i++) {
+    try { if (await ensureEntitlement(sb, me, code)) return true; }
+    catch (e) { console.error('partner entitlement failed:', e?.message || e); }
+  }
+  return false;
+}
+
 const handler = async (event) => {
   if (event.httpMethod !== 'POST') return json(405, { success: false, message: 'Method Not Allowed' });
   const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
@@ -82,26 +118,16 @@ const handler = async (event) => {
       }
 
       // 파트너 정밀 검사 이용권 (이미 이용권이 있으면 생략)
-      const { data: ent } = await sb.from('payments').select('id').eq('user_id', me.id).in('status', ['paid', 'free']).neq('product', 'interior').limit(1);
-      if (!ent || !ent.length) {
-        const { error: pErr } = await sb.from('payments').insert([{
-          user_id: me.id,
-          imp_uid: null,
-          merchant_uid: 'COUPLE-' + code,
-          pg: 'couple',
-          amount: 0,
-          original_amount: 0,
-          discount_amount: 0,
-          final_amount: 0,
-          coupon_code: null,
-          buyer_name: displayName(me),
-          buyer_email: me.email || '',
-          buyer_phone: '',
-          status: 'free',
-          paid_at: new Date().toISOString(),
-          order_name: 'SKOPOS SDTI 커플 진단 (파트너 이용권)',
-        }]);
-        if (pErr) console.error('partner entitlement insert failed:', pErr.message);
+      // 연결과 이용권 발급을 함께 끝내야 성공으로 응답한다. 발급이 실패하면 연결은 그대로 두고
+      // 같은 코드로 다시 요청하면(이미 연결된 본인) 이 단계만 다시 실행되어 이용권이 복구된다.
+      const granted = await grantWithRetry(sb, me, code);
+      if (!granted) {
+        return json(503, {
+          success: false,
+          paired: true,
+          retry: true,
+          message: '파트너 연결은 완료됐지만 검사 이용권 발급이 끝나지 않았어요. 잠시 후 같은 초대 코드로 다시 시도해 주세요.',
+        });
       }
       return json(200, { success: true, code });
     }
@@ -110,6 +136,16 @@ const handler = async (event) => {
     if (!c) return json(200, { success: true, couple: null });
 
     const role = c.owner_id === me.id ? 'owner' : 'partner';
+    // 연결은 됐는데 이용권 발급이 실패했던 파트너는 상태를 확인할 때 이용권을 다시 발급해 복구한다
+    let entitlementPending = false;
+    if (role === 'partner') {
+      let ownerCancelled = false;
+      if (c.imp_uid) {
+        const { data: ownerPay } = await sb.from('payments').select('status').eq('imp_uid', c.imp_uid).maybeSingle();
+        ownerCancelled = !!(ownerPay && ownerPay.status === 'cancelled');
+      }
+      if (!ownerCancelled) entitlementPending = !(await grantWithRetry(sb, me, c.code));
+    }
     const partnerId = role === 'owner' ? c.partner_id : c.owner_id;
     const [myRes, partnerRes] = await Promise.all([latestResult(sb, me.id), latestResult(sb, partnerId)]);
     let partnerName = '';
@@ -126,6 +162,7 @@ const handler = async (event) => {
       partner_name: partnerName,
       my_done: !!myRes,
       partner_done: !!partnerRes,
+      entitlement_pending: entitlementPending,
     };
 
     if (action === 'report') {
