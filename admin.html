@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>관리자 화면 | SKOPOS 스코포스</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="/skopos-shell.css?v=20261116">
+<style>
+:root{--pink:#E91E8C;--ink:#0F0F1A;--mid:#5A5A6E;--gray:#8890A4;--line:#E4E7EF;--bg:#F7F8FC}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var(--bg);color:var(--ink);word-break:keep-all;line-height:1.6}
+main{max-width:1180px;margin:0 auto;padding:28px 24px 60px}
+[hidden]{display:none!important}
+.card{background:#fff;border-radius:18px;padding:20px;box-shadow:0 4px 20px rgba(15,15,26,.05);margin-bottom:16px}
+.msg{font-size:.86rem;color:var(--mid);margin:0}
+.msg.err{color:#C0264B}.msg.ok{color:#15803d}
+.tiles.t4{grid-template-columns:repeat(4,1fr)}
+.tile{cursor:pointer;text-align:left}
+.tile.on{outline:2px solid var(--pink)}
+.tile.warn b{color:#B07800}.tile.ok b{color:#15803d}.tile.off b{color:#C0264B}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.search{flex:1;min-width:200px;max-width:360px;padding:9px 14px;border:1px solid var(--line);border-radius:50px;font:inherit;font-size:.86rem;background:#fff}
+.btn{display:inline-block;padding:9px 16px;border:0;border-radius:50px;background:var(--pink);color:#fff;font-weight:800;font-size:.82rem;cursor:pointer;font-family:inherit;text-decoration:none;white-space:nowrap}
+.btn.sub{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+.btn.ok{background:#15803d}.btn.off{background:#fff;color:#C0264B;border:1.5px solid #F3C2CC}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.list{display:grid;gap:12px}
+.biz{background:#fff;border-radius:16px;padding:18px 20px;box-shadow:0 2px 12px rgba(0,0,0,.05)}
+.biz .top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.biz h3{margin:0;font-size:1.05rem;font-weight:800;overflow-wrap:anywhere}
+.biz .sub{font-size:.8rem;color:var(--gray);margin-top:2px}
+.pill{display:inline-block;font-size:.74rem;font-weight:800;padding:4px 10px;border-radius:50px;background:#EEF0F6;color:var(--mid);white-space:nowrap;vertical-align:middle;margin-left:6px}
+.pill.ok{background:#E7F6EC;color:#15803d}.pill.warn{background:#FFF4DC;color:#8A6100}.pill.off{background:#FDECEF;color:#C0264B}
+.kv{display:grid;grid-template-columns:repeat(4,1fr);gap:10px 16px;margin-top:14px;font-size:.84rem}
+.kv div small{display:block;font-size:.72rem;font-weight:700;color:var(--gray)}
+.kv div span{overflow-wrap:anywhere}
+.copy{border:0;background:none;color:#0E7C7B;font:inherit;font-size:.74rem;font-weight:700;cursor:pointer;padding:0 0 0 6px}
+.review{margin-top:12px;padding:10px 12px;border-radius:10px;background:#F7F8FC;font-size:.8rem;color:var(--mid)}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.log{margin-top:10px;font-size:.8rem;color:var(--mid);border-top:1px solid var(--line);padding-top:10px}
+.log div{padding:4px 0}
+.empty{font-size:.88rem;color:var(--gray);text-align:center;padding:26px 0}
+.modal{position:fixed;inset:0;z-index:400;background:rgba(15,15,26,.5);display:flex;align-items:center;justify-content:center;padding:16px}
+.modal .box{background:#fff;border-radius:18px;width:100%;max-width:440px;padding:22px}
+.modal h3{margin:0 0 6px;font-size:1.02rem}
+.modal p{margin:0 0 12px;font-size:.86rem;color:var(--mid)}
+.modal textarea{width:100%;min-height:96px;border:1.5px solid var(--line);border-radius:12px;padding:12px;font:inherit;font-size:.88rem;resize:vertical}
+.modal .row{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
+@media(max-width:860px){.tiles.t4{grid-template-columns:1fr 1fr}.kv{grid-template-columns:1fr 1fr}}
+@media(max-width:500px){main{padding:20px 16px 50px}.kv{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="shell">
+<aside class="side" id="side">
+  <a class="side-logo" href="/">SKO<span>POS</span></a>
+  <div class="ws-card"><small>관리자</small><b>스코포스 운영</b><span id="adminWho">확인 중</span></div>
+  <div class="side-menu">
+    <button type="button" class="on"><span class="ico">🏢</span>등록 업체 관리<span class="cnt" id="cntPending" hidden></span></button>
+    <a href="/mypage"><span class="ico">👤</span>내 마이페이지</a>
+  </div>
+  <div class="side-foot">
+    <button type="button" id="logoutBtn">로그아웃</button>
+  </div>
+</aside>
+<div class="scrim" id="scrim"></div>
+<div class="shell-main">
+<nav class="topbar">
+  <button type="button" class="burger" id="burger" aria-label="메뉴 열기">☰</button>
+  <h1>등록 업체 관리</h1>
+  <span class="who" id="who"></span>
+</nav>
+<main>
+  <div class="pg-head"><div><h2>등록 업체 현황</h2><p>업체가 등록한 사업자 정보를 확인하고 승인하거나 이용을 중지해요. 확인 중인 업체도 서비스는 쓸 수 있고, 초대 메일은 하루 20건으로 제한돼요(승인 후 200건).</p></div></div>
+  <div class="card" id="gate"><p class="msg" id="gateMsg">관리자 권한을 확인하고 있어요...</p></div>
+
+  <div id="app" hidden>
+    <div class="tiles t4" id="tiles">
+      <button type="button" class="tile on" data-f="all"><small>전체</small><b id="tAll">0</b><span>등록 업체</span></button>
+      <button type="button" class="tile warn" data-f="pending"><small>확인 중</small><b id="tPending">0</b><span>승인 대기</span></button>
+      <button type="button" class="tile ok" data-f="verified"><small>확인 완료</small><b id="tVerified">0</b><span>승인됨</span></button>
+      <button type="button" class="tile off" data-f="suspended"><small>이용 중지</small><b id="tSuspended">0</b><span>중지됨</span></button>
+    </div>
+    <div class="toolbar">
+      <input class="search" id="q" type="search" placeholder="업체명, 사업자번호, 담당자, 계정 이메일 검색">
+      <button type="button" class="btn sub" id="reload">새로고침</button>
+      <span class="msg" id="appMsg"></span>
+    </div>
+    <div class="list" id="list"></div>
+  </div>
+</main>
+</div>
+</div>
+
+<div class="modal" id="modal" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+    <h3 id="mTitle"></h3>
+    <p id="mDesc"></p>
+    <textarea id="mNote" maxlength="300" placeholder="처리 메모 (업체에는 보이지 않아요)"></textarea>
+    <p class="msg err" id="mErr" style="margin-top:8px"></p>
+    <div class="row"><button type="button" class="btn sub" id="mCancel">취소</button><button type="button" class="btn" id="mOk">확인</button></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.js"></script>
+<script src="skopos-auth.js"></script>
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const STATUS = { pending:['확인 중','warn'], verified:['확인 완료','ok'], suspended:['이용 중지','off'] };
+  const fmtNo = n => /^\d{10}$/.test(n||'') ? n.slice(0,3)+'-'+n.slice(3,5)+'-'+n.slice(5) : (n||'');
+  const fmtD = d => d ? new Date(d).toLocaleString('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}) : '-';
+  const rem = c => c ? Math.max((c.total||0)-(c.used||0),0)+'회 남음 / '+(c.total||0)+'회' : '-';
+  let sb = null, rows = [], filter = 'all', openLog = {};
+
+  function setMsg(el, t, cls){ el.textContent = t || ''; el.className = 'msg' + (cls ? ' ' + cls : ''); }
+
+  async function load(){
+    setMsg($('appMsg'), '불러오는 중...');
+    const { data, error } = await sb.rpc('admin_businesses');
+    if (error || !data || !data.ok) { setMsg($('appMsg'), '업체 목록을 불러오지 못했어요.', 'err'); return; }
+    rows = data.businesses || [];
+    const s = data.summary || {};
+    $('tAll').textContent = s.total || 0; $('tPending').textContent = s.pending || 0;
+    $('tVerified').textContent = s.verified || 0; $('tSuspended').textContent = s.suspended || 0;
+    const cp = $('cntPending'); cp.textContent = s.pending || 0; cp.hidden = !s.pending;
+    setMsg($('appMsg'), '');
+    render();
+  }
+
+  function render(){
+    const q = $('q').value.trim().toLowerCase();
+    const qd = q.replace(/[^0-9]/g,'');
+    const list = rows.filter(b => (filter === 'all' || b.status === filter) && (!q ||
+      [b.name, b.manager_name, b.ceo_name, b.owner_email, b.email].some(v => String(v||'').toLowerCase().includes(q)) ||
+      (qd && String(b.biz_no||'').includes(qd))));
+    if (!list.length) { $('list').innerHTML = '<div class="empty">' + (rows.length ? '조건에 맞는 업체가 없어요.' : '아직 등록한 업체가 없어요.') + '</div>'; return; }
+    $('list').innerHTML = list.map(b => {
+      const st = STATUS[b.status] || STATUS.pending, id = esc(b.id);
+      const lr = b.last_review;
+      const acts = [];
+      if (b.status !== 'verified') acts.push('<button type="button" class="btn ok" data-act="verified" data-id="'+id+'">승인</button>');
+      if (b.status === 'verified') acts.push('<button type="button" class="btn sub" data-act="pending" data-id="'+id+'">확인 중으로 되돌리기</button>');
+      if (b.status !== 'suspended') acts.push('<button type="button" class="btn off" data-act="suspended" data-id="'+id+'">이용 중지</button>');
+      acts.push('<button type="button" class="btn sub" data-log="'+id+'">'+(openLog[b.id] ? '이력 닫기' : '처리 이력')+'</button>');
+      return '<div class="biz">' +
+        '<div class="top"><div><h3>' + esc(b.name) + '<span class="pill ' + st[1] + '">' + st[0] + '</span></h3>' +
+        '<div class="sub">등록 ' + esc(fmtD(b.created_at)) + (b.updated_at && b.updated_at !== b.created_at ? ' · 수정 ' + esc(fmtD(b.updated_at)) : '') + '</div></div></div>' +
+        '<div class="kv">' +
+          '<div><small>사업자등록번호</small><span>' + esc(fmtNo(b.biz_no)) + '</span><button type="button" class="copy" data-copy="' + esc(b.biz_no) + '">복사</button></div>' +
+          '<div><small>대표자</small><span>' + esc(b.ceo_name || '-') + '</span></div>' +
+          '<div><small>담당자 · 연락처</small><span>' + esc(b.manager_name || '-') + ' · ' + esc(b.phone || '-') + '</span></div>' +
+          '<div><small>업체 이메일</small><span>' + esc(b.email || '-') + '</span></div>' +
+          '<div><small>가입 계정</small><span>' + esc(b.owner_email || '-') + '</span></div>' +
+          '<div><small>최근 로그인</small><span>' + esc(fmtD(b.owner_last_sign_in)) + '</span></div>' +
+          '<div><small>고객 · 검사 완료</small><span>' + (b.clients||0) + '명 · ' + (b.completed||0) + '건</span></div>' +
+          '<div><small>이용권 (인테리어 / 정밀)</small><span>' + esc(rem(b.interior_credits)) + '<br>' + esc(rem(b.premium_credits)) + '</span></div>' +
+        '</div>' +
+        (lr ? '<div class="review">최근 처리: ' + esc((STATUS[lr.from]||[lr.from])[0]) + ' → ' + esc((STATUS[lr.to]||[lr.to])[0]) + ' · ' + esc(fmtD(lr.at)) + ' · ' + esc(lr.by || '') + (lr.note ? '<br>메모: ' + esc(lr.note) : '') + '</div>' : '') +
+        '<div class="acts">' + acts.join('') + '</div>' +
+        (openLog[b.id] ? '<div class="log" id="log-' + id + '">이력을 불러오는 중...</div>' : '') +
+      '</div>';
+    }).join('');
+    Object.keys(openLog).forEach(id => { if (openLog[id]) fillLog(id); });
+  }
+
+  async function fillLog(id){
+    const el = document.getElementById('log-' + id); if (!el) return;
+    const { data, error } = await sb.rpc('admin_business_log', { p_id: id });
+    if (error || !data || !data.ok) { el.textContent = '이력을 불러오지 못했어요.'; return; }
+    el.innerHTML = data.log.length ? data.log.map(l => '<div>' + esc(fmtD(l.at)) + ' · ' + esc((STATUS[l.from]||[l.from])[0]) + ' → ' + esc((STATUS[l.to]||[l.to])[0]) + ' · ' + esc(l.by || '') + (l.note ? ' · ' + esc(l.note) : '') + '</div>').join('') : '<div>아직 처리 이력이 없어요.</div>';
+  }
+
+  let pending = null;
+  const ACT = {
+    verified: ['업체를 승인할까요?', '확인 완료로 바뀌고 초대 메일 한도가 하루 200건으로 늘어나요.', '승인'],
+    pending: ['확인 중으로 되돌릴까요?', '업체는 계속 이용할 수 있고 초대 메일은 하루 20건으로 제한돼요.', '되돌리기'],
+    suspended: ['업체 이용을 중지할까요?', '업체 화면에서 고객 추가, 검사 링크 발송, 결과 열람이 막혀요. 중지 사유를 꼭 적어 주세요.', '이용 중지'],
+  };
+  function ask(id, act){
+    const b = rows.find(x => x.id === id); if (!b) return;
+    pending = { id, act };
+    $('mTitle').textContent = b.name + ': ' + ACT[act][0];
+    $('mDesc').textContent = ACT[act][1];
+    $('mOk').textContent = ACT[act][2];
+    $('mNote').value = ''; setMsg($('mErr'), '', 'err');
+    $('modal').hidden = false; $('mNote').focus();
+  }
+  async function confirmAct(){
+    if (!pending) return;
+    const note = $('mNote').value.trim();
+    if (pending.act === 'suspended' && note.length < 2) { setMsg($('mErr'), '중지 사유를 적어 주세요.', 'err'); return; }
+    $('mOk').disabled = true;
+    const { data, error } = await sb.rpc('admin_business_set_status', { p_id: pending.id, p_status: pending.act, p_note: note });
+    $('mOk').disabled = false;
+    if (error || !data || !data.ok) {
+      const r = data && data.reason;
+      setMsg($('mErr'), r === 'forbidden' ? '관리자 권한이 없어요.' : r === 'not_found' ? '업체를 찾지 못했어요.' : '처리하지 못했어요. 잠시 후 다시 시도해 주세요.', 'err');
+      return;
+    }
+    $('modal').hidden = true; pending = null;
+    setMsg($('appMsg'), '처리했어요.', 'ok');
+    await load();
+  }
+
+  $('list').addEventListener('click', e => {
+    const t = e.target.closest('button'); if (!t) return;
+    if (t.dataset.act) ask(t.dataset.id, t.dataset.act);
+    else if (t.dataset.log) { openLog[t.dataset.log] = !openLog[t.dataset.log]; render(); }
+    else if (t.dataset.copy) { try { navigator.clipboard.writeText(t.dataset.copy); t.textContent = '복사됨'; setTimeout(() => t.textContent = '복사', 1200); } catch (_) {} }
+  });
+  $('tiles').addEventListener('click', e => {
+    const t = e.target.closest('.tile'); if (!t) return;
+    filter = t.dataset.f; document.querySelectorAll('.tile').forEach(x => x.classList.toggle('on', x === t)); render();
+  });
+  $('q').addEventListener('input', render);
+  $('reload').addEventListener('click', load);
+  $('mCancel').addEventListener('click', () => { $('modal').hidden = true; pending = null; });
+  $('mOk').addEventListener('click', confirmAct);
+  $('modal').addEventListener('click', e => { if (e.target === $('modal')) { $('modal').hidden = true; pending = null; } });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('modal').hidden) { $('modal').hidden = true; pending = null; } });
+  function closeSide(){ $('side').classList.remove('open'); $('scrim').classList.remove('open'); }
+  $('burger').addEventListener('click', () => { $('side').classList.add('open'); $('scrim').classList.add('open'); });
+  $('scrim').addEventListener('click', closeSide);
+  $('logoutBtn').addEventListener('click', async () => { try { await sb.auth.signOut(); } catch (e) {} location.href = '/login.html'; });
+
+  SkoposAuth.guard({
+    title: '관리자 화면',
+    subtitle: '관리자 계정으로 로그인해 주세요.',
+    async onReady(u){
+      try {
+        sb = await SkoposAuth.getClient();
+        const em = (u && u.email) || '';
+        $('who').textContent = em; $('adminWho').textContent = em;
+        const { data, error } = await sb.rpc('admin_me');
+        if (error || !data || !data.ok || !data.admin) {
+          setMsg($('gateMsg'), '관리자 권한이 없는 계정이에요. 관리자 계정으로 다시 로그인해 주세요.', 'err');
+          return;
+        }
+        $('gate').hidden = true; $('app').hidden = false;
+        await load();
+      } catch (e) { setMsg($('gateMsg'), '관리자 정보를 불러오지 못했어요. 잠시 후 새로고침해 주세요.', 'err'); }
+    }
+  });
+})();
+</script>
+</body>
+</html>

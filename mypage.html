@@ -168,6 +168,7 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFo
   <a class="ws-card" id="wsCard" href="/business" hidden><small>내 업체</small><b id="wsName"></b><span id="wsStatus"></span></a>
   <div class="side-menu">
     <button type="button" data-tab="shares" id="navShares" hidden><span class="ico">🤝</span>업체 공유 관리<span class="cnt" id="cntShares" hidden></span></button>
+    <a href="/admin" id="navAdmin" hidden><span class="ico">🛡️</span>관리자 화면<span class="cnt" id="cntAdmin" hidden></span></a>
     <button type="button" data-tab="account"><span class="ico">⚙️</span>계정 설정</button>
   </div>
   <div class="side-foot">
@@ -350,7 +351,7 @@ function toast(msg, dur=2800){
   else{badgeEl.textContent='이메일 가입';badgeEl.className='profile-badge badge-email';}
 
   // 병렬 로드
-  await Promise.all([renderResults(session.user), renderPayments(session.user), renderCouple(session), renderInterior(session.user), renderShares()]);
+  await Promise.all([renderResults(session.user), renderPayments(session.user), renderCouple(session), renderInterior(session.user), renderShares(), renderAdminLink()]);
 })();
 
 // HTML 이스케이프 (DB·세션 값은 화면에 넣기 전에 반드시 통과)
@@ -418,6 +419,13 @@ function makeResultCard(r){
 // ── 인테리어 공간욕구검사 (베타) 저장 결과 ──────────────────────
 const INTERIOR_DIMS={sensory:'빛·소리 민감도',spatial:'동선·정리 욕구',objects:'소품·살림 취향',color:'색감·소재 취향',life:'집에서 보내는 시간',social:'함께 사는 방식',identity:'나를 드러내는 취향',restore:'쉼·회복 욕구'};
 // ── 업체에 공유 중인 인테리어 검사 결과 + 업체 화면 바로가기 ──────────
+// 관리자 계정이면 관리자 화면 바로가기와 승인 대기 업체 수를 보여 준다
+async function renderAdminLink(){
+  try{const {data}=await sb.rpc('admin_me');if(!data||!data.ok||!data.admin)return;
+    document.getElementById('navAdmin').hidden=false;
+    const {data:l}=await sb.rpc('admin_businesses');const n=(l&&l.ok&&l.summary&&l.summary.pending)||0;
+    const c=document.getElementById('cntAdmin');c.textContent=n;c.hidden=!n;}catch(_){}
+}
 async function renderShares(){
   const area=document.getElementById('sharesArea');if(!area)return;
   const e=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
