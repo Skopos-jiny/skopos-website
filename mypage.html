@@ -88,6 +88,9 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFo
 .cc-doc b{display:block;font-size:.8rem;color:#0F0F1A}.cc-doc span{display:block;font-size:.7rem;color:#8890A4;margin:2px 0 10px}
 .cc-btns{display:flex;gap:6px;flex-wrap:wrap}
 .cc-btns a{text-decoration:none}
+.cc-sts{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.cc-st{font-size:.68rem;font-weight:700;color:#8890A4;background:#F1EFF6;border-radius:50px;padding:4px 10px}
+.cc-st.ok{color:#027a35;background:#E7F6EC}
 @media(max-width:500px){.cc-docs{grid-template-columns:1fr}}
 
 /* 빈 상태 */
@@ -535,6 +538,20 @@ async function renderPayments(user){
 }
 
 // ── 커플 진단 결과지 ─────────────────────────────────────────
+let _cp = null;
+async function coupleSend(kind){
+  const c=_cp||{}, code=c.code||'', my=c.my_name||'', O=location.origin;
+  let url, text, title, done;
+  if(kind==='code'){ try{ await navigator.clipboard.writeText(code); toast('초대 코드를 복사했어요.'); }catch(e){ prompt('초대 코드', code); } return; }
+  if(kind==='nudge'){ url=O+'/couple.html'; title='SKOPOS 커플 진단'; done='검사 알림 링크를 복사했어요.';
+    text=(my?my+'님이 ':'')+'커플 진단 검사를 기다리고 있어요. 정밀 검사를 마치면 두 사람의 결과지가 바로 나와요.'; }
+  else if(kind==='report'){ url=O+'/couple.html#couple'; title='SKOPOS 커플 진단 결과지'; done='결과지 링크를 복사했어요. 로그인한 두 분만 열 수 있어요.';
+    text='우리 커플 진단 결과지가 나왔어요. 로그인하면 개인 결과지와 커플 솔루션 결과지를 볼 수 있어요.'; }
+  else { url=O+'/couple.html?invite='+encodeURIComponent(code); title='SKOPOS 커플 검사 초대'; done='초대 링크를 복사했어요. 함께할 분께 보내 주세요.';
+    text=(my?my+'님이 ':'')+'SKOPOS 커플 진단에 초대했어요. 링크로 로그인하거나, 결제 화면에서 초대 코드 '+code+' 를 입력하면 정밀 검사를 바로 시작할 수 있어요.'; }
+  try{ if(navigator.share){ await navigator.share({title,text,url}); return; } }catch(e){ return; }
+  try{ await navigator.clipboard.writeText(text+'\n'+url); toast(done); }catch(e){ prompt('아래 링크를 복사해 보내 주세요', url); }
+}
 async function renderCouple(session){
   const area = document.getElementById('coupleArea');
   try{
@@ -542,18 +559,28 @@ async function renderCouple(session){
     const j = await r.json();
     if(!j.success || !j.couple) return;
     const c = j.couple, my = esc(c.my_name || '나'), pt = esc(c.partner_name || '파트너');
+    _cp = c;
     const ready = c.my_done && c.partner_done;
     const step = !c.paired ? '파트너 초대를 기다리고 있어요' : !c.my_done ? '내 정밀 검사를 진행해 주세요' : !c.partner_done ? `${pt}님의 정밀 검사를 기다리고 있어요` : '결과지 2부가 발급됐어요';
+    const st = (ok,label)=>'<span class="cc-st'+(ok?' ok':'')+'">'+(ok?'✓ ':'')+label+'</span>';
+    const steps = '<div class="cc-sts">'+st(true,c.role==='owner'?'결제':'연결')+st(c.paired,'파트너 연결')+st(c.my_done,'내 검사')+st(c.partner_done,(c.paired?pt+'님':'파트너')+' 검사')+'</div>';
+    let acts = '';
+    if(!c.my_done) acts += '<a class="btn-sm btn-pdf" href="skopos_premium_quiz.html">내 정밀 검사 시작하기</a>';
+    if(!c.paired && c.role==='owner') acts += '<button type="button" class="btn-sm btn-view" onclick="coupleSend(\'invite\')">초대 링크 보내기</button><button type="button" class="btn-sm btn-view" onclick="coupleSend(\'code\')">코드 복사</button>';
+    if(c.paired && !c.partner_done) acts += '<button type="button" class="btn-sm btn-view" onclick="coupleSend(\'nudge\')">'+pt+'님께 검사 알림 보내기</button>';
+    acts += '<a class="btn-sm btn-view" href="couple.html">진행 상황 보기</a>';
     area.innerHTML = `<div class="couple-card">
       <div class="cc-top"><span class="cc-tag">커플 진단</span><span class="cc-code">초대 코드 ${esc(c.code)}</span></div>
       <div class="cc-title">${my}님 × ${c.paired?pt+'님':'파트너'}</div>
       <div class="cc-step ${ready?'ok':''}">${step}</div>
+      ${steps}
       ${ready ? `<div class="cc-docs">
         <div class="cc-doc"><b>결과지 1 · 개인 결과지</b><span>나의 8개 영역 프로파일과 공간 처방</span>
           <div class="cc-btns"><a class="btn-sm btn-view" href="couple.html#personal">보기</a><a class="btn-sm btn-pdf" href="couple.html?dl=personal" target="_blank" rel="noopener">📄 PDF 저장</a></div></div>
         <div class="cc-doc"><b>결과지 2 · 커플 솔루션 결과지</b><span>두 사람 비교와 공간별 솔루션</span>
           <div class="cc-btns"><a class="btn-sm btn-view" href="couple.html#couple">보기</a><a class="btn-sm btn-pdf" href="couple.html?dl=couple" target="_blank" rel="noopener">📄 PDF 저장</a></div></div>
-      </div>` : `<div class="cc-btns" style="margin-top:12px"><a class="btn-sm btn-view" href="couple.html">진행 상황 보기</a></div>`}
+      </div>
+      <div class="cc-btns" style="margin-top:12px"><button type="button" class="btn-sm btn-view" onclick="coupleSend('report')">${pt}님께 결과지 링크 보내기</button><span class="cc-step" style="align-self:center">로그인한 두 분만 열 수 있어요</span></div>` : `<div class="cc-btns" style="margin-top:12px">${acts}</div>`}
     </div>`;
   }catch(e){ console.warn('커플 정보 조회 오류:', e); }
 }

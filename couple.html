@@ -325,12 +325,31 @@ async function call(action, extra){
   return r.json();
 }
 function inviteUrl(code){ return location.origin + '/couple.html?invite=' + encodeURIComponent(code); }
-async function share(){
-  const code=window.__couple&&window.__couple.code, my=window.__couple&&window.__couple.my_name;
-  const url = inviteUrl(code);
-  const text = (my?my+'님이 ':'')+'SKOPOS 커플 진단에 초대했어요. 링크로 로그인하거나, 결제 화면에서 초대 코드 '+code+' 를 입력하면 정밀 검사를 바로 시작할 수 있어요.';
-  try{ if(navigator.share){ await navigator.share({title:'SKOPOS 커플 검사 초대',text,url}); return; } }catch(e){ return; }
-  try{ await navigator.clipboard.writeText(url); alert('초대 링크를 복사했어요. 함께할 분께 보내 주세요.'); }catch(e){ prompt('아래 링크를 복사해 보내 주세요', url); }
+function note(msg){
+  let n=document.getElementById('cpNote');
+  if(!n){ n=document.createElement('div'); n.id='cpNote'; n.setAttribute('role','status'); n.className='no-print';
+    n.style.cssText='position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:9000;max-width:calc(100% - 32px);background:#0F0F1A;color:#fff;border-radius:50px;padding:11px 18px;font-size:.86rem;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.3)';
+    document.body.appendChild(n); }
+  n.textContent=msg; n.style.display='block'; clearTimeout(note._t); note._t=setTimeout(()=>{ n.style.display='none'; }, 3200);
+}
+// 보내기: invite(초대) / nudge(검사 알림) / report(결과지 링크). 결과지는 로그인한 두 사람만 열 수 있다
+async function send(kind){
+  const cp=window.__couple||{}, code=cp.code||'', my=cp.my_name||'';
+  let url, text, title, done;
+  if(kind==='nudge'){ url=location.origin+'/couple.html'; title='SKOPOS 커플 진단'; done='검사 알림 링크를 복사했어요.';
+    text=(my?my+'님이 ':'')+'커플 진단 검사를 기다리고 있어요. 정밀 검사를 마치면 두 사람의 결과지가 바로 나와요.'; }
+  else if(kind==='report'){ url=location.origin+'/couple.html#couple'; title='SKOPOS 커플 진단 결과지'; done='결과지 링크를 복사했어요. 로그인한 두 분만 열 수 있어요.';
+    text='우리 커플 진단 결과지가 나왔어요. 로그인하면 개인 결과지와 커플 솔루션 결과지를 볼 수 있어요.'; }
+  else { url=inviteUrl(code); title='SKOPOS 커플 검사 초대'; done='초대 링크를 복사했어요. 함께할 분께 보내 주세요.';
+    text=(my?my+'님이 ':'')+'SKOPOS 커플 진단에 초대했어요. 링크로 로그인하거나, 결제 화면에서 초대 코드 '+code+' 를 입력하면 정밀 검사를 바로 시작할 수 있어요.'; }
+  try{ window.SkoposTrack && SkoposTrack.event('couple_send',{kind}); }catch(e){}
+  try{ if(navigator.share){ await navigator.share({title,text,url}); return; } }catch(e){ return; }
+  try{ await navigator.clipboard.writeText(text+'\n'+url); note(done); }catch(e){ prompt('아래 링크를 복사해 보내 주세요', url); }
+}
+function share(){ return send('invite'); }
+async function copyCode(){
+  const code=(window.__couple||{}).code||'';
+  try{ await navigator.clipboard.writeText(code); note('초대 코드를 복사했어요.'); }catch(e){ prompt('초대 코드', code); }
 }
 
 function viewNone(msg){
@@ -341,13 +360,34 @@ function viewNone(msg){
   <p class="muted" style="margin-top:12px">초대를 받으셨다면 받은 링크로 다시 들어오시거나, <a href="payment.html?plan=couple" style="color:var(--pink);font-weight:800">결제 화면에서 6자리 초대 코드</a>를 입력해 주세요.</p></div>`;
 }
 
+let pollTimer=null;
+function stopPoll(){ if(pollTimer){ clearInterval(pollTimer); pollTimer=null; } }
+// 진행 화면은 20초마다 상태를 다시 확인해, 상대가 연결하거나 검사를 마치면 바로 반영한다
+function startPoll(){
+  stopPoll();
+  pollTimer=setInterval(async()=>{
+    if(document.hidden) return;
+    try{
+      const st=await call('report');
+      if(!st || !st.success || !st.couple) return;
+      if(st.ready){ stopPoll(); note('두 분 모두 검사를 마쳤어요. 결과지를 열게요.'); viewReport(st); return; }
+      const a=window.__couple||{}, b=st.couple;
+      if(a.paired!==b.paired || a.my_done!==b.my_done || a.partner_done!==b.partner_done || a.partner_name!==b.partner_name) viewProgress(b,false);
+    }catch(e){}
+  }, 20000);
+}
 function viewProgress(c, isNew){
   window.__couple = c;
   const partner = c.partner_name || '파트너';
+  const waitPartner = c.paired && c.my_done && !c.partner_done;
+  const lead = !c.paired ? (c.role==='owner' ? '함께할 분을 초대해 주세요' : '연결을 확인하고 있어요')
+    : !c.my_done ? '이제 내 정밀 검사를 진행해 주세요'
+    : esc(partner)+'님의 검사를 기다리고 있어요';
   app.innerHTML = `<div class="card"><span class="eyebrow">커플 진단</span>
   <h1>${isNew?'결제가 완료됐어요!<br>':''}두 분 모두 검사를 마치면<br>결과지 2부가 발급돼요</h1>
+  <p class="sub" id="cpLead">${lead}</p>
   ${c.role==='owner' && !c.paired ? `<p class="sub">아래 초대 링크나 6자리 코드를 함께할 분께 보내 주세요. 링크로 로그인하거나 결제 화면에서 코드를 입력하면 별도 결제 없이 정밀 검사를 시작할 수 있어요.</p>
-   <div class="code-box"><div><div class="muted">초대 코드</div><b>${esc(c.code)}</b></div><button class="btn btn-p" onclick="share()">초대 링크 보내기</button></div>` : ''}
+   <div class="code-box"><div><div class="muted">초대 코드</div><b>${esc(c.code)}</b></div><div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end"><button class="btn btn-s" onclick="copyCode()">코드 복사</button><button class="btn btn-p" onclick="send('invite')">초대 링크 보내기</button></div></div>` : ''}
   <ul class="steps">
     <li><span class="dot ok">1</span>커플 진단 ${c.role==='owner'?'결제':'연결'} 완료</li>
     <li><span class="dot ${c.paired?'ok':''}">2</span>${c.paired?esc(partner)+'님 연결 완료':'파트너 연결 대기 중'}</li>
@@ -355,9 +395,26 @@ function viewProgress(c, isNew){
     <li><span class="dot ${c.partner_done?'ok':''}">4</span>${esc(partner)}님 정밀 검사 ${c.partner_done?'완료':'전'}</li>
   </ul>
   <div class="btn-row">${!c.my_done?`<a class="btn btn-p" href="skopos_premium_quiz.html">내 정밀 검사 시작하기</a>`:''}
-  ${c.paired?'':`<button class="btn btn-s" onclick="share()">초대 링크 다시 보내기</button>`}
+  ${c.paired && !c.partner_done ? `<button class="btn ${waitPartner?'btn-p':'btn-s'}" onclick="send('nudge')">${esc(partner)}님께 검사 알림 보내기</button>` : ''}
   <button class="btn btn-s" onclick="location.reload()">상태 새로고침</button></div>
-  <p class="muted" style="margin-top:12px">이미 정밀 검사를 하셨더라도 커플 비교에는 커플 진단으로 진행한 검사 결과가 쓰여요. 비교용 점수가 없으면 검사를 한 번 더 진행해 주세요.</p></div>`;
+  <p class="muted" style="margin-top:12px">이 화면은 자동으로 새로 확인돼요. 상대가 연결하거나 검사를 마치면 바로 반영됩니다.</p>
+  <p class="muted" style="margin-top:6px">이미 정밀 검사를 마치셨다면 가장 최근 결과가 커플 비교에 쓰여요. 다시 검사하면 새 결과로 바뀝니다.</p></div>`;
+  startPoll();
+}
+// 초대 링크를 연 사람이 직접 동의한 경우에만 연결한다 (모르는 링크로 계정이 묶이지 않도록)
+function askInvite(code){
+  return new Promise(resolve=>{
+    app.innerHTML = `<div class="card"><span class="eyebrow">커플 진단 초대</span>
+    <h1>초대 코드 ${esc(code)} 로<br>커플 진단에 연결할까요?</h1>
+    <p class="sub">연결하면 별도 결제 없이 정밀 검사(144문항)를 시작할 수 있어요.</p>
+    <ul class="steps">
+      <li><span class="dot ok">✓</span>두 분의 정밀 검사 결과가 서로의 커플 결과지에 표시돼요</li>
+      <li><span class="dot ok">✓</span>결과지는 로그인한 두 분만 볼 수 있어요</li>
+    </ul>
+    <div class="btn-row"><button class="btn btn-p" id="invYes">연결하고 시작하기</button><button class="btn btn-s" id="invNo">연결하지 않기</button></div></div>`;
+    document.getElementById('invYes').onclick=()=>{ app.innerHTML='<div class="card"><p class="sub">연결하고 있어요...</p></div>'; resolve(true); };
+    document.getElementById('invNo').onclick=()=>resolve(false);
+  });
 }
 
 function band(d){ return d<=8?['same','비슷해요']:d<=17?['mid','조금 달라요']:['far','많이 달라요']; }
@@ -651,6 +708,7 @@ window.addEventListener('afterprint',()=>{ document.body.classList.remove('a4');
 
 function viewReport(r){
   const A=r.me, B=r.partner, c=r.couple||{};
+  window.__couple = c; if(typeof stopPoll==='function') stopPoll();
   RPT = { A, B, an:A.name||'나', bn:B.name||'파트너',
     ta:TYPES[A.type]||{n:A.type,e:'🏠',g:'',l:''}, tb:TYPES[B.type]||{n:B.type,e:'🏠',g:'',l:''},
     code:c.code||'', role:c.role||'owner' };
@@ -658,6 +716,10 @@ function viewReport(r){
   <div class="tabs no-print" role="tablist" aria-label="결과지 선택">
     <button class="tab" role="tab" data-doc="personal" onclick="setDoc('personal')"><small>결과지 1</small>개인 결과지</button>
     <button class="tab" role="tab" data-doc="couple" onclick="setDoc('couple')"><small>결과지 2</small>커플 솔루션 결과지</button>
+  </div>
+  <div class="card no-print" style="padding:14px 16px;display:flex;gap:10px 14px;align-items:center;justify-content:space-between;flex-wrap:wrap">
+    <span class="muted" style="flex:1;min-width:200px">${esc(B.name||'파트너')}님도 같은 결과지를 볼 수 있어요. 링크는 로그인한 두 분만 열 수 있습니다.</span>
+    <button class="btn btn-s" style="padding:10px 16px;font-size:.86rem" onclick="send('report')">결과지 링크 보내기</button>
   </div>
   <section class="doc" data-doc="personal" id="personalDoc">${personalHTML('me')}</section>
   <section class="doc" data-doc="couple" id="coupleDoc">${coupleHTML()}</section>
@@ -679,8 +741,7 @@ async function main(user){
     let invite = (p.get('invite')||'').toUpperCase().replace(/[^A-Z0-9-]/g,'').slice(0,16);
     try{ if(invite) sessionStorage.setItem('skopos_invite', invite); else invite = sessionStorage.getItem('skopos_invite')||''; }catch(e){}
     let joinMsg = '';
-    // 초대 링크를 연 사람이 직접 동의한 경우에만 연결 (모르는 링크로 계정이 묶이지 않도록)
-    if(invite && !confirm('초대 코드 '+invite+' 로 커플 진단에 연결할까요?\n연결하면 두 분의 정밀 검사 결과가 서로의 커플 결과지에 표시돼요.')){
+    if(invite && !(await askInvite(invite))){
       try{ sessionStorage.removeItem('skopos_invite'); history.replaceState({},'',location.pathname); }catch(e){}
       invite = '';
     }
