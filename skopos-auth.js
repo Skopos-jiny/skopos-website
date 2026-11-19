@@ -155,6 +155,8 @@
       + '.sk-sbtn{display:flex;align-items:center;justify-content:center;gap:9px;padding:13px;border-radius:12px;border:none;font-size:.88rem;font-weight:700;cursor:pointer;font-family:inherit;width:100%;transition:transform .15s,box-shadow .15s}'
       + '.sk-sbtn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.12)}'
       + '.sk-kakao{background:#FEE500;color:#191919}.sk-naver{background:#03C75A;color:#fff}'
+      + '.sk-google{background:#fff;color:#1F1F1F;border:1px solid #DADCE0}'
+      + '.sk-inapp{font-size:.74rem;line-height:1.6;color:#5A5A6E;background:#F7F8FC;border-radius:10px;padding:9px 11px;text-align:center}'
       + '.sk-or{display:flex;align-items:center;gap:12px;margin-bottom:16px}'
       + '.sk-or::before,.sk-or::after{content:"";flex:1;height:1px;background:rgba(0,0,0,.08)}'
       + '.sk-or span{font-size:.7rem;color:#8890A4;white-space:nowrap}'
@@ -211,6 +213,8 @@
       +   '<button type="button" class="sk-sbtn sk-naver" id="skNaver">'
       +     '<svg class="sk-icon" viewBox="0 0 24 24" fill="white"><path d="M16.273 12.845L7.376 0H0v24h7.727V11.155L16.624 24H24V0h-7.727z"/></svg>'
       +     '네이버로 계속</button>'
+      +   '<button type="button" class="sk-sbtn sk-google" id="skGoogle">Google로 계속</button>'
+      +   '<div class="sk-inapp" id="skGoogleInapp" hidden>Google 로그인은 카카오톡·인스타그램 앱 안에서는 열리지 않아요. 오른쪽 위 메뉴에서 <b>다른 브라우저로 열기</b>를 누른 뒤 로그인해 주세요.</div>'
       + '</div>'
       + '<div class="sk-or"><span>또는 이메일로 계속</span></div>'
       // 로그인 패널
@@ -357,6 +361,20 @@
         });
         if (r.error) show('err', '카카오 로그인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
       } catch (e) { show('err', '카카오 로그인 오류가 발생했습니다.'); }
+    });
+
+    // 구글 (카카오톡·인스타그램 등 앱 안 브라우저에서는 Google이 로그인을 막으므로 안내만 띄운다)
+    root.querySelector('#skGoogle').addEventListener('click', async function () {
+      clear();
+      if (/KAKAOTALK|Instagram|FBAN|FBAV|NAVER\(inapp|Line\/|DaumApps|everytimeApp|; wv\)/i.test(navigator.userAgent || '')) { root.querySelector('#skGoogleInapp').hidden = false; return; }
+      try {
+        var sb = await getClient();
+        var r = await sb.auth.signInWithOAuth({
+          provider: 'google',
+          options: { redirectTo: window.location.origin + currentUrl(), queryParams: { prompt: 'select_account' } }
+        });
+        if (r.error) show('err', 'Google 로그인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+      } catch (e) { show('err', 'Google 로그인 오류가 발생했습니다.'); }
     });
 
     // 네이버 (login.html 과 동일: 커스텀 인증 → naver-callback.html 복귀)

@@ -201,7 +201,7 @@
       "name": "회원가입하면 무엇이 좋은가요?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "카카오·네이버·이메일로 간편하게 가입하면 검사 결과가 마이페이지에 저장되어 언제든 다시 볼 수 있습니다. 정밀 검사 결과지와 PDF 리포트도 마이페이지에서 열람할 수 있습니다."
+        "text": "카카오·네이버·Google·이메일로 간편하게 가입하면 검사 결과가 마이페이지에 저장되어 언제든 다시 볼 수 있습니다. 정밀 검사 결과지와 PDF 리포트도 마이페이지에서 열람할 수 있습니다."
       }
     },
     {
@@ -1154,7 +1154,7 @@ fetch('/api/interior-beta',{cache:'no-store'}).then(function(r){return r.ok?r.js
       <div class="step-card s2">
         <div class="step-icon">💾</div>
         <div class="step-title">2. 가입하고 결과 저장</div>
-        <p class="step-desc">카카오·네이버·이메일로 간편하게 가입하면 결과가 마이페이지에 저장됩니다. 언제든 다시 꺼내 보고, 유형별 공간 가이드도 받아보세요.</p>
+        <p class="step-desc">카카오·네이버·Google·이메일로 간편하게 가입하면 결과가 마이페이지에 저장됩니다. 언제든 다시 꺼내 보고, 유형별 공간 가이드도 받아보세요.</p>
       </div>
       <div class="step-card s3">
         <div class="step-icon">🔬</div>
@@ -1501,7 +1501,7 @@ fetch('/api/interior-beta',{cache:'no-store'}).then(function(r){return r.ok?r.js
       </details>
       <details class="faq-item">
         <summary>회원가입하면 무엇이 좋은가요?</summary>
-        <p class="faq-body">카카오·네이버·이메일로 간편하게 가입하면 검사 결과가 마이페이지에 저장되어 언제든 다시 볼 수 있습니다. 정밀 검사 결과지와 PDF 리포트도 마이페이지에서 열람할 수 있고, 스코포스의 새로운 소식도 받아볼 수 있습니다.</p>
+        <p class="faq-body">카카오·네이버·Google·이메일로 간편하게 가입하면 검사 결과가 마이페이지에 저장되어 언제든 다시 볼 수 있습니다. 정밀 검사 결과지와 PDF 리포트도 마이페이지에서 열람할 수 있고, 스코포스의 새로운 소식도 받아볼 수 있습니다.</p>
       </details>
       <details class="faq-item">
         <summary>결과지는 어디서 다시 볼 수 있나요?</summary>
@@ -1533,7 +1533,7 @@ fetch('/api/interior-beta',{cache:'no-store'}).then(function(r){return r.ok?r.js
       <div style="flex:1;min-width:240px">
         <div style="display:inline-block;font-size:.72rem;font-weight:800;letter-spacing:.06em;color:#FF6B9D;background:rgba(220,20,120,.18);padding:5px 14px;border-radius:50px;margin-bottom:10px">✦ SKOPOS 멤버십</div>
         <div style="font-size:1.45rem;font-weight:900;color:#fff;line-height:1.3;margin-bottom:8px;letter-spacing:-.01em">가입하면 내 공간 유형이 <span style="color:#FF6B9D">계속 쌓입니다</span></div>
-        <div style="font-size:.9rem;font-weight:600;color:rgba(255,255,255,.6);line-height:1.6">검사 결과 저장, 유형별 공간 가이드, 그리고 스코포스의 새로운 서비스 소식까지. 카카오·네이버로 10초면 가입할 수 있어요.</div>
+        <div style="font-size:.9rem;font-weight:600;color:rgba(255,255,255,.6);line-height:1.6">검사 결과 저장, 유형별 공간 가이드, 그리고 스코포스의 새로운 서비스 소식까지. 카카오·네이버·Google로 10초면 가입할 수 있어요.</div>
       </div>
       <span style="flex-shrink:0;display:inline-flex;align-items:center;gap:7px;background:#DC1478;color:#fff;font-size:.9rem;font-weight:800;padding:14px 26px;border-radius:50px;white-space:nowrap">간편 가입하기 →</span>
     </div>
@@ -1660,6 +1660,7 @@ fetch('/api/interior-beta',{cache:'no-store'}).then(function(r){return r.ok?r.js
       <ul>
         <li><b>필수:</b> 이메일 주소 (결과 열람 시)</li>
         <li><b>선택:</b> 이름, 연락처</li>
+        <li><b>간편 로그인 이용 시:</b> 카카오·네이버·Google 계정에서 제공받는 이메일 주소, 이름(닉네임), 프로필 사진, 계정 식별값 (로그인과 회원 식별에만 사용)</li>
         <li><b>설문 참여 시 (선택):</b> 휴대폰 번호, 설문 응답 (검사 목적, 예정 시기, 지역, 평형, 함께 사는 사람 등)</li>
         <li><b>인테리어 공간욕구검사(베타) 이용 시:</b> 이름 또는 별칭(선택), 검사 응답, 집·가족·생활에 관한 기초 정보, 직접 입력한 메모</li>
         <li><b>정밀 검사 이용 시:</b> 문항별 응답과 응답 시간, 선택한 연령대, 연구 활용 동의 여부(선택)</li>
