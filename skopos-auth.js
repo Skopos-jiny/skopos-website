@@ -213,7 +213,7 @@
       +   '<button type="button" class="sk-sbtn sk-naver" id="skNaver">'
       +     '<svg class="sk-icon" viewBox="0 0 24 24" fill="white"><path d="M16.273 12.845L7.376 0H0v24h7.727V11.155L16.624 24H24V0h-7.727z"/></svg>'
       +     '네이버로 계속</button>'
-      +   '<button type="button" class="sk-sbtn sk-google" id="skGoogle">Google로 계속</button>'
+      +   '<button type="button" class="sk-sbtn sk-google" id="skGoogle"><img class="sk-icon" src="/google-g.png" alt="" width="19" height="19">Google로 계속</button>'
       +   '<div class="sk-inapp" id="skGoogleInapp" hidden>Google 로그인은 카카오톡·인스타그램 앱 안에서는 열리지 않아요. 오른쪽 위 메뉴에서 <b>다른 브라우저로 열기</b>를 누른 뒤 로그인해 주세요.</div>'
       + '</div>'
       + '<div class="sk-or"><span>또는 이메일로 계속</span></div>'
