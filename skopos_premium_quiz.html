@@ -1323,6 +1323,10 @@ html{scroll-behavior:smooth}
       </button>
     </div>
 
+    <label class="research-consent" style="display:flex;gap:8px;align-items:flex-start;margin:14px 0 10px;font-size:13px;line-height:1.5;color:#555;text-align:left;cursor:pointer">
+      <input type="checkbox" id="researchConsent" style="margin-top:3px">
+      <span>(선택) 내 응답을 개인을 알아볼 수 없는 형태로 SDTI 문항 개선 연구에 활용하는 데 동의합니다. 동의하지 않아도 검사와 결과 이용에는 차이가 없습니다.</span>
+    </label>
     <button type="button" class="btn-age-start" id="btnAgeStart" onclick="confirmAge()" disabled>연령대를 선택해 주세요</button>
     <p class="age-note">선택하신 시간은 모든 문항에 동일하게 적용되며,<br>검사 중에는 변경할 수 없습니다.</p>
   </div>
@@ -3504,6 +3508,9 @@ const GROUP_SEASONAL={
 const KAKAO_APP_KEY='YOUR_KAKAO_JS_APP_KEY';
 // ── 연령대별 문항 응답 시간(초) ──────────────────────────────
 const AGE_TIMES={ young:12.5, mid:14.5, senior:18.0 };
+const QUIZ_VERSION='P1.0';            // 문항 세트 버전. 문항을 교체하면 올린다
+const SCORING_VERSION='2026-11-16';   // 채점 방식 버전 (SEC_ITEM_DIR 기준일)
+const CONSENT_KEY='skopos_research_consent';
 const AGE_DEFAULT='mid';
 let ageGroup=AGE_DEFAULT;       // 선택된 연령대 키
 let Q_TIME=AGE_TIMES[AGE_DEFAULT]; // 현재 문항 제한 시간(선택에 따라 갱신)
@@ -3531,7 +3538,7 @@ function saveProgress(){
     const key = progressKey();
     if(!key) return;
     localStorage.setItem(key, JSON.stringify({
-      uid:_currentUser.id, cur, ans, paid:isPaid, age:ageGroup, ts:Date.now()
+      uid:_currentUser.id, qv:QUIZ_VERSION, cur, ans, paid:isPaid, age:ageGroup, ts:Date.now()
     }));
   }catch(e){ console.warn('진행 상태 저장 실패:', e); }
 }
@@ -3555,6 +3562,7 @@ function loadProgress(){
     const data = JSON.parse(raw);
     // 유효성 검증 (본인 계정 것인지 포함)
     if(!data || data.uid !== _currentUser.id) return null;
+    if(data.qv && data.qv !== QUIZ_VERSION) return null; // 문항 세트가 바뀐 경우 이전 진행분은 쓰지 않는다
     if(typeof data.cur!=='number' || !data.ans || data.cur>=QS.length) return null;
     if(Object.keys(data.ans).length===0) return null;
     return data;
@@ -3775,6 +3783,7 @@ function selectAge(key,el){
 
 function confirmAge(){
   if(!AGE_TIMES[ageGroup]) return;
+  try{ const c=document.getElementById('researchConsent'); localStorage.setItem(CONSENT_KEY, c&&c.checked?'1':'0'); }catch(e){}
   // 선택한 연령대 저장 (복원 대응)
   try{ localStorage.setItem(AGE_KEY, ageGroup); }catch(e){}
   try{ trackEvent('age_selected', {age_group:ageGroup, q_time:Q_TIME}); }catch(e){}
@@ -3908,6 +3917,35 @@ function restoreAns(qi,idx){
   else{document.querySelectorAll('.choice-opt').forEach((el,i)=>{if(i===idx)el.classList.add('sel');});}
 }
 
+// 응답 원본 (문항 ID: 문항에 id가 있으면 그것, 없으면 P1-001~P1-144)
+function qid(q,i){ return q.id || ('P1-'+String(i+1).padStart(3,'0')); }
+function buildResponses(){
+  const items=QS.map((q,i)=>{
+    const a=ans[i];
+    if(!a||!Number.isInteger(a.idx)) return [qid(q,i),null,null];          // 시간 초과
+    return [qid(q,i), q.type==='scale'?5-a.idx:a.idx, Number.isFinite(a.rt)?a.rt:null];
+  });
+  if(items.every(x=>x[1]===null)) return null;
+  return { v:QUIZ_VERSION, sv:SCORING_VERSION, age:ageGroup, q:qualityFlags(), items };
+}
+// 응답 품질 표시 (결과에는 영향 없음, 연구 분석에서만 사용)
+function qualityFlags(){
+  const f=[]; let fast=0,nScale=0,run=0,maxRun=0,prev=null,timeout=0;
+  QS.forEach((q,i)=>{
+    const a=ans[i];
+    if(!a||!Number.isInteger(a.idx)){ timeout++; prev=null; run=0; return; }
+    if(q.type!=='scale') return;
+    nScale++;
+    if(Number.isFinite(a.rt)&&a.rt<800) fast++;
+    if(a.idx===prev){ run++; } else { run=1; prev=a.idx; }
+    if(run>maxRun) maxRun=run;
+  });
+  if(nScale&&fast/nScale>=0.2) f.push('fast');
+  if(maxRun>=15) f.push('straight');
+  if(QS.length&&timeout/QS.length>=0.15) f.push('timeout');
+  return f;
+}
+function getResearchConsent(){ try{ return localStorage.getItem(CONSENT_KEY)==='1'; }catch(e){ return false; } }
 function recordAns(qi,idx){
   const q=QS[qi];
   let tags={};
@@ -3918,7 +3956,7 @@ function recordAns(qi,idx){
   } else {
     tags=q.o[idx].g||{};
   }
-  ans[qi]={idx,tags};
+  ans[qi]={idx,tags,rt:Math.round(elapsed*1000)}; // rt: 문항 표시부터 선택까지 ms
 }
 
 function selectOpt(i){
@@ -5194,8 +5232,9 @@ async function saveScores(typeId, scores, isRetry){
   const pend = (isRetry && _pendingSave && _pendingSave.typeId === typeId) ? _pendingSave : null;
   const inviteCode = (pend && pend.code) || ((window.SkoposBiz && SkoposBiz.code) ? SkoposBiz.code : '');
   const ownerId = (pend && pend.uid) || (_currentUser && _currentUser.id) || '';
+  const responses = (pend && pend.responses) || buildResponses();
   const hold = (needLogin)=>{
-    _pendingSave = { typeId, scores, code: inviteCode, uid: ownerId };
+    _pendingSave = { typeId, scores, code: inviteCode, uid: ownerId, responses };
     if(ownerId) storePendingSave(_pendingSave);
     showSaveRetry(true, needLogin);
   };
@@ -5232,7 +5271,12 @@ async function saveScores(typeId, scores, isRetry){
       if(prev && prev[0] && JSON.stringify(prev[0].scores) === JSON.stringify(clean) && (prev[0].invite_code || '') === inviteCode) savedId = prev[0].id;
     }catch(_){}
     if(savedId == null){
-      const { data, error } = await sb.from('premium_results').insert([Object.assign({ user_id: session.user.id, result_type: typeId, scores: clean }, inviteCode ? { invite_code: inviteCode } : {})]).select('id').single();
+      const { data, error } = await sb.from('premium_results').insert([Object.assign({
+        user_id: session.user.id, result_type: typeId, scores: clean,
+        responses: responses || null,
+        quiz_version: QUIZ_VERSION, scoring_version: SCORING_VERSION,
+        research_consent: getResearchConsent()
+      }, inviteCode ? { invite_code: inviteCode } : {})]).select('id').single();
       if(error) throw error;
       savedId = data?.id;
     }
