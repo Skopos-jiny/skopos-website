@@ -3511,6 +3511,9 @@ const AGE_TIMES={ young:12.5, mid:14.5, senior:18.0 };
 const QUIZ_VERSION='P1.0';            // 문항 세트 버전. 문항을 교체하면 올린다
 const SCORING_VERSION='2026-11-16';   // 채점 방식 버전 (SEC_ITEM_DIR 기준일)
 const CONSENT_KEY='skopos_research_consent';
+let _runConsent=false;   // 이번 검사 회차에서 선택한 연구 활용 동의 (창마다 따로 유지)
+let _runId='';           // 이번 검사 회차 ID (임시 저장 구분용)
+function newRunId(){ try{ if(crypto.randomUUID) return crypto.randomUUID(); }catch(e){} return Date.now().toString(36)+Math.random().toString(36).slice(2,10); }
 const AGE_DEFAULT='mid';
 let ageGroup=AGE_DEFAULT;       // 선택된 연령대 키
 let Q_TIME=AGE_TIMES[AGE_DEFAULT]; // 현재 문항 제한 시간(선택에 따라 갱신)
@@ -3538,7 +3541,7 @@ function saveProgress(){
     const key = progressKey();
     if(!key) return;
     localStorage.setItem(key, JSON.stringify({
-      uid:_currentUser.id, qv:QUIZ_VERSION, cur, ans, paid:isPaid, age:ageGroup, ts:Date.now()
+      uid:_currentUser.id, qv:QUIZ_VERSION, run:_runId, consent:_runConsent, cur, ans, paid:isPaid, age:ageGroup, ts:Date.now()
     }));
   }catch(e){ console.warn('진행 상태 저장 실패:', e); }
 }
@@ -3783,7 +3786,8 @@ function selectAge(key,el){
 
 function confirmAge(){
   if(!AGE_TIMES[ageGroup]) return;
-  try{ const c=document.getElementById('researchConsent'); localStorage.setItem(CONSENT_KEY, c&&c.checked?'1':'0'); }catch(e){}
+  try{ const c=document.getElementById('researchConsent'); _runConsent=!!(c&&c.checked); }catch(e){ _runConsent=false; }
+  _runId=newRunId();
   // 선택한 연령대 저장 (복원 대응)
   try{ localStorage.setItem(AGE_KEY, ageGroup); }catch(e){}
   try{ trackEvent('age_selected', {age_group:ageGroup, q_time:Q_TIME}); }catch(e){}
@@ -3945,7 +3949,7 @@ function qualityFlags(){
   if(QS.length&&timeout/QS.length>=0.15) f.push('timeout');
   return f;
 }
-function getResearchConsent(){ try{ return localStorage.getItem(CONSENT_KEY)==='1'; }catch(e){ return false; } }
+function getResearchConsent(){ return _runConsent===true; }
 function recordAns(qi,idx){
   const q=QS[qi];
   let tags={};
@@ -5170,17 +5174,35 @@ let _pendingSave = null, _saveBusy = false, _lastSavedKey = '', _saveAuthWatch =
 const PENDING_SAVE_KEY = 'skopos_premium_pending_save';
 const PENDING_SAVE_TTL = 24*60*60*1000;
 // 저장하지 못한 결과는 이 기기에 잠시 보관해, 다시 로그인하거나 새로고침해도 이어서 저장한다
+function pendingKeyOf(id){ return PENDING_SAVE_KEY + ':' + (id || 'legacy'); }
 function storePendingSave(p){
-  try{ localStorage.setItem(PENDING_SAVE_KEY, JSON.stringify(Object.assign({ ts: Date.now() }, p))); }catch(e){}
+  try{ localStorage.setItem(pendingKeyOf(p.run), JSON.stringify(Object.assign({ ts: Date.now() }, p))); }catch(e){}
 }
-function readPendingSave(){
+// 이 기기에 보관된 저장 대기 결과를 모두 읽는다 (검사 회차별, 오래된 것 정리)
+function readPendingSaves(){
+  const out=[];
   try{
-    const p = JSON.parse(localStorage.getItem(PENDING_SAVE_KEY) || 'null');
-    if(!p || !p.typeId || !p.scores || !p.uid || Date.now() - (p.ts||0) > PENDING_SAVE_TTL){ localStorage.removeItem(PENDING_SAVE_KEY); return null; }
-    return p;
-  }catch(e){ return null; }
+    const keys=[];
+    for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(k===PENDING_SAVE_KEY || (k && k.indexOf(PENDING_SAVE_KEY+':')===0)) keys.push(k); }
+    keys.forEach(k=>{
+      try{
+        const p=JSON.parse(localStorage.getItem(k)||'null');
+        if(!p || !p.typeId || !p.scores || !p.uid || Date.now()-(p.ts||0) > PENDING_SAVE_TTL){ localStorage.removeItem(k); return; }
+        if(!p.run) p.run = (k===PENDING_SAVE_KEY ? '' : k.slice(PENDING_SAVE_KEY.length+1));
+        p._key=k; out.push(p);
+      }catch(_){ localStorage.removeItem(k); }
+    });
+  }catch(e){}
+  return out.sort((a,b)=>(a.ts||0)-(b.ts||0));
 }
-function clearPendingSave(){ try{ localStorage.removeItem(PENDING_SAVE_KEY); }catch(e){} }
+function clearPendingSave(p){
+  try{
+    if(p && p._key){ localStorage.removeItem(p._key); return; }
+    if(p && p.run){ localStorage.removeItem(pendingKeyOf(p.run)); return; }
+    if(_runId) localStorage.removeItem(pendingKeyOf(_runId));
+    localStorage.removeItem(PENDING_SAVE_KEY);
+  }catch(e){}
+}
 function showSaveRetry(on, needLogin){
   let bar = document.getElementById('saveRetryBar');
   if(!on){ if(bar) bar.style.display = 'none'; return; }
@@ -5233,8 +5255,10 @@ async function saveScores(typeId, scores, isRetry){
   const inviteCode = (pend && pend.code) || ((window.SkoposBiz && SkoposBiz.code) ? SkoposBiz.code : '');
   const ownerId = (pend && pend.uid) || (_currentUser && _currentUser.id) || '';
   const responses = (pend && pend.responses) || buildResponses();
+  const consent = (pend && typeof pend.consent==='boolean') ? pend.consent : getResearchConsent();
+  const run = (pend && pend.run) || _runId;
   const hold = (needLogin)=>{
-    _pendingSave = { typeId, scores, code: inviteCode, uid: ownerId, responses };
+    _pendingSave = { typeId, scores, code: inviteCode, uid: ownerId, responses, consent, run, _key: pend && pend._key };
     if(ownerId) storePendingSave(_pendingSave);
     showSaveRetry(true, needLogin);
   };
@@ -5261,7 +5285,7 @@ async function saveScores(typeId, scores, isRetry){
     let savedId = null;
     if(saveKey === _lastSavedKey){
       // 이 화면에서 이미 저장한 같은 결과: 요청을 다시 보내지 않는다
-      _pendingSave = null; clearPendingSave(); clearProgress(); showSaveRetry(false);
+      clearPendingSave(pend || {run}); _pendingSave = null; clearProgress(); showSaveRetry(false);
       return;
     }
     // 같은 검사 결과가 방금 저장돼 있으면 다시 넣지 않는다 (재시도, 새로고침, 다시 로그인 후 중복 방지)
@@ -5275,15 +5299,15 @@ async function saveScores(typeId, scores, isRetry){
         user_id: session.user.id, result_type: typeId, scores: clean,
         responses: responses || null,
         quiz_version: QUIZ_VERSION, scoring_version: SCORING_VERSION,
-        research_consent: getResearchConsent()
+        research_consent: consent
       }, inviteCode ? { invite_code: inviteCode } : {})]).select('id').single();
       if(error) throw error;
       savedId = data?.id;
     }
     // 서버 저장이 끝났으므로 임시 응답을 지운다
     _lastSavedKey = saveKey;
+    clearPendingSave(pend || {run});
     _pendingSave = null;
-    clearPendingSave();
     clearProgress();
     showSaveRetry(false);
     if(isRetry) toast('결과를 계정에 저장했어요.', 3000);
@@ -5306,13 +5330,17 @@ async function saveScores(typeId, scores, isRetry){
 // 새로고침이나 다시 로그인 후 돌아왔을 때, 보관해 둔 결과가 있으면 이어서 저장한다
 async function resumePendingSave(){
   try{
-    const p = readPendingSave();
-    if(!p || _pendingSave || !window.SkoposAuth) return;
+    if(_pendingSave || !window.SkoposAuth) return;
+    const list = readPendingSaves();
+    if(!list.length) return;
     const sb = await SkoposAuth.getClient();
     const { data:{ session } } = await sb.auth.getSession();
-    _pendingSave = { typeId: p.typeId, scores: p.scores, code: p.code || '', uid: p.uid };
-    if(session && session.user && session.user.id === p.uid){ await saveScores(p.typeId, p.scores, true); }
-    else { showSaveRetry(true, true); watchSaveAuth(sb); }
+    for(const p of list){
+      // 보관할 때의 응답 원본·동의·회차를 그대로 넘긴다 (새로고침 후에도 원본 응답이 빠지지 않게)
+      _pendingSave = { typeId: p.typeId, scores: p.scores, code: p.code || '', uid: p.uid, responses: p.responses || null, consent: p.consent===true, run: p.run || '', _key: p._key };
+      if(session && session.user && session.user.id === p.uid){ await saveScores(p.typeId, p.scores, true); if(_pendingSave) return; }
+      else { showSaveRetry(true, true); watchSaveAuth(sb); return; }
+    }
   }catch(e){}
 }
 if(document.readyState === 'complete') setTimeout(resumePendingSave, 800);
@@ -7393,6 +7421,8 @@ async function resumeContinue(){
   cur    = _pendingResume.cur;
   ans    = _pendingResume.ans;
   isPaid = true;
+  _runConsent = _pendingResume.consent===true;           // 이어하기: 처음 선택한 동의 유지
+  _runId = _pendingResume.run || newRunId();
   // 저장된 연령대(응답 시간) 복원 — 없으면 기본값 유지
   const savedAge = _pendingResume.age;
   if(savedAge && AGE_TIMES[savedAge]){
