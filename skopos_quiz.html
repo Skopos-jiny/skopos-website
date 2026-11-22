@@ -798,6 +798,29 @@ em{font-style:normal;}
 .mk-fact b{color:#DC1478}
 .mk-cmp thead th:first-child{width:17%}.mk-cmp thead th:nth-child(2){width:27%}
 .mk-time ul{margin:8px 0 0;padding:0 0 0 18px}.mk-time li{margin:3px 0;color:#D8DAE5}.mk-time-h{font-size:1rem;font-weight:800}
+.mk-cases{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mk-case{background:#fff;border:1px solid rgba(15,15,26,.07);border-radius:16px;padding:16px 14px;text-align:left}
+.mk-case-num{font-size:1.5rem;font-weight:900;color:#DC1478;line-height:1.1;letter-spacing:-.02em}
+.mk-case-num small{font-size:.78rem;font-weight:800;color:#DC1478;margin-left:2px}
+.mk-case strong{display:block;font-size:.9rem;color:#0F0F1A;margin:6px 0 4px;word-break:keep-all;line-height:1.45}
+.mk-case p{font-size:.8rem;color:#4A4E63;line-height:1.65;margin:0;word-break:keep-all}
+.mk-case .mk-use{margin-top:8px;font-size:.76rem;font-weight:700;color:#0F0F1A;background:#F7F8FC;border-radius:8px;padding:6px 8px;line-height:1.5}
+.mk-why{display:grid;gap:8px}
+.mk-why-row{display:grid;grid-template-columns:38% 1fr;gap:10px;align-items:start;background:#fff;border:1px solid rgba(15,15,26,.07);border-radius:14px;padding:13px 14px;text-align:left}
+.mk-why-row b{font-size:.86rem;color:#0F0F1A;line-height:1.5;word-break:keep-all}
+.mk-why-row span{font-size:.8rem;color:#4A4E63;line-height:1.6;word-break:keep-all}
+.mk-why-row em{font-style:normal;display:block;margin-top:3px;font-size:.7rem;color:#8890A4;font-weight:600}
+.mk-map{width:100%;table-layout:fixed;border-collapse:separate;border-spacing:0;background:#fff;border:1px solid rgba(15,15,26,.08);border-radius:14px;overflow:hidden;font-size:.82rem;text-align:left}
+.mk-map th,.mk-map td{padding:10px 10px;border-bottom:1px solid rgba(15,15,26,.06);line-height:1.5;word-break:keep-all;vertical-align:top}
+.mk-map tr:last-child td{border-bottom:0}
+.mk-map thead th{background:#0F0F1A;color:#fff;font-size:.76rem}
+.mk-map td:first-child{font-weight:800;color:#0F0F1A;width:36%}
+.mk-map td:last-child{color:#4A4E63}
+.mk-qa{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mk-qa div{background:#fff;border:1px solid rgba(220,20,120,.16);border-radius:14px;padding:13px 12px;text-align:left}
+.mk-qa b{display:block;font-size:.86rem;color:#0F0F1A;margin-bottom:3px;word-break:keep-all}
+.mk-qa span{font-size:.76rem;color:#4A4E63;line-height:1.55;word-break:keep-all;display:block}
+@media(max-width:560px){.mk-cases,.mk-qa{grid-template-columns:1fr}.mk-why-row{grid-template-columns:1fr;gap:4px}}
 @media(max-width:560px){.mk-steps{grid-template-columns:repeat(2,1fr)}.mk-cmp{font-size:.8rem}.mk-cmp th,.mk-cmp td{padding:11px 8px}}
 </style>
 <script src="/skopos-track.js" defer></script>
@@ -2098,6 +2121,15 @@ function renderResult(t, sub, unlocked){
         하지만 같은 유형 안에서도 사람마다 <strong>강한 욕구</strong>가 다릅니다.<br>
         정밀 검사로 <strong>8개 영역 중 어떤 욕구가 가장 강한지</strong> 정확히 확인해보세요.</p>
 
+      <!-- 연구 사례 -->
+      <p class="upg-points-head">공간이 사람을 바꾼다는 연구 사례</p>
+      <div style="position:relative;z-index:1;margin-bottom:8px">
+<div class="mk-cases">
+  <div class="mk-case"><div class="mk-case-num">23<small>명 vs 23명</small></div><strong>창밖에 나무가 보인 환자들</strong><p>같은 수술을 받은 환자 중 나무가 보이는 병실에 머문 쪽이 벽돌벽 병실보다 입원 기간이 짧고 진통제를 덜 썼어요.</p><div class="mk-use">→ 회복형에게 '시선이 쉬는 자리'를 먼저 처방하는 이유</div><span class="mk-src">Ulrich, 1984, Science</span></div>
+  <div class="mk-case"><div class="mk-case-num">16<small>%</small></div><strong>교실 환경이 만든 학업 차이</strong><p>영국 초등 153개 교실, 학생 3,766명을 분석하니 1년 학업 향상 차이의 16%가 빛·자극 수준·개별화 같은 교실 환경으로 설명됐어요.</p><div class="mk-use">→ 빛과 자극을 '사람에 맞추는 것'이 핵심인 이유</div><span class="mk-src">Barrett 외, 2015, Building and Environment</span></div>
+</div>
+      </div>
+      <p class="mk-note" style="position:relative;z-index:1;margin-bottom:22px">SDTI는 이런 환경심리학 연구를 바탕으로 8개 영역을 설계했어요.</p>
       <!-- 무료 vs 정밀 비교 -->
       <p class="upg-points-head">무료 검사와 정밀 검사, 이렇게 달라요</p>
       <div style="position:relative;z-index:1;margin-bottom:22px">

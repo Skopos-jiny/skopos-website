@@ -423,6 +423,29 @@ h1,h2,h3,p,small,.result-name,.result-desc,.rx-item{word-break:keep-all;overflow
 .mk-fact b{color:#DC1478}
 .mk-cmp thead th:first-child{width:17%}.mk-cmp thead th:nth-child(2){width:27%}
 .mk-time ul{margin:8px 0 0;padding:0 0 0 18px}.mk-time li{margin:3px 0;color:#D8DAE5}.mk-time-h{font-size:1rem;font-weight:800}
+.mk-cases{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mk-case{background:#fff;border:1px solid rgba(15,15,26,.07);border-radius:16px;padding:16px 14px;text-align:left}
+.mk-case-num{font-size:1.5rem;font-weight:900;color:#DC1478;line-height:1.1;letter-spacing:-.02em}
+.mk-case-num small{font-size:.78rem;font-weight:800;color:#DC1478;margin-left:2px}
+.mk-case strong{display:block;font-size:.9rem;color:#0F0F1A;margin:6px 0 4px;word-break:keep-all;line-height:1.45}
+.mk-case p{font-size:.8rem;color:#4A4E63;line-height:1.65;margin:0;word-break:keep-all}
+.mk-case .mk-use{margin-top:8px;font-size:.76rem;font-weight:700;color:#0F0F1A;background:#F7F8FC;border-radius:8px;padding:6px 8px;line-height:1.5}
+.mk-why{display:grid;gap:8px}
+.mk-why-row{display:grid;grid-template-columns:38% 1fr;gap:10px;align-items:start;background:#fff;border:1px solid rgba(15,15,26,.07);border-radius:14px;padding:13px 14px;text-align:left}
+.mk-why-row b{font-size:.86rem;color:#0F0F1A;line-height:1.5;word-break:keep-all}
+.mk-why-row span{font-size:.8rem;color:#4A4E63;line-height:1.6;word-break:keep-all}
+.mk-why-row em{font-style:normal;display:block;margin-top:3px;font-size:.7rem;color:#8890A4;font-weight:600}
+.mk-map{width:100%;table-layout:fixed;border-collapse:separate;border-spacing:0;background:#fff;border:1px solid rgba(15,15,26,.08);border-radius:14px;overflow:hidden;font-size:.82rem;text-align:left}
+.mk-map th,.mk-map td{padding:10px 10px;border-bottom:1px solid rgba(15,15,26,.06);line-height:1.5;word-break:keep-all;vertical-align:top}
+.mk-map tr:last-child td{border-bottom:0}
+.mk-map thead th{background:#0F0F1A;color:#fff;font-size:.76rem}
+.mk-map td:first-child{font-weight:800;color:#0F0F1A;width:36%}
+.mk-map td:last-child{color:#4A4E63}
+.mk-qa{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mk-qa div{background:#fff;border:1px solid rgba(220,20,120,.16);border-radius:14px;padding:13px 12px;text-align:left}
+.mk-qa b{display:block;font-size:.86rem;color:#0F0F1A;margin-bottom:3px;word-break:keep-all}
+.mk-qa span{font-size:.76rem;color:#4A4E63;line-height:1.55;word-break:keep-all;display:block}
+@media(max-width:560px){.mk-cases,.mk-qa{grid-template-columns:1fr}.mk-why-row{grid-template-columns:1fr;gap:4px}}
 @media(max-width:560px){.mk-steps{grid-template-columns:repeat(2,1fr)}.mk-cmp{font-size:.8rem}.mk-cmp th,.mk-cmp td{padding:11px 8px}}
 </style>
 <script src="/skopos-track.js" defer></script>
@@ -766,6 +789,62 @@ h1,h2,h3,p,small,.result-name,.result-desc,.rx-item{word-break:keep-all;overflow
       </a>
     </div>
   </div>
+
+  <!-- ═════════ 연구 근거와 품질 ═════════ -->
+  <section class="mk-sec" id="evidence">
+    <div class="mk-head">
+      <span class="mk-tag">공간을 사람에 맞추면 달라져요</span>
+      <h3 class="mk-title">공간이 사람을 바꾼다는 건,<br><em>연구로 확인된 이야기</em>예요</h3>
+      <p class="mk-sub">병원, 학교, 집에서 이어진 환경심리학 연구 사례예요.</p>
+    </div>
+<div class="mk-cases">
+  <div class="mk-case"><div class="mk-case-num">23<small>명 vs 23명</small></div><strong>창밖에 나무가 보인 환자들</strong><p>같은 수술을 받은 환자 중 나무가 보이는 병실에 머문 쪽이 벽돌벽 병실보다 입원 기간이 짧고 진통제를 덜 썼어요.</p><div class="mk-use">→ 회복형에게 '시선이 쉬는 자리'를 먼저 처방하는 이유</div><span class="mk-src">Ulrich, 1984, Science</span></div>
+  <div class="mk-case"><div class="mk-case-num">16<small>%</small></div><strong>교실 환경이 만든 학업 차이</strong><p>영국 초등 153개 교실, 학생 3,766명을 분석하니 1년 학업 향상 차이의 16%가 빛·자극 수준·개별화 같은 교실 환경으로 설명됐어요.</p><div class="mk-use">→ 빛과 자극을 '사람에 맞추는 것'이 핵심인 이유</div><span class="mk-src">Barrett 외, 2015, Building and Environment</span></div>
+  <div class="mk-case"><div class="mk-case-num">83<small>개 침실</small></div><strong>방만 보고도 사람이 보여요</strong><p>방 사진만 본 사람들이 방 주인의 개방성과 성실성을 비교적 정확히 맞혔어요. 공간에는 그 사람의 성향이 드러나요.</p><div class="mk-use">→ 공간 취향으로 욕구 구조를 읽는 SDTI의 출발점</div><span class="mk-src">Gosling 외, 2002, JPSP</span></div>
+  <div class="mk-case"><div class="mk-case-num">2700<small>K</small></div><strong>저녁 조명과 잠</strong><p>저녁의 밝고 푸른 빛은 잠을 부르는 호르몬(멜라토닌) 분비를 억제해요. 생리학적으로 가장 탄탄한 공간 연구 중 하나예요.</p><div class="mk-use">→ 침실에 전구색 조명을 처방하는 이유</div><span class="mk-src">빛과 생체리듬 연구</span></div>
+</div>
+    <p class="mk-note">위 사례는 공간이 사람에게 주는 영향에 관한 연구이며, SDTI는 이 연구들을 바탕으로 설계했어요.</p>
+  </section>
+
+  <section class="mk-sec" id="rx-why">
+    <div class="mk-head">
+      <span class="mk-tag">샘플 결과지의 처방, 왜 이렇게 나왔을까요</span>
+      <h3 class="mk-title">처방 하나하나에 <em>근거</em>가 있어요</h3>
+      <p class="mk-sub">위 '고요한 회복형' 샘플에 나온 처방과 그 근거예요.</p>
+    </div>
+<div class="mk-why">
+  <div class="mk-why-row"><b>2700K 전구색 · 디머 조명</b><span>저녁의 밝은 청색광은 멜라토닌을 억제해 회복을 방해해요.<em>빛과 생체리듬 연구</em></span></div>
+  <div class="mk-why-row"><b>벽을 등진 아늑한 자리</b><span>밖을 보면서도 내가 보호받는 자리에서 사람은 더 편안함을 느껴요.<em>조망-은신 이론 · Appleton, 1975</em></span></div>
+  <div class="mk-why-row"><b>히든 수납 · 정돈된 시야</b><span>공간이 한눈에 이해될수록 편안하고, 어수선함은 스트레스 회복과 관련 있어요.<em>Kaplan &amp; Kaplan, 1989 · Saxbe &amp; Repetti, 2010</em></span></div>
+  <div class="mk-why-row"><b>방음 커튼 · 부드러운 패브릭</b><span>같은 소음에도 불쾌함의 크기는 사람마다 크고 안정적으로 달라요.<em>소음 민감도 · Weinstein, 1978</em></span></div>
+</div>
+  </section>
+
+  <section class="mk-sec" id="design">
+    <div class="mk-head">
+      <span class="mk-tag">SDTI는 이렇게 만들었어요</span>
+      <h3 class="mk-title">8개 영역 모두 <em>이론에서 출발</em>했어요</h3>
+    </div>
+<table class="mk-map">
+  <thead><tr><th>SDTI 8개 영역</th><th>설계 근거가 된 이론·연구</th></tr></thead>
+  <tbody>
+    <tr><td>빛·소리·촉감 민감도</td><td>최적 각성 이론, 감각처리 민감성(Aron), 소음 민감도</td></tr>
+    <tr><td>동선·정리</td><td>환경 선호 모형(Kaplan), 어포던스, 어수선함 연구</td></tr>
+    <tr><td>소품·살림</td><td>공간 단서 연구(Gosling), 자기결정성 이론의 유능감</td></tr>
+    <tr><td>색감·소재</td><td>환경 선호의 복잡성, 바이오필리아, 곡선 선호 연구</td></tr>
+    <tr><td>집에서 보내는 시간</td><td>행동 장면 이론(Barker), 장소 의존</td></tr>
+    <tr><td>함께 사는 방식</td><td>프라이버시 조절(Altman), 프록세믹스(Hall), 개인공간</td></tr>
+    <tr><td>나를 드러내는 취향</td><td>장소 정체성(Proshansky), 독특성 욕구</td></tr>
+    <tr><td>쉼·회복</td><td>주의회복이론(Kaplan), 스트레스 회복이론(Ulrich)</td></tr>
+  </tbody>
+</table>
+    <div style="margin-top:12px"><div class="mk-qa">
+  <div><b>144문항 · 8개 영역</b><span>영역마다 18문항, 그 영역을 직접 묻는 문항으로 점수를 계산해요</span></div>
+  <div><b>채점 편향 점검</b><span>무작위 응답 5,000건 시뮬레이션으로 특정 영역이 유리하지 않은지 확인했어요</span></div>
+  <div><b>프로그램저작권 등록</b><span>한국저작권위원회 제 C-2026-029862 호</span></div>
+  <div><b>신뢰도 연구 진행 중</b><span>동의한 응답으로 신뢰도·타당도를 계속 확인하고 문항을 개선해요</span></div>
+</div></div>
+  </section>
 
   <!-- ═════════ 왜 정밀 검사인가 (연구 근거) ═════════ -->
   <section class="mk-sec" id="why">
