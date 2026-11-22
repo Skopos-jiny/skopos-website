@@ -387,21 +387,22 @@ h1,h2,h3,p,small,.result-name,.result-desc,.rx-item{word-break:keep-all;overflow
 .mk-title{font-size:1.18rem;font-weight:900;color:#0F0F1A;line-height:1.45;letter-spacing:-.01em;word-break:keep-all;margin:0}
 .mk-title em{font-style:normal;color:#DC1478}
 .mk-sub{font-size:.86rem;color:#6B7088;line-height:1.75;margin:8px auto 0;max-width:560px;word-break:keep-all}
-.mk-risk{display:grid;gap:10px}
-.mk-risk-item{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid rgba(15,15,26,.07);border-radius:14px;padding:15px 16px;text-align:left}
+.mk-risk{display:grid;gap:12px}
+.mk-risk-item{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid rgba(15,15,26,.07);border-radius:16px;padding:18px 16px;text-align:left}
 .mk-risk-ic{flex:none;width:36px;height:36px;border-radius:10px;background:#FCE4F0;display:flex;align-items:center;justify-content:center;font-size:1.05rem}
-.mk-risk-item strong{display:block;font-size:.92rem;color:#0F0F1A;margin-bottom:3px;word-break:keep-all}
-.mk-risk-item p{font-size:.82rem;color:#5A5E73;line-height:1.7;margin:0;word-break:keep-all}
+.mk-risk-item strong{display:block;font-size:.98rem;color:#0F0F1A;margin-bottom:3px;word-break:keep-all}
+.mk-risk-item p{font-size:.86rem;color:#4A4E63;line-height:1.7;margin:0;word-break:keep-all}
+.mk-risk-item p.mk-fix{margin-top:8px;font-size:.82rem;font-weight:700;color:#DC1478;background:#FFF4F9;border-radius:8px;padding:7px 10px;line-height:1.55}
 .mk-src{display:inline-block;margin-top:6px;font-size:.7rem;color:#8890A4;font-weight:600}
 .mk-close{margin:14px 0 0;text-align:center;font-size:.9rem;font-weight:800;color:#0F0F1A;line-height:1.6;word-break:keep-all}
 .mk-close em{font-style:normal;color:#DC1478}
 .mk-note{margin:8px 0 0;text-align:center;font-size:.72rem;color:#8890A4;line-height:1.6;word-break:keep-all}
-.mk-cmp{width:100%;border-collapse:separate;border-spacing:0;background:#fff;border:1px solid rgba(15,15,26,.08);border-radius:14px;overflow:hidden;font-size:.8rem;text-align:left}
-.mk-cmp th,.mk-cmp td{padding:11px 10px;border-bottom:1px solid rgba(15,15,26,.06);vertical-align:top;line-height:1.55;word-break:keep-all}
+.mk-cmp{width:100%;table-layout:fixed;border-collapse:separate;border-spacing:0;background:#fff;border:1px solid rgba(15,15,26,.08);border-radius:14px;overflow:hidden;font-size:.86rem;text-align:left}
+.mk-cmp th,.mk-cmp td{padding:12px 10px;border-bottom:1px solid rgba(15,15,26,.06);vertical-align:top;line-height:1.55;word-break:keep-all}
 .mk-cmp tr:last-child th,.mk-cmp tr:last-child td{border-bottom:0}
 .mk-cmp thead th{background:#F7F8FC;font-size:.76rem;color:#6B7088;font-weight:800}
 .mk-cmp thead th.mk-pro{background:#DC1478;color:#fff}
-.mk-cmp tbody th{width:22%;color:#6B7088;font-weight:700;background:#FBFBFD}
+.mk-cmp tbody th{width:17%;color:#6B7088;font-weight:700;background:#FBFBFD}
 .mk-cmp td.mk-pro{background:#FFF7FB;color:#0F0F1A;font-weight:700}
 .mk-cmp td.mk-free{color:#8890A4}
 .mk-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;counter-reset:mk}
@@ -409,7 +410,7 @@ h1,h2,h3,p,small,.result-name,.result-desc,.rx-item{word-break:keep-all;overflow
 .mk-step b{display:block;font-size:.7rem;color:#DC1478;font-weight:800;margin-bottom:4px}
 .mk-step strong{display:block;font-size:.86rem;color:#0F0F1A;margin-bottom:4px;word-break:keep-all}
 .mk-step span{display:block;font-size:.74rem;color:#6B7088;line-height:1.55;word-break:keep-all}
-.mk-time{margin:12px 0 0;background:#0F0F1A;color:#fff;border-radius:14px;padding:14px 16px;font-size:.82rem;line-height:1.7;text-align:left;word-break:keep-all}
+.mk-time{margin:12px 0 0;background:#0F0F1A;color:#fff;border-radius:16px;padding:16px 18px;font-size:.86rem;line-height:1.6;text-align:left;word-break:keep-all}
 .mk-time b{color:#FF8CC6}
 .mk-faq{display:grid;gap:8px;text-align:left}
 .mk-faq details{background:#fff;border:1px solid rgba(15,15,26,.07);border-radius:12px;padding:12px 14px}
@@ -420,7 +421,9 @@ h1,h2,h3,p,small,.result-name,.result-desc,.rx-item{word-break:keep-all;overflow
 .mk-facts{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:18px auto 0;max-width:620px}
 .mk-fact{background:#fff;border:1px solid rgba(220,20,120,.18);border-radius:50px;padding:7px 13px;font-size:.78rem;font-weight:700;color:#0F0F1A}
 .mk-fact b{color:#DC1478}
-@media(max-width:560px){.mk-steps{grid-template-columns:repeat(2,1fr)}.mk-cmp{font-size:.76rem}.mk-cmp th,.mk-cmp td{padding:10px 8px}}
+.mk-cmp thead th:first-child{width:17%}.mk-cmp thead th:nth-child(2){width:27%}
+.mk-time ul{margin:8px 0 0;padding:0 0 0 18px}.mk-time li{margin:3px 0;color:#D8DAE5}.mk-time-h{font-size:1rem;font-weight:800}
+@media(max-width:560px){.mk-steps{grid-template-columns:repeat(2,1fr)}.mk-cmp{font-size:.8rem}.mk-cmp th,.mk-cmp td{padding:11px 8px}}
 </style>
 <script src="/skopos-track.js" defer></script>
 <style id="ib-launch-css">
@@ -457,7 +460,7 @@ h1,h2,h3,p,small,.result-name,.result-desc,.rx-item{word-break:keep-all;overflow
   </div>
   <div class="mk-facts">
     <span class="mk-fact"><b>144</b>문항</span>
-    <span class="mk-fact">총 <b>약 30~40분</b></span>
+    <span class="mk-fact">총 <b>35분 내외</b></span>
     <span class="mk-fact"><b>22</b>쪽 PDF 리포트</span>
     <span class="mk-fact">1회 결제 · <b>영구 열람</b></span>
   </div>
@@ -769,13 +772,13 @@ h1,h2,h3,p,small,.result-name,.result-desc,.rx-item{word-break:keep-all;overflow
     <div class="mk-head">
       <span class="mk-tag">왜 집을 바꾸기 전에 해야 할까요</span>
       <h3 class="mk-title">내 기준을 모른 채 집을 바꾸면,<br><em>이런 일이 생겨요</em></h3>
-      <p class="mk-sub">SDTI는 환경심리학과 주거학 연구를 바탕으로 설계했어요. 아래 연구들이 정밀 검사가 무엇을 나눠서 재는지 보여 줘요.</p>
+      <p class="mk-sub">환경심리학·주거학 연구가 말해 주는 4가지예요.</p>
     </div>
 <div class="mk-risk">
-  <div class="mk-risk-item"><span class="mk-risk-ic">📉</span><div><strong>바라는 집과 지금 집의 차이는 조용히 쌓여요</strong><p>주거학에서는 바라는 집과 실제 집의 차이가 쌓이면 불만이 커지고, 결국 큰돈이 드는 리모델링이나 이사로 이어진다고 설명해요. 정밀 검사는 8개 영역마다 그 차이가 어디서 생기는지 짚어, 작게 먼저 바꿀 곳을 알려 드려요.</p><span class="mk-src">주거 적응 이론 · Morris &amp; Winter, 1975</span></div></div>
-  <div class="mk-risk-item"><span class="mk-risk-ic">🛋️</span><div><strong>남의 집 사진은 내 감각을 모릅니다</strong><p>빛·소리·촉감에 반응하는 정도도, 사람 사이에 두고 싶은 거리도 사람마다 크게 달라요. 인기 인테리어를 그대로 따라 사면 매일 쓰는 물건이 오히려 나를 지치게 할 수 있어요.</p><span class="mk-src">감각처리 민감성 · Aron &amp; Aron, 1997 / 42개국 개인공간 연구 · Sorokowska 외, 2017</span></div></div>
-  <div class="mk-risk-item"><span class="mk-risk-ic">🚪</span><div><strong>방마다 원하는 분위기가 달라요</strong><p>사람들이 집에 바라는 분위기를 조사한 연구에서 회복·유대·자극·생산성 같은 바람은 거실, 침실, 주방마다 다르게 나타났어요. 그래서 정밀 검사는 공간별로 처방을 나눠 드려요.</p><span class="mk-src">집 환경의 심리학 · Graham, Gosling &amp; Travis, 2015</span></div></div>
-  <div class="mk-risk-item"><span class="mk-risk-ic">🧺</span><div><strong>어수선함은 기분 문제만이 아니에요</strong><p>맞벌이 부부 연구에서 집을 어수선하고 미완성이라고 표현한 사람일수록 하루 스트레스 호르몬 리듬이 덜 회복되는 경향이 나타났어요. 정돈 욕구가 강한 사람에게 수납 처방이 먼저인 이유예요.</p><span class="mk-src">Saxbe &amp; Repetti, 2010 (상관 연구)</span></div></div>
+  <div class="mk-risk-item"><span class="mk-risk-ic">📉</span><div><strong>불만은 조용히 쌓여요</strong><p>바라는 집과 지금 집의 차이가 쌓이면, 결국 큰돈 드는 리모델링이나 이사로 이어져요.</p><p class="mk-fix">정밀 검사: 8개 영역별로 차이를 짚어 작게 먼저 바꿀 곳을 알려 드려요</p><span class="mk-src">주거 적응 이론 · Morris &amp; Winter, 1975</span></div></div>
+  <div class="mk-risk-item"><span class="mk-risk-ic">🛋️</span><div><strong>남의 집 사진은 내 감각을 몰라요</strong><p>빛·소리·촉감에 반응하는 정도는 사람마다 달라요. 인기 인테리어를 따라 사면 매일 쓰는 물건이 나를 지치게 할 수 있어요.</p><p class="mk-fix">정밀 검사: 내 감각에 맞는 조명·소재를 골라 드려요</p><span class="mk-src">Aron &amp; Aron, 1997 · Sorokowska 외, 2017</span></div></div>
+  <div class="mk-risk-item"><span class="mk-risk-ic">🚪</span><div><strong>방마다 원하는 분위기가 달라요</strong><p>쉬고 싶은 곳, 모이고 싶은 곳, 집중하고 싶은 곳은 방마다 다르게 나타나요.</p><p class="mk-fix">정밀 검사: 거실·침실·주방·서재별로 처방을 나눠 드려요</p><span class="mk-src">Graham, Gosling &amp; Travis, 2015</span></div></div>
+  <div class="mk-risk-item"><span class="mk-risk-ic">🧺</span><div><strong>어수선함은 기분 문제만이 아니에요</strong><p>집을 어수선하다고 느끼는 사람일수록 하루 스트레스 리듬이 덜 회복되는 경향이 보고됐어요.</p><p class="mk-fix">정밀 검사: 정돈 욕구가 강하면 수납부터 처방해요</p><span class="mk-src">Saxbe &amp; Repetti, 2010 · 상관 연구</span></div></div>
 </div>
     <p class="mk-close">가구 하나를 잘못 사는 비용보다,<br><em>내 기준을 먼저 아는 비용</em>이 훨씬 작아요.</p>
     <p class="mk-note">SDTI는 위 연구를 바탕으로 설계한 검사이며, 의학적 진단이나 치료를 대신하지 않아요.</p>
@@ -788,14 +791,14 @@ h1,h2,h3,p,small,.result-name,.result-desc,.rx-item{word-break:keep-all;overflow
       <h3 class="mk-title">무료 검사는 <em>'어떤 유형인지'</em>,<br>정밀 검사는 <em>'무엇부터 바꿀지'</em>까지</h3>
     </div>
 <table class="mk-cmp">
-  <thead><tr><th></th><th>무료 기초 검사</th><th class="mk-pro">정밀 검사</th></tr></thead>
+  <thead><tr><th></th><th>무료</th><th class="mk-pro">정밀 검사</th></tr></thead>
   <tbody>
-    <tr><th>문항·시간</th><td class="mk-free">22문항 · 3분 이내</td><td class="mk-pro">144문항 · 약 30~40분</td></tr>
-    <tr><th>알 수 있는 것</th><td class="mk-free">대표 공간 유형</td><td class="mk-pro">내 응답으로 계산한 8개 영역 강도와 TOP 3 핵심 욕구</td></tr>
-    <tr><th>처방</th><td class="mk-free">유형 대표 키워드</td><td class="mk-pro">거실·침실·주방·서재별 소품·소재·조명 처방, 5색 팔레트</td></tr>
-    <tr><th>실행 계획</th><td class="mk-free">없음</td><td class="mk-pro">지금 집과의 간격 재기, 30·60·90일 플랜, 예산대별 쇼핑 가이드</td></tr>
-    <tr><th>보관</th><td class="mk-free">화면에서 확인</td><td class="mk-pro">22쪽 PDF · 영구 열람</td></tr>
-    <tr><th>가격</th><td class="mk-free">무료</td><td class="mk-pro">29,900원 · 1회 결제</td></tr>
+    <tr><th>시간</th><td class="mk-free">22문항<br>3분 이내</td><td class="mk-pro">144문항<br>35분 내외</td></tr>
+    <tr><th>결과</th><td class="mk-free">대표 유형</td><td class="mk-pro">8개 영역 강도<br>TOP 3 핵심 욕구</td></tr>
+    <tr><th>처방</th><td class="mk-free">키워드</td><td class="mk-pro">공간별 소품·소재·조명<br>5색 팔레트</td></tr>
+    <tr><th>실행</th><td class="mk-free">없음</td><td class="mk-pro">간격 재기 · 90일 플랜<br>예산대별 가이드</td></tr>
+    <tr><th>보관</th><td class="mk-free">화면</td><td class="mk-pro">22쪽 PDF · 영구 열람</td></tr>
+    <tr><th>가격</th><td class="mk-free">무료</td><td class="mk-pro">29,900원 · 1회</td></tr>
   </tbody>
 </table>
   </section>
@@ -809,10 +812,10 @@ h1,h2,h3,p,small,.result-name,.result-desc,.rx-item{word-break:keep-all;overflow
     <div class="mk-steps">
       <div class="mk-step"><b>STEP 1</b><strong>결제</strong><span>카드 1회 결제<br>약 1분</span></div>
       <div class="mk-step"><b>STEP 2</b><strong>연령대 선택</strong><span>문항당 응답 시간이 정해져요</span></div>
-      <div class="mk-step"><b>STEP 3</b><strong>144문항 응답</strong><span>약 30~40분<br>중간 저장</span></div>
+      <div class="mk-step"><b>STEP 3</b><strong>144문항 응답</strong><span>35분 내외<br>중간 저장</span></div>
       <div class="mk-step"><b>STEP 4</b><strong>결과지 바로 확인</strong><span>웹 결과지와 22쪽 PDF</span></div>
     </div>
-<div class="mk-time">⏱️ <b>총 검사 시간 약 30~40분</b> · 144문항, 문항당 제한 시간은 연령대에 따라 12.5~18초예요(최대 30~43분). 답을 고르면 바로 다음 문항으로 넘어가고, 중간에 멈춰도 응답이 저장돼 <b>24시간 안에 이어서</b> 할 수 있어요.</div>
+<div class="mk-time"><div class="mk-time-h">⏱️ 총 검사 시간 <b>35분 내외</b></div><ul><li>144문항 · 문항당 12.5~18초 (연령대 선택)</li><li>답을 고르면 바로 다음 문항으로</li><li>중간에 멈춰도 <b>24시간 안에 이어서</b></li></ul></div>
   </section>
 
   <!-- ═════════ 자주 묻는 질문 ═════════ -->
@@ -876,7 +879,7 @@ h1,h2,h3,p,small,.result-name,.result-desc,.rx-item{word-break:keep-all;overflow
       <span>정밀 검사 시작하기</span>
       <span class="btn-final-price">29,900원</span>
     </a>
-    <small class="btn-final-sub">💳 신용·체크카드 결제 · 1회 결제 · 영구 열람 · 총 검사 시간 약 30~40분</small>
+    <small class="btn-final-sub">💳 신용·체크카드 결제 · 1회 결제 · 영구 열람 · 총 검사 시간 35분 내외</small>
 
     <div>
       <a class="btn-back-free" href="skopos_quiz.html" onclick="if(window.gtag)gtag('event','sample_to_free_click')">
