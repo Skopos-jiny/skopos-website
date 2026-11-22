@@ -821,6 +821,20 @@ em{font-style:normal;}
 .mk-qa b{display:block;font-size:.86rem;color:#0F0F1A;margin-bottom:3px;word-break:keep-all}
 .mk-qa span{font-size:.76rem;color:#4A4E63;line-height:1.55;word-break:keep-all;display:block}
 @media(max-width:560px){.mk-cases,.mk-qa{grid-template-columns:1fr}.mk-why-row{grid-template-columns:1fr;gap:4px}}
+.mk-case-badge{display:inline-block;font-size:.72rem;font-weight:800;color:#DC1478;background:#FFF0F7;border:1px solid rgba(220,20,120,.18);border-radius:50px;padding:4px 10px;letter-spacing:-.005em}
+.mk-auth{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mk-auth-item{display:flex;gap:10px;align-items:flex-start;background:linear-gradient(180deg,#fff,#FFF8FB);border:1px solid rgba(220,20,120,.16);border-radius:16px;padding:15px 14px;text-align:left}
+.mk-auth-ic{flex:none;font-size:1.25rem;line-height:1.2}
+.mk-auth-item b{display:block;font-size:.9rem;color:#0F0F1A;line-height:1.45;margin-bottom:4px;letter-spacing:-.01em;word-break:keep-all}
+.mk-auth-item span{display:block;font-size:.78rem;color:#4A4E63;line-height:1.65;letter-spacing:-.005em;word-break:keep-all}
+.mk-hero-auth{margin:14px auto 0;max-width:560px;font-size:.8rem;font-weight:700;color:#3D3D5C;line-height:1.6;word-break:keep-all;text-wrap:balance}
+/* 가독성: 본문은 양쪽 맞춤(균등), 제목은 균형 줄바꿈 */
+.mk-title,.mk-risk-item strong,.mk-case strong,.mk-auth-item b{text-wrap:balance}
+.mk-sub,.mk-note,.mk-close{text-wrap:balance}
+.mk-risk-item p,.mk-case p,.mk-why-row span,.mk-faq p,.mk-qa span{text-align:justify;text-justify:inter-word;letter-spacing:-.01em;word-break:keep-all;line-height:1.75;text-wrap:pretty}
+.mk-risk-item p.mk-fix,.mk-case .mk-use{text-align:left}
+.mk-title{letter-spacing:-.02em;line-height:1.5}
+@media(max-width:560px){.mk-auth{grid-template-columns:1fr}.mk-auth-item span br,.mk-case strong br{display:none}}
 @media(max-width:560px){.mk-steps{grid-template-columns:repeat(2,1fr)}.mk-cmp{font-size:.8rem}.mk-cmp th,.mk-cmp td{padding:11px 8px}}
 </style>
 <script src="/skopos-track.js" defer></script>
@@ -2121,15 +2135,25 @@ function renderResult(t, sub, unlocked){
         하지만 같은 유형 안에서도 사람마다 <strong>강한 욕구</strong>가 다릅니다.<br>
         정밀 검사로 <strong>8개 영역 중 어떤 욕구가 가장 강한지</strong> 정확히 확인해보세요.</p>
 
+      <!-- 권위 있는 연구 기반 -->
+      <p class="upg-points-head">SDTI는 이런 연구 위에서 설계했어요</p>
+      <div style="position:relative;z-index:1;margin-bottom:22px">
+<div class="mk-auth">
+  <div class="mk-auth-item"><span class="mk-auth-ic">🏅</span><div><b>노벨 생리의학상 연구 참고</b><span>2014년 수상, 뇌가 위치와 거리를 표상하는 <br>장소세포·격자세포 연구 (O'Keefe, Moser)</span></div></div>
+  <div class="mk-auth-item"><span class="mk-auth-ic">📰</span><div><b>Science · Nature Neuroscience 게재 연구</b><span>창밖 풍경과 회복(Ulrich, 1984), <br>개인공간과 편도체(Kennedy 외, 2009)</span></div></div>
+  <div class="mk-auth-item"><span class="mk-auth-ic">📘</span><div><b>심리학 최상위 학술지 연구</b><span>집 환경의 심리학(Perspectives on Psychological Science, 2015), <br>공간 속 성격 단서(JPSP, 2002)</span></div></div>
+  <div class="mk-auth-item"><span class="mk-auth-ic">🏛️</span><div><b>환경심리학 대표 이론</b><span>주의회복이론(Kaplan) · 스트레스 회복이론(Ulrich) <br>프라이버시 조절(Altman) · 조망-은신(Appleton)</span></div></div>
+</div>
+      </div>
       <!-- 연구 사례 -->
       <p class="upg-points-head">공간이 사람을 바꾼다는 연구 사례</p>
       <div style="position:relative;z-index:1;margin-bottom:8px">
 <div class="mk-cases">
-  <div class="mk-case"><div class="mk-case-num">23<small>명 vs 23명</small></div><strong>창밖에 나무가 보인 환자들</strong><p>같은 수술을 받은 환자 중 나무가 보이는 병실에 머문 쪽이 벽돌벽 병실보다 입원 기간이 짧고 진통제를 덜 썼어요.</p><div class="mk-use">→ 회복형에게 '시선이 쉬는 자리'를 먼저 처방하는 이유</div><span class="mk-src">Ulrich, 1984, Science</span></div>
-  <div class="mk-case"><div class="mk-case-num">16<small>%</small></div><strong>교실 환경이 만든 학업 차이</strong><p>영국 초등 153개 교실, 학생 3,766명을 분석하니 1년 학업 향상 차이의 16%가 빛·자극 수준·개별화 같은 교실 환경으로 설명됐어요.</p><div class="mk-use">→ 빛과 자극을 '사람에 맞추는 것'이 핵심인 이유</div><span class="mk-src">Barrett 외, 2015, Building and Environment</span></div>
+  <div class="mk-case"><div class="mk-case-badge">Science 게재 · 1984</div><strong>창밖 풍경이 회복을 <br>앞당겼어요</strong><p>같은 수술을 받은 환자 중 나무가 보이는 병실에 머문 환자들이 벽돌벽 병실 환자들보다 입원 기간이 짧고 진통제를 덜 썼어요.</p><div class="mk-use">→ 회복형에게 '시선이 쉬는 자리'를 먼저 처방하는 이유</div><span class="mk-src">Ulrich, 1984, Science</span></div>
+  <div class="mk-case"><div class="mk-case-badge">153개 교실 · 3,766명 · 2015</div><strong>교실 환경이 학업 향상 <br>차이의 16%를 설명했어요</strong><p>영국 초등학교 교실을 1년 동안 분석한 결과, 빛·자극 수준·개별화 같은 물리 환경이 학생 간 학업 향상 차이를 의미 있게 설명했어요.</p><div class="mk-use">→ 빛과 자극을 '사람에 맞추는 것'이 핵심인 이유</div><span class="mk-src">Barrett 외, 2015, Building and Environment</span></div>
 </div>
       </div>
-      <p class="mk-note" style="position:relative;z-index:1;margin-bottom:22px">SDTI는 이런 환경심리학 연구를 바탕으로 8개 영역을 설계했어요.</p>
+      <p class="mk-note" style="position:relative;z-index:1;margin-bottom:22px">위 연구는 공간이 사람에게 주는 영향에 관한 것으로, SDTI는 이를 참고해 8개 영역을 설계했어요.</p>
       <!-- 무료 vs 정밀 비교 -->
       <p class="upg-points-head">무료 검사와 정밀 검사, 이렇게 달라요</p>
       <div style="position:relative;z-index:1;margin-bottom:22px">

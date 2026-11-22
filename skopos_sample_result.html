@@ -446,7 +446,25 @@ h1,h2,h3,p,small,.result-name,.result-desc,.rx-item{word-break:keep-all;overflow
 .mk-qa b{display:block;font-size:.86rem;color:#0F0F1A;margin-bottom:3px;word-break:keep-all}
 .mk-qa span{font-size:.76rem;color:#4A4E63;line-height:1.55;word-break:keep-all;display:block}
 @media(max-width:560px){.mk-cases,.mk-qa{grid-template-columns:1fr}.mk-why-row{grid-template-columns:1fr;gap:4px}}
+.mk-case-badge{display:inline-block;font-size:.72rem;font-weight:800;color:#DC1478;background:#FFF0F7;border:1px solid rgba(220,20,120,.18);border-radius:50px;padding:4px 10px;letter-spacing:-.005em}
+.mk-auth{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mk-auth-item{display:flex;gap:10px;align-items:flex-start;background:linear-gradient(180deg,#fff,#FFF8FB);border:1px solid rgba(220,20,120,.16);border-radius:16px;padding:15px 14px;text-align:left}
+.mk-auth-ic{flex:none;font-size:1.25rem;line-height:1.2}
+.mk-auth-item b{display:block;font-size:.9rem;color:#0F0F1A;line-height:1.45;margin-bottom:4px;letter-spacing:-.01em;word-break:keep-all}
+.mk-auth-item span{display:block;font-size:.78rem;color:#4A4E63;line-height:1.65;letter-spacing:-.005em;word-break:keep-all}
+.mk-hero-auth{margin:14px auto 0;max-width:560px;font-size:.8rem;font-weight:700;color:#3D3D5C;line-height:1.6;word-break:keep-all;text-wrap:balance}
+/* 가독성: 본문은 양쪽 맞춤(균등), 제목은 균형 줄바꿈 */
+.mk-title,.mk-risk-item strong,.mk-case strong,.mk-auth-item b{text-wrap:balance}
+.mk-sub,.mk-note,.mk-close{text-wrap:balance}
+.mk-risk-item p,.mk-case p,.mk-why-row span,.mk-faq p,.mk-qa span{text-align:justify;text-justify:inter-word;letter-spacing:-.01em;word-break:keep-all;line-height:1.75;text-wrap:pretty}
+.mk-risk-item p.mk-fix,.mk-case .mk-use{text-align:left}
+.mk-title{letter-spacing:-.02em;line-height:1.5}
+@media(max-width:560px){.mk-auth{grid-template-columns:1fr}.mk-auth-item span br,.mk-case strong br{display:none}}
 @media(max-width:560px){.mk-steps{grid-template-columns:repeat(2,1fr)}.mk-cmp{font-size:.8rem}.mk-cmp th,.mk-cmp td{padding:11px 8px}}
+
+/* 샘플 본문 가독성: 긴 설명은 양쪽 맞춤, 제목은 균형 줄바꿈 */
+.top-body,.result-desc,.locked-sub{text-align:justify;text-justify:inter-word;word-break:keep-all;letter-spacing:-.01em;text-wrap:pretty}
+.hero-title,.final-cta-title,.locked-title,.hero-sub,.final-cta-sub{text-wrap:balance;word-break:keep-all}
 </style>
 <script src="/skopos-track.js" defer></script>
 <style id="ib-launch-css">
@@ -487,6 +505,7 @@ h1,h2,h3,p,small,.result-name,.result-desc,.rx-item{word-break:keep-all;overflow
     <span class="mk-fact"><b>22</b>쪽 PDF 리포트</span>
     <span class="mk-fact">1회 결제 · <b>영구 열람</b></span>
   </div>
+  <p class="mk-hero-auth">🏅 노벨 생리의학상 공간 인지 연구 · Science 게재 연구 · 환경심리학 대표 이론을 바탕으로 설계</p>
 </section>
 
 <!-- 본문 -->
@@ -793,17 +812,27 @@ h1,h2,h3,p,small,.result-name,.result-desc,.rx-item{word-break:keep-all;overflow
   <!-- ═════════ 연구 근거와 품질 ═════════ -->
   <section class="mk-sec" id="evidence">
     <div class="mk-head">
+      <span class="mk-tag">권위 있는 연구 위에서 설계했어요</span>
+      <h3 class="mk-title">노벨상 연구부터 Science 논문까지,<br><em>학계가 인정한 이론을 바탕으로</em> 만들었어요</h3>
+      <p class="mk-sub">SDTI의 8개 영역은 아래 연구와 이론에서 출발했어요.</p>
+    </div>
+<div class="mk-auth">
+  <div class="mk-auth-item"><span class="mk-auth-ic">🏅</span><div><b>노벨 생리의학상 연구 참고</b><span>2014년 수상, 뇌가 위치와 거리를 표상하는 <br>장소세포·격자세포 연구 (O'Keefe, Moser)</span></div></div>
+  <div class="mk-auth-item"><span class="mk-auth-ic">📰</span><div><b>Science · Nature Neuroscience 게재 연구</b><span>창밖 풍경과 회복(Ulrich, 1984), <br>개인공간과 편도체(Kennedy 외, 2009)</span></div></div>
+  <div class="mk-auth-item"><span class="mk-auth-ic">📘</span><div><b>심리학 최상위 학술지 연구</b><span>집 환경의 심리학(Perspectives on Psychological Science, 2015), <br>공간 속 성격 단서(JPSP, 2002)</span></div></div>
+  <div class="mk-auth-item"><span class="mk-auth-ic">🏛️</span><div><b>환경심리학 대표 이론</b><span>주의회복이론(Kaplan) · 스트레스 회복이론(Ulrich) <br>프라이버시 조절(Altman) · 조망-은신(Appleton)</span></div></div>
+</div>
+    <div class="mk-head" style="margin-top:26px">
       <span class="mk-tag">공간을 사람에 맞추면 달라져요</span>
       <h3 class="mk-title">공간이 사람을 바꾼다는 건,<br><em>연구로 확인된 이야기</em>예요</h3>
-      <p class="mk-sub">병원, 학교, 집에서 이어진 환경심리학 연구 사례예요.</p>
     </div>
 <div class="mk-cases">
-  <div class="mk-case"><div class="mk-case-num">23<small>명 vs 23명</small></div><strong>창밖에 나무가 보인 환자들</strong><p>같은 수술을 받은 환자 중 나무가 보이는 병실에 머문 쪽이 벽돌벽 병실보다 입원 기간이 짧고 진통제를 덜 썼어요.</p><div class="mk-use">→ 회복형에게 '시선이 쉬는 자리'를 먼저 처방하는 이유</div><span class="mk-src">Ulrich, 1984, Science</span></div>
-  <div class="mk-case"><div class="mk-case-num">16<small>%</small></div><strong>교실 환경이 만든 학업 차이</strong><p>영국 초등 153개 교실, 학생 3,766명을 분석하니 1년 학업 향상 차이의 16%가 빛·자극 수준·개별화 같은 교실 환경으로 설명됐어요.</p><div class="mk-use">→ 빛과 자극을 '사람에 맞추는 것'이 핵심인 이유</div><span class="mk-src">Barrett 외, 2015, Building and Environment</span></div>
-  <div class="mk-case"><div class="mk-case-num">83<small>개 침실</small></div><strong>방만 보고도 사람이 보여요</strong><p>방 사진만 본 사람들이 방 주인의 개방성과 성실성을 비교적 정확히 맞혔어요. 공간에는 그 사람의 성향이 드러나요.</p><div class="mk-use">→ 공간 취향으로 욕구 구조를 읽는 SDTI의 출발점</div><span class="mk-src">Gosling 외, 2002, JPSP</span></div>
-  <div class="mk-case"><div class="mk-case-num">2700<small>K</small></div><strong>저녁 조명과 잠</strong><p>저녁의 밝고 푸른 빛은 잠을 부르는 호르몬(멜라토닌) 분비를 억제해요. 생리학적으로 가장 탄탄한 공간 연구 중 하나예요.</p><div class="mk-use">→ 침실에 전구색 조명을 처방하는 이유</div><span class="mk-src">빛과 생체리듬 연구</span></div>
+  <div class="mk-case"><div class="mk-case-badge">Science 게재 · 1984</div><strong>창밖 풍경이 회복을 <br>앞당겼어요</strong><p>같은 수술을 받은 환자 중 나무가 보이는 병실에 머문 환자들이 벽돌벽 병실 환자들보다 입원 기간이 짧고 진통제를 덜 썼어요.</p><div class="mk-use">→ 회복형에게 '시선이 쉬는 자리'를 먼저 처방하는 이유</div><span class="mk-src">Ulrich, 1984, Science</span></div>
+  <div class="mk-case"><div class="mk-case-badge">153개 교실 · 3,766명 · 2015</div><strong>교실 환경이 학업 향상 <br>차이의 16%를 설명했어요</strong><p>영국 초등학교 교실을 1년 동안 분석한 결과, 빛·자극 수준·개별화 같은 물리 환경이 학생 간 학업 향상 차이를 의미 있게 설명했어요.</p><div class="mk-use">→ 빛과 자극을 '사람에 맞추는 것'이 핵심인 이유</div><span class="mk-src">Barrett 외, 2015, Building and Environment</span></div>
+  <div class="mk-case"><div class="mk-case-badge">미국 성격·사회심리학 저널 · 2002</div><strong>방만 보고도 <br>사람이 보여요</strong><p>침실 83곳을 본 관찰자들이 방 주인의 개방성과 성실성을 비교적 정확히 맞혔어요. 공간에는 그 사람의 성향이 드러나요.</p><div class="mk-use">→ 공간 취향으로 욕구 구조를 읽는 SDTI의 출발점</div><span class="mk-src">Gosling 외, 2002, Journal of Personality and Social Psychology</span></div>
+  <div class="mk-case"><div class="mk-case-badge">빛과 생체리듬 연구</div><strong>저녁 조명이 <br>잠을 바꿔요</strong><p>저녁의 밝고 푸른 빛은 잠을 부르는 호르몬(멜라토닌) 분비를 억제해요. 생리학적으로 가장 탄탄한 공간 연구 중 하나예요.</p><div class="mk-use">→ 침실에 전구색 조명을 처방하는 이유</div><span class="mk-src">빛과 생체리듬 연구</span></div>
 </div>
-    <p class="mk-note">위 사례는 공간이 사람에게 주는 영향에 관한 연구이며, SDTI는 이 연구들을 바탕으로 설계했어요.</p>
+    <p class="mk-note">위 연구는 공간이 사람에게 주는 영향에 관한 것으로, SDTI는 이 연구들을 참고해 설계했어요.</p>
   </section>
 
   <section class="mk-sec" id="rx-why">
