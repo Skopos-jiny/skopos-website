@@ -1629,6 +1629,22 @@ function renderPreview(t, sub){
 function showPreview(type, sub){
   resultType=type;resultSub=sub;
   renderPreview(type, sub);
+  if(isInAppBrowser()){
+    try{
+      const u=new URL(location.href); u.searchParams.set('pending', pendingParamOf(type));
+      history.replaceState({},'',u.pathname+u.search+u.hash);   // 메뉴의 "다른 브라우저로 열기"도 이 주소로 열린다
+      const ext=externalOpenUrl(u.toString());
+      const lock=document.querySelector('#rw .pv-lock');
+      if(lock){
+        const box=document.createElement('div');
+        box.style.cssText='margin-top:12px;background:#F7F8FC;border-radius:12px;padding:12px;font-size:.8rem;line-height:1.6;color:#5A5A6E;text-align:center';
+        box.innerHTML='Google로 로그인하려면 외부 브라우저에서 이어서 보세요. 답변은 그대로 옮겨져요(1시간 이내).'
+          +(ext?'<a href="'+ext+'" style="display:block;margin-top:8px;color:#E91E8C;font-weight:800">외부 브라우저에서 이어보기 →</a>'
+               :'<br>오른쪽 위 <b>⋯ 메뉴 → 다른 브라우저로 열기</b>');
+        lock.appendChild(box);
+      }
+    }catch(e){}
+  }
   show('sr');
   window.scrollTo({top:0,behavior:'smooth'});
   try{ trackEvent('quiz_result_preview_shown',{result_type:type.id}); }catch(e){}
@@ -1652,8 +1668,51 @@ function showResultGate(){
   try{const lead=document.querySelector('.sk-gate .sk-lead');if(lead&&!lead.querySelector('.sk-back')&&document.getElementById('sr').classList.contains('active')){const a=document.createElement('a');a.href='#';a.className='sk-back';a.textContent='결과 미리보기로 돌아가기';a.addEventListener('click',e=>{e.preventDefault();SkoposAuth.hideGate();});lead.appendChild(document.createElement('br'));lead.appendChild(a);}}catch(e){}
 }
 
+// ── 앱 안 브라우저(카카오톡 등) 대응 ──
+// Google 로그인은 앱 안 브라우저에서 막혀 있어, 외부 브라우저로 옮기면 이 기기에 보관한 결과가 보이지 않는다.
+// 1) 검사 시작 전에 외부 브라우저로 열도록 안내하고 2) 검사 후 옮길 때는 주소에 결과 유형을 실어 이어서 보이게 한다.
+function isInAppBrowser(){ return /KAKAOTALK|Instagram|FBAN|FBAV|FB_IAB|NAVER\(inapp|Line\/|DaumApps|everytimeApp|; wv\)/i.test(navigator.userAgent||''); }
+function externalOpenUrl(url){
+  const ua=navigator.userAgent||'';
+  if(/KAKAOTALK/i.test(ua)) return 'kakaotalk://web/openExternal?url='+encodeURIComponent(url);
+  if(/Android/i.test(ua)) return 'intent://'+url.replace(/^https?:\/\//,'')+'#Intent;scheme=https;end';
+  return null; // iOS 인스타그램 등은 메뉴의 "브라우저로 열기"를 안내
+}
+function pendingParamOf(type){ return type ? type.id+'~'+Date.now().toString(36) : ''; }
+// 외부 브라우저로 옮겨 온 경우: 주소의 pending 값(유형~시각)을 이 기기 보관분으로 옮긴다 (1시간 이내만)
+function adoptPendingFromUrl(){
+  try{
+    const u=new URL(location.href); const v=u.searchParams.get('pending'); if(!v) return;
+    u.searchParams.delete('pending'); history.replaceState({},'',u.pathname+(u.search?u.search:'')+u.hash);
+    const [id,t]=v.split('~'); const ts=parseInt(t||'',36);
+    if(!id||!ts||Date.now()-ts>3600*1000||Date.now()<ts-60000) return;
+    if(!TYPES.find(x=>x.id===id)) return;
+    localStorage.setItem(PENDING_KEY,JSON.stringify({id,ts}));
+    try{ trackEvent('quiz_pending_from_url',{result_type:id}); }catch(e){}
+  }catch(e){}
+}
+function openInappNotice(){
+  let ov=document.getElementById('inappStart');
+  if(!ov){
+    ov=document.createElement('div'); ov.id='inappStart';
+    ov.style.cssText='position:fixed;inset:0;z-index:9800;background:rgba(15,15,26,.55);display:flex;align-items:flex-end;justify-content:center;padding:16px';
+    const ext=externalOpenUrl(location.href.split('#')[0]);
+    ov.innerHTML='<div role="dialog" aria-modal="true" style="background:#fff;border-radius:18px;max-width:420px;width:100%;padding:22px 20px 16px;box-shadow:0 10px 40px rgba(0,0,0,.2);font-size:.9rem;line-height:1.65;color:#1A1A2E">'
+      +'<div style="font-weight:800;font-size:1.02rem;margin-bottom:6px">외부 브라우저에서 시작해 주세요</div>'
+      +'<p style="color:#5A5A6E;margin:0 0 14px">지금은 앱 안 화면이라 결과를 볼 때 <b>Google 로그인</b>이 되지 않아요. Chrome·Safari에서 시작하면 답변과 결과가 그대로 이어져요. 카카오·네이버로 로그인하실 거라면 여기서 계속하셔도 괜찮아요.</p>'
+      +(ext?'<a id="inappGo" href="'+ext+'" style="display:block;text-align:center;background:#E91E8C;color:#fff;border-radius:50px;padding:13px;font-weight:800;text-decoration:none;margin-bottom:8px">외부 브라우저로 열기</a>'
+           :'<p style="background:#F7F8FC;border-radius:10px;padding:10px 12px;color:#5A5A6E;margin:0 0 10px">오른쪽 위 <b>⋯ 메뉴 → 다른 브라우저로 열기</b>를 눌러 주세요.</p>')
+      +'<button type="button" id="inappStay" style="display:block;width:100%;border:1px solid #DADCE0;background:#fff;border-radius:50px;padding:12px;font:inherit;font-weight:700;color:#1A1A2E;cursor:pointer">여기서 계속하기</button></div>';
+    document.body.appendChild(ov);
+    ov.querySelector('#inappStay').addEventListener('click',()=>{ try{sessionStorage.setItem('skopos_inapp_ack','1');}catch(e){} ov.remove(); try{ trackEvent('inapp_start_stay',{}); }catch(e){} startQuiz(); });
+    const go=ov.querySelector('#inappGo'); if(go) go.addEventListener('click',()=>{ try{ trackEvent('inapp_start_external',{}); }catch(e){} });
+  }
+  try{ trackEvent('inapp_start_notice',{}); }catch(e){}
+}
 function startQuiz(){
   // 문항은 로그인 없이 진행 (결과 확인 시점에만 로그인 요청)
+  let ack=false; try{ ack=sessionStorage.getItem('skopos_inapp_ack')==='1'; }catch(e){}
+  if(isInAppBrowser() && !_authed && !ack){ openInappNotice(); return; }
   try{ trackEvent('quiz_start',{authed:_authed}); }catch(e){}
   cur=0;ans={};_resultRunning=false;
   clearPending();
@@ -1873,6 +1932,7 @@ function revealResult(){
   const {type, sub} = _pendingResult;
   _pendingResult = null;
   clearPending();
+  try{ const u=new URL(location.href); if(u.searchParams.has('pending')){ u.searchParams.delete('pending'); history.replaceState({},'',u.pathname+u.search+u.hash); } }catch(e){}
   resultType=type;
   resultSub=sub;
   saveResult(type, sub); // 유형 ID 저장 (로그인 상태면 DB 저장)
@@ -2283,6 +2343,7 @@ window.addEventListener('load',()=>{
   };
 
   // 결과 확인 전 로그인·회원가입으로 페이지가 다시 열린 경우: 검사를 다시 하지 않고 이어서 결과 공개
+  adoptPendingFromUrl();
   const hasShared=new URLSearchParams(window.location.search).has('r');
   const pending=hasShared?null:loadPending();
   if(pending && window.SkoposAuth){

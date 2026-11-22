@@ -322,7 +322,21 @@ let token = null;
 
 async function call(action, extra){
   const r = await fetch(FN,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify(Object.assign({action},extra||{}))});
-  return r.json();
+  let j=null; try{ j = await r.json(); }catch(e){ j = { success:false, message:'' }; }
+  if(j && typeof j==='object') j._status = r.status;
+  return j;
+}
+// 이용권을 확인하지 못한 경우(서버 오류·로그인 만료·네트워크): 구매 화면이 아니라 다시 확인을 먼저 안내한다
+function viewCheckFail(msg, needLogin){
+  app.innerHTML = `<div class="card"><span class="eyebrow">커플 진단</span><h1>이용권을 확인하지 못했어요</h1>
+  <p class="sub">${needLogin?'로그인이 만료되어 결제 내역을 불러오지 못했어요. 다시 로그인하면 바로 이어서 보여 드려요.':'일시적인 연결 문제로 결제 내역을 불러오지 못했어요. 이미 결제하셨다면 다시 확인을 눌러 주세요.'}</p>
+  ${msg?`<div class="alert show">${esc(msg)}</div>`:''}
+  <div class="btn-row">${needLogin
+    ?'<a class="btn btn-p" href="login.html?redirect=couple.html">다시 로그인</a>'
+    :'<button type="button" class="btn btn-p" id="cpRetry">다시 확인</button>'}<a class="btn btn-s" href="mypage.html">마이페이지</a></div>
+  <p class="muted" style="margin-top:12px">계속 같은 화면이 보이면 결제한 계정으로 로그인했는지 확인해 주세요. 아직 구매 전이라면 <a href="payment.html?plan=couple" style="color:var(--pink);font-weight:800">커플 진단 안내 보기</a></p></div>`;
+  const b=document.getElementById('cpRetry'); if(b) b.addEventListener('click',()=>{ b.disabled=true; b.textContent='확인 중...'; main(); });
+  try{ window.SkoposTrack && SkoposTrack.event('couple_check_fail',{login:!!needLogin}); }catch(e){}
 }
 function inviteUrl(code){ return location.origin + '/couple.html?invite=' + encodeURIComponent(code); }
 function note(msg){
@@ -742,7 +756,7 @@ async function main(user){
     const sbc = await SkoposAuth.getClient();
     const { data:{ session } } = await sbc.auth.getSession();
     token = session && session.access_token;
-    if(!token){ viewNone('로그인 정보를 확인하지 못했어요. 새로고침 해주세요.'); return; }
+    if(!token){ viewCheckFail('', true); return; }
     const p = new URLSearchParams(location.search);
     let invite = (p.get('invite')||'').toUpperCase().replace(/[^A-Z0-9-]/g,'').slice(0,16);
     try{ if(invite) sessionStorage.setItem('skopos_invite', invite); else invite = sessionStorage.getItem('skopos_invite')||''; }catch(e){}
@@ -758,11 +772,11 @@ async function main(user){
       else joinMsg = j.message || '초대 코드를 확인하지 못했어요.';
     }
     const st = await call('report');
-    if(!st.success){ viewNone(st.message); return; }
+    if(!st || !st.success){ viewCheckFail(st && st.message, st && st._status===401); return; }
     if(!st.couple){ viewNone(joinMsg); return; }
     if(st.ready){ viewReport(st); return; }
     viewProgress(st.couple, p.get('new')==='1');
-  }catch(e){ console.error(e); viewNone('잠시 후 다시 시도해 주세요.'); }
+  }catch(e){ console.error(e); viewCheckFail(''); }
 }
 
 window.addEventListener('DOMContentLoaded',()=>{
