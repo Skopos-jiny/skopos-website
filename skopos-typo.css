@@ -1,0 +1,9 @@
+/* SKOPOS 공통 가독성 규칙 (2026-11)
+   - 한글은 단어 단위로 줄바꿈, 긴 영문·이메일은 넘치지 않게
+   - 제목은 줄 길이를 고르게(balance), 본문은 마지막 줄이 한 글자만 남지 않게(pretty)
+   - 양쪽 맞춤은 skopos-typo.js가 폭이 넓은 긴 문단에만 붙인다 */
+body{word-break:keep-all;overflow-wrap:break-word}
+h1,h2,h3,h4,[class*="title"],[class*="headline"]{text-wrap:balance}
+p,li,[class*="desc"],[class*="-sub"],[class*="body"]{text-wrap:pretty}
+.sk-justify{text-align:justify;text-align-last:left;text-justify:inter-word;letter-spacing:-.005em}
+input,textarea,select,button,code,pre,.no-typo{word-break:normal}
