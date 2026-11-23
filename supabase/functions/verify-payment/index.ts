@@ -45,6 +45,17 @@ function json(statusCode, body) {
   };
 }
 
+// 커플 결제 후 초대 코드 발급 실패: 결제 기록은 남아 있으므로 재시도 가능 응답(503)
+function coupleCodePending(impUid) {
+  console.error('verify-payment: couple code issue failed, client should retry', impUid);
+  return json(503, {
+    success: false,
+    retryable: true,
+    payment_recorded: true,
+    message: '결제는 완료됐어요. 커플 초대 코드 발급이 잠시 지연되고 있어 다시 시도할게요. 다시 결제하지 마세요.',
+  });
+}
+
 // Authorization: Bearer <supabase access_token> 에서 사용자 확인.
 // 토큰이 유효하면 그 사용자의 id를 반환하고, body 의 user_id 는 무시한다.
 // (클라이언트가 보낸 user_id 는 위조 가능하므로 신뢰하지 않는다)
@@ -224,6 +235,7 @@ const handler = async (event) => {
       if (wasCouple && existingPay.user_id) {
         existingCode = await ensureCoupleCode(sb, imp_uid, existingPay.merchant_uid || merchant_uid, existingPay.user_id);
       }
+      if (wasCouple && !existingCode) return coupleCodePending(imp_uid);
       return json(200, {
         success: true,
         already: true,
@@ -390,6 +402,9 @@ const handler = async (event) => {
     if (isCouple && resolvedUserId) {
       coupleCode = await ensureCoupleCode(sb, imp_uid, merchant_uid, resolvedUserId);
     }
+    // 결제는 기록됐지만 초대 코드가 없으면 성공으로 숨기지 않는다.
+    // 같은 imp_uid 로 다시 호출하면 위의 멱등 경로가 추가 결제 없이 코드를 다시 발급한다.
+    if (isCouple && !coupleCode) return coupleCodePending(imp_uid);
 
     return json(200, {
       success: true,

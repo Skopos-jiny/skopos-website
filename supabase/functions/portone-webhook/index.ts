@@ -85,9 +85,35 @@ const handler = async (event) => {
 
     if (payment.status === 'paid') {
       // 결제 기록은 verify-payment 에서 생성된다. 누락 여부만 로그로 남긴다.
-      const { data } = await sb.from('payments').select('id').eq('imp_uid', impUid).maybeSingle();
-      if (!data) console.warn('Webhook: paid but no DB record yet', impUid, payment.merchant_uid);
-      return res(200, { ok: true, status: 'paid', recorded: !!data });
+      // 결제 기록은 verify-payment 에서 생성된다. 승인 직후 창을 닫아 기록이 없거나,
+      // 커플 결제인데 초대 코드가 없으면 복구 대기열에 올려 운영자가 확인·복구할 수 있게 한다.
+      // 웹훅이 verify-payment 보다 먼저 도착할 수 있어 한 번 기다렸다가 다시 확인한다
+      const lookup = () => sb.from('payments').select('id,order_name,user_id').eq('imp_uid', impUid).maybeSingle();
+      let { data } = await lookup();
+      if (!data) {
+        await new Promise((r) => setTimeout(r, Number(process.env.WEBHOOK_RECHECK_MS ?? 8000)));
+        ({ data } = await lookup());
+      }
+      let reason = null;
+      if (!data) {
+        reason = 'no_payment_record';
+      } else if (/커플/.test(data.order_name || '') || /커플/.test(payment.name || '')) {
+        const { data: couple } = await sb.from('couples').select('code').eq('imp_uid', impUid).maybeSingle();
+        if (!couple) reason = 'couple_code_missing';
+      }
+      if (reason) {
+        console.error('Webhook: payment needs recovery', reason, impUid, payment.merchant_uid);
+        const { error: qErr } = await sb.from('payment_recovery_queue').upsert([{
+          imp_uid: impUid,
+          merchant_uid: payment.merchant_uid || null,
+          amount: Number(payment.amount || 0),
+          order_name: payment.name || null,
+          paid_at: payment.paid_at ? new Date(payment.paid_at * 1000).toISOString() : null,
+          reason,
+        }], { onConflict: 'imp_uid', ignoreDuplicates: true });
+        if (qErr) console.error('Webhook: recovery queue insert failed', impUid, qErr.message);
+      }
+      return res(200, { ok: true, status: 'paid', recorded: !!data, recovery: reason });
     }
 
     // ready / failed 등은 기록할 것이 없음
