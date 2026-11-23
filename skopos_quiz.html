@@ -835,6 +835,15 @@ em{font-style:normal;}
 .mk-risk-item p.mk-fix,.mk-case .mk-use{text-align:left}
 .mk-title{letter-spacing:-.02em;line-height:1.5}
 @media(max-width:560px){.mk-auth{grid-template-columns:1fr}.mk-auth-item span br,.mk-case strong br{display:none}}
+/* ── 정렬 원칙 (가독성) ──
+   가운데: 섹션 머리말·한두 줄 요약·마무리 문장·단계 카드
+   양쪽 맞춤: 폭이 충분한 카드의 2줄 이상 설명문
+   왼쪽: 좁은 카드, 목록, 표, 출처, 강조 줄(줄 끝이 들쭉날쭉해도 단어 간격이 고른 쪽이 읽기 쉬움) */
+.mk-head,.mk-head .mk-sub,.mk-close,.mk-note,.mk-hero-auth,.mk-step{text-align:center}
+.mk-risk-item p,.mk-case p,.mk-why-row span,.mk-faq p{text-align:justify;text-align-last:left}
+.mk-auth-item span,.mk-qa span,.mk-src,.mk-risk-item p.mk-fix,.mk-case .mk-use,.mk-time,.mk-cmp td,.mk-cmp th,.mk-map td{text-align:left}
+.upgrade-cta .mk-risk-item p,.upgrade-cta .mk-case p{text-align:left}
+@media(max-width:380px){.mk-risk-item p,.mk-case p,.mk-why-row span{text-align:left}}
 @media(max-width:560px){.mk-steps{grid-template-columns:repeat(2,1fr)}.mk-cmp{font-size:.8rem}.mk-cmp th,.mk-cmp td{padding:11px 8px}}
 </style>
 <script src="/skopos-track.js" defer></script>
