@@ -56,6 +56,18 @@
     if (_client) return _client;
     await waitForLib();
     _client = global.supabase.createClient(CONFIG.url, CONFIG.anon);
+    // 로그인되면 계정에 첫 유입 출처를 남긴다 (skopos-track.js 가 늦게 로드돼도 이어서 처리)
+    try {
+      var sbRef = _client;
+      var link = function (session) {
+        if (!session || !session.user) return;
+        if (global.SkoposTrack && global.SkoposTrack.linkUser) global.SkoposTrack.linkUser(sbRef, session.user);
+        else global.__skoposPendingLink = [sbRef, session.user];
+      };
+      _client.auth.onAuthStateChange(function (ev, session) {
+        if (ev === 'SIGNED_IN' || ev === 'INITIAL_SESSION') setTimeout(function () { link(session); }, 0);
+      });
+    } catch (e) {}
     return _client;
   }
   async function getSession() {

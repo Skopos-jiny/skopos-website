@@ -6,6 +6,8 @@
  *
  * 사용: SkoposTrack.event('free_quiz_complete', { result_type: 'A1' })
  *   이벤트: free_quiz_complete, premium_quiz_complete, checkout_view, purchase, free_redeem
+ * 5) 광고·외부 유입 랜딩: landing_view 이벤트 (세션당 출처별 1회)
+ * 6) 로그인 시 계정에 첫 유입 출처 저장 (user_attribution) + 신규 가입이면 signup 이벤트
  */
 (function (w, d) {
   'use strict';
@@ -13,7 +15,7 @@
   if (/naver-callback/.test(w.location.pathname) ||
       /(?:access_token|refresh_token|type=recovery)/.test(w.location.hash) ||
       /[?&](?:code|state|token)=/.test(w.location.search)) {
-    w.SkoposTrack = { event: function () {}, attr: function () { return null; }, anonId: function () { return null; } };
+    w.SkoposTrack = { event: function () {}, attr: function () { return null; }, anonId: function () { return null; }, linkUser: function () {} };
     return;
   }
   var CFG = {
@@ -54,6 +56,7 @@
       return h.replace(/^www\./, '');
     } catch (e) { return null; }
   }
+  var landing = null; // 이번 페이지에서 새로 잡힌 유입 출처 (landing_view 기록용)
   (function captureAttr() {
     var p = new URLSearchParams(w.location.search);
     var now = Date.now();
@@ -72,6 +75,7 @@
     if (a) {
       ls('skopos_attr_last', a);
       if (!ls('skopos_attr_first')) ls('skopos_attr_first', a);
+      landing = a;
     }
   })();
   function attr() {
@@ -122,7 +126,8 @@
     premium_quiz_complete: ['trackCustom', 'PremiumQuizComplete'],
     checkout_view: ['track', 'InitiateCheckout'],
     purchase: ['track', 'Purchase'],
-    free_redeem: ['trackCustom', 'FreeRedeem']
+    free_redeem: ['trackCustom', 'FreeRedeem'],
+    signup: ['track', 'CompleteRegistration']
   };
 
   function event(name, params) {
@@ -170,7 +175,44 @@
     });
   }
 
-  w.SkoposTrack = { event: event, attr: attr, anonId: function () { return anon; } };
+  // ── 광고 랜딩 기록: 같은 세션에서 같은 출처·캠페인은 한 번만 ──
+  if (landing) {
+    try {
+      var lk = 'skopos_lv_' + [landing.source, landing.medium, landing.campaign, landing.content].join('|');
+      if (!sessionStorage.getItem(lk)) { sessionStorage.setItem(lk, '1'); event('landing_view'); }
+    } catch (e) { event('landing_view'); }
+  }
+
+  // ── 계정에 첫 유입 출처 남기기 (로그인 직후 1회) ──
+  // sb: 로그인된 Supabase 클라이언트, user: 로그인 사용자
+  // user_attribution 은 사용자당 1행, 본인 행만 insert 가능(RLS). 이미 있으면 그대로 둔다.
+  function linkUser(sb, user) {
+    if (!sb || !user || !user.id) return;
+    var flag = 'skopos_attr_linked_' + user.id;
+    if (ls(flag)) return;
+    var a = attr(), f = a.first || {}, l = a.last || {};
+    var row = {
+      user_id: user.id, anon_id: anon,
+      first_source: cut(f.source, 100) || null, first_medium: cut(f.medium, 100) || null,
+      first_campaign: cut(f.campaign, 150) || null, first_content: cut(f.content, 150) || null,
+      first_seen_at: f.ts ? new Date(f.ts).toISOString() : null,
+      last_source: cut(l.source, 100) || null, last_medium: cut(l.medium, 100) || null,
+      last_campaign: cut(l.campaign, 150) || null, last_content: cut(l.content, 150) || null,
+      landing_page: cut(w.location.pathname, 200)
+    };
+    try {
+      sb.from('user_attribution').upsert(row, { onConflict: 'user_id', ignoreDuplicates: true }).then(function (r) {
+        if (r && r.error) return;
+        ls(flag, 1);
+        // 가입 직후(10분 이내) 첫 로그인이면 가입 이벤트로 기록
+        var created = Date.parse(user.created_at || '');
+        if (created && Date.now() - created < 10 * 60 * 1000) event('signup', { user_id: user.id });
+      }, function () {});
+    } catch (e) {}
+  }
+
+  w.SkoposTrack = { event: event, attr: attr, anonId: function () { return anon; }, linkUser: linkUser };
+  if (w.__skoposPendingLink) { try { linkUser(w.__skoposPendingLink[0], w.__skoposPendingLink[1]); } catch (e) {} w.__skoposPendingLink = null; }
 
   // ── 카카오톡 채널 연동: 문의 버튼 + 결과 화면 채널 추가 카드 ──
   var KAKAO = { friend:'https://pf.kakao.com/_dtGjX/friend', chat:'https://pf.kakao.com/_dtGjX/chat' };
