@@ -18,7 +18,7 @@ function constant(name) {
 function scoring() {
   const context = vm.createContext({});
   vm.runInContext(constant('SECS') + constant('QS') + constant('TYPES') +
-    'let ans={};' + between('function getSectionScore(', 'function show(') +
+    'let ans={},elapsed=0;' + between('function getSectionScore(', 'function show(') +
     between('function recordAns(', 'function selectOpt(') +
     between('const SEC_ITEM_DIR={', '// ── LOADING') +
     between('function buildRadarSVG(', 'function renderResult(') +
