@@ -1816,6 +1816,7 @@ document.querySelectorAll('.hero .fade-up').forEach(el=>el.classList.add('on'));
       'https://rgbukqphcqptnfeqipfn.supabase.co',
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJnYnVrcXBoY3FwdG5mZXFpcGZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2OTkzMDMsImV4cCI6MjA5NDI3NTMwM30.fWUHe2AoWr9fMLUNSQkbhosUO7FH9dvZOIZbz_XyzFM'
     );
+    try{(window.SkoposTrack&&SkoposTrack.watch)?SkoposTrack.watch(sb):(window.__skoposWatch=window.__skoposWatch||[]).push(sb);}catch(e){}
     const { data:{ session } } = await sb.auth.getSession();
     const btn = document.getElementById('navLoginBtn');
     if(!btn) return;

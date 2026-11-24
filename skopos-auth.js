@@ -56,6 +56,11 @@
     if (_client) return _client;
     await waitForLib();
     _client = global.supabase.createClient(CONFIG.url, CONFIG.anon);
+    // 로그인되면 계정에 첫 유입 출처를 남긴다 (skopos-track.js 가 늦게 로드돼도 이어서 처리)
+    try {
+      if (global.SkoposTrack && global.SkoposTrack.watch) global.SkoposTrack.watch(_client);
+      else (global.__skoposWatch = global.__skoposWatch || []).push(_client);
+    } catch (e) {}
     return _client;
   }
   async function getSession() {

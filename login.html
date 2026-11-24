@@ -218,6 +218,7 @@ const LINK_ERROR = (function(){
 
 const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
+try{(window.SkoposTrack&&SkoposTrack.watch)?SkoposTrack.watch(sb):(window.__skoposWatch=window.__skoposWatch||[]).push(sb);}catch(e){} // 로그인 계정에 유입 출처·가입 이벤트 연결
 
 // ── redirect 파라미터 검증 (오픈 리다이렉트 방지) ──────────
 // 같은 사이트 주소만 허용하고, 경로·쿼리·해시만 돌려준다.
